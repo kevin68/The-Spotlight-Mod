@@ -96,6 +96,6 @@ public class BlockSpotLight extends BlockContainer
     @Override
     public int getRenderType()
     {
-        return 0;
+        return -1;
     }
 }
