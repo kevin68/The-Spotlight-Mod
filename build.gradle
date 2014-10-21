@@ -1,0 +1,88 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+ext.buildnumber = 0
+version = "3.0.0"
+group= "fr.mcnanotech.kevin_68"
+archivesBaseName = "NanotechMod"
+
+if (System.getenv().BUILD_NUMBER) {
+    project.buildnumber = System.getenv().BUILD_NUMBER
+	version += "." + System.getenv().BUILD_NUMBER
+}
+else {
+    logger.lifecycle "SETTING BUILDNUMBER TO 0"
+}
+
+minecraft {
+    version = "1.7.10-10.13.0.1160"
+    assetDir = "run/assets"
+	
+    replace '@VERSION@', project.version
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+
+dependencies {
+    def lib = new File(rootProject.projectDir, 'libs')
+    if(!lib.exists()) {
+        lib.mkdirs()
+    }
+    
+    def ffmtlibUrl = "http://ci.mcnanotech.fr/job/FFMT-libs/105/artifact/build/libs/FFMT-libs-universal-1.5.0.105-mc1.7.10.jar"
+    def ffmtlib = new File(rootProject.projectDir, "libs/" + ffmtlibUrl.tokenize("/")[-1])
+    if (!ffmtlib.exists()) {
+        new URL(ffmtlibUrl).withInputStream{ i -> ffmtlib.withOutputStream{ it << i }}
+    }
+    compile files(ffmtlib.getPath())
+}
+
+processResources
+{
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    from project.sourceSets.main.output
+	    include "fr/mcnanotech/kevin_68/nanotechmod/core/**"
+        include "assets/nanotechmod/**"
+		include "mcmod.info"
+    appendix = 'core-universal'
+    version = "${project.version}-mc${project.minecraft.version}"
+}
