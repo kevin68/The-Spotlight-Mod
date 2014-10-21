@@ -1,10 +1,3 @@
-/**
- * This work is made available under the terms of the Creative Commons Attribution License:
- * http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en
- *
- * Cette œuvre est mise à disposition selon les termes de la Licence Creative Commons Attribution:
- * http://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr
- */
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
@@ -15,6 +8,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
@@ -22,7 +16,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
 
 public class GuiSpotLightConfirm extends GuiContainer
 {
-    protected static final ResourceLocation texture = new ResourceLocation("nanotechmod:textures/gui/spotlightconfirm.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlightconfirm.png");
 
     private String action;
     private String yes;

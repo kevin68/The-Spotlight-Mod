@@ -6,6 +6,6 @@ public class TSMTileEntity
 {
     public static void registerTiles()
     {
-        GameRegistry.registerTileEntity(TileEntitySpotLight.class, "NanotechMod_SpotLight");
+        GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
     }
 }

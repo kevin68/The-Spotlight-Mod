@@ -1,10 +1,3 @@
-/**
- * This work is made available under the terms of the Creative Commons Attribution License:
- * http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en
- *
- * Cette œuvre est mise à disposition selon les termes de la Licence Creative Commons Attribution:
- * http://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr
- */
 package fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -12,13 +5,17 @@ import net.minecraft.client.model.ModelSign;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.model.ModelSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
@@ -27,9 +24,46 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
 {
     private final ModelSign modelSign = new ModelSign();
+    private ModelSpotLight model;
 
     public void renderTileEntitySpotLightAt(TileEntitySpotLight tileentity, double x, double y, double z, float tick)
     {
+        byte b0 = 1;
+        float f2 = tileentity.getWorldObj().getTotalWorldTime() + tick;
+        double d3 = f2 * 0.025D * (1.0D - (b0 & 1) * 2.5D);
+        double angle1Deg = tileentity.getAngle1();
+        double angle2Deg = (tileentity.getAngle2() & 0xFF);
+        double a1 = Math.toRadians(angle1Deg);
+        double a2 = tileentity.isAutoRotate() ? ((d3 * ((tileentity.getRotationSpeed() & 0xFF) / 4.0D)) * (tileentity.isReverseRotation() ? -1.0D : 1.0D)) : Math.toRadians(angle2Deg);
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+        this.bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlightm.png"));
+        int ti = (int)((tileentity.getWorldObj().getTotalWorldTime() / 4) % 3);
+        model = new ModelSpotLight(ti);
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+
+        double angl = Math.toDegrees(a1);
+
+        if(tileentity.getDisplayAxe() == 0)
+        {
+            GL11.glRotated(Math.toDegrees(a2), 0.0F, 1.0F, 0.0F);
+            GL11.glRotated(-angl, 0.0F, 0.0F, 1.0F);
+            GL11.glTranslated(0.0F, -7.0797937144133 * Math.pow(10, -18) * Math.pow(angl, 8) + 1.0194902948755 * Math.pow(10, -14) * Math.pow(angl, 7) + -5.9644961110975 * Math.pow(10, -12) * Math.pow(angl, 6) + 1.81724782243 * Math.pow(10, -9) * Math.pow(angl, 5) + -3.0886213145015 * Math.pow(10, -7) * Math.pow(angl, 4) + 0.00002962962962963 * Math.pow(angl, 3) + -0.0015426298255928 * Math.pow(angl, 2) + 0.023796825396825 * angl, 0.0F);
+            GL11.glTranslated(9.8607613152626 * Math.pow(10, -34) * Math.pow(angl, 8) + 4.2478762286479 * Math.pow(10, -16) * Math.pow(angl, 7) + -5.3523240480965 * Math.pow(10, -13) * Math.pow(angl, 6) + 2.7517636012276 * Math.pow(10, -10) * Math.pow(angl, 5) + -7.4243424952159 * Math.pow(10, -8) * Math.pow(angl, 4) + 0.000010638622161256 * Math.pow(angl, 3) + -0.00061783264746228 * Math.pow(angl, 2) + -0.0026751322751322 * angl, 0.00F, 0.0F);
+        }
+        else if(tileentity.getDisplayAxe() == 1)
+        {
+            // TODO
+        }
+        else if(tileentity.getDisplayAxe() == 2)
+        {
+            // TODO
+        }
+
+        this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        GL11.glPopMatrix();
+
         float f1 = tileentity.isActive();
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         if(f1 > 0.0F)
@@ -45,16 +79,8 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             OpenGlHelper.glBlendFunc(770, 1, 1, 0);
             tessellator.startDrawingQuads();
             tessellator.setColorRGBA(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 32);
-            float f2 = tileentity.getWorldObj().getTotalWorldTime() + tick;
             float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
-            byte b0 = 1;
             double d4 = b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D);// taille
-            double d3 = f2 * 0.025D * (1.0D - (b0 & 1) * 2.5D);
-
-            double angle1Deg = tileentity.getAngle1();
-            double angle2Deg = (tileentity.getAngle2() & 0xFF);
-            double a1 = Math.toRadians(angle1Deg);
-            double a2 = tileentity.isAutoRotate() ? ((d3 * ((tileentity.getRotationSpeed() & 0xFF) / 4.0D)) * (tileentity.isReverseRotation() ? -1.0D : 1.0D)) : Math.toRadians(angle2Deg);
 
             double xo = 0.5D;
             double yo = 0.5D;

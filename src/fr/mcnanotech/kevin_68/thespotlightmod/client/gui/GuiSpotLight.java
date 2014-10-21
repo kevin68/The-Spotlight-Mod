@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
@@ -16,7 +17,7 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 
 public class GuiSpotLight extends GuiContainer
 {
-    protected static final ResourceLocation texture = new ResourceLocation("nanotechmod:textures/gui/spotlight.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;

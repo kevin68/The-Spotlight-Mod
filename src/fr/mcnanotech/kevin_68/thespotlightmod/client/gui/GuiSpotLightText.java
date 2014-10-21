@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
@@ -19,7 +20,7 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderForContainer;
 
 public class GuiSpotLightText extends GuiContainerSliderBase
 {
-    protected static final ResourceLocation texture = new ResourceLocation("nanotechmod:textures/gui/spotlighttex.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlighttex.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;
