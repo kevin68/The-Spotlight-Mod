@@ -44,21 +44,28 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 
         double angl = Math.toDegrees(a1);
+        double angl2 = Math.toDegrees(a2);
 
         if(tileentity.getDisplayAxe() == 0)
         {
             GL11.glRotated(Math.toDegrees(a2), 0.0F, 1.0F, 0.0F);
             GL11.glRotated(-angl, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslated(0.0F, -7.0797937144133 * Math.pow(10, -18) * Math.pow(angl, 8) + 1.0194902948755 * Math.pow(10, -14) * Math.pow(angl, 7) + -5.9644961110975 * Math.pow(10, -12) * Math.pow(angl, 6) + 1.81724782243 * Math.pow(10, -9) * Math.pow(angl, 5) + -3.0886213145015 * Math.pow(10, -7) * Math.pow(angl, 4) + 0.00002962962962963 * Math.pow(angl, 3) + -0.0015426298255928 * Math.pow(angl, 2) + 0.023796825396825 * angl, 0.0F);
-            GL11.glTranslated(9.8607613152626 * Math.pow(10, -34) * Math.pow(angl, 8) + 4.2478762286479 * Math.pow(10, -16) * Math.pow(angl, 7) + -5.3523240480965 * Math.pow(10, -13) * Math.pow(angl, 6) + 2.7517636012276 * Math.pow(10, -10) * Math.pow(angl, 5) + -7.4243424952159 * Math.pow(10, -8) * Math.pow(angl, 4) + 0.000010638622161256 * Math.pow(angl, 3) + -0.00061783264746228 * Math.pow(angl, 2) + -0.0026751322751322 * angl, 0.00F, 0.0F);
+            GL11.glTranslated(0.0F, Math.cos(Math.PI * (1.0F / 180.0F) * angl) - 1, 0.0F);
+            GL11.glTranslated(Math.cos(Math.PI * (1.0F / 180.0F) * angl + Math.PI / 2.0F), 0.0F, 0.0F);
+
         }
         else if(tileentity.getDisplayAxe() == 1)
         {
-            // TODO
+            GL11.glRotated(-Math.toDegrees(a2), 1.0F, 0.0F, 0.0F);
+            GL11.glRotated(angl + 90, 0.0F, 0.0F, 1.0F);
+            GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl) * Math.cos(Math.PI * 1 / 180 * angl2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2));
         }
         else if(tileentity.getDisplayAxe() == 2)
         {
-            // TODO
+            GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
+            GL11.glRotated(Math.toDegrees(a2), 0.0F, 1.0F, 0.0F);
+            GL11.glRotated(angl, 0.0F, 0.0F, 1.0F);
+            GL11.glTranslated(-Math.cos(Math.PI * 1 / 180 * angl) * Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), -Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI));
         }
 
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
