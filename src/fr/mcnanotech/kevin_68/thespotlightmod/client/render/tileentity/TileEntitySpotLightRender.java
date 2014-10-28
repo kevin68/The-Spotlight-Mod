@@ -1,14 +1,15 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity;
 
+import static java.lang.Math.cos;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelSign;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,12 +20,27 @@ import fr.mcnanotech.kevin_68.thespotlightmod.client.model.ModelSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
+import fr.minecraftforgefrance.ffmtlibs.client.renderer.TileEntityInventorySpecialRenderer;
 
 @SideOnly(Side.CLIENT)
-public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
+public class TileEntitySpotLightRender extends TileEntityInventorySpecialRenderer
 {
     private final ModelSign modelSign = new ModelSign();
     private ModelSpotLight model;
+
+    @Override
+    public void renderInventory(double x, double y, double z)
+    {
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+        this.bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png"));
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        GL11.glScalef(0.8F, 0.8F, 0.8F);
+        GL11.glTranslatef(0.0F, 0.38F, 0.0F);
+        model = new ModelSpotLight(0);
+        this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        GL11.glPopMatrix();
+    }
 
     public void renderTileEntitySpotLightAt(TileEntitySpotLight tileentity, double x, double y, double z, float tick)
     {
@@ -38,7 +54,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
 
         GL11.glPushMatrix();
         GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-        this.bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlightm.png"));
+        this.bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png"));
         int ti = (int)((tileentity.getWorldObj().getTotalWorldTime() / 4) % 3);
         model = new ModelSpotLight(ti);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -48,24 +64,27 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
 
         if(tileentity.getDisplayAxe() == 0)
         {
-            GL11.glRotated(Math.toDegrees(a2), 0.0F, 1.0F, 0.0F);
+            GL11.glRotated(angl2, 0.0F, 1.0F, 0.0F);
             GL11.glRotated(-angl, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslated(0.0F, Math.cos(Math.PI * (1.0F / 180.0F) * angl) - 1, 0.0F);
-            GL11.glTranslated(Math.cos(Math.PI * (1.0F / 180.0F) * angl + Math.PI / 2.0F), 0.0F, 0.0F);
+            GL11.glTranslated(0.0F, cos(Math.PI * (1.0F / 180.0F) * angl) - 1, 0.0F);
+            GL11.glTranslated(cos(Math.PI * (1.0F / 180.0F) * angl + Math.PI / 2.0F), 0.0F, 0.0F);
 
         }
         else if(tileentity.getDisplayAxe() == 1)
         {
-            GL11.glRotated(-Math.toDegrees(a2), 1.0F, 0.0F, 0.0F);
+            GL11.glRotated(-angl2, 1.0F, 0.0F, 0.0F);
             GL11.glRotated(angl + 90, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl) * Math.cos(Math.PI * 1 / 180 * angl2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2));
+            GL11.glTranslated(cos(Math.PI * 1 / 180 * angl) * cos(Math.PI * 1 / 180 * angl2), cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2));
         }
         else if(tileentity.getDisplayAxe() == 2)
         {
+            GL11.glRotated(-angl2, 0.0F, 0.0F, 1.0F);
+            GL11.glRotated(angl, 1.0F, 0.0F, 0.0F);
             GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
-            GL11.glRotated(Math.toDegrees(a2), 0.0F, 1.0F, 0.0F);
-            GL11.glRotated(angl, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslated(-Math.cos(Math.PI * 1 / 180 * angl) * Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), -Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI));
+            double a = cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2);
+            double b = cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1;
+            double c = -cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl);
+            GL11.glTranslated(a, b, c);
         }
 
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
@@ -84,293 +103,23 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDepthMask(true);
             OpenGlHelper.glBlendFunc(770, 1, 1, 0);
-            tessellator.startDrawingQuads();
-            tessellator.setColorRGBA(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 32);
+
             float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
-            double d4 = b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D);// taille
+            double d4 = Math.sqrt(Math.pow(b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2);// taille
 
-            double xo = 0.5D;
-            double yo = 0.5D;
-            double zo = 0.5D;
-            double xm = xo + (tileentity.getLaserHeight() * Math.cos(a2) * Math.sin(a1));
-            double ym = yo + (tileentity.getLaserHeight() * Math.cos(a1));
-            double zm = zo + (tileentity.getLaserHeight() * Math.sin(a2) * Math.sin(a1));
-
-            double xa = xo + (d4 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a1 + (Math.PI / 4D)));
-            double ya = xo + (d4 * Math.cos(a1 + (Math.PI / 4D)));
-            double za = zo + (d4 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a1 + (Math.PI / 4D)));
-
-            double xA = xa + xm - xo;
-            double yA = ya + ym - yo;
-            double zA = za + zm - zo;
-
-            double xb = xo + (d4 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (3 * Math.PI / 4D)));
-            double yb = xo + (d4 * Math.cos(a1 + (3 * Math.PI / 4D)));
-            double zb = zo + (d4 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (3 * Math.PI / 4D)));
-
-            double xB = xb + xm - xo;
-            double yB = yb + ym - yo;
-            double zB = zb + zm - zo;
-
-            double xc = xo + (d4 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (5 * Math.PI / 4D)));
-            double yc = xo + (d4 * Math.cos(a1 + (5 * Math.PI / 4D)));
-            double zc = zo + (d4 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (5 * Math.PI / 4D)));
-
-            double xC = xc + xm - xo;
-            double yC = yc + ym - yo;
-            double zC = zc + zm - zo;
-
-            double xd = xo + (d4 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a1 + (7 * Math.PI / 4D)));
-            double yd = xo + (d4 * Math.cos(a1 + (7 * Math.PI / 4D)));
-            double zd = zo + (d4 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a1 + (7 * Math.PI / 4D)));
-
-            double xD = xd + xm - xo;
-            double yD = yd + ym - yo;
-            double zD = zd + zm - zo;
-
-            double t0 = 0.0D;
-            double t1 = 1.0D;
-            double t2 = -1.0F + f3;
+            double t2 = -1.0F - f3;
             double t3 = tileentity.getLaserHeight() * f1 * (0.5D / d4) + t2;
 
-            double angle1Deg2 = angle1Deg + 180;
-            double a12 = Math.toRadians(angle1Deg2);
-
-            double xm2 = xo + (tileentity.getLaserHeight() * Math.cos(a2) * Math.sin(a12));
-            double ym2 = yo + (tileentity.getLaserHeight() * Math.cos(a12));
-            double zm2 = zo + (tileentity.getLaserHeight() * Math.sin(a2) * Math.sin(a12));
-
-            double xa2 = xo + (d4 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a12 + (Math.PI / 4D)));
-            double ya2 = xo + (d4 * Math.cos(a12 + (Math.PI / 4D)));
-            double za2 = zo + (d4 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a12 + (Math.PI / 4D)));
-
-            double xA2 = xa2 + xm2 - xo;
-            double yA2 = ya2 + ym2 - yo;
-            double zA2 = za2 + zm2 - zo;
-
-            double xb2 = xo + (d4 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (3 * Math.PI / 4D)));
-            double yb2 = xo + (d4 * Math.cos(a12 + (3 * Math.PI / 4D)));
-            double zb2 = zo + (d4 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (3 * Math.PI / 4D)));
-
-            double xB2 = xb2 + xm2 - xo;
-            double yB2 = yb2 + ym2 - yo;
-            double zB2 = zb2 + zm2 - zo;
-
-            double xc2 = xo + (d4 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (5 * Math.PI / 4D)));
-            double yc2 = xo + (d4 * Math.cos(a12 + (5 * Math.PI / 4D)));
-            double zc2 = zo + (d4 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (5 * Math.PI / 4D)));
-
-            double xC2 = xc2 + xm2 - xo;
-            double yC2 = yc2 + ym2 - yo;
-            double zC2 = zc2 + zm2 - zo;
-
-            double xd2 = xo + (d4 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a12 + (7 * Math.PI / 4D)));
-            double yd2 = xo + (d4 * Math.cos(a12 + (7 * Math.PI / 4D)));
-            double zd2 = zo + (d4 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a12 + (7 * Math.PI / 4D)));
-
-            double xD2 = xd2 + xm2 - xo;
-            double yD2 = yd2 + ym2 - yo;
-            double zD2 = zd2 + zm2 - zo;
-
-            if(tileentity.getDisplayAxe() == 0)
-            {
-                tessellator.addVertexWithUV(x + xa, y + ya, z + za, t1, t3);
-                tessellator.addVertexWithUV(x + xA, y + yA, z + zA, t1, t2);
-                tessellator.addVertexWithUV(x + xB, y + yB, z + zB, t0, t2);
-                tessellator.addVertexWithUV(x + xb, y + yb, z + zb, t0, t3);
-
-                tessellator.addVertexWithUV(x + xa, y + ya, z + za, t1, t3);
-                tessellator.addVertexWithUV(x + xA, y + yA, z + zA, t1, t2);
-                tessellator.addVertexWithUV(x + xC, y + yC, z + zC, t0, t2);
-                tessellator.addVertexWithUV(x + xc, y + yc, z + zc, t0, t3);
-
-                tessellator.addVertexWithUV(x + xc, y + yc, z + zc, t1, t3);
-                tessellator.addVertexWithUV(x + xC, y + yC, z + zC, t1, t2);
-                tessellator.addVertexWithUV(x + xD, y + yD, z + zD, t0, t2);
-                tessellator.addVertexWithUV(x + xd, y + yd, z + zd, t0, t3);
-
-                tessellator.addVertexWithUV(x + xb, y + yb, z + zb, t1, t3);
-                tessellator.addVertexWithUV(x + xB, y + yB, z + zB, t1, t2);
-                tessellator.addVertexWithUV(x + xD, y + yD, z + zD, t0, t2);
-                tessellator.addVertexWithUV(x + xd, y + yd, z + zd, t0, t3);
-
-                tessellator.addVertexWithUV(x + xb, y + yb, z + zb, t1, t3);
-                tessellator.addVertexWithUV(x + xB, y + yB, z + zB, t1, t2);
-                tessellator.addVertexWithUV(x + xC, y + yC, z + zC, t0, t2);
-                tessellator.addVertexWithUV(x + xc, y + yc, z + zc, t0, t3);
-
-                tessellator.addVertexWithUV(x + xa, y + ya, z + za, t1, t3);
-                tessellator.addVertexWithUV(x + xA, y + yA, z + zA, t1, t2);
-                tessellator.addVertexWithUV(x + xD, y + yD, z + zD, t0, t2);
-                tessellator.addVertexWithUV(x + xd, y + yd, z + zd, t0, t3);
-            }
-            else if(tileentity.getDisplayAxe() == 1)
-            {
-                tessellator.addVertexWithUV(x + ya, y + xa, z + za, t1, t3);
-                tessellator.addVertexWithUV(x + yA, y + xA, z + zA, t1, t2);
-                tessellator.addVertexWithUV(x + yB, y + xB, z + zB, t0, t2);
-                tessellator.addVertexWithUV(x + yb, y + xb, z + zb, t0, t3);
-
-                tessellator.addVertexWithUV(x + ya, y + xa, z + za, t1, t3);
-                tessellator.addVertexWithUV(x + yA, y + xA, z + zA, t1, t2);
-                tessellator.addVertexWithUV(x + yC, y + xC, z + zC, t0, t2);
-                tessellator.addVertexWithUV(x + yc, y + xc, z + zc, t0, t3);
-
-                tessellator.addVertexWithUV(x + yc, y + xc, z + zc, t1, t3);
-                tessellator.addVertexWithUV(x + yC, y + xC, z + zC, t1, t2);
-                tessellator.addVertexWithUV(x + yD, y + xD, z + zD, t0, t2);
-                tessellator.addVertexWithUV(x + yd, y + xd, z + zd, t0, t3);
-
-                tessellator.addVertexWithUV(x + yb, y + xb, z + zb, t1, t3);
-                tessellator.addVertexWithUV(x + yB, y + xB, z + zB, t1, t2);
-                tessellator.addVertexWithUV(x + yD, y + xD, z + zD, t0, t2);
-                tessellator.addVertexWithUV(x + yd, y + xd, z + zd, t0, t3);
-
-                tessellator.addVertexWithUV(x + yb, y + xb, z + zb, t1, t3);
-                tessellator.addVertexWithUV(x + yB, y + xB, z + zB, t1, t2);
-                tessellator.addVertexWithUV(x + yC, y + xC, z + zC, t0, t2);
-                tessellator.addVertexWithUV(x + yc, y + xc, z + zc, t0, t3);
-
-                tessellator.addVertexWithUV(x + ya, y + xa, z + za, t1, t3);
-                tessellator.addVertexWithUV(x + yA, y + xA, z + zA, t1, t2);
-                tessellator.addVertexWithUV(x + yD, y + xD, z + zD, t0, t2);
-                tessellator.addVertexWithUV(x + yd, y + xd, z + zd, t0, t3);
-            }
-            else if(tileentity.getDisplayAxe() == 2)
-            {
-                tessellator.addVertexWithUV(x + xa, y + za, z + ya, t1, t3);
-                tessellator.addVertexWithUV(x + xA, y + zA, z + yA, t1, t2);
-                tessellator.addVertexWithUV(x + xB, y + zB, z + yB, t0, t2);
-                tessellator.addVertexWithUV(x + xb, y + zb, z + yb, t0, t3);
-
-                tessellator.addVertexWithUV(x + xa, y + za, z + ya, t1, t3);
-                tessellator.addVertexWithUV(x + xA, y + zA, z + yA, t1, t2);
-                tessellator.addVertexWithUV(x + xC, y + zC, z + yC, t0, t2);
-                tessellator.addVertexWithUV(x + xc, y + zc, z + yc, t0, t3);
-
-                tessellator.addVertexWithUV(x + xc, y + zc, z + yc, t1, t3);
-                tessellator.addVertexWithUV(x + xC, y + zC, z + yC, t1, t2);
-                tessellator.addVertexWithUV(x + xD, y + zD, z + yD, t0, t2);
-                tessellator.addVertexWithUV(x + xd, y + zd, z + yd, t0, t3);
-
-                tessellator.addVertexWithUV(x + xb, y + zb, z + yb, t1, t3);
-                tessellator.addVertexWithUV(x + xB, y + zB, z + yB, t1, t2);
-                tessellator.addVertexWithUV(x + xD, y + zD, z + yD, t0, t2);
-                tessellator.addVertexWithUV(x + xd, y + zd, z + yd, t0, t3);
-
-                tessellator.addVertexWithUV(x + xb, y + zb, z + yb, t1, t3);
-                tessellator.addVertexWithUV(x + xB, y + zB, z + yB, t1, t2);
-                tessellator.addVertexWithUV(x + xC, y + zC, z + yC, t0, t2);
-                tessellator.addVertexWithUV(x + xc, y + zc, z + yc, t0, t3);
-
-                tessellator.addVertexWithUV(x + xa, y + za, z + ya, t1, t3);
-                tessellator.addVertexWithUV(x + xA, y + zA, z + yA, t1, t2);
-                tessellator.addVertexWithUV(x + xD, y + zD, z + yD, t0, t2);
-                tessellator.addVertexWithUV(x + xd, y + zd, z + yd, t0, t3);
-            }
+            tessellator.startDrawingQuads();
+            tessellator.setColorRGBA(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 32);
+            drawBeam(d4, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), tessellator, x, y, z, t2, t3);
             tessellator.draw();
 
             if(tileentity.isSideLaser())
             {
                 tessellator.startDrawingQuads();
                 tessellator.setColorRGBA(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 32);
-
-                if(tileentity.getDisplayAxe() == 0)
-                {
-                    tessellator.addVertexWithUV(x + xa2, y + ya2, z + za2, t1, t3);
-                    tessellator.addVertexWithUV(x + xA2, y + yA2, z + zA2, t1, t2);
-                    tessellator.addVertexWithUV(x + xB2, y + yB2, z + zB2, t0, t2);
-                    tessellator.addVertexWithUV(x + xb2, y + yb2, z + zb2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xa2, y + ya2, z + za2, t1, t3);
-                    tessellator.addVertexWithUV(x + xA2, y + yA2, z + zA2, t1, t2);
-                    tessellator.addVertexWithUV(x + xC2, y + yC2, z + zC2, t0, t2);
-                    tessellator.addVertexWithUV(x + xc2, y + yc2, z + zc2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xc2, y + yc2, z + zc2, t1, t3);
-                    tessellator.addVertexWithUV(x + xC2, y + yC2, z + zC2, t1, t2);
-                    tessellator.addVertexWithUV(x + xD2, y + yD2, z + zD2, t0, t2);
-                    tessellator.addVertexWithUV(x + xd2, y + yd2, z + zd2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xb2, y + yb2, z + zb2, t1, t3);
-                    tessellator.addVertexWithUV(x + xB2, y + yB2, z + zB2, t1, t2);
-                    tessellator.addVertexWithUV(x + xD2, y + yD2, z + zD2, t0, t2);
-                    tessellator.addVertexWithUV(x + xd2, y + yd2, z + zd2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xb2, y + yb2, z + zb2, t1, t3);
-                    tessellator.addVertexWithUV(x + xB2, y + yB2, z + zB2, t1, t2);
-                    tessellator.addVertexWithUV(x + xC2, y + yC2, z + zC2, t0, t2);
-                    tessellator.addVertexWithUV(x + xc2, y + yc2, z + zc2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xa2, y + ya2, z + za2, t1, t3);
-                    tessellator.addVertexWithUV(x + xA2, y + yA2, z + zA2, t1, t2);
-                    tessellator.addVertexWithUV(x + xD2, y + yD2, z + zD2, t0, t2);
-                    tessellator.addVertexWithUV(x + xd2, y + yd2, z + zd2, t0, t3);
-                }
-                else if(tileentity.getDisplayAxe() == 1)
-                {
-                    tessellator.addVertexWithUV(x + ya2, y + xa2, z + za2, t1, t3);
-                    tessellator.addVertexWithUV(x + yA2, y + xA2, z + zA2, t1, t2);
-                    tessellator.addVertexWithUV(x + yB2, y + xB2, z + zB2, t0, t2);
-                    tessellator.addVertexWithUV(x + yb2, y + xb2, z + zb2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + ya2, y + xa2, z + za2, t1, t3);
-                    tessellator.addVertexWithUV(x + yA2, y + xA2, z + zA2, t1, t2);
-                    tessellator.addVertexWithUV(x + yC2, y + xC2, z + zC2, t0, t2);
-                    tessellator.addVertexWithUV(x + yc2, y + xc2, z + zc2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + yc2, y + xc2, z + zc2, t1, t3);
-                    tessellator.addVertexWithUV(x + yC2, y + xC2, z + zC2, t1, t2);
-                    tessellator.addVertexWithUV(x + yD2, y + xD2, z + zD2, t0, t2);
-                    tessellator.addVertexWithUV(x + yd2, y + xd2, z + zd2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + yb2, y + xb2, z + zb2, t1, t3);
-                    tessellator.addVertexWithUV(x + yB2, y + xB2, z + zB2, t1, t2);
-                    tessellator.addVertexWithUV(x + yD2, y + xD2, z + zD2, t0, t2);
-                    tessellator.addVertexWithUV(x + yd2, y + xd2, z + zd2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + yb2, y + xb2, z + zb2, t1, t3);
-                    tessellator.addVertexWithUV(x + yB2, y + xB2, z + zB2, t1, t2);
-                    tessellator.addVertexWithUV(x + yC2, y + xC2, z + zC2, t0, t2);
-                    tessellator.addVertexWithUV(x + yc2, y + xc2, z + zc2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + ya2, y + xa2, z + za2, t1, t3);
-                    tessellator.addVertexWithUV(x + yA2, y + xA2, z + zA2, t1, t2);
-                    tessellator.addVertexWithUV(x + yD2, y + xD2, z + zD2, t0, t2);
-                    tessellator.addVertexWithUV(x + yd2, y + xd2, z + zd2, t0, t3);
-                }
-                else if(tileentity.getDisplayAxe() == 2)
-                {
-                    tessellator.addVertexWithUV(x + xa2, y + za2, z + ya2, t1, t3);
-                    tessellator.addVertexWithUV(x + xA2, y + zA2, z + yA2, t1, t2);
-                    tessellator.addVertexWithUV(x + xB2, y + zB2, z + yB2, t0, t2);
-                    tessellator.addVertexWithUV(x + xb2, y + zb2, z + yb2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xa2, y + za2, z + ya2, t1, t3);
-                    tessellator.addVertexWithUV(x + xA2, y + zA2, z + yA2, t1, t2);
-                    tessellator.addVertexWithUV(x + xC2, y + zC2, z + yC2, t0, t2);
-                    tessellator.addVertexWithUV(x + xc2, y + zc2, z + yc2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xc2, y + zc2, z + yc2, t1, t3);
-                    tessellator.addVertexWithUV(x + xC2, y + zC2, z + yC2, t1, t2);
-                    tessellator.addVertexWithUV(x + xD2, y + zD2, z + yD2, t0, t2);
-                    tessellator.addVertexWithUV(x + xd2, y + zd2, z + yd2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xb2, y + zb2, z + yb2, t1, t3);
-                    tessellator.addVertexWithUV(x + xB2, y + zB2, z + yB2, t1, t2);
-                    tessellator.addVertexWithUV(x + xD2, y + zD2, z + yD2, t0, t2);
-                    tessellator.addVertexWithUV(x + xd2, y + zd2, z + yd2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xb2, y + zb2, z + yb2, t1, t3);
-                    tessellator.addVertexWithUV(x + xB2, y + zB2, z + yB2, t1, t2);
-                    tessellator.addVertexWithUV(x + xC2, y + zC2, z + yC2, t0, t2);
-                    tessellator.addVertexWithUV(x + xc2, y + zc2, z + yc2, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xa2, y + za2, z + ya2, t1, t3);
-                    tessellator.addVertexWithUV(x + xA2, y + zA2, z + yA2, t1, t2);
-                    tessellator.addVertexWithUV(x + xD2, y + zD2, z + yD2, t0, t2);
-                    tessellator.addVertexWithUV(x + xd2, y + zd2, z + yd2, t0, t3);
-                }
+                drawBeam(d4, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), tessellator, x, y, z, t2, t3);
                 tessellator.draw();
             }
 
@@ -379,280 +128,21 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             GL11.glDepthMask(false);
 
-            double d5 = b0 * ((tileentity.getSecLaserSize() & 0xFF) / 150.0D);
-
-            double xe = xo + (d5 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a1 + (Math.PI / 4D)));
-            double ye = xo + (d5 * Math.cos(a1 + (Math.PI / 4D)));
-            double ze = zo + (d5 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a1 + (Math.PI / 4D)));
-
-            double xE = xe + xm - xo;
-            double yE = ye + ym - yo;
-            double zE = ze + zm - zo;
-
-            double xf = xo + (d5 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (3 * Math.PI / 4D)));
-            double yf = xo + (d5 * Math.cos(a1 + (3 * Math.PI / 4D)));
-            double zf = zo + (d5 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (3 * Math.PI / 4D)));
-
-            double xF = xf + xm - xo;
-            double yF = yf + ym - yo;
-            double zF = zf + zm - zo;
-
-            double xg = xo + (d5 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (5 * Math.PI / 4D)));
-            double yg = xo + (d5 * Math.cos(a1 + (5 * Math.PI / 4D)));
-            double zg = zo + (d5 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a1 + (5 * Math.PI / 4D)));
-
-            double xG = xg + xm - xo;
-            double yG = yg + ym - yo;
-            double zG = zg + zm - zo;
-
-            double xh = xo + (d5 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a1 + (7 * Math.PI / 4D)));
-            double yh = xo + (d5 * Math.cos(a1 + (7 * Math.PI / 4D)));
-            double zh = zo + (d5 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a1 + (7 * Math.PI / 4D)));
-
-            double xH = xh + xm - xo;
-            double yH = yh + ym - yo;
-            double zH = zh + zm - zo;
+            double d5 = Math.sqrt(Math.pow(b0 * ((tileentity.getSecLaserSize() & 0xFF) / 200.0D), 2) / 2);
 
             if(tileentity.isSecondaryLaser())
             {
                 tessellator.startDrawingQuads();
                 tessellator.setColorRGBA(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 32);
-
-                if(tileentity.getDisplayAxe() == 0)
-                {
-                    tessellator.addVertexWithUV(x + xe, y + ye, z + ze, t1, t3);
-                    tessellator.addVertexWithUV(x + xE, y + yE, z + zE, t1, t2);
-                    tessellator.addVertexWithUV(x + xF, y + yF, z + zF, t0, t2);
-                    tessellator.addVertexWithUV(x + xf, y + yf, z + zf, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xe, y + ye, z + ze, t1, t3);
-                    tessellator.addVertexWithUV(x + xE, y + yE, z + zE, t1, t2);
-                    tessellator.addVertexWithUV(x + xG, y + yG, z + zG, t0, t2);
-                    tessellator.addVertexWithUV(x + xg, y + yg, z + zg, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xg, y + yg, z + zg, t1, t3);
-                    tessellator.addVertexWithUV(x + xG, y + yG, z + zG, t1, t2);
-                    tessellator.addVertexWithUV(x + xH, y + yH, z + zH, t0, t2);
-                    tessellator.addVertexWithUV(x + xh, y + yh, z + zh, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xf, y + yf, z + zf, t1, t3);
-                    tessellator.addVertexWithUV(x + xF, y + yF, z + zF, t1, t2);
-                    tessellator.addVertexWithUV(x + xH, y + yH, z + zH, t0, t2);
-                    tessellator.addVertexWithUV(x + xh, y + yh, z + zh, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xf, y + yf, z + zf, t1, t3);
-                    tessellator.addVertexWithUV(x + xF, y + yF, z + zF, t1, t2);
-                    tessellator.addVertexWithUV(x + xG, y + yG, z + zG, t0, t2);
-                    tessellator.addVertexWithUV(x + xg, y + yg, z + zg, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xe, y + ya, z + za, t1, t3);
-                    tessellator.addVertexWithUV(x + xE, y + yE, z + zE, t1, t2);
-                    tessellator.addVertexWithUV(x + xD, y + yD, z + zD, t0, t2);
-                    tessellator.addVertexWithUV(x + xd, y + yd, z + zd, t0, t3);
-                }
-                else if(tileentity.getDisplayAxe() == 1)
-                {
-                    tessellator.addVertexWithUV(x + ye, y + xe, z + ze, t1, t3);
-                    tessellator.addVertexWithUV(x + yE, y + xE, z + zE, t1, t2);
-                    tessellator.addVertexWithUV(x + yF, y + xF, z + zF, t0, t2);
-                    tessellator.addVertexWithUV(x + yf, y + xf, z + zf, t0, t3);
-
-                    tessellator.addVertexWithUV(x + ye, y + xe, z + ze, t1, t3);
-                    tessellator.addVertexWithUV(x + yE, y + xE, z + zE, t1, t2);
-                    tessellator.addVertexWithUV(x + yG, y + xG, z + zG, t0, t2);
-                    tessellator.addVertexWithUV(x + yg, y + xg, z + zg, t0, t3);
-
-                    tessellator.addVertexWithUV(x + yg, y + xg, z + zg, t1, t3);
-                    tessellator.addVertexWithUV(x + yG, y + xG, z + zG, t1, t2);
-                    tessellator.addVertexWithUV(x + yH, y + xH, z + zH, t0, t2);
-                    tessellator.addVertexWithUV(x + yh, y + xh, z + zh, t0, t3);
-
-                    tessellator.addVertexWithUV(x + yf, y + xf, z + zf, t1, t3);
-                    tessellator.addVertexWithUV(x + yF, y + xF, z + zF, t1, t2);
-                    tessellator.addVertexWithUV(x + yH, y + xH, z + zH, t0, t2);
-                    tessellator.addVertexWithUV(x + yh, y + xh, z + zh, t0, t3);
-
-                    tessellator.addVertexWithUV(x + yf, y + xf, z + zf, t1, t3);
-                    tessellator.addVertexWithUV(x + yF, y + xF, z + zF, t1, t2);
-                    tessellator.addVertexWithUV(x + yG, y + xG, z + zG, t0, t2);
-                    tessellator.addVertexWithUV(x + yg, y + xg, z + zg, t0, t3);
-
-                    tessellator.addVertexWithUV(x + ye, y + xa, z + za, t1, t3);
-                    tessellator.addVertexWithUV(x + yE, y + xE, z + zE, t1, t2);
-                    tessellator.addVertexWithUV(x + yD, y + xD, z + zD, t0, t2);
-                    tessellator.addVertexWithUV(x + yd, y + xd, z + zd, t0, t3);
-                }
-                else if(tileentity.getDisplayAxe() == 2)
-                {
-                    tessellator.addVertexWithUV(x + xe, y + ze, z + ye, t1, t3);
-                    tessellator.addVertexWithUV(x + xE, y + zE, z + yE, t1, t2);
-                    tessellator.addVertexWithUV(x + xF, y + zF, z + yF, t0, t2);
-                    tessellator.addVertexWithUV(x + xf, y + zf, z + yf, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xe, y + ze, z + ye, t1, t3);
-                    tessellator.addVertexWithUV(x + xE, y + zE, z + yE, t1, t2);
-                    tessellator.addVertexWithUV(x + xG, y + zG, z + yG, t0, t2);
-                    tessellator.addVertexWithUV(x + xg, y + zg, z + yg, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xg, y + zg, z + yg, t1, t3);
-                    tessellator.addVertexWithUV(x + xG, y + zG, z + yG, t1, t2);
-                    tessellator.addVertexWithUV(x + xH, y + zH, z + yH, t0, t2);
-                    tessellator.addVertexWithUV(x + xh, y + zh, z + yh, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xf, y + zf, z + yf, t1, t3);
-                    tessellator.addVertexWithUV(x + xF, y + zF, z + yF, t1, t2);
-                    tessellator.addVertexWithUV(x + xH, y + zH, z + yH, t0, t2);
-                    tessellator.addVertexWithUV(x + xh, y + zh, z + yh, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xf, y + zf, z + yf, t1, t3);
-                    tessellator.addVertexWithUV(x + xF, y + zF, z + yF, t1, t2);
-                    tessellator.addVertexWithUV(x + xG, y + zG, z + yG, t0, t2);
-                    tessellator.addVertexWithUV(x + xg, y + zg, z + yg, t0, t3);
-
-                    tessellator.addVertexWithUV(x + xe, y + za, z + ya, t1, t3);
-                    tessellator.addVertexWithUV(x + xE, y + zE, z + yE, t1, t2);
-                    tessellator.addVertexWithUV(x + xD, y + zD, z + yD, t0, t2);
-                    tessellator.addVertexWithUV(x + xd, y + zd, z + yd, t0, t3);
-                }
+                drawBeam(d5, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), tessellator, x, y, z, t2, t3);
                 tessellator.draw();
 
                 if(tileentity.isSideLaser())
                 {
-                    double xe2 = xo + (d5 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a12 + (Math.PI / 4D)));
-                    double ye2 = xo + (d5 * Math.cos(a12 + (Math.PI / 4D)));
-                    double ze2 = zo + (d5 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a12 + (Math.PI / 4D)));
-
-                    double xE2 = xe2 + xm2 - xo;
-                    double yE2 = ye2 + ym2 - yo;
-                    double zE2 = ze2 + zm2 - zo;
-
-                    double xf2 = xo + (d5 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (3 * Math.PI / 4D)));
-                    double yf2 = xo + (d5 * Math.cos(a12 + (3 * Math.PI / 4D)));
-                    double zf2 = zo + (d5 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (3 * Math.PI / 4D)));
-
-                    double xF2 = xf2 + xm2 - xo;
-                    double yF2 = yf2 + ym2 - yo;
-                    double zF2 = zf2 + zm2 - zo;
-
-                    double xg2 = xo + (d5 * Math.cos(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (5 * Math.PI / 4D)));
-                    double yg2 = xo + (d5 * Math.cos(a12 + (5 * Math.PI / 4D)));
-                    double zg2 = zo + (d5 * Math.sin(a2 + (3 * Math.PI / 4D)) * Math.sin(a12 + (5 * Math.PI / 4D)));
-
-                    double xG2 = xg2 + xm2 - xo;
-                    double yG2 = yg2 + ym2 - yo;
-                    double zG2 = zg2 + zm2 - zo;
-
-                    double xh2 = xo + (d5 * Math.cos(a2 + (Math.PI / 4D)) * Math.sin(a12 + (7 * Math.PI / 4D)));
-                    double yh2 = xo + (d5 * Math.cos(a12 + (7 * Math.PI / 4D)));
-                    double zh2 = zo + (d5 * Math.sin(a2 + (Math.PI / 4D)) * Math.sin(a12 + (7 * Math.PI / 4D)));
-
-                    double xH2 = xh2 + xm2 - xo;
-                    double yH2 = yh2 + ym2 - yo;
-                    double zH2 = zh2 + zm2 - zo;
-
-                    if(tileentity.isSecondaryLaser())
-                    {
-                        tessellator.startDrawingQuads();
-                        tessellator.setColorRGBA(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 32);
-
-                        if(tileentity.getDisplayAxe() == 0)
-                        {
-                            tessellator.addVertexWithUV(x + xe2, y + ye2, z + ze2, t1, t3);
-                            tessellator.addVertexWithUV(x + xE2, y + yE2, z + zE2, t1, t2);
-                            tessellator.addVertexWithUV(x + xF2, y + yF2, z + zF2, t0, t2);
-                            tessellator.addVertexWithUV(x + xf2, y + yf2, z + zf2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xe2, y + ye2, z + ze2, t1, t3);
-                            tessellator.addVertexWithUV(x + xE2, y + yE2, z + zE2, t1, t2);
-                            tessellator.addVertexWithUV(x + xG2, y + yG2, z + zG2, t0, t2);
-                            tessellator.addVertexWithUV(x + xg2, y + yg2, z + zg2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xg2, y + yg2, z + zg2, t1, t3);
-                            tessellator.addVertexWithUV(x + xG2, y + yG2, z + zG2, t1, t2);
-                            tessellator.addVertexWithUV(x + xH2, y + yH2, z + zH2, t0, t2);
-                            tessellator.addVertexWithUV(x + xh2, y + yh2, z + zh2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xf2, y + yf2, z + zf2, t1, t3);
-                            tessellator.addVertexWithUV(x + xF2, y + yF2, z + zF2, t1, t2);
-                            tessellator.addVertexWithUV(x + xH2, y + yH2, z + zH2, t0, t2);
-                            tessellator.addVertexWithUV(x + xh2, y + yh2, z + zh2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xf2, y + yf2, z + zf2, t1, t3);
-                            tessellator.addVertexWithUV(x + xF2, y + yF2, z + zF2, t1, t2);
-                            tessellator.addVertexWithUV(x + xG2, y + yG2, z + zG2, t0, t2);
-                            tessellator.addVertexWithUV(x + xg2, y + yg2, z + zg2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xe2, y + ya2, z + za2, t1, t3);
-                            tessellator.addVertexWithUV(x + xE2, y + yE2, z + zE2, t1, t2);
-                            tessellator.addVertexWithUV(x + xD2, y + yD2, z + zD2, t0, t2);
-                            tessellator.addVertexWithUV(x + xd2, y + yd2, z + zd2, t0, t3);
-                        }
-                        else if(tileentity.getDisplayAxe() == 1)
-                        {
-                            tessellator.addVertexWithUV(x + ye2, y + xe2, z + ze2, t1, t3);
-                            tessellator.addVertexWithUV(x + yE2, y + xE2, z + zE2, t1, t2);
-                            tessellator.addVertexWithUV(x + yF2, y + xF2, z + zF2, t0, t2);
-                            tessellator.addVertexWithUV(x + yf2, y + xf2, z + zf2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + ye2, y + xe2, z + ze2, t1, t3);
-                            tessellator.addVertexWithUV(x + yE2, y + xE2, z + zE2, t1, t2);
-                            tessellator.addVertexWithUV(x + yG2, y + xG2, z + zG2, t0, t2);
-                            tessellator.addVertexWithUV(x + yg2, y + xg2, z + zg2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + yg2, y + xg2, z + zg2, t1, t3);
-                            tessellator.addVertexWithUV(x + yG2, y + xG2, z + zG2, t1, t2);
-                            tessellator.addVertexWithUV(x + yH2, y + xH2, z + zH2, t0, t2);
-                            tessellator.addVertexWithUV(x + yh2, y + xh2, z + zh2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + yf2, y + xf2, z + zf2, t1, t3);
-                            tessellator.addVertexWithUV(x + yF2, y + xF2, z + zF2, t1, t2);
-                            tessellator.addVertexWithUV(x + yH2, y + xH2, z + zH2, t0, t2);
-                            tessellator.addVertexWithUV(x + yh2, y + xh2, z + zh2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + yf2, y + xf2, z + zf2, t1, t3);
-                            tessellator.addVertexWithUV(x + yF2, y + xF2, z + zF2, t1, t2);
-                            tessellator.addVertexWithUV(x + yG2, y + xG2, z + zG2, t0, t2);
-                            tessellator.addVertexWithUV(x + yg2, y + xg2, z + zg2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + ye2, y + xa2, z + za2, t1, t3);
-                            tessellator.addVertexWithUV(x + yE2, y + xE2, z + zE2, t1, t2);
-                            tessellator.addVertexWithUV(x + yD2, y + xD2, z + zD2, t0, t2);
-                            tessellator.addVertexWithUV(x + yd2, y + xd2, z + zd2, t0, t3);
-                        }
-                        else if(tileentity.getDisplayAxe() == 2)
-                        {
-                            tessellator.addVertexWithUV(x + xe2, y + ze2, z + ye2, t1, t3);
-                            tessellator.addVertexWithUV(x + xE2, y + zE2, z + yE2, t1, t2);
-                            tessellator.addVertexWithUV(x + xF2, y + zF2, z + yF2, t0, t2);
-                            tessellator.addVertexWithUV(x + xf2, y + zf2, z + yf2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xe2, y + ze2, z + ye2, t1, t3);
-                            tessellator.addVertexWithUV(x + xE2, y + zE2, z + yE2, t1, t2);
-                            tessellator.addVertexWithUV(x + xG2, y + zG2, z + yG2, t0, t2);
-                            tessellator.addVertexWithUV(x + xg2, y + zg2, z + yg2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xg2, y + zg2, z + yg2, t1, t3);
-                            tessellator.addVertexWithUV(x + xG2, y + zG2, z + yG2, t1, t2);
-                            tessellator.addVertexWithUV(x + xH2, y + zH2, z + yH2, t0, t2);
-                            tessellator.addVertexWithUV(x + xh2, y + zh2, z + yh2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xf2, y + zf2, z + yf2, t1, t3);
-                            tessellator.addVertexWithUV(x + xF2, y + zF2, z + yF2, t1, t2);
-                            tessellator.addVertexWithUV(x + xH2, y + zH2, z + yH2, t0, t2);
-                            tessellator.addVertexWithUV(x + xh2, y + zh2, z + yh2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xf2, y + zf2, z + yf2, t1, t3);
-                            tessellator.addVertexWithUV(x + xF2, y + zF2, z + yF2, t1, t2);
-                            tessellator.addVertexWithUV(x + xG2, y + zG2, z + yG2, t0, t2);
-                            tessellator.addVertexWithUV(x + xg2, y + zg2, z + yg2, t0, t3);
-
-                            tessellator.addVertexWithUV(x + xe2, y + za2, z + ya2, t1, t3);
-                            tessellator.addVertexWithUV(x + xE2, y + zE2, z + yE2, t1, t2);
-                            tessellator.addVertexWithUV(x + xD2, y + zD2, z + yD2, t0, t2);
-                            tessellator.addVertexWithUV(x + xd2, y + zd2, z + yd2, t0, t3);
-                        }
-                        tessellator.draw();
-                    }
+                    tessellator.startDrawingQuads();
+                    tessellator.setColorRGBA(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 32);
+                    drawBeam(d5, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), tessellator, x, y, z, t2, t3);
+                    tessellator.draw();
                 }
             }
 
@@ -711,5 +201,84 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tick)
     {
         this.renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
+    }
+
+    public void drawBeam(double size, int height, double a1, double a2, byte axe, Tessellator tessellator, double x, double y, double z, double t2, double t3)
+    {
+        Vec3 a = null, b = null, c = null, d = null, e = null;
+        if(axe == 0)
+        {
+            a = Vec3.createVectorHelper(size, 0.0D, size);
+            b = Vec3.createVectorHelper(-size, 0.0D, size);
+            c = Vec3.createVectorHelper(-size, 0.0D, -size);
+            d = Vec3.createVectorHelper(size, 0.0D, -size);
+            e = Vec3.createVectorHelper(0, height, 0);
+            a.rotateAroundZ((float)a1);
+            b.rotateAroundZ((float)a1);
+            c.rotateAroundZ((float)a1);
+            d.rotateAroundZ((float)a1);
+            e.rotateAroundZ((float)a1);
+            a.rotateAroundY(-(float)a2);
+            b.rotateAroundY(-(float)a2);
+            c.rotateAroundY(-(float)a2);
+            d.rotateAroundY(-(float)a2);
+            e.rotateAroundY(-(float)a2);
+        }
+        else if(axe == 1)
+        {
+            a = Vec3.createVectorHelper(0, size, size);
+            b = Vec3.createVectorHelper(0, -size, size);
+            c = Vec3.createVectorHelper(0, -size, -size);
+            d = Vec3.createVectorHelper(0, size, -size);
+            e = Vec3.createVectorHelper(height, 0, 0);
+            a.rotateAroundZ(-(float)a1);
+            b.rotateAroundZ(-(float)a1);
+            c.rotateAroundZ(-(float)a1);
+            d.rotateAroundZ(-(float)a1);
+            e.rotateAroundZ(-(float)a1);
+            a.rotateAroundX(-(float)a2);
+            b.rotateAroundX(-(float)a2);
+            c.rotateAroundX(-(float)a2);
+            d.rotateAroundX(-(float)a2);
+            e.rotateAroundX(-(float)a2);
+        }
+        else
+        {
+            a = Vec3.createVectorHelper(size, size, 0);
+            b = Vec3.createVectorHelper(-size, size, 0);
+            c = Vec3.createVectorHelper(-size, -size, 0);
+            d = Vec3.createVectorHelper(size, -size, -0);
+            e = Vec3.createVectorHelper(0, 0, height);
+            a.rotateAroundX((float)a1);
+            b.rotateAroundX((float)a1);
+            c.rotateAroundX((float)a1);
+            d.rotateAroundX((float)a1);
+            e.rotateAroundX((float)a1);
+            a.rotateAroundZ((float)a2);
+            b.rotateAroundZ((float)a2);
+            c.rotateAroundZ((float)a2);
+            d.rotateAroundZ((float)a2);
+            e.rotateAroundZ((float)a2);
+        }
+
+        tessellator.addVertexWithUV(x + 0.5 + a.xCoord, y + 0.5 + a.yCoord, z + 0.5 + a.zCoord, 1.0F, t3);
+        tessellator.addVertexWithUV(x + 0.5 + a.xCoord + e.xCoord, y + 0.5 + a.yCoord + e.yCoord, z + 0.5 + a.zCoord + e.zCoord, 1.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + b.xCoord + e.xCoord, y + 0.5 + b.yCoord + e.yCoord, z + 0.5 + b.zCoord + e.zCoord, 0.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + b.xCoord, y + 0.5 + b.yCoord, z + 0.5 + b.zCoord, 0.0F, t3);
+
+        tessellator.addVertexWithUV(x + 0.5 + b.xCoord, y + 0.5 + b.yCoord, z + 0.5 + b.zCoord, 1.0F, t3);
+        tessellator.addVertexWithUV(x + 0.5 + b.xCoord + e.xCoord, y + 0.5 + b.yCoord + e.yCoord, z + 0.5 + b.zCoord + e.zCoord, 1.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + c.xCoord + e.xCoord, y + 0.5 + c.yCoord + e.yCoord, z + 0.5 + c.zCoord + e.zCoord, 0.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + c.xCoord, y + 0.5 + c.yCoord, z + 0.5 + c.zCoord, 0.0F, t3);
+
+        tessellator.addVertexWithUV(x + 0.5 + c.xCoord, y + 0.5 + c.yCoord, z + 0.5 + c.zCoord, 1.0F, t3);
+        tessellator.addVertexWithUV(x + 0.5 + c.xCoord + e.xCoord, y + 0.5 + c.yCoord + e.yCoord, z + 0.5 + c.zCoord + e.zCoord, 1.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + d.xCoord + e.xCoord, y + 0.5 + d.yCoord + e.yCoord, z + 0.5 + d.zCoord + e.zCoord, 0.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + d.xCoord, y + 0.5 + d.yCoord, z + 0.5 + d.zCoord, 0.0F, t3);
+
+        tessellator.addVertexWithUV(x + 0.5 + d.xCoord, y + 0.5 + d.yCoord, z + 0.5 + d.zCoord, 1.0F, t3);
+        tessellator.addVertexWithUV(x + 0.5 + d.xCoord + e.xCoord, y + 0.5 + d.yCoord + e.yCoord, z + 0.5 + d.zCoord + e.zCoord, 1.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + a.xCoord + e.xCoord, y + 0.5 + a.yCoord + e.yCoord, z + 0.5 + a.zCoord + e.zCoord, 0.0F, t2);
+        tessellator.addVertexWithUV(x + 0.5 + a.xCoord, y + 0.5 + a.yCoord, z + 0.5 + a.zCoord, 0.0F, t3);
     }
 }

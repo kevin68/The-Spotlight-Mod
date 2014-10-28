@@ -1,5 +1,7 @@
-itemGroup.nanotech.blocks=NanotechMod's Blocks
-itemGroup.nanotech.items=NanotechMod's Items
+tile.thespotlightmod.spotlight.name=Spotlight
+
+itemGroup.thespotlightmod.blocks=The Spotlight Mod's Blocks
+itemGroup.thespotlightmod.items=The Spotlight Mod's Items
 
 container.spotlight.red=Red
 container.spotlight.green=Green

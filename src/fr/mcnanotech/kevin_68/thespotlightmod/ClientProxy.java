@@ -1,14 +1,15 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
+import fr.mcnanotech.kevin_68.thespotlightmod.blocks.TSMBlocks;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity.TileEntitySpotLightRender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.minecraftforgefrance.ffmtlibs.FFMTClientRegistry;
 
 public class ClientProxy extends CommonProxy
 {
     @Override
     public void register()
     {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpotLight.class, new TileEntitySpotLightRender());
+        FFMTClientRegistry.bindTESRWithInventoryRender(TSMBlocks.spotlight, 0, TileEntitySpotLight.class, new TileEntitySpotLightRender());
     }
 }

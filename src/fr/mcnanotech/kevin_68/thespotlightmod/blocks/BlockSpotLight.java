@@ -2,9 +2,9 @@ package fr.mcnanotech.kevin_68.thespotlightmod.blocks;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -13,12 +13,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.minecraftforgefrance.ffmtlibs.FFMTClientRegistry;
 
 public class BlockSpotLight extends BlockContainer
 {
-    @SideOnly(Side.CLIENT)
-    private IIcon top;
-
     public BlockSpotLight()
     {
         super(Material.iron);
@@ -61,24 +59,9 @@ public class BlockSpotLight extends BlockContainer
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerBlockIcons(IIconRegister iconregister)
-    {
-        super.registerBlockIcons(iconregister);
-        this.top = iconregister.registerIcon(this.getTextureName() + "2");
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
     public IIcon getIcon(int side, int meta)
     {
-        if(side == 1 || side == 0)
-        {
-            return this.top;
-        }
-        else
-        {
-            return this.blockIcon;
-        }
+        return Blocks.stone.getBlockTextureFromSide(0);
     }
 
     @Override
@@ -94,8 +77,9 @@ public class BlockSpotLight extends BlockContainer
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public int getRenderType()
     {
-        return -1;
+        return FFMTClientRegistry.tesrRenderId;
     }
 }

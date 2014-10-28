@@ -1,5 +1,7 @@
-itemGroup.nanotech.blocks=Blocs de NanotechMod
-itemGroup.nanotech.items=Items de NanotechMod
+tile.thespotlightmod.spotlight.name=Projecteur
+
+itemGroup.thespotlightmod.blocks=Blocs du Mod Spotlight
+itemGroup.thespotlightmod.items=Items du Mod Spotlight
 
 container.spotlight.red=Rouge
 container.spotlight.green=Vert

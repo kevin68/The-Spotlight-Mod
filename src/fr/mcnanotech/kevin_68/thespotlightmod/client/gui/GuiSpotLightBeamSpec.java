@@ -165,7 +165,7 @@ public class GuiSpotLightBeamSpec extends GuiContainerSliderBase
             }
             case 10:
             {
-                name = I18n.format("container.spotlight.sizeMain") + " : " + ((byte)(sliderValue * 100) & 0xFF);
+                name = I18n.format("container.spotlight.sizeSec") + " : " + ((byte)(sliderValue * 100) & 0xFF);
                 break;
             }
             case 11:
