@@ -26,7 +26,7 @@ public class GuiSpotLightCreateKey extends GuiContainerSliderBase
 
     public GuiSpotLightCreateKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, world));
+        super(new ContainerSpotLight(tileEntity, playerInventory, world, 8));
         invPlayer = playerInventory;
         tileSpotLight = tileEntity;
         this.world = world;

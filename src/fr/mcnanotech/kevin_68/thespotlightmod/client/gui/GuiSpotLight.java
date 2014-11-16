@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightSlotConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
@@ -26,7 +26,7 @@ public class GuiSpotLight extends GuiContainer
 
     public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld));
+        super(new ContainerSpotLightSlotConfig(tileEntity, playerInventory, wrld));
         invPlayer = playerInventory;
         tileSpotLight = tileEntity;
         world = wrld;
@@ -42,12 +42,13 @@ public class GuiSpotLight extends GuiContainer
         this.buttonList.add(new GuiButton(0, x + 5, y + 20, 80, 20, I18n.format("container.spotlight.color")));
         this.buttonList.add(new GuiButton(1, x + 90, y + 20, 50, 20, I18n.format("container.spotlight.textures")));
         this.buttonList.add(new GuiButton(5, x + 142, y + 20, 28, 20, I18n.format("container.spotlight.more")));
-        this.buttonList.add(new GuiButton(2, x + 5, y + 45, 80, 20, I18n.format("container.spotlight.beamspecs")));
-        this.buttonList.add(new GuiButton(3, x + 90, y + 45, 80, 20, I18n.format("container.spotlight.timeline")));
-        this.buttonList.add(timeButton = new GuiBooleanButton(4, x + 5, y + 70, 166, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), tileSpotLight.isTimeLineEnabled()));
-        this.buttonList.add(textButton = new GuiBooleanButton(6, x + 5, y + 92, 80, 20, I18n.format("container.spotlight.textEnabled") + " " + I18n.format("container.spotlight.true"), I18n.format("container.spotlight.textEnabled") + " " + I18n.format("container.spotlight.false"), tileSpotLight.isTextEnabled()));
-        this.buttonList.add(new GuiButton(7, x + 90, y + 92, 80, 20, I18n.format("container.spotlight.text")));
-        this.buttonList.add(new GuiButton(8, x + 90, y + 114, 80, 20, I18n.format("container.spotlight.text2")));
+        this.buttonList.add(new GuiButton(2, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.beamspecs")));
+        this.buttonList.add(new GuiButton(3, x + 90, y + 43, 80, 20, I18n.format("container.spotlight.timeline")));
+        this.buttonList.add(timeButton = new GuiBooleanButton(4, x + 5, y + 66, 166, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), tileSpotLight.isTimeLineEnabled()));
+        this.buttonList.add(textButton = new GuiBooleanButton(6, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textEnabled") + " " + I18n.format("container.spotlight.true"), I18n.format("container.spotlight.textEnabled") + " " + I18n.format("container.spotlight.false"), tileSpotLight.isTextEnabled()));
+        this.buttonList.add(new GuiButton(7, x + 90, y + 89, 80, 20, I18n.format("container.spotlight.text")));
+        this.buttonList.add(new GuiButton(8, x + 90, y + 112, 80, 20, I18n.format("container.spotlight.text")));
+        this.buttonList.add(new GuiButton(9, x + 27, y + 112, 58, 20, I18n.format("container.spotlight.configs")));
     }
 
     @Override
@@ -100,6 +101,11 @@ public class GuiSpotLight extends GuiContainer
             case 8:
             {
                 this.mc.displayGuiScreen(new GuiSpotLightText2(invPlayer, tileSpotLight, world));
+                break;
+            }
+            case 9:
+            {
+                this.mc.displayGuiScreen(new GuiSpotLightConfigs(invPlayer, tileSpotLight, world));
                 break;
             }
         }

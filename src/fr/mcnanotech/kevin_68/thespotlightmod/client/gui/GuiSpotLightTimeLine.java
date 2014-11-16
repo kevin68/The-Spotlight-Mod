@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight2;
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
@@ -32,7 +32,7 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
 
     public GuiSpotLightTimeLine(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight2(tileEntity, playerInventory, world));
+        super(new ContainerSpotLight(tileEntity, playerInventory, world, 11));
         invPlayer = playerInventory;
         tileSpotLight = tileEntity;
         this.world = world;

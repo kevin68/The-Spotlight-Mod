@@ -1,7 +1,6 @@
 tile.thespotlightmod.spotlight.name=Projecteur
 
-itemGroup.thespotlightmod.blocks=Blocs du Mod Spotlight
-itemGroup.thespotlightmod.items=Items du Mod Spotlight
+itemGroup.thespotlightmod.blocks=The SpotLight Mod
 
 container.spotlight.red=Rouge
 container.spotlight.green=Vert
@@ -48,7 +47,13 @@ container.spotlight.texpath=Ajout: Chemin de la texture
 container.spotlight.delname=Supression: Nom de la texture
 container.spotlight.textEnabled=Texte
 container.spotlight.laserHeight=Hauteur du laser
-container.spotlight.text=Config du texte
-container.spotlight.text2=Config du texte 2
+container.spotlight.text=Config. du texte
 container.spotlight.scale=Taille du texte
 container.spotlight.height=Hauteur du texte
+container.spotlight.configs=Configs
+container.spotlight.create=Créer
+container.spotlight.save=Sauvegarder
+container.spotlight.load=Charger
+container.spotlight.delete=Supprimer
+container.spotlight.reset=Remettre à zéro
+container.spotlight.noconfig=Pas de configuration enregistrée

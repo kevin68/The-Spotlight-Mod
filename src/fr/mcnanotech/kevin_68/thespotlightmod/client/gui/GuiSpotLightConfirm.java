@@ -28,7 +28,7 @@ public class GuiSpotLightConfirm extends GuiContainer
 
     public GuiSpotLightConfirm(TileEntitySpotLight tile, InventoryPlayer invplay, World world, String actionname, String yesbutton, String nobutton, int guiid)
     {
-        super(new ContainerSpotLight(tile, invplay, world));
+        super(new ContainerSpotLight(tile, invplay, world, 8));
         action = actionname;
         yes = yesbutton;
         no = nobutton;

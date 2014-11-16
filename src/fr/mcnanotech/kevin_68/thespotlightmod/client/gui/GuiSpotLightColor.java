@@ -25,7 +25,7 @@ public class GuiSpotLightColor extends GuiContainerSliderBase
 
     public GuiSpotLightColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld));
+        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
         invPlayer = playerInventory;
         tileSpotLight = tileEntity;
         world = wrld;

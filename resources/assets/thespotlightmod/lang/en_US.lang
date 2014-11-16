@@ -1,7 +1,6 @@
 tile.thespotlightmod.spotlight.name=Spotlight
 
-itemGroup.thespotlightmod.blocks=The Spotlight Mod's Blocks
-itemGroup.thespotlightmod.items=The Spotlight Mod's Items
+itemGroup.thespotlightmod.blocks=The Spotlight Mod
 
 container.spotlight.red=Red
 container.spotlight.green=Green
@@ -37,7 +36,7 @@ container.spotlight.main=Main
 container.spotlight.sec=Secondary
 container.spotlight.color=Colors
 container.spotlight.textures=Textures
-container.spotlight.beamspecs=Beam Specs
+container.spotlight.beamspecs=Properties
 container.spotlight.on=On
 container.spotlight.off=Off
 container.spotlight.add=Add
@@ -49,6 +48,12 @@ container.spotlight.delname=Delete: Texture name
 container.spotlight.textEnabled=Text
 container.spotlight.laserHeight=Laser height
 container.spotlight.text=Text config
-container.spotlight.text2=Text config 2
 container.spotlight.scale=Text scale
 container.spotlight.height=Text height
+container.spotlight.configs=Configs
+container.spotlight.create=Create
+container.spotlight.save=Save
+container.spotlight.load=Load
+container.spotlight.delete=Delete
+container.spotlight.reset=Reset
+container.spotlight.noconfig=No configs saved

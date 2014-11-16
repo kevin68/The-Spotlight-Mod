@@ -25,7 +25,7 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
 
     public GuiSpotLightText2(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld));
+        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
         invPlayer = playerInventory;
         tileSpotLight = tileEntity;
         world = wrld;

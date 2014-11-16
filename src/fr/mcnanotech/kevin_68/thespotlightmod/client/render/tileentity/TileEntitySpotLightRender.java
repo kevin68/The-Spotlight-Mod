@@ -81,10 +81,7 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
             GL11.glRotated(-angl2, 0.0F, 0.0F, 1.0F);
             GL11.glRotated(angl, 1.0F, 0.0F, 0.0F);
             GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
-            double a = cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2);
-            double b = cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1;
-            double c = -cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl);
-            GL11.glTranslated(a, b, c);
+            GL11.glTranslated(cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl));
         }
 
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);

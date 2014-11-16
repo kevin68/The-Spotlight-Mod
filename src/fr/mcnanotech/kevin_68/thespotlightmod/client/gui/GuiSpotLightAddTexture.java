@@ -32,7 +32,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
 
     public GuiSpotLightAddTexture(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld));
+        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
         invPlayer = playerInventory;
         tileSpotLight = tileEntity;
         world = wrld;
@@ -84,7 +84,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
             }
             case 1:
             {
-                UtilSpotLight.setSound(name, path);
+                UtilSpotLight.setTextures(name, path);
                 this.mc.displayGuiScreen(new GuiSpotLight(invPlayer, tileSpotLight, world));
                 break;
             }

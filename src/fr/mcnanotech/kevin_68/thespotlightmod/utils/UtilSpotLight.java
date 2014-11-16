@@ -10,30 +10,41 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
 
 public class UtilSpotLight
 {
     private static File mcDir;
     private static File mainDir;
-    private static File dataFile;
+    private static File texturesFile;
+    private static File mapDir;
+    private static File folderDir;
+    private static File configsFile;
 
-    public static void init()
+    private static NBTTagCompound getTexturesData()
     {
         mcDir = Minecraft.getMinecraft().mcDataDir;
-        mainDir = new File(new File(mcDir, "thspolightmod"), "spotlight");
+        mainDir = new File(new File(mcDir, "thespolightmod"), "spotlight");
         if(!mainDir.exists())
         {
             mainDir.mkdirs();
         }
-        dataFile = new File(mainDir, "textures.dat");
-    }
-
-    private static NBTTagCompound getData()
-    {
+        texturesFile = new File(mainDir, "textures.dat");
+        if(!texturesFile.exists())
+        {
+            try
+            {
+                texturesFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
         try
         {
-            FileInputStream fileinputstream = new FileInputStream(dataFile);
+            FileInputStream fileinputstream = new FileInputStream(texturesFile);
             NBTTagCompound compound = CompressedStreamTools.readCompressed(fileinputstream);
             fileinputstream.close();
             return compound;
@@ -42,18 +53,18 @@ public class UtilSpotLight
         {
             exception.printStackTrace();
             NBTTagCompound compound = new NBTTagCompound();
-            saveData(compound);
-            setSound("beacon_beam", "textures/entity/beacon_beam.png");
-            setSound("dirt", "textures/blocks/dirt.png");
+            saveTexturesData(compound);
+            setTextures("beacon_beam", "textures/entity/beacon_beam.png");
+            setTextures("dirt", "textures/blocks/dirt.png");
             return compound;
         }
     }
 
-    private static void saveData(NBTTagCompound compound)
+    private static void saveTexturesData(NBTTagCompound compound)
     {
         try
         {
-            FileOutputStream fileoutputstream = new FileOutputStream(dataFile);
+            FileOutputStream fileoutputstream = new FileOutputStream(texturesFile);
             CompressedStreamTools.writeCompressed(compound, fileoutputstream);
             fileoutputstream.close();
         }
@@ -63,22 +74,22 @@ public class UtilSpotLight
         }
     }
 
-    public static void setSound(String name, String path)
+    public static void setTextures(String name, String path)
     {
-        NBTTagCompound compoundBase = getData();
-        NBTTagList list = compoundBase.hasKey("textures") ? compoundBase.getTagList("textures", Constants.NBT.TAG_COMPOUND) : new NBTTagList();
+        NBTTagCompound compoundBase = getTexturesData();
+        NBTTagList list = compoundBase.hasKey("textures") ? compoundBase.getTagList("textures", Constants.NBT.TAG_LIST) : new NBTTagList();
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("name", name);
         tag.setString("path", path);
         list.appendTag(tag);
         compoundBase.setTag("textures", list);
-        saveData(compoundBase);
+        saveTexturesData(compoundBase);
     }
 
     public static void deleteTexure(String name)
     {
-        NBTTagCompound compoundBase = getData();
-        NBTTagList list = compoundBase.getTagList("textures", Constants.NBT.TAG_COMPOUND);
+        NBTTagCompound compoundBase = getTexturesData();
+        NBTTagList list = compoundBase.getTagList("textures", Constants.NBT.TAG_LIST);
         for(int i = 0; i < list.tagCount(); i++)
         {
             if(list.getCompoundTagAt(i).getString("name").equals(name))
@@ -86,14 +97,14 @@ public class UtilSpotLight
                 list.removeTag(i);
             }
         }
-        saveData(compoundBase);
+        saveTexturesData(compoundBase);
     }
 
-    public static ArrayList<BaseListEntry> list()
+    public static ArrayList<BaseListEntry> listTextures()
     {
         ArrayList<BaseListEntry> list = new ArrayList();
 
-        NBTTagCompound compoundBase = getData();
+        NBTTagCompound compoundBase = getTexturesData();
         NBTTagList tagList = compoundBase.getTagList("textures", Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i < tagList.tagCount(); i++)
         {
@@ -106,15 +117,92 @@ public class UtilSpotLight
 
     public static TextureEntry getEntryByName(String name)
     {
-        for(int i = 0; i < list().size(); i++)
+        for(int i = 0; i < listTextures().size(); i++)
         {
-            if(list().get(i).name.equals(name))
+            if(listTextures().get(i).name.equals(name))
             {
-                return (TextureEntry)list().get(i);
+                return (TextureEntry)listTextures().get(i);
             }
         }
 
         return new TextureEntry("beacon_beam", "textures/entity/beacon_beam.png");
+    }
+
+    private static NBTTagCompound getConfigurationData()
+    {
+        mapDir = DimensionManager.getCurrentSaveRootDirectory();
+        folderDir = new File(new File(mapDir, "thespolightmod"), "spotlight");
+        if(!folderDir.exists())
+        {
+            folderDir.mkdirs();
+        }
+        configsFile = new File(folderDir, "configurations.dat");
+        if(!configsFile.exists())
+        {
+            try
+            {
+                configsFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        try
+        {
+            FileInputStream fileinputstream = new FileInputStream(configsFile);
+            NBTTagCompound compound = CompressedStreamTools.readCompressed(fileinputstream);
+            fileinputstream.close();
+            return compound;
+        }
+        catch(IOException exception)
+        {
+            exception.printStackTrace();
+            NBTTagCompound compound = new NBTTagCompound();
+            saveConfigurationData(compound);
+            return compound;
+        }
+    }
+
+    private static void saveConfigurationData(NBTTagCompound compound)
+    {
+        try
+        {
+            FileOutputStream fileoutputstream = new FileOutputStream(configsFile);
+            CompressedStreamTools.writeCompressed(compound, fileoutputstream);
+            fileoutputstream.close();
+        }
+        catch(IOException exception)
+        {
+            exception.printStackTrace();
+        }
+    }
+
+    public static int addConfig(NBTTagCompound conf)
+    {
+        NBTTagCompound compoundBase = getConfigurationData();
+        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_LIST) : new NBTTagList();
+        int id = list.tagCount();
+        conf.setInteger("ConfigID", id);
+        list.appendTag(conf);
+        compoundBase.setTag("textures", list);
+        saveConfigurationData(compoundBase);
+        return id;
+    }
+
+    public static NBTTagCompound getConfig(int id)
+    {
+        NBTTagCompound compoundBase = getConfigurationData();
+        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_LIST) : new NBTTagList();
+        for(int i = 0; i < list.tagCount(); i++)
+        {
+            if(list.getCompoundTagAt(i).getInteger("ConfigID") == id)
+            {
+                return list.getCompoundTagAt(i);
+            }
+        }
+        return null;
     }
 
     public static class BaseListEntry
@@ -152,6 +240,22 @@ public class UtilSpotLight
         public String getPath()
         {
             return path;
+        }
+    }
+
+    public static class ConfigEntry extends BaseListEntry
+    {
+        private int id;
+
+        public ConfigEntry(String name, int id, int color)
+        {
+            super(name, color);
+            this.id = id;
+        }
+
+        public int getId()
+        {
+            return id;
         }
     }
 }

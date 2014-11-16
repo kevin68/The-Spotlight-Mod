@@ -8,19 +8,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 
-public class ContainerSpotLight extends Container
+public class ContainerSpotLightSlotConfig extends Container
 {
     protected TileEntitySpotLight tileSpotLight;
     private World worldObj;
-    private boolean configSlot;
-    private int widthMove;
 
-    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world, int widthMove)
+    public ContainerSpotLightSlotConfig(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world)
     {
         this.worldObj = world;
         this.tileSpotLight = tileEntity;
-        this.widthMove = widthMove;
-        bindPlayerInventory(inventoryPlayer, widthMove);
+        addSlotToContainer(new Slot(tileEntity, 0, 8, 114));
+        bindPlayerInventory(inventoryPlayer);
     }
 
     @Override
@@ -29,11 +27,11 @@ public class ContainerSpotLight extends Container
         return tileSpotLight.isUseableByPlayer(player);
     }
 
-    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int widthMove)
+    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer)
     {
         for(int i = 0; i < 9; i++)
         {
-            addSlotToContainer(new Slot(inventoryPlayer, i, widthMove + i * 18, 142));
+            addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
         }
     }
 
