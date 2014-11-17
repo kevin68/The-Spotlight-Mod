@@ -27,7 +27,9 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
     public GuiBooleanButton smoothButton;
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
-    protected static final ResourceLocation timeline = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/timeline.png");
+    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+
+    // protected static final ResourceLocation timeline = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/timeline.png");
     protected static final ResourceLocation widget = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/widget.png");
 
     public GuiSpotLightTimeLine(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
@@ -139,16 +141,16 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
         this.drawTexturedModalRect(x - 35, y + 19, 0, 0, xSize, ySize);
         this.mc.renderEngine.bindTexture(texture2);
         this.drawTexturedModalRect(x + 135, y + 19, 0, 0, xSize, ySize);
-        this.mc.renderEngine.bindTexture(timeline);
-        this.drawTexturedModalRect(x - 20, y + 40, 0, 0, 256, 21);
-        this.drawTexturedModalRect(x + 225, y + 40, 0, 22, 256, 43);
-        this.mc.renderEngine.bindTexture(widget);
-        this.drawTexturedModalRect(x - 20 + tileSpotLight.getTime() / 4, y + 40, 0, 3, 1, 12);
+        this.mc.renderEngine.bindTexture(icons);
+        this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
+        this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
+        // this.mc.renderEngine.bindTexture(widget);
+        this.drawTexturedModalRect(x - 20 + tileSpotLight.getTime() / 4, y + 40, 0, 105, 1, 12);
 
         if(tileSpotLight.getKey(tileSpotLight.getLastKeySelected() & 0xFF) != null)
         {
             SpotLightEntry entry = tileSpotLight.getKey(tileSpotLight.getLastKeySelected() & 0xFF);
-            this.drawTexturedModalRect(x - 22 + (int)((tileSpotLight.getLastKeySelected() & 0xFF) * 2.5), y + 62, 0, 13, 5, 19);
+            this.drawTexturedModalRect(x - 22 + (int)((tileSpotLight.getLastKeySelected() & 0xFF) * 2.5), y + 62, 0, 115, 5, 6);
             this.drawString(this.fontRendererObj, EnumChatFormatting.RED + I18n.format("container.spotlight.red") + " : " + (entry.getKeyRed() & 0xFF), x + 100, y + 70, 0xffffff);
             this.drawString(this.fontRendererObj, EnumChatFormatting.GREEN + I18n.format("container.spotlight.green") + " : " + (entry.getKeyGreen() & 0xFF), x + 100, y + 80, 0xffffff);
             this.drawString(this.fontRendererObj, EnumChatFormatting.BLUE + I18n.format("container.spotlight.blue") + " : " + (entry.getKeyBlue() & 0xFF), x + 100, y + 90, 0xffffff);
@@ -165,5 +167,7 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
             this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.laserMode") + " : " + (entry.isSideLaser() ? I18n.format("container.spotlight.double") : I18n.format("container.spotlight.simple")), x + 100, y + 160, 0xffffff);
             this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.size") + " " + I18n.format("container.spotlight.main") + " : " + entry.getKeyMainLaserSize() + " " + I18n.format("container.spotlight.sec") + " : " + entry.getKeySecLaserSize(), x + 100, y + 170, 0xffffff);
         }
+
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
     }
 }

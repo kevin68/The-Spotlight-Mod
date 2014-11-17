@@ -15,6 +15,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightDeleteConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightLoadConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
@@ -24,7 +25,7 @@ import fr.minecraftforgefrance.ffmtlibs.network.FFMTPacket;
 
 public class PacketSpotLightOpenConfigList extends FFMTPacket
 {
-    public int x, y, z;
+    public int x, y, z, type;
     public ArrayList<BaseListEntry> list;
 
     public PacketSpotLightOpenConfigList()
@@ -32,12 +33,13 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
 
     }
 
-    public PacketSpotLightOpenConfigList(int x, int y, int z, ArrayList<BaseListEntry> list)
+    public PacketSpotLightOpenConfigList(int x, int y, int z, ArrayList<BaseListEntry> list, int type)
     {
         this.x = x;
         this.y = y;
         this.z = z;
         this.list = list;
+        this.type = type;
     }
 
     @Override
@@ -59,7 +61,6 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
             for(int i = 0; i < list.size(); i++)
             {
                 ByteBufUtils.writeUTF8String(buffer, ((ConfigEntry)list.get(i)).getName());
-                buffer.writeInt(((ConfigEntry)list.get(i)).getTxtColor());
                 buffer.writeInt(((ConfigEntry)list.get(i)).getId());
             }
         }
@@ -67,6 +68,7 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
         {
             buffer.writeBoolean(false);
         }
+        buffer.writeInt(type);
     }
 
     @Override
@@ -82,9 +84,8 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
             for(int i = 0; i < size; i++)
             {
                 String name = ByteBufUtils.readUTF8String(buffer);
-                int color = buffer.readInt();
                 int id = buffer.readInt();
-                tempList.add(new ConfigEntry(name, id, color));
+                tempList.add(new ConfigEntry(name, id));
             }
             list = tempList;
         }
@@ -92,6 +93,7 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
         {
             list = null;
         }
+        type = buffer.readInt();
     }
 
     @Override
@@ -101,7 +103,18 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
         TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(x, y, z);
         if(!list.isEmpty())
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiSpotLightLoadConfig(player.inventory, te, player.worldObj, list));
+            if(type == 0)
+            {
+                Minecraft.getMinecraft().displayGuiScreen(new GuiSpotLightLoadConfig(player.inventory, te, player.worldObj, list));
+            }
+            else if(type == 1)
+            {
+                Minecraft.getMinecraft().displayGuiScreen(new GuiSpotLightDeleteConfig(player.inventory, te, player.worldObj, list));
+            }
+            else
+            {
+                player.addChatMessage(new ChatComponentTranslation("container.spotlight.fatalerror"));
+            }
         }
         else
         {
@@ -114,27 +127,24 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
     {
         TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(x, y, z);
         ArrayList<BaseListEntry> templist = new ArrayList<BaseListEntry>();
-
-        ItemStack stack = te.getStackInSlot(0).copy();
-        if(stack.hasTagCompound())
+        if(te.getStackInSlot(0) != null)
         {
-            System.out.println("Tag");
-            if(stack.getTagCompound().hasKey("TSMConfigs"))
+            ItemStack stack = te.getStackInSlot(0).copy();
+            if(stack.hasTagCompound())
             {
-                System.out.println("TSMConfigs");
-                NBTTagList tagList = stack.getTagCompound().getTagList("TSMConfigs", NBT.TAG_LIST);
-                System.out.println(tagList.tagCount());
-                System.out.println(tagList.getCompoundTagAt(0).getString("ConfigName"));
-                for(int i = 0; i < tagList.tagCount(); i++)
+                if(stack.getTagCompound().hasKey("TSMConfigs"))
                 {
-                    System.out.println(tagList.getCompoundTagAt(i).getString("ConfigName"));
-                    templist.add(new ConfigEntry(tagList.getCompoundTagAt(i).getString("ConfigName"), i + 1, (tagList.getCompoundTagAt(i).getByte("Red") & 0xFF * 65536) + (tagList.getCompoundTagAt(i).getByte("Green") & 0xFF * 256) + (tagList.getCompoundTagAt(i).getByte("Blue") & 0xFF)));
+                    NBTTagList tagList = stack.getTagCompound().getTagList("TSMConfigs", NBT.TAG_COMPOUND);
+                    for(int i = 0; i < tagList.tagCount(); i++)
+                    {
+                        templist.add(new ConfigEntry(tagList.getCompoundTagAt(i).getString("ConfigName"), i + 1));
+                    }
                 }
             }
         }
         if(!templist.isEmpty())
         {
-            PacketSender.sendSpotLightPacketConfig(te, false, templist, (EntityPlayerMP)player);
+            PacketSender.sendSpotLightPacketConfig(te, false, templist, (EntityPlayerMP)player, type);
         }
         else
         {

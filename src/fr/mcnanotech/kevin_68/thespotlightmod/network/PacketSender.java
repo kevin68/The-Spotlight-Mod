@@ -81,17 +81,17 @@ public class PacketSender
         }
     }
 
-    public static void sendSpotLightPacketConfig(TileEntitySpotLight tile, boolean toServer, ArrayList<BaseListEntry> list, EntityPlayerMP client)
+    public static void sendSpotLightPacketConfig(TileEntitySpotLight tile, boolean toServer, ArrayList<BaseListEntry> list, EntityPlayerMP client, int type)
     {
         try
         {
             if(toServer)
             {
-                TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLightOpenConfigList(tile.xCoord, tile.yCoord, tile.zCoord, null));
+                TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLightOpenConfigList(tile.xCoord, tile.yCoord, tile.zCoord, null, type));
             }
             else
             {
-                TheSpotLightMod.packetHandler.sendTo(new PacketSpotLightOpenConfigList(tile.xCoord, tile.yCoord, tile.zCoord, list), client);
+                TheSpotLightMod.packetHandler.sendTo(new PacketSpotLightOpenConfigList(tile.xCoord, tile.yCoord, tile.zCoord, list, type), client);
             }
         }
         catch(Exception e)

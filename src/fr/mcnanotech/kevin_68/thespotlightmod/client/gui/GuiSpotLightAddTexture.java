@@ -69,7 +69,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
 
         this.buttonList.add(new GuiButton(0, x + 6, y + 117, 78, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(1, x + 91, y + 95, 78, 20, I18n.format("container.spotlight.add")));
-        this.buttonList.add(new GuiButton(2, x + 91, y + 117, 78, 20, I18n.format("container.spotlight.del")));
+        this.buttonList.add(new GuiButton(2, x + 91, y + 117, 78, 20, I18n.format("container.spotlight.delete")));
     }
 
     @Override

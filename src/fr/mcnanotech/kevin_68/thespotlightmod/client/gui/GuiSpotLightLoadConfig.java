@@ -100,5 +100,6 @@ public class GuiSpotLightLoadConfig extends GuiContainer implements GuiListBase
         int y = (height - ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.load")), x + 5, y + 8, 4210752);
     }
 }

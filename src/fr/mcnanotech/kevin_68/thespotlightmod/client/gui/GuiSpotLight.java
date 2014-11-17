@@ -18,6 +18,7 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 public class GuiSpotLight extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
+    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;
@@ -119,5 +120,8 @@ public class GuiSpotLight extends GuiContainer
         int y = (height - ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        this.mc.renderEngine.bindTexture(icons);
+        this.drawTexturedModalRect(x + 7, y + 113, 238, 0, 18, 18);
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", "").replace("-", ""), x + 6, y + 7, 4210752);
     }
 }

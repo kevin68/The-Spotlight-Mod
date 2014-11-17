@@ -885,6 +885,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 this.applyConfig(value);
                 break;
             }
+            case 52:
+            {
+                this.removeConfig(value - 1);
+                break;
+            }
             default:
             {
                 TheSpotLightMod.log.error("Wrong set index : " + index);
@@ -1108,7 +1113,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         }
         else
         {
-            System.out.println("fatal error, index invalid !");
+            TheSpotLightMod.log.error("fatal error, index invalid !");
         }
         keysProcess();
         this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -1179,14 +1184,13 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
 
     public boolean applyConfig(int id)
     {
-        System.out.println("ID Apply config " + id);
         ItemStack stack = slots[0];
         if(stack.hasTagCompound())
         {
             if(stack.getTagCompound().hasKey("TSMConfigs"))
             {
-                NBTTagList list = stack.getTagCompound().getTagList("TSMConfigs", NBT.TAG_LIST);
-                NBTTagCompound tag = list.getCompoundTagAt(id);
+                NBTTagList list = stack.getTagCompound().getTagList("TSMConfigs", NBT.TAG_COMPOUND);
+                NBTTagCompound tag = list.getCompoundTagAt(id - 1);
                 NBTTagCompound conf = UtilSpotLight.getConfig(tag.getInteger("ConfigId"));
                 red = conf.getByte("Red");
                 green = conf.getByte("Green");
@@ -1255,16 +1259,38 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         return false;
     }
 
+    private void removeConfig(int value)
+    {
+        UtilSpotLight.removeConfig(value);
+        if(slots[0] != null)
+        {
+            NBTTagCompound itemTag = slots[0].hasTagCompound() ? slots[0].getTagCompound() : new NBTTagCompound();
+            NBTTagList list = itemTag.hasKey("TSMConfigs") ? itemTag.getTagList("TSMConfigs", NBT.TAG_COMPOUND) : new NBTTagList();
+            for(int i = 0; i < list.tagCount(); i++)
+            {
+                if(list.getCompoundTagAt(i).getInteger("ConfigId") == value)
+                {
+                    list.removeTag(i);
+                }
+            }
+            itemTag.setTag("TSMConfigs", list);
+            slots[0].setTagCompound(itemTag);
+        }
+    }
+
     public void addOrCreateConfig(String name)
     {
-        NBTTagCompound itemTag = slots[0].hasTagCompound() ? slots[0].getTagCompound() : new NBTTagCompound();
-        NBTTagList list = itemTag.hasKey("TSMConfigs", NBT.TAG_LIST) ? itemTag.getTagList("TSMConfigs", NBT.TAG_LIST) : new NBTTagList();
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("ConfigName", name);
-        nbt.setInteger("ConfigId", UtilSpotLight.addConfig(getTags(name)));
-        list.appendTag(nbt);
-        itemTag.setTag("TSMConfigs", list);
-        slots[0].setTagCompound(itemTag);
+        if(slots[0] != null)
+        {
+            NBTTagCompound itemTag = slots[0].hasTagCompound() ? slots[0].getTagCompound() : new NBTTagCompound();
+            NBTTagList list = itemTag.hasKey("TSMConfigs") ? itemTag.getTagList("TSMConfigs", NBT.TAG_COMPOUND) : new NBTTagList();
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setString("ConfigName", name);
+            nbt.setInteger("ConfigId", UtilSpotLight.addConfig(getTags(name)));
+            list.appendTag(nbt);
+            itemTag.setTag("TSMConfigs", list);
+            slots[0].setTagCompound(itemTag);
+        }
     }
 
     public NBTTagCompound getTags(String name)

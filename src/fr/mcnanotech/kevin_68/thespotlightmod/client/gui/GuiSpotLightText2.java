@@ -17,7 +17,7 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderForContainer;
 
 public class GuiSpotLightText2 extends GuiContainerSliderBase
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlighttex.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;
@@ -90,6 +90,7 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
-        this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        this.drawTexturedModalRect(x, y + 114, 69, 81, xSize, 52);
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.text")), x - 30, y - 35, 0xffffff);
     }
 }

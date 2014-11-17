@@ -18,7 +18,7 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderForContainer;
 
 public class GuiSpotLightCreateKey extends GuiContainerSliderBase
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlightkey.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
 
     protected InventoryPlayer invPlayer;
     protected TileEntitySpotLight tileSpotLight;
@@ -38,7 +38,7 @@ public class GuiSpotLightCreateKey extends GuiContainerSliderBase
         super.initGui();
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
-        this.buttonList.add(new GuiSliderForContainer(this, 0, x + 3, y + 10, 170, 20, I18n.format("container.spotlight.time") + ": 0.0", 0));
+        this.buttonList.add(new GuiSliderForContainer(this, 0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time") + ": 0.0", 0));
         this.buttonList.add(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")));
         PacketSender.sendSpotLightPacketByte(this.tileSpotLight, (byte)37, (byte)0);
@@ -98,5 +98,6 @@ public class GuiSpotLightCreateKey extends GuiContainerSliderBase
         int y = (height - ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.addKey")), x + 5, y + 8, 4210752);
     }
 }

@@ -18,6 +18,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 public class GuiSpotLightConfigs extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
+    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;
@@ -66,12 +67,12 @@ public class GuiSpotLightConfigs extends GuiContainer
             }
             case 2:
             {
-                PacketSender.sendSpotLightPacketConfig(tileSpotLight, true, null, null);
-                // this.mc.displayGuiScreen(new GuiSpotLightLoadConfig(invPlayer, tileSpotLight, world));
+                PacketSender.sendSpotLightPacketConfig(tileSpotLight, true, null, null, 0);
                 break;
             }
             case 3:
             {
+                PacketSender.sendSpotLightPacketConfig(tileSpotLight, true, null, null, 1);
                 break;
             }
             case 4:
@@ -98,5 +99,8 @@ public class GuiSpotLightConfigs extends GuiContainer
         int y = (height - ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        this.mc.renderEngine.bindTexture(icons);
+        this.drawTexturedModalRect(x + 7, y + 113, 238, 0, 18, 18);
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.configs")), x + 5, y + 8, 4210752);
     }
 }

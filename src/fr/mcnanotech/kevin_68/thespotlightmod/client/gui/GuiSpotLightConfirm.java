@@ -16,7 +16,8 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
 
 public class GuiSpotLightConfirm extends GuiContainer
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlightconfirm.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
+    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     private String action;
     private String yes;
@@ -93,6 +94,9 @@ public class GuiSpotLightConfirm extends GuiContainer
         int y = (height - ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        this.mc.renderEngine.bindTexture(icons);
+        this.drawTexturedModalRect(x + 15, y + 30, 0, 122, 57, 47);
+        this.drawTexturedModalRect(x + 105, y + 30, 0, 122, 57, 47);
         this.drawCenteredString(this.fontRendererObj, action, width / 2, y + 10, 0xff0000);
     }
 }

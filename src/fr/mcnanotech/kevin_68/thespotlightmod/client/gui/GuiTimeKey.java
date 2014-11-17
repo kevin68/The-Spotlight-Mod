@@ -10,7 +10,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 
 public class GuiTimeKey extends GuiButton
 {
-    protected static final ResourceLocation textures = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/widget.png");
+    protected static final ResourceLocation textures = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public GuiTimeKey(int par1, int par2, int par3)
     {
@@ -26,7 +26,7 @@ public class GuiTimeKey extends GuiButton
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
             int k = this.getHoverState(this.field_146123_n);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 0, 3, 3);
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 102, 3, 3);
             this.mouseDragged(par1Minecraft, par2, par3);
         }
     }

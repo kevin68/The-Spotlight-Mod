@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class UtilSpotLight
 {
@@ -77,7 +79,7 @@ public class UtilSpotLight
     public static void setTextures(String name, String path)
     {
         NBTTagCompound compoundBase = getTexturesData();
-        NBTTagList list = compoundBase.hasKey("textures") ? compoundBase.getTagList("textures", Constants.NBT.TAG_LIST) : new NBTTagList();
+        NBTTagList list = compoundBase.hasKey("textures") ? compoundBase.getTagList("textures", NBT.TAG_COMPOUND) : new NBTTagList();
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("name", name);
         tag.setString("path", path);
@@ -89,7 +91,7 @@ public class UtilSpotLight
     public static void deleteTexure(String name)
     {
         NBTTagCompound compoundBase = getTexturesData();
-        NBTTagList list = compoundBase.getTagList("textures", Constants.NBT.TAG_LIST);
+        NBTTagList list = compoundBase.getTagList("textures", Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i < list.tagCount(); i++)
         {
             if(list.getCompoundTagAt(i).getString("name").equals(name))
@@ -182,11 +184,20 @@ public class UtilSpotLight
     public static int addConfig(NBTTagCompound conf)
     {
         NBTTagCompound compoundBase = getConfigurationData();
-        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_LIST) : new NBTTagList();
-        int id = list.tagCount();
+        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_COMPOUND) : new NBTTagList();
+        List<Integer> used = new ArrayList<Integer>();
+        int id = 0;
+        for(int i = 0; i < list.tagCount(); i++)
+        {
+            used.add(list.getCompoundTagAt(i).getInteger("ConfigID"));
+        }
+        while(used.contains(id))
+        {
+            id++;
+        }
         conf.setInteger("ConfigID", id);
         list.appendTag(conf);
-        compoundBase.setTag("textures", list);
+        compoundBase.setTag("configs", list);
         saveConfigurationData(compoundBase);
         return id;
     }
@@ -194,7 +205,7 @@ public class UtilSpotLight
     public static NBTTagCompound getConfig(int id)
     {
         NBTTagCompound compoundBase = getConfigurationData();
-        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_LIST) : new NBTTagList();
+        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_COMPOUND) : new NBTTagList();
         for(int i = 0; i < list.tagCount(); i++)
         {
             if(list.getCompoundTagAt(i).getInteger("ConfigID") == id)
@@ -203,6 +214,20 @@ public class UtilSpotLight
             }
         }
         return null;
+    }
+
+    public static void removeConfig(int id)
+    {
+        NBTTagCompound compoundBase = getConfigurationData();
+        NBTTagList list = compoundBase.hasKey("configs") ? compoundBase.getTagList("configs", Constants.NBT.TAG_COMPOUND) : new NBTTagList();
+        for(int i = 0; i < list.tagCount(); i++)
+        {
+            if(list.getCompoundTagAt(i).getInteger("ConfigID") == id)
+            {
+                list.removeTag(i);
+            }
+        }
+        saveConfigurationData(compoundBase);
     }
 
     public static class BaseListEntry
@@ -247,9 +272,9 @@ public class UtilSpotLight
     {
         private int id;
 
-        public ConfigEntry(String name, int id, int color)
+        public ConfigEntry(String name, int id)
         {
-            super(name, color);
+            super(name, 0xffffff);
             this.id = id;
         }
 
