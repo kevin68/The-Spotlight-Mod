@@ -1,6 +1,9 @@
 tile.thespotlightmod.spotlight.name=Projecteur
 
-itemGroup.thespotlightmod.blocks=The SpotLight Mod
+itemGroup.thespotlightmod.tab=The SpotLight Mod
+
+item.configsaver.name=Sauvegardeur de configuration
+item.configsaver.info=Configurations sauvegardées:
 
 container.spotlight.add=Ajouter
 container.spotlight.addKey=Ajouter une clée
@@ -20,7 +23,7 @@ container.spotlight.deleteKey=Supprimer la clée
 container.spotlight.delname=Supression: Nom de la texture
 container.spotlight.double=Double
 container.spotlight.false=Non
-container.spotlight.fatalerror=Erreur fatale, ceci ne devrai par arriver!
+container.spotlight.fatalerror=Erreur fatale, ceci ne devrai pas arriver!
 container.spotlight.green=Vert
 container.spotlight.height=Hauteur du texte
 container.spotlight.laserHeight=Hauteur du laser

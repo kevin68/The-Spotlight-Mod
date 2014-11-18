@@ -2,6 +2,9 @@ tile.thespotlightmod.spotlight.name=Spotlight
 
 itemGroup.thespotlightmod.blocks=The Spotlight Mod
 
+item.configsaver.name=Config saver
+item.configsaver.info=Saved configs:
+
 container.spotlight.add=Add
 container.spotlight.addKey=Add Key
 container.spotlight.angle=Angle

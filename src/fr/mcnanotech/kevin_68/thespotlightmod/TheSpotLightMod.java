@@ -2,7 +2,9 @@ package fr.mcnanotech.kevin_68.thespotlightmod;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +16,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.blocks.TSMBlocks;
@@ -43,7 +46,7 @@ public class TheSpotLightMod
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem()
         {
-            return Item.getItemFromBlock(Blocks.anvil);// TODO
+            return Item.getItemFromBlock(TSMBlocks.spotlight);
         }
     };
 
@@ -68,5 +71,7 @@ public class TheSpotLightMod
     public void postInitTheSpotlightMod(FMLPostInitializationEvent event)
     {
         proxy.register();
+        GameRegistry.addRecipe(new ItemStack(TSMBlocks.spotlight, 1, 0), new Object[] {"OGO", "RDR", "OGO", 'O', Blocks.obsidian, 'G', Blocks.glass, 'R', Items.redstone, 'D', Items.diamond});
+        GameRegistry.addShapelessRecipe(new ItemStack(TSMItems.configSaver, 1, 0), new Object[] {Items.redstone, Blocks.obsidian});
     }
 }

@@ -36,23 +36,23 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     public boolean autoRotate, reverseRotation, secondaryLaser, sideLaser, timeLineEnabled, smoothMode, textEnabled, txtAutoRotate, txtReverseRotation;
     public int time, lastTimeUse, angle1, lazerHeight, txtAngle1;
 
-    public byte[] redKey = new byte[1200];
-    public byte[] greenKey = new byte[1200];
-    public byte[] blueKey = new byte[1200];
-    public byte[] secRedKey = new byte[1200];
-    public byte[] secGreenKey = new byte[1200];
-    public byte[] secBlueKey = new byte[1200];
-    public int[] angle1Key = new int[1200];
-    public byte[] angle2Key = new byte[1200];
-    public byte[] mainSizeKey = new byte[1200];
-    public byte[] secSizeKey = new byte[1200];
-    public int[] lazerHeightKey = new int[1200];
+    public byte[] redKey = new byte[1200];//
+    public byte[] greenKey = new byte[1200];//
+    public byte[] blueKey = new byte[1200];//
+    public byte[] secRedKey = new byte[1200];//
+    public byte[] secGreenKey = new byte[1200];//
+    public byte[] secBlueKey = new byte[1200];//
+    public int[] angle1Key = new int[1200];//
+    public byte[] angle2Key = new byte[1200];//
+    public byte[] mainSizeKey = new byte[1200];//
+    public byte[] secSizeKey = new byte[1200];//
+    public int[] lazerHeightKey = new int[1200];//
     public byte[] txtRedKey = new byte[1200];
     public byte[] txtGreenKey = new byte[1200];
     public byte[] txtBlueKey = new byte[1200];
-    public int[] txtAngle1Key = new int[1200];
-    public byte[] txtScaleKey = new byte[1200];
-    public byte[] txtHeightKey = new byte[1200];
+    public int[] txtAngle1Key = new int[1200];//
+    public byte[] txtScaleKey = new byte[1200];//
+    public byte[] txtHeightKey = new byte[1200];//
 
     private SpotLightEntry[] keyList = new SpotLightEntry[120];
 
@@ -550,7 +550,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         nbtTagCompound.setByteArray("SecBlueKey", secBlueKey);
         nbtTagCompound.setIntArray("Angle1Key", angle1Key);
         nbtTagCompound.setByteArray("Angle2Key", angle2Key);
+        nbtTagCompound.setByteArray("MainLazerSize", mainSizeKey);
+        nbtTagCompound.setByteArray("SecLazerSize", secSizeKey);
         nbtTagCompound.setIntArray("LazerHeightKey", lazerHeightKey);
+        nbtTagCompound.setByteArray("TxtRedKey", txtRedKey);
+        nbtTagCompound.setByteArray("TxtGreenKey", txtGreenKey);
+        nbtTagCompound.setByteArray("TxtBlueKey", txtBlueKey);
         nbtTagCompound.setIntArray("TxtAngle1Key", txtAngle1Key);
         nbtTagCompound.setByteArray("TxtScaleKey", txtScaleKey);
         nbtTagCompound.setByteArray("TxtHeightKey", txtHeightKey);
@@ -630,7 +635,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         secBlueKey = nbtTagCompound.getByteArray("SecBlueKey");
         angle1Key = nbtTagCompound.getIntArray("Angle1Key");
         angle2Key = nbtTagCompound.getByteArray("Angle2Key");
+        mainSizeKey = nbtTagCompound.getByteArray("MainLazerSize");
+        secSizeKey = nbtTagCompound.getByteArray("SecLazerSize");
         lazerHeightKey = nbtTagCompound.getIntArray("LazerHeightKey");
+        txtRedKey = nbtTagCompound.getByteArray("TxtRedKey");
+        txtGreenKey = nbtTagCompound.getByteArray("TxtGreenKey");
+        txtBlueKey = nbtTagCompound.getByteArray("TxtBlueKey");
         txtAngle1Key = nbtTagCompound.getIntArray("TxtAngle1Key");
         txtScaleKey = nbtTagCompound.getByteArray("TxtScaleKey");
         txtHeightKey = nbtTagCompound.getByteArray("TxtHeightKey");
@@ -1174,7 +1184,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         secBlueKey = new byte[1200];
         angle1Key = new int[1200];
         angle2Key = new byte[1200];
+        mainSizeKey = new byte[1200];
+        secSizeKey = new byte[1200];
         lazerHeightKey = new int[1200];
+        txtRedKey = new byte[1200];
+        txtGreenKey = new byte[1200];
+        txtBlueKey = new byte[1200];
         txtAngle1Key = new int[1200];
         txtScaleKey = new byte[1200];
         txtHeightKey = new byte[1200];
@@ -1235,7 +1250,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 secBlueKey = conf.getByteArray("SecBlueKey");
                 angle1Key = conf.getIntArray("Angle1Key");
                 angle2Key = conf.getByteArray("Angle2Key");
+                mainSizeKey = conf.getByteArray("MainLazerSize");
+                secSizeKey = conf.getByteArray("SecLazerSize");
                 lazerHeightKey = conf.getIntArray("LazerHeightKey");
+                txtRedKey = conf.getByteArray("TxtRedKey");
+                txtGreenKey = conf.getByteArray("TxtGreenKey");
+                txtBlueKey = conf.getByteArray("TxtBlueKey");
                 txtAngle1Key = conf.getIntArray("TxtAngle1Key");
                 txtScaleKey = conf.getByteArray("TxtScaleKey");
                 txtHeightKey = conf.getByteArray("TxtHeightKey");
@@ -1353,7 +1373,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         nbtTagCompound.setByteArray("SecBlueKey", secBlueKey);
         nbtTagCompound.setIntArray("Angle1Key", angle1Key);
         nbtTagCompound.setByteArray("Angle2Key", angle2Key);
+        nbtTagCompound.setByteArray("MainLazerSize", mainSizeKey);
+        nbtTagCompound.setByteArray("SecLazerSize", secSizeKey);
         nbtTagCompound.setIntArray("LazerHeightKey", lazerHeightKey);
+        nbtTagCompound.setByteArray("TxtRedKey", txtRedKey);
+        nbtTagCompound.setByteArray("TxtGreenKey", txtGreenKey);
+        nbtTagCompound.setByteArray("TxtBlueKey", txtBlueKey);
         nbtTagCompound.setIntArray("TxtAngle1Key", txtAngle1Key);
         nbtTagCompound.setByteArray("TxtScaleKey", txtScaleKey);
         nbtTagCompound.setByteArray("TxtHeightKey", txtHeightKey);

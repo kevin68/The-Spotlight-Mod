@@ -18,9 +18,9 @@ buildscript {
 apply plugin: 'forge'
 
 ext.buildnumber = 0
-version = "3.0.0"
+version = "0.0.0"
 group= "fr.mcnanotech.kevin_68"
-archivesBaseName = "NanotechMod"
+archivesBaseName = "TheSpotlightMod"
 
 if (System.getenv().BUILD_NUMBER) {
     project.buildnumber = System.getenv().BUILD_NUMBER
@@ -80,9 +80,9 @@ processResources
 
 jar {
     from project.sourceSets.main.output
-	    include "fr/mcnanotech/kevin_68/nanotechmod/core/**"
-        include "assets/nanotechmod/**"
+	    include "fr/mcnanotech/kevin_68/thespotlightmod/**"
+        include "assets/thespotlightmod/**"
 		include "mcmod.info"
-    appendix = 'core-universal'
+    appendix = 'universal'
     version = "${project.version}-mc${project.minecraft.version}"
 }
