@@ -84,7 +84,7 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseYS)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (width - xSize) / 2;

@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -16,6 +18,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class GuiSpotLightAddTexture extends GuiContainer
 {
@@ -24,11 +27,11 @@ public class GuiSpotLightAddTexture extends GuiContainer
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;
     public World world;
-    public GuiBooleanButton timeButton;
     public GuiTextField nameField;
     public GuiTextField pathField;
     public GuiTextField delNameField;
     public String name, path, delname;
+    public GuiBooleanButton helpButton;
 
     public GuiSpotLightAddTexture(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -70,6 +73,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
         this.buttonList.add(new GuiButton(0, x + 6, y + 117, 78, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(1, x + 91, y + 95, 78, 20, I18n.format("container.spotlight.add")));
         this.buttonList.add(new GuiButton(2, x + 91, y + 117, 78, 20, I18n.format("container.spotlight.delete")));
+        this.buttonList.add(helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
     @Override
@@ -93,13 +97,18 @@ public class GuiSpotLightAddTexture extends GuiContainer
                 UtilSpotLight.deleteTexure(delname);
                 break;
             }
+            case 20:
+            {
+                this.helpButton.toggle();
+                break;
+            }
         }
     }
 
     @Override
-    public void drawScreen(int par1, int par2, float par3)
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
-        super.drawScreen(par1, par2, par3);
+        super.drawScreen(mouseX, mouseY, partialRenderTick);
         GL11.glDisable(GL11.GL_LIGHTING);
         this.nameField.drawTextBox();
         this.pathField.drawTextBox();
@@ -109,7 +118,58 @@ public class GuiSpotLightAddTexture extends GuiContainer
         this.drawString(this.fontRendererObj, I18n.format("container.spotlight.texname") + " : ", x + 10, y + 10, 0xffffff);
         this.drawString(this.fontRendererObj, I18n.format("container.spotlight.texpath") + " : ", x + 10, y + 40, 0xffffff);
         this.drawString(this.fontRendererObj, I18n.format("container.spotlight.delname") + " : ", x + 10, y + 70, 0xffffff);
+        if(helpButton.getIsActive())
+        {
+            boolean reversed = mouseX > width / 2;
+            ArrayList<String> list = new ArrayList<String>();
 
+            if(mouseX > x + 6 && mouseX < x + 166)
+            {
+                if(mouseY > y + 20 && mouseY < y + 32)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.more.name"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 50 && mouseY < y + 62)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.more.path"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 80 && mouseY < y + 92)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.more.delname"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseY > y + 117 && mouseY < y + 137)
+            {
+                if(mouseX > x + 6 && mouseX < x + 84)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+                }
+
+                if(mouseX > x + 91 && mouseX < x + 169)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.more.delete"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x + 91 && mouseX < x + 169 && mouseY > y + 95 && mouseY < y + 115)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.more.add"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+            }
+
+            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+            {
+                list.remove(list.size() - 1);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+        }
     }
 
     @Override
@@ -120,37 +180,37 @@ public class GuiSpotLightAddTexture extends GuiContainer
     }
 
     @Override
-    protected void keyTyped(char par1, int par2)
+    protected void keyTyped(char chr, int chrValue)
     {
-        if(this.nameField.textboxKeyTyped(par1, par2))
+        if(this.nameField.textboxKeyTyped(chr, chrValue))
         {
             name = this.nameField.getText();
         }
-        else if(this.pathField.textboxKeyTyped(par1, par2))
+        else if(this.pathField.textboxKeyTyped(chr, chrValue))
         {
             path = this.pathField.getText();
         }
-        else if(this.delNameField.textboxKeyTyped(par1, par2))
+        else if(this.delNameField.textboxKeyTyped(chr, chrValue))
         {
             delname = this.delNameField.getText();
         }
         else
         {
-            super.keyTyped(par1, par2);
+            super.keyTyped(chr, chrValue);
         }
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        super.mouseClicked(par1, par2, par3);
-        this.nameField.mouseClicked(par1, par2, par3);
-        this.pathField.mouseClicked(par1, par2, par3);
-        this.delNameField.mouseClicked(par1, par2, par3);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.nameField.mouseClicked(mouseX, mouseY, mouseButton);
+        this.pathField.mouseClicked(mouseX, mouseY, mouseButton);
+        this.delNameField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (width - xSize) / 2;

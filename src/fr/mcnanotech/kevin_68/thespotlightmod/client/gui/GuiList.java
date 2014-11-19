@@ -47,7 +47,7 @@ public class GuiList
             int color = list.get(k).getTxtColor();
             if(l < numberOfLine)
             {
-                entry[l] = new ButtonEntry(k + 4, list.get(k).getName(), xStart, yStart + (15 * l), (width / 2) - 2, 14, xStart + 2 + (width / 2), color);
+                entry[l] = new ButtonEntry(k + 5, list.get(k).getName(), xStart, yStart + (15 * l), (width / 2) - 2, 14, xStart + 2 + (width / 2), color);
                 l++;
             }
             else
@@ -56,7 +56,7 @@ public class GuiList
                 entry = new ButtonEntry[numberOfLine];
                 currentPage++;
                 l = 0;
-                entry[l] = new ButtonEntry(k + 4, list.get(k).getName(), xStart, yStart + (15 * l), (width / 2) - 2, 14, xStart + 2 + (width / 2), color);
+                entry[l] = new ButtonEntry(k + 5, list.get(k).getName(), xStart, yStart + (15 * l), (width / 2) - 2, 14, xStart + 2 + (width / 2), color);
                 l++;
             }
 
@@ -73,7 +73,7 @@ public class GuiList
     {
         switch(guibutton.id)
         {
-            case 2:
+            case 3:
             {
                 if(this.currentPageDiplayed != this.numberOfPage)
                 {
@@ -83,7 +83,7 @@ public class GuiList
                 this.updateList(buttonList);
                 break;
             }
-            case 3:
+            case 4:
             {
                 if(this.currentPageDiplayed != 0)
                 {
@@ -99,7 +99,7 @@ public class GuiList
                 {
                     lastSelected.selected = false;
                 }
-                gui.setSelected(list.get(guibutton.id - 4));
+                gui.setSelected(list.get(guibutton.id - 5));
                 if(guibutton instanceof GuiButtonList)
                 {
                     GuiButtonList button = (GuiButtonList)guibutton;
@@ -117,8 +117,8 @@ public class GuiList
 
     public void addButton(List buttonList)
     {
-        buttonList.add(2, next = new GuiButton(2, xE - 20, yE - 20, 20, 20, ">"));
-        buttonList.add(3, prev = new GuiButton(3, xS, yE - 20, 20, 20, "<"));
+        buttonList.add(3, next = new GuiButton(2, xE - 20, yE - 20, 20, 20, ">"));
+        buttonList.add(4, prev = new GuiButton(3, xS, yE - 20, 20, 20, "<"));
         this.updatePage();
         this.updateList(buttonList);
     }
@@ -195,12 +195,12 @@ public class GuiList
     public void clearList(List buttonList)
     {
         ArrayList keepList = new ArrayList();
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 5; i++)
         {
             keepList.add(i, buttonList.get(i));
         }
         buttonList.clear();
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 5; i++)
         {
             buttonList.add(i, keepList.get(i));
         }
@@ -209,13 +209,13 @@ public class GuiList
     public void setSelected(List buttonList, int id)
     {
         GuiButton guibutton = (GuiButton)buttonList.get(id);
-        if(guibutton.id > 3)
+        if(guibutton.id > 4)
         {
             if(lastSelected != null)
             {
                 lastSelected.selected = false;
             }
-            gui.setSelected(list.get(guibutton.id - 4));
+            gui.setSelected(list.get(guibutton.id - 5));
             if(guibutton instanceof GuiButtonList)
             {
                 GuiButtonList button = (GuiButtonList)guibutton;

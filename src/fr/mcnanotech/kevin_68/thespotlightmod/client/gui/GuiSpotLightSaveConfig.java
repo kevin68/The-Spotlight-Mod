@@ -70,7 +70,7 @@ public class GuiSpotLightSaveConfig extends GuiContainer
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (width - xSize) / 2;
@@ -81,9 +81,9 @@ public class GuiSpotLightSaveConfig extends GuiContainer
     }
 
     @Override
-    public void drawScreen(int par1, int par2, float par3)
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
-        super.drawScreen(par1, par2, par3);
+        super.drawScreen(mouseX, mouseY, partialRenderTick);
         GL11.glDisable(GL11.GL_LIGHTING);
         this.txtField.drawTextBox();
     }
@@ -96,16 +96,16 @@ public class GuiSpotLightSaveConfig extends GuiContainer
     }
 
     @Override
-    protected void keyTyped(char par1, int par2)
+    protected void keyTyped(char chr, int chrValue)
     {
-        if(this.txtField.textboxKeyTyped(par1, par2))
+        if(this.txtField.textboxKeyTyped(chr, chrValue))
         {}
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        super.mouseClicked(par1, par2, par3);
-        this.txtField.mouseClicked(par1, par2, par3);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.txtField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -228,6 +229,48 @@ public class UtilSpotLight
             }
         }
         saveConfigurationData(compoundBase);
+    }
+
+    public static ArrayList formatedText(FontRenderer font, String str, int mouseX, int width, boolean reversed)
+    {
+        int maxSize = reversed ? mouseX - 70 : width - mouseX - 70;
+        ArrayList list = new ArrayList();
+        if(font.getStringWidth(str) >= maxSize)
+        {
+            String[] words = str.split(" ");
+            String cutted = "";
+            int i = 0;
+            while(font.getStringWidth(cutted) <= maxSize)
+            {
+                cutted += words[i] + " ";
+                i++;
+                if(i >= words.length)
+                {
+                    break;
+                }
+            }
+            if(font.getStringWidth(cutted) >= maxSize)
+            {
+                cutted.substring(0, cutted.length() - words[i - 1].length());
+            }
+            if(font.getStringWidth(cutted) >= maxSize)
+            {
+                if(i > 1)
+                    cutted.substring(0, cutted.length() - words[i - 2].length());
+            }
+            list.add(cutted);
+            String forNext = "";
+            for(int j = i; j < words.length; j++)
+            {
+                forNext += words[j] + " ";
+            }
+            list.addAll(formatedText(font, forNext, mouseX, width, reversed));
+        }
+        else
+        {
+            list.add(str);
+        }
+        return list;
     }
 
     public static class BaseListEntry

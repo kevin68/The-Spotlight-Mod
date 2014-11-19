@@ -87,7 +87,7 @@ public class GuiSpotLightConfirm extends GuiContainer
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (width - xSize) / 2;

@@ -18,27 +18,27 @@ public class GuiTimeKey extends GuiButton
     }
 
     @Override
-    public void drawButton(Minecraft par1Minecraft, int par2, int par3)
+    public void drawButton(Minecraft mc, int mouseX, int mouseY)
     {
         if(this.visible)
         {
-            par1Minecraft.getTextureManager().bindTexture(textures);
+            mc.getTextureManager().bindTexture(textures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int k = this.getHoverState(this.field_146123_n);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 102, 3, 3);
-            this.mouseDragged(par1Minecraft, par2, par3);
+            this.mouseDragged(mc, mouseX, mouseY);
         }
     }
 
     @Override
-    public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3)
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
     {
-        return this.enabled && this.visible && par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+        return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
     }
 
     @Override
-    public int getHoverState(boolean par1)
+    public int getHoverState(boolean isHover)
     {
         byte b0 = 1;
 
@@ -46,7 +46,7 @@ public class GuiTimeKey extends GuiButton
         {
             b0 = 0;
         }
-        else if(par1)
+        else if(isHover)
         {
             b0 = 2;
         }

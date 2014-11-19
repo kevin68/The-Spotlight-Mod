@@ -29,9 +29,6 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
     protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
-    // protected static final ResourceLocation timeline = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/timeline.png");
-    protected static final ResourceLocation widget = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/widget.png");
-
     public GuiSpotLightTimeLine(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
         super(new ContainerSpotLight(tileEntity, playerInventory, world, 11));
@@ -125,14 +122,7 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int i, int j)
-    {
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.mc.renderEngine.bindTexture(texture);
@@ -144,7 +134,6 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
         this.mc.renderEngine.bindTexture(icons);
         this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
         this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
-        // this.mc.renderEngine.bindTexture(widget);
         this.drawTexturedModalRect(x - 20 + tileSpotLight.getTime() / 4, y + 40, 0, 105, 1, 12);
 
         if(tileSpotLight.getKey(tileSpotLight.getLastKeySelected() & 0xFF) != null)

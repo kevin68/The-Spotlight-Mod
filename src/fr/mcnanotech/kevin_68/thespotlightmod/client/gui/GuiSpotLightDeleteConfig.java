@@ -18,6 +18,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BaseListEntry;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.ConfigEntry;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 
 public class GuiSpotLightDeleteConfig extends GuiContainer implements GuiListBase
 {
@@ -30,6 +31,7 @@ public class GuiSpotLightDeleteConfig extends GuiContainer implements GuiListBas
     private ArrayList<BaseListEntry> list = new ArrayList<BaseListEntry>();
     private ConfigEntry selected;
     private GuiButton deleteButton;
+    private GuiBooleanButton helpButton;
 
     public GuiSpotLightDeleteConfig(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld, ArrayList<BaseListEntry> list)
     {
@@ -48,6 +50,7 @@ public class GuiSpotLightDeleteConfig extends GuiContainer implements GuiListBas
         int y = (height - ySize) / 2;
         this.buttonList.add(0, new GuiButton(0, x + 6, y + 117, 78, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(1, deleteButton = new GuiButton(1, x + 90, y + 117, 78, 20, EnumChatFormatting.RED + I18n.format("container.spotlight.delete")));
+        this.buttonList.add(2, helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
         deleteButton.enabled = false;
 
         gList = new GuiList(this, list, x + 6, y + 17, x + 169, y + 115);
@@ -70,6 +73,11 @@ public class GuiSpotLightDeleteConfig extends GuiContainer implements GuiListBas
                 {
                     PacketSender.sendSpotLightPacket(tileSpotLight, 52, selected.getId());
                 }
+                break;
+            }
+            case 20:
+            {
+                this.helpButton.toggle();
                 break;
             }
             default:
@@ -97,16 +105,16 @@ public class GuiSpotLightDeleteConfig extends GuiContainer implements GuiListBas
     }
 
     @Override
-    public void drawScreen(int par1, int par2, float par3)
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
-        super.drawScreen(par1, par2, par3);
+        super.drawScreen(mouseX, mouseY, partialRenderTick);
         this.gList.drawScreen(x, y);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (width - xSize) / 2;

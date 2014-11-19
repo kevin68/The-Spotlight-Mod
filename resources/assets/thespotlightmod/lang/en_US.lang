@@ -61,3 +61,6 @@ container.spotlight.textures=Textures
 container.spotlight.time=Time
 container.spotlight.timeline=Timeline
 container.spotlight.true=True
+
+tutorial.spotlight.colors=This button will take you to the lasers' colors configuration interface, all colors of lasers are independant, they are using the red, green an blue system the same way as your screen right now for displaying all colors. 
+tutorial.spotlight.props=YOLO
