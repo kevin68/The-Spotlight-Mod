@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
@@ -14,8 +16,10 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiContainerSliderBase;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderForContainer;
 
 public class GuiSpotLightText extends GuiContainerSliderBase
@@ -26,7 +30,7 @@ public class GuiSpotLightText extends GuiContainerSliderBase
     public TileEntitySpotLight tileSpotLight;
     public World world;
     public GuiTextField txtField;
-    public GuiBooleanButton rotateButton, revRotaButton;
+    public GuiBooleanButton rotateButton, revRotaButton, helpButton;
 
     public GuiSpotLightText(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -60,6 +64,7 @@ public class GuiSpotLightText extends GuiContainerSliderBase
         this.buttonList.add(new GuiSliderForContainer(this, 5, x - 40, y + 72, 127, 20, I18n.format("container.spotlight.rotationspeed") + " : " + (tileSpotLight.getTxtRotationSpeed() & 0xFF), (tileSpotLight.getTxtRotationSpeed()) / 20.0F));
 
         this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
+        this.buttonList.add(helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
     @Override
@@ -82,6 +87,11 @@ public class GuiSpotLightText extends GuiContainerSliderBase
             {
                 revRotaButton.toggle();
                 PacketSender.sendSpotLightPacketBoolean(tileSpotLight, (byte)34, revRotaButton.getIsActive());
+                break;
+            }
+            case 20:
+            {
+                this.helpButton.toggle();
                 break;
             }
         }
@@ -157,6 +167,71 @@ public class GuiSpotLightText extends GuiContainerSliderBase
         super.drawScreen(mouseX, mouseY, partialRendertTick);
         GL11.glDisable(GL11.GL_LIGHTING);
         this.txtField.drawTextBox();
+
+        int x = (width - xSize) / 2;
+        int y = (height - ySize) / 2;
+        if(helpButton.getIsActive())
+        {
+            boolean reversed = mouseX > width / 2;
+            ArrayList<String> list = new ArrayList<String>();
+            if(mouseX > x - 40 && mouseX < x + 216)
+            {
+                if(mouseY > y - 40 && mouseY < y - 28)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.txt"), mouseX, width, reversed);
+                }
+                if(mouseY > y - 20 && mouseY < y)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.red"), mouseX, width, reversed);
+                }
+                if(mouseY > y + 2 && mouseY < y + 22)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.green"), mouseX, width, reversed);
+                }
+                if(mouseY > y + 24 && mouseY < y + 44)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.blue"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 46 && mouseY < y + 66)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.angle1"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x - 40 && mouseX < x + 87)
+            {
+                if(mouseY > y + 72 && mouseY < y + 92)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.rotationspeed"), mouseX, width, reversed);
+                }
+                if(mouseY > y + 94 && mouseY < y + 114)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.rotate"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x + 90 && mouseX < x + 216 && mouseY > y + 72 && mouseY < y + 92)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf1.reverserotation"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY < y + 137)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+            }
+
+            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+            {
+                list.remove(list.size() - 1);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+        }
     }
 
     @Override

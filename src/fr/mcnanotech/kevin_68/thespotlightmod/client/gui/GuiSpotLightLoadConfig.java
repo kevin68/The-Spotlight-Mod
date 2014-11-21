@@ -15,9 +15,11 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BaseListEntry;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.ConfigEntry;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class GuiSpotLightLoadConfig extends GuiContainer implements GuiListBase
 {
@@ -98,6 +100,46 @@ public class GuiSpotLightLoadConfig extends GuiContainer implements GuiListBase
         int y = (height - ySize) / 2;
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         this.gList.drawScreen(x, y);
+
+        if(helpButton.getIsActive())
+        {
+            boolean reversed = mouseX > width / 2;
+            ArrayList<String> list = new ArrayList<String>();
+
+            if(mouseY > y + 95 && mouseY < y + 115)
+            {
+                if(mouseX > x + 6 && mouseX < x + 26)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.textures.prevpage"), mouseX, width, reversed);
+                }
+
+                if(mouseX > x + 149 && mouseX < x + 169)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.textures.nextpage"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x + 6 && mouseX < x + 169 && mouseY > y + 17 && mouseY < y + 90)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.configs.load.slots"), mouseX, width, reversed);
+            }
+
+            if(mouseY > y + 117 && mouseY < y + 137 && mouseX > x + 6 && mouseX < x + 84)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+            }
+
+            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+            {
+                list.remove(list.size() - 1);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+        }
     }
 
     @Override

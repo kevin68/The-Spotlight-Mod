@@ -109,6 +109,7 @@ public class UtilSpotLight
 
         NBTTagCompound compoundBase = getTexturesData();
         NBTTagList tagList = compoundBase.getTagList("textures", Constants.NBT.TAG_COMPOUND);
+        list.add(new TextureEntry("Beacon Beam", "textures/entity/beacon_beam.png"));
         for(int i = 0; i < tagList.tagCount(); i++)
         {
             NBTTagCompound tag = tagList.getCompoundTagAt(i);

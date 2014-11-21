@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,7 +14,10 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiContainerSliderBase;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderForContainer;
 
 public class GuiSpotLightText2 extends GuiContainerSliderBase
@@ -22,6 +27,7 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tileSpotLight;
     public World world;
+    public GuiBooleanButton helpButton;
 
     public GuiSpotLightText2(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -42,6 +48,7 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
         this.buttonList.add(new GuiSliderForContainer(this, 1, x - 87, y + 2, 350, 20, I18n.format("container.spotlight.height") + " : " + ((tileSpotLight.getTxtHeight() & 0xFF) - 125), (tileSpotLight.getTxtHeight() & 0xFF) / 250.0F));
 
         this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
+        this.buttonList.add(helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
     @Override
@@ -52,6 +59,11 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
             case 6:
             {
                 this.mc.displayGuiScreen(new GuiSpotLight(invPlayer, tileSpotLight, world));
+                break;
+            }
+            case 20:
+            {
+                this.helpButton.toggle();
                 break;
             }
         }
@@ -81,6 +93,48 @@ public class GuiSpotLightText2 extends GuiContainerSliderBase
             }
         }
         return name;
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialRendertTick)
+    {
+        super.drawScreen(mouseX, mouseY, partialRendertTick);
+
+        int x = (width - xSize) / 2;
+        int y = (height - ySize) / 2;
+        if(helpButton.getIsActive())
+        {
+            boolean reversed = mouseX > width / 2;
+            ArrayList<String> list = new ArrayList<String>();
+
+            if(mouseX > x - 87 && mouseX < x + 263)
+            {
+                if(mouseY > y - 20 && mouseY < y)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf2.size"), mouseX, width, reversed);
+                }
+                if(mouseY > y + 2 && mouseY < y + 22)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf2.height"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY < y + 137)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+            }
+
+            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+            {
+                list.remove(list.size() - 1);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+        }
     }
 
     @Override

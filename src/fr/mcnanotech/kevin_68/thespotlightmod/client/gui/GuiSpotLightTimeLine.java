@@ -1,6 +1,9 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumChatFormatting;
@@ -14,17 +17,17 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiContainerSliderBase;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
-public class GuiSpotLightTimeLine extends GuiContainerSliderBase
+public class GuiSpotLightTimeLine extends GuiContainer
 {
     protected InventoryPlayer invPlayer;
     protected TileEntitySpotLight tileSpotLight;
     protected World world;
-    public GuiBooleanButton timeLineModeButton;
+    public GuiBooleanButton timeLineModeButton, smoothButton, helpButton;
     public GuiButton removebutton;
-    public GuiBooleanButton smoothButton;
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
     protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
@@ -46,13 +49,14 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         PacketSender.sendSpotLightPacketByte(this.tileSpotLight, (byte)20, (byte)-1);
-        this.buttonList.add(new GuiButton(2, width / 2 - 155, y + 185, 65, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(new GuiButton(3, width / 2 - 155, y + 69, 120, 20, I18n.format("container.spotlight.addKey")));
-        this.buttonList.add(timeLineModeButton = new GuiBooleanButton(4, width / 2 - 155, y + 157, 120, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), tileSpotLight.isTimeLineEnabled()));
-        this.buttonList.add(removebutton = new GuiButton(5, width / 2 - 155, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")));
-        this.buttonList.add(new GuiButton(6, width / 2 - 155, y + 113, 120, 20, I18n.format("container.spotlight.settimelineto") + " 0"));
-        this.buttonList.add(smoothButton = new GuiBooleanButton(7, width / 2 - 155, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), tileSpotLight.isSmoothMode()));
+        this.buttonList.add(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")));
+        this.buttonList.add(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")));
+        this.buttonList.add(timeLineModeButton = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), tileSpotLight.isTimeLineEnabled()));
+        this.buttonList.add(removebutton = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")));
+        this.buttonList.add(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.settimelineto") + " 0"));
+        this.buttonList.add(smoothButton = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), tileSpotLight.isSmoothMode()));
         removebutton.enabled = false;
+        this.buttonList.add(helpButton = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", false));
 
         for(int i = 0; i < 121; i++)
         {
@@ -98,6 +102,10 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
             smoothButton.toggle();
             PacketSender.sendSpotLightPacketBoolean(this.tileSpotLight, (byte)24, smoothButton.getIsActive());
         }
+        else if(guibutton.id == 8)
+        {
+            this.helpButton.toggle();
+        }
         else if(guibutton.id >= 10)
         {
             int keyid = guibutton.id - 10;
@@ -110,15 +118,70 @@ public class GuiSpotLightTimeLine extends GuiContainerSliderBase
     }
 
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
+        int x = (width - xSize) / 2;
+        int y = (height - ySize) / 2;
+        super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-    }
+        if(helpButton.getIsActive())
+        {
+            boolean reversed = mouseX > width / 2;
+            ArrayList<String> list = new ArrayList<String>();
+            if(mouseX > x - 27 && mouseX < x + 93)
+            {
+                if(mouseY > y + 69 && mouseY < y + 89)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.addkey"), mouseX, width, reversed);
+                }
 
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        return "";
+                if(mouseY > y + 91 && mouseY < y + 111)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.delkey"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 113 && mouseY < y + 133)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.set0"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 135 && mouseY < y + 155)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.smooth"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 157 && mouseY < y + 177)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timelineswitch"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x - 20 && mouseX < x + 282 && mouseY > y + 40 && mouseY < y + 61)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.timeline"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 95 && mouseX < x + 282 && mouseY > y + 69 && mouseY < y + 180)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.infos"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x - 27 && mouseX < x + 38 && mouseY > y + 184 && mouseY < y + 204)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 220 && mouseX < x + 240 && mouseY > y + 182 && mouseY < y + 202)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+            }
+
+            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+            {
+                list.remove(list.size() - 1);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -14,6 +16,9 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightSlotCo
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class GuiSpotLightConfigs extends GuiContainer
 {
@@ -24,6 +29,7 @@ public class GuiSpotLightConfigs extends GuiContainer
     public TileEntitySpotLight tileSpotLight;
     public World world;
     public GuiButton save, load, delete;
+    private GuiBooleanButton helpButton;
 
     public GuiSpotLightConfigs(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -45,6 +51,7 @@ public class GuiSpotLightConfigs extends GuiContainer
         this.buttonList.add(load = new GuiButton(2, x + 5, y + 43, 166, 20, I18n.format("container.spotlight.load")));
         this.buttonList.add(delete = new GuiButton(3, x + 5, y + 66, 166, 20, I18n.format("container.spotlight.delete")));
         this.buttonList.add(new GuiButton(4, x + 5, y + 89, 166, 20, I18n.format("container.spotlight.reset")));
+        this.buttonList.add(helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
         save.enabled = false;
         load.enabled = false;
         delete.enabled = false;
@@ -78,6 +85,12 @@ public class GuiSpotLightConfigs extends GuiContainer
             case 4:
             {
                 PacketSender.sendSpotLightPacketByte(tileSpotLight, (byte)100, (byte)0);
+                break;
+            }
+            case 20:
+            {
+                this.helpButton.toggle();
+                break;
             }
         }
     }
@@ -89,6 +102,64 @@ public class GuiSpotLightConfigs extends GuiContainer
         this.load.enabled = this.save.enabled;
         this.delete.enabled = this.save.enabled;
 
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+    {
+        int x = (width - xSize) / 2;
+        int y = (height - ySize) / 2;
+        super.drawScreen(mouseX, mouseY, partialRenderTick);
+
+        if(helpButton.getIsActive())
+        {
+            boolean reversed = mouseX > width / 2;
+            ArrayList<String> list = new ArrayList<String>();
+
+            if(mouseX > x + 5 && mouseX < x + 171)
+            {
+                if(mouseY > y + 20 && mouseY < y + 40)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.configs.save"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 43 && mouseY < y + 63)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.configs.load"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 66 && mouseY < y + 86)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.configs.delete"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 89 && mouseY < y + 109)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.configs.reset"), mouseX, width, reversed);
+                }
+            }
+
+            if(mouseX > x + 5 && mouseX < x + 85 && mouseY > y + 112 && mouseY < y + 132 && mouseX < x + 25)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.configslot"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY < y + 137)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+            }
+
+            if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
+            {
+                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+            }
+
+            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+            {
+                list.remove(list.size() - 1);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+        }
     }
 
     @Override
