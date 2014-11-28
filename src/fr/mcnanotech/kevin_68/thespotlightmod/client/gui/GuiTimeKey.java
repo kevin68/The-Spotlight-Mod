@@ -24,8 +24,8 @@ public class GuiTimeKey extends GuiButton
         {
             mc.getTextureManager().bindTexture(textures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int k = this.getHoverState(this.field_146123_n);
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int k = this.getHoverState(this.hovered);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 102, 3, 3);
             this.mouseDragged(mc, mouseX, mouseY);
         }

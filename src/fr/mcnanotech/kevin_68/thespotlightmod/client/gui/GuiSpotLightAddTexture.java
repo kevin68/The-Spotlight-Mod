@@ -1,5 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import net.minecraft.client.gui.GuiButton;
@@ -49,21 +50,21 @@ public class GuiSpotLightAddTexture extends GuiContainer
         int y = (height - ySize) / 2;
 
         Keyboard.enableRepeatEvents(true);
-        this.nameField = new GuiTextField(this.fontRendererObj, x + 6, y + 20, 160, 12);
+        this.nameField = new GuiTextField(3, this.fontRendererObj, x + 6, y + 20, 160, 12);
         this.nameField.setDisabledTextColour(-1);
         this.nameField.setEnableBackgroundDrawing(true);
         this.nameField.setMaxStringLength(40);
         this.nameField.setEnabled(true);
         this.nameField.setText("");
 
-        this.pathField = new GuiTextField(this.fontRendererObj, x + 6, y + 50, 160, 12);
+        this.pathField = new GuiTextField(4, this.fontRendererObj, x + 6, y + 50, 160, 12);
         this.pathField.setDisabledTextColour(-1);
         this.pathField.setEnableBackgroundDrawing(true);
         this.pathField.setMaxStringLength(60);
         this.pathField.setEnabled(true);
         this.pathField.setText("");
 
-        this.delNameField = new GuiTextField(this.fontRendererObj, x + 6, y + 80, 160, 12);
+        this.delNameField = new GuiTextField(5, this.fontRendererObj, x + 6, y + 80, 160, 12);
         this.delNameField.setDisabledTextColour(-1);
         this.delNameField.setEnableBackgroundDrawing(true);
         this.delNameField.setMaxStringLength(60);
@@ -180,7 +181,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
     }
 
     @Override
-    protected void keyTyped(char chr, int chrValue)
+    protected void keyTyped(char chr, int chrValue) throws IOException
     {
         if(this.nameField.textboxKeyTyped(chr, chrValue))
         {
@@ -201,7 +202,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         this.nameField.mouseClicked(mouseX, mouseY, mouseButton);

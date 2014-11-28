@@ -33,8 +33,9 @@ public class SpotLightEntry
     private byte txtRotationSpeed;
     private byte txtScale;
     private byte txtHeight;
+    private byte sides;
 
-    public SpotLightEntry(boolean active, byte red, byte green, byte blue, byte secRed, byte secGreen, byte secBlue, int angle1, byte angle2, boolean autoRot, boolean revRot, byte rotSpe, boolean secLas, byte displayAxe, boolean sideLaser, byte mainLaserSize, byte secLaserSize, int laserHeight, boolean textEnabled, byte keyTxtRed, byte keyTxtGreen, byte keyTxtBlue, int txtAngle1, boolean txtAutoRotate, boolean txtReveseRotation, byte txtRotationSpeed, byte txtScale, byte txtHeight)
+    public SpotLightEntry(boolean active, byte red, byte green, byte blue, byte secRed, byte secGreen, byte secBlue, int angle1, byte angle2, boolean autoRot, boolean revRot, byte rotSpe, boolean secLas, byte displayAxe, boolean sideLaser, byte mainLaserSize, byte secLaserSize, int laserHeight, boolean textEnabled, byte keyTxtRed, byte keyTxtGreen, byte keyTxtBlue, int txtAngle1, boolean txtAutoRotate, boolean txtReveseRotation, byte txtRotationSpeed, byte txtScale, byte txtHeight, byte sides)
     {
         this.active = active;
         this.keyRed = red;
@@ -64,6 +65,7 @@ public class SpotLightEntry
         this.txtRotationSpeed = txtRotationSpeed;
         this.txtScale = txtScale;
         this.txtHeight = txtHeight;
+        this.sides = sides;
     }
 
     private SpotLightEntry()
@@ -209,6 +211,11 @@ public class SpotLightEntry
         return txtHeight;
     }
 
+    public byte getSides()
+    {
+        return sides;
+    }
+
     public static SpotLightEntry loadSpotLightEntryFromNBT(NBTTagCompound nbtTagCompound)
     {
         SpotLightEntry entry = new SpotLightEntry();
@@ -244,6 +251,7 @@ public class SpotLightEntry
         nbtTagCompound.setBoolean("txtAutoRot", this.txtAutoRotate);
         nbtTagCompound.setBoolean("txtRevRot", this.txtReverseRotation);
         nbtTagCompound.setByte("txtRotSpe", this.txtRotationSpeed);
+        nbtTagCompound.setByte("Sides", this.sides);
         return nbtTagCompound;
     }
 
@@ -275,5 +283,6 @@ public class SpotLightEntry
         this.txtAutoRotate = nbtTagCompound.getBoolean("txtAutoRot");
         this.txtReverseRotation = nbtTagCompound.getBoolean("txtRevRot");
         this.txtRotationSpeed = nbtTagCompound.getByte("txtRotSpe");
+        this.sides = nbtTagCompound.getByte("Sides");
     }
 }

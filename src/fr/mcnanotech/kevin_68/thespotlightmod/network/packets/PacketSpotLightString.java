@@ -6,8 +6,9 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.minecraftforgefrance.ffmtlibs.network.FFMTPacket;
 
@@ -67,7 +68,7 @@ public class PacketSpotLightString extends FFMTPacket
     public void handleServerSide(EntityPlayer player)
     {
         World world = player.worldObj;
-        TileEntity tile = world.getTileEntity(x, y, z);
+        TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
         if(tile instanceof TileEntitySpotLight)
         {

@@ -1,5 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import net.minecraft.client.gui.GuiButton;
@@ -48,7 +49,7 @@ public class GuiSpotLightText extends GuiContainerSliderBase
         int y = (height - ySize) / 2;
 
         Keyboard.enableRepeatEvents(true);
-        this.txtField = new GuiTextField(this.fontRendererObj, x - 40, y - 40, 256, 12);
+        this.txtField = new GuiTextField(10, this.fontRendererObj, x - 40, y - 40, 256, 12);
         this.txtField.setTextColor((tileSpotLight.getTxtRed() & 0xFF * 65536) + (tileSpotLight.getTxtGreen() & 0xFF * 256) + (tileSpotLight.getTxtBlue() & 0xFF));
         this.txtField.setEnableBackgroundDrawing(true);
         this.txtField.setMaxStringLength(40);
@@ -251,7 +252,7 @@ public class GuiSpotLightText extends GuiContainerSliderBase
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         this.txtField.mouseClicked(mouseX, mouseY, mouseButton);

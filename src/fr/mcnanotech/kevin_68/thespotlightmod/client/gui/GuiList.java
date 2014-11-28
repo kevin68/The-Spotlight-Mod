@@ -112,7 +112,7 @@ public class GuiList
 
     public void drawScreen(int x, int y)
     {
-        GuiHelper.drawCenteredString(Minecraft.getMinecraft().fontRenderer, (currentPageDiplayed + 1) + "/" + (numberOfPage + 1), x + (width / 2) + 6, y + (height) + 5, EggColor.GRAY);
+        GuiHelper.drawCenteredString(Minecraft.getMinecraft().fontRendererObj, (currentPageDiplayed + 1) + "/" + (numberOfPage + 1), x + (width / 2) + 6, y + (height) + 5, EggColor.GRAY);
     }
 
     public void addButton(List buttonList)
@@ -281,11 +281,11 @@ public class GuiList
         {
             if(this.visible)
             {
-                FontRenderer fontrenderer = mc.fontRenderer;
+                FontRenderer fontrenderer = mc.fontRendererObj;
                 mc.getTextureManager().bindTexture(texture);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-                int k = this.getHoverState(this.field_146123_n);
+                this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+                int k = this.getHoverState(this.hovered);
                 GL11.glEnable(GL11.GL_BLEND);
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -314,7 +314,7 @@ public class GuiList
         {
             ArrayList<String> list = new ArrayList();
             list.add(0, txt);
-            GuiHelper.drawHoveringText(list, mouseX, mouseY, Minecraft.getMinecraft().fontRenderer, 166, 176, color);
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, Minecraft.getMinecraft().fontRendererObj, 166, 176, color);
         }
     }
 }

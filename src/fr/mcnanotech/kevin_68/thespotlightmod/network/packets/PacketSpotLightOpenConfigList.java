@@ -10,11 +10,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.Constants.NBT;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightDeleteConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightLoadConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
@@ -100,7 +101,7 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
     @SideOnly(Side.CLIENT)
     public void handleClientSide(EntityPlayer player)
     {
-        TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(x, y, z);
+        TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(new BlockPos(x, y, z));
         if(!list.isEmpty())
         {
             if(type == 0)
@@ -125,7 +126,7 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
     @Override
     public void handleServerSide(EntityPlayer player)
     {
-        TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(x, y, z);
+        TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(new BlockPos(x, y, z));
         ArrayList<BaseListEntry> templist = new ArrayList<BaseListEntry>();
         if(te.getStackInSlot(0) != null)
         {

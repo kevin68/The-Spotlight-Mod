@@ -10,18 +10,21 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Constants.NBT;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 
-public class TileEntitySpotLight extends TileEntity implements IInventory
+public class TileEntitySpotLight extends TileEntity implements IInventory, IUpdatePlayerListBox//TEST
 {
     private ItemStack[] slots = new ItemStack[1];
 
@@ -31,35 +34,36 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     private float activeBooleanFloat;
     public boolean isActive;
 
-    public byte red, green, blue, secRed, secGreen, secBlue, angle2, rotationSpeed, displayAxe, mainLaserSize, secLaserSize, createKeyTime, lastKeySelected, txtRed, txtGreen, txtBlue, txtRotationSpeed, txtScale, txtHeight;
+    public byte red, green, blue, secRed, secGreen, secBlue, angle2, rotationSpeed, displayAxe, mainLaserSize, secLaserSize, createKeyTime, lastKeySelected, txtRed, txtGreen, txtBlue, txtRotationSpeed, txtScale, txtHeight, sides;
     public String textureName, secTextureName, displayText;
     public boolean autoRotate, reverseRotation, secondaryLaser, sideLaser, timeLineEnabled, smoothMode, textEnabled, txtAutoRotate, txtReverseRotation;
     public int time, lastTimeUse, angle1, lazerHeight, txtAngle1;
 
-    public byte[] redKey = new byte[1200];//
-    public byte[] greenKey = new byte[1200];//
-    public byte[] blueKey = new byte[1200];//
-    public byte[] secRedKey = new byte[1200];//
-    public byte[] secGreenKey = new byte[1200];//
-    public byte[] secBlueKey = new byte[1200];//
-    public int[] angle1Key = new int[1200];//
-    public byte[] angle2Key = new byte[1200];//
-    public byte[] mainSizeKey = new byte[1200];//
-    public byte[] secSizeKey = new byte[1200];//
-    public int[] lazerHeightKey = new int[1200];//
+    public byte[] redKey = new byte[1200];
+    public byte[] greenKey = new byte[1200];
+    public byte[] blueKey = new byte[1200];
+    public byte[] secRedKey = new byte[1200];
+    public byte[] secGreenKey = new byte[1200];
+    public byte[] secBlueKey = new byte[1200];
+    public int[] angle1Key = new int[1200];
+    public byte[] angle2Key = new byte[1200];
+    public byte[] mainSizeKey = new byte[1200];
+    public byte[] secSizeKey = new byte[1200];
+    public int[] lazerHeightKey = new int[1200];
     public byte[] txtRedKey = new byte[1200];
     public byte[] txtGreenKey = new byte[1200];
     public byte[] txtBlueKey = new byte[1200];
-    public int[] txtAngle1Key = new int[1200];//
-    public byte[] txtScaleKey = new byte[1200];//
-    public byte[] txtHeightKey = new byte[1200];//
+    public int[] txtAngle1Key = new int[1200];
+    public byte[] txtScaleKey = new byte[1200];
+    public byte[] txtHeightKey = new byte[1200];
+    public byte[] sidesKey = new byte[1200];
 
     private SpotLightEntry[] keyList = new SpotLightEntry[120];
 
     @Override
-    public void updateEntity()
+    public void update()
     {
-        if(this.worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+        if(this.worldObj.isBlockPowered(pos))
         {
             this.isActive = true;
 
@@ -109,12 +113,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                         this.setByte((byte)29, (txtGreenKey[getTime()]));
                         this.setByte((byte)30, (txtBlueKey[getTime()]));
                         this.set(31, (txtAngle1Key[getTime()]));
-
+                        this.setByte((byte)40, (sidesKey[getTime()]));
                         int curTime = this.getTime() / 10;
                         if(this.getKey(curTime) != null && lastTimeUse != time)
                         {
                             lastTimeUse = time;
-                            this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                            this.worldObj.markBlockForUpdate(pos);
                             this.setBoolean((byte)10, this.getKey(curTime).isKeyAutRot());
                             this.setBoolean((byte)11, this.getKey(curTime).isKeyRevRot());
                             this.setByte((byte)12, this.getKey(curTime).getKeyRotSpe());
@@ -159,7 +163,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                             this.setBoolean((byte)33, this.getKey(curTime).isTxtAutoRotate());
                             this.setBoolean((byte)34, this.getKey(curTime).isTxtReverseRotation());
                             this.setByte((byte)35, this.getKey(curTime).getTxtRotationSpeed());
-                            this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                            this.worldObj.markBlockForUpdate(pos);
                         }
                     }
                 }
@@ -280,6 +284,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 int deltaTxtHeight = endTxtHeight - startTxtHeight;
                 float tickTxtHeight = (float)deltaTxtHeight / (float)timeBetwinKeys.get(k);
 
+                int startSides = keyList[keys.get(k) / 10].getSides() & 0xFF;
+                int endSides = keyList[keys.get(k + 1) / 10].getSides() & 0xFF;
+                int deltaSides = endSides - startSides;
+                float tickSides = (float)deltaSides / (float)timeBetwinKeys.get(k);
+
                 for(int l = keys.get(k); l < keys.get(k + 1); l++)
                 {
                     redKey[l] = (byte)(startRed + (tickRed * (l - keys.get(k))));
@@ -299,6 +308,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                     txtAngle1Key[l] = (int)(startTxtAngle1 + (tickTxtAngle1 * (l - keys.get(k))));
                     txtScaleKey[l] = (byte)(startTxtScale + (tickTxtScale * (l - keys.get(k))));
                     txtHeightKey[l] = (byte)(startTxtHeight + (tickTxtHeight * (l - keys.get(k))));
+                    sidesKey[l] = (byte)(startSides + (tickSides * (l - keys.get(k))));
                 }
             }
 
@@ -387,6 +397,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
             int deltaTxtHeight = endTxtHeight - startTxtHeight;
             float tickTxtHeight = (float)deltaTxtHeight / (float)timeBetwinKeys.get(keys.size() - 1);
 
+            int startSides = keyList[keys.get(keys.size() - 1) / 10].getSides() & 0xFF;
+            int endSides = keyList[keys.get(0) / 10].getSides() & 0xFF;
+            int deltaSides = endSides - startSides;
+            float tickSides = (float)deltaSides / (float)timeBetwinKeys.get(keys.size() - 1);
+
             for(int m = keys.get(keys.size() - 1); m < 1200; m++)
             {
                 redKey[m] = (byte)(startRed + (tickRed * (m - keys.get(keys.size() - 1))));
@@ -406,6 +421,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 txtAngle1Key[m] = (int)(startTxtAngle1 + (tickTxtAngle1 * (m - keys.get(keys.size() - 1))));
                 txtScaleKey[m] = (byte)(startTxtScale + (tickTxtScale * (m - keys.get(keys.size() - 1))));
                 txtHeightKey[m] = (byte)(startTxtHeight + (tickTxtHeight * (m - keys.get(keys.size() - 1))));
+                sidesKey[m] = (byte)(startSides + (tickSides * (m - keys.get(keys.size() - 1))));
             }
             for(int n = 0; n < keys.get(0); n++)
             {
@@ -426,6 +442,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 txtAngle1Key[n] = (int)(txtAngle1Key[1199] + (tickTxtAngle1 * n));
                 txtScaleKey[n] = (byte)(txtScaleKey[1199] + (tickTxtScale * n));
                 txtHeightKey[n] = (byte)(txtHeightKey[1199] + (tickTxtHeight * n));
+                sidesKey[n] = (byte)(sidesKey[1199] + (tickSides * n));
             }
         }
         else if(keys.size() == 1)
@@ -449,6 +466,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 txtAngle1Key[i] = keyList[keys.get(0) / 10].getTxtAngle1();
                 txtScaleKey[i] = keyList[keys.get(0) / 10].getTxtScale();
                 txtHeightKey[i] = keyList[keys.get(0) / 10].getTxtHeight();
+                sidesKey[i] = keyList[keys.get(0) / 10].getSides();
             }
         }
     }
@@ -541,6 +559,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         nbtTagCompound.setByte("TxtRotationSpeed", txtRotationSpeed);
         nbtTagCompound.setByte("TxtScale", txtScale);
         nbtTagCompound.setByte("TxtHeight", txtHeight);
+        nbtTagCompound.setByte("Sides", sides);
 
         nbtTagCompound.setByteArray("RedKey", redKey);
         nbtTagCompound.setByteArray("GreenKey", greenKey);
@@ -559,6 +578,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         nbtTagCompound.setIntArray("TxtAngle1Key", txtAngle1Key);
         nbtTagCompound.setByteArray("TxtScaleKey", txtScaleKey);
         nbtTagCompound.setByteArray("TxtHeightKey", txtHeightKey);
+        nbtTagCompound.setByteArray("SidesKey", sidesKey);
 
         NBTTagList nbttaglist = new NBTTagList();
         for(int i = 0; i < this.keyList.length; ++i)
@@ -626,6 +646,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         txtRotationSpeed = nbtTagCompound.getByte("TxtRotationSpeed");
         txtScale = nbtTagCompound.getByte("TxtScale");
         txtHeight = nbtTagCompound.getByte("TxtHeight");
+        sides = nbtTagCompound.getByte("Sides");
 
         redKey = nbtTagCompound.getByteArray("RedKey");
         greenKey = nbtTagCompound.getByteArray("GreenKey");
@@ -644,6 +665,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         txtAngle1Key = nbtTagCompound.getIntArray("TxtAngle1Key");
         txtScaleKey = nbtTagCompound.getByteArray("TxtScaleKey");
         txtHeightKey = nbtTagCompound.getByteArray("TxtHeightKey");
+        sidesKey = nbtTagCompound.getByteArray("SidesKey");
 
         NBTTagList nbttaglist = nbtTagCompound.getTagList("SpotLightKeys", Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i < nbttaglist.tagCount(); ++i)
@@ -672,7 +694,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     @Override
     public boolean isUseableByPlayer(EntityPlayer player)
     {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getTileEntity(pos) != this ? false : player.getDistanceSq(pos.getX() + 0.5D, pos.getY()  + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -685,7 +707,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        readFromNBT(pkt.func_148857_g());
+        readFromNBT(pkt.getNbtCompound());
     }
 
     @Override
@@ -693,7 +715,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     {
         NBTTagCompound nbt = new NBTTagCompound();
         this.writeToNBT(nbt);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 3, nbt);
+        return new S35PacketUpdateTileEntity(pos, 3, nbt);
     }
 
     public void setByte(byte index, byte value)
@@ -796,6 +818,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 this.txtHeight = value;
                 break;
             }
+            case 40:
+            {
+                this.sides = value;
+                break;
+            }
             case 100:
             {
                 this.setDefaultValue();
@@ -806,7 +833,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 TheSpotLightMod.log.error("Wrong set index : " + index);
             }
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     public void setBoolean(byte index, boolean value)
@@ -863,7 +890,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 TheSpotLightMod.log.error("Wrong set index : " + index);
             }
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     public void set(int index, int value)
@@ -905,7 +932,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 TheSpotLightMod.log.error("Wrong set index : " + index);
             }
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     public void set(int index, String value)
@@ -937,7 +964,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 TheSpotLightMod.log.error("Wrong set index : " + index);
             }
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     public byte getRed()
@@ -1115,6 +1142,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         return txtHeight;
     }
 
+    public byte getSides()
+    {
+        return sides;
+    }
+
     public void setKey(int index, SpotLightEntry value)
     {
         if(index >= 0 && index < this.keyList.length)
@@ -1126,7 +1158,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
             TheSpotLightMod.log.error("fatal error, index invalid !");
         }
         keysProcess();
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     public SpotLightEntry getKey(int index)
@@ -1175,7 +1207,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         txtRotationSpeed = 0;
         txtScale = (byte)10;
         txtHeight = (byte)128;
-
+        sides = (byte)2;
         redKey = new byte[1200];
         greenKey = new byte[1200];
         blueKey = new byte[1200];
@@ -1193,8 +1225,9 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         txtAngle1Key = new int[1200];
         txtScaleKey = new byte[1200];
         txtHeightKey = new byte[1200];
+        sidesKey = new byte[1200];
         keyList = new SpotLightEntry[120];
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     public boolean applyConfig(int id)
@@ -1242,6 +1275,8 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 txtRotationSpeed = conf.getByte("TxtRotationSpeed");
                 txtScale = conf.getByte("TxtScale");
                 txtHeight = conf.getByte("TxtHeight");
+                sides = conf.getByte("Sides");
+
                 redKey = conf.getByteArray("RedKey");
                 greenKey = conf.getByteArray("GreenKey");
                 blueKey = conf.getByteArray("BlueKey");
@@ -1259,6 +1294,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 txtAngle1Key = conf.getIntArray("TxtAngle1Key");
                 txtScaleKey = conf.getByteArray("TxtScaleKey");
                 txtHeightKey = conf.getByteArray("TxtHeightKey");
+                sidesKey = conf.getByteArray("SidesKey");
 
                 NBTTagList nbttaglist = conf.getTagList("SpotLightKeys", Constants.NBT.TAG_COMPOUND);
                 for(int i = 0; i < nbttaglist.tagCount(); ++i)
@@ -1273,7 +1309,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
                 }
                 return true;
             }
-            this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            this.worldObj.markBlockForUpdate(pos);
         }
 
         return false;
@@ -1364,6 +1400,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         nbtTagCompound.setByte("TxtRotationSpeed", txtRotationSpeed);
         nbtTagCompound.setByte("TxtScale", txtScale);
         nbtTagCompound.setByte("TxtHeight", txtHeight);
+        nbtTagCompound.setByte("Sides", sides);
 
         nbtTagCompound.setByteArray("RedKey", redKey);
         nbtTagCompound.setByteArray("GreenKey", greenKey);
@@ -1382,6 +1419,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
         nbtTagCompound.setIntArray("TxtAngle1Key", txtAngle1Key);
         nbtTagCompound.setByteArray("TxtScaleKey", txtScaleKey);
         nbtTagCompound.setByteArray("TxtHeightKey", txtHeightKey);
+        nbtTagCompound.setByteArray("SidesKey", sidesKey);
 
         NBTTagList nbttaglist = new NBTTagList();
         for(int i = 0; i < this.keyList.length; ++i)
@@ -1464,13 +1502,13 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     }
 
     @Override
-    public String getInventoryName()
+    public String getName()
     {
         return "container.spotlight";
     }
 
     @Override
-    public boolean hasCustomInventoryName()
+    public boolean hasCustomName()
     {
         return false;
     }
@@ -1482,11 +1520,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     }
 
     @Override
-    public void openInventory()
+    public void openInventory(EntityPlayer playerIn)
     {}
 
     @Override
-    public void closeInventory()
+    public void closeInventory(EntityPlayer playerIn)
     {}
 
     @Override
@@ -1494,4 +1532,34 @@ public class TileEntitySpotLight extends TileEntity implements IInventory
     {
         return stack != null && stack.getItem() != null && stack.getItem() == TSMItems.configSaver;
     }
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clearInventory()
+	{
+		this.slots[0] = null;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentText("Test");
+	}
 }

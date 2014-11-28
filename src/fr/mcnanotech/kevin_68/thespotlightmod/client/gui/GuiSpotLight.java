@@ -48,8 +48,9 @@ public class GuiSpotLight extends GuiContainer
         this.buttonList.add(new GuiButton(1, x + 90, y + 20, 50, 20, I18n.format("container.spotlight.textures")));
         this.buttonList.add(new GuiButton(5, x + 142, y + 20, 28, 20, I18n.format("container.spotlight.more")));
         this.buttonList.add(new GuiButton(2, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.beamspecs")));
+        this.buttonList.add(new GuiButton(10, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
         this.buttonList.add(new GuiButton(3, x + 90, y + 43, 80, 20, I18n.format("container.spotlight.timeline")));
-        this.buttonList.add(timeButton = new GuiBooleanButton(4, x + 5, y + 66, 166, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), tileSpotLight.isTimeLineEnabled()));
+        this.buttonList.add(timeButton = new GuiBooleanButton(4, x + 90, y + 66, 80, 20, I18n.format("container.spotlight.timeline"), I18n.format("container.spotlight.timeline"), tileSpotLight.isTimeLineEnabled()));
         this.buttonList.add(textButton = new GuiBooleanButton(6, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textEnabled") + " " + I18n.format("container.spotlight.true"), I18n.format("container.spotlight.textEnabled") + " " + I18n.format("container.spotlight.false"), tileSpotLight.isTextEnabled()));
         this.buttonList.add(new GuiButton(7, x + 90, y + 89, 80, 20, I18n.format("container.spotlight.text")));
         this.buttonList.add(new GuiButton(8, x + 90, y + 112, 80, 20, I18n.format("container.spotlight.text")));
@@ -114,6 +115,11 @@ public class GuiSpotLight extends GuiContainer
                 this.mc.displayGuiScreen(new GuiSpotLightConfigs(invPlayer, tileSpotLight, world));
                 break;
             }
+            case 10:
+            {
+                this.mc.displayGuiScreen(new GuiSpotLightBeamSpec2(invPlayer, tileSpotLight, world));
+                break;
+            }
             case 20:
             {
                 this.helpButton.toggle();
@@ -143,6 +149,11 @@ public class GuiSpotLight extends GuiContainer
                 if(mouseY > y + 43 && mouseY < y + 63)
                 {
                     list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props"), mouseX, width, reversed);
+                }
+
+                if(mouseY > y + 66 && mouseY < y + 86)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props2"), mouseX, width, reversed);
                 }
 
                 if(mouseY > y + 89 && mouseY < y + 109)
@@ -186,11 +197,11 @@ public class GuiSpotLight extends GuiContainer
                 {
                     list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.txtconf2"), mouseX, width, reversed);
                 }
-            }
 
-            if(mouseX > x + 5 && mouseX < x + 170 && mouseY > y + 66 && mouseY < y + 86)
-            {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timelineswitch"), mouseX, width, reversed);
+                if(mouseY > y + 66 && mouseY < y + 86)
+                {
+                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timelineswitch"), mouseX, width, reversed);
+                }
             }
 
             if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
