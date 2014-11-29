@@ -10,7 +10,7 @@ public class TSMItems
 
     public static void initItems()
     {
-        configSaver = new ItemConfigSaver().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxDamage(1);
+        configSaver = new ItemConfigSaver().setUnlocalizedName("thespotlightmod.configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
         GameRegistry.registerItem(configSaver, "tsm_configsaver", TheSpotLightMod.MODID);
     }
 }

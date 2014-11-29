@@ -12,6 +12,6 @@ public class TSMBlocks
     public static void initBlock()
     {
         spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab).setStepSound(Block.soundTypeMetal);
-        GameRegistry.registerBlock(spotlight, ItemBlock.class, "SpotLight");
+        GameRegistry.registerBlock(spotlight, ItemBlock.class, "tsm_spotlight");
     }
 }

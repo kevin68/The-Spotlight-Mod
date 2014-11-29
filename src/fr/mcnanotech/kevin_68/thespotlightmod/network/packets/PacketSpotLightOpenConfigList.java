@@ -102,7 +102,7 @@ public class PacketSpotLightOpenConfigList extends FFMTPacket
     public void handleClientSide(EntityPlayer player)
     {
         TileEntitySpotLight te = (TileEntitySpotLight)player.worldObj.getTileEntity(new BlockPos(x, y, z));
-        if(!list.isEmpty())
+        if(list != null && !list.isEmpty())
         {
             if(type == 0)
             {

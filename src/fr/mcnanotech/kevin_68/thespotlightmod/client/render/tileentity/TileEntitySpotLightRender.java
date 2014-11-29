@@ -3,9 +3,10 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity;
 import static java.lang.Math.cos;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelSign;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -21,15 +22,14 @@ import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
-import fr.minecraftforgefrance.ffmtlibs.client.renderer.TileEntityInventorySpecialRenderer;
 
 @SideOnly(Side.CLIENT)
-public class TileEntitySpotLightRender extends TileEntityInventorySpecialRenderer
+public class TileEntitySpotLightRender extends TileEntitySpecialRenderer//TileEntityInventorySpecialRenderer TODO
 {
     private final ModelSign modelSign = new ModelSign();
     private ModelSpotLight model;
 
-    @Override
+//    @Override
     public void renderInventory(double x, double y, double z)
     {
         GL11.glPushMatrix();
@@ -89,7 +89,7 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
         GL11.glPopMatrix();
 
         float f1 = tileentity.isActive();
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+        GlStateManager.alphaFunc(516, 0.1F);
         if(f1 > 0.0F)
         {
             Tessellator tess = Tessellator.getInstance();
@@ -97,11 +97,11 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
             GuiHelper.bindTexture(UtilSpotLight.getEntryByName(tileentity.getTextureName()).getPath());
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glDepthMask(true);
-            OpenGlHelper.glBlendFunc(770, 1, 1, 0);
+            GlStateManager.disableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.disableBlend();
+            GlStateManager.depthMask(true);
+            GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
 
             float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
             double d4 = Math.sqrt(Math.pow(b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2);// taille
@@ -110,46 +110,46 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
             double t3 = tileentity.getLaserHeight() * f1 * (0.5D / d4) + t2;
 
             worldrenderer.startDrawingQuads();
-            worldrenderer.func_178960_a(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 32);
+            worldrenderer.func_178960_a(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 0.125F);
             drawBeam(d4, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
             tess.draw();
 
             if(tileentity.isSideLaser())
             {
-            	worldrenderer.startDrawingQuads();
-            	worldrenderer.func_178960_a(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 32);
+                worldrenderer.startDrawingQuads();
+                worldrenderer.func_178960_a(tileentity.getRed() & 0xFF, tileentity.getGreen() & 0xFF, tileentity.getBlue() & 0xFF, 0.125F);
                 drawBeam(d4, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
                 tess.draw();
             }
 
             GuiHelper.bindTexture(UtilSpotLight.getEntryByName(tileentity.getSecTextureName()).getPath());
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-            GL11.glDepthMask(false);
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+            GlStateManager.depthMask(false);
 
             double d5 = Math.sqrt(Math.pow(b0 * ((tileentity.getSecLaserSize() & 0xFF) / 200.0D), 2) / 2);
 
             if(tileentity.isSecondaryLaser())
             {
-            	worldrenderer.startDrawingQuads();
-            	worldrenderer.func_178960_a(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 32);
+                worldrenderer.startDrawingQuads();
+                worldrenderer.func_178960_a(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 0.125F);
                 drawBeam(d5, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
                 tess.draw();
 
                 if(tileentity.isSideLaser())
                 {
-                	worldrenderer.startDrawingQuads();
-                	worldrenderer.func_178960_a(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 32);
+                    worldrenderer.startDrawingQuads();
+                    worldrenderer.func_178960_a(tileentity.getSecRed() & 0xFF, tileentity.getSecGreen() & 0xFF, tileentity.getSecBlue() & 0xFF, 0.125F);
                     drawBeam(d5, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
                     tess.draw();
                 }
             }
 
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glDepthMask(true);
+            GlStateManager.enableLighting();
+            GlStateManager.func_179098_w();
+            GlStateManager.depthMask(true);
 
-            if(tileentity.isTextEnabled())
+            if(tileentity.isTextEnabled() ||true)
             {
                 GL11.glPushMatrix();
                 float f11 = 0.6666667F;
@@ -158,10 +158,10 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
                 byte b1 = 1;
                 double d31 = d21 * 0.025D * (1.0D - (b1 & 1) * 2.5D);
                 double i1 = (tileentity.isTxtReverseRotation() ? -1.0D : 1.0D);
-                GL11.glTranslatef((float)x + 0.5F, (float)y + 0.75F * f11, (float)z + 0.5F);
-                GL11.glRotatef(-f21, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0.0F, -0.4F, 0.0F);
-                GL11.glScaled(0.9D, 0.9D, 0.9D);
+                GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * f11, (float)z + 0.5F);
+                GlStateManager.rotate(-f21, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translate(0.0F, -0.4F, 0.0F);
+                GlStateManager.scale(0.9D, 0.9D, 0.9D);
                 if(tileentity.isTxtAutoRotate())
                 {
                     GL11.glRotatef((float)((d31 * (tileentity.getTxtRotationSpeed() & 0xFF) * i1) * 16), 0.0F, 1.0F, 0.0F);
@@ -171,33 +171,33 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
                     GL11.glRotatef(tileentity.getTxtAngle1(), 0.0F, 1.0F, 0.0F);
                 }
                 this.modelSign.signStick.showModel = false;
-                GL11.glPushMatrix();
-                GL11.glScalef(f11, -f11, -f11);
-                GL11.glScaled(0.5F, 0.5F, 0.5F);
+                GlStateManager.pushMatrix();
+                GlStateManager.scale(f11, -f11, -f11);
+                GlStateManager.scale(0.5F, 0.5F, 0.5F);
                 this.modelSign.renderSign();
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
                 FontRenderer fontrenderer = this.getFontRenderer();
                 f21 = 0.016666668F * f11;
-                GL11.glTranslatef(0.0F, 0.5F * f11, 0.07F * f11);
-                GL11.glScalef(f21 * 5, -f21 * 5, f21 * 5);
+                GlStateManager.translate(0.0F, 0.5F * f11, 0.07F * f11);
+                GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
                 GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-                GL11.glDepthMask(false);
-                GL11.glTranslatef(0.0F, -((tileentity.getTxtHeight() & 0xFF) - 125.0F) * 2, 0.0F);
-                GL11.glTranslatef(0.0F, -13 + ((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10) / 7.8F), 0.0F);
-                GL11.glScalef(((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10)) / 100.0F, ((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10)) / 100.0F, ((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10)) / 100.0F);
-                GL11.glScaled(1.0, 1.0, 1.0);
+                GlStateManager.depthMask(false);
+                GlStateManager.translate(0.0F, -((tileentity.getTxtHeight() & 0xFF) - 125.0F) * 2, 0.0F);
+                GlStateManager.translate(0.0F, -13 + ((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10) / 7.8F), 0.0F);
+                GlStateManager.scale(((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10)) / 100.0F, ((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10)) / 100.0F, ((int)((tileentity.getTxtScale() & 0xFF) * 3.96F + 10)) / 100.0F);
+                GlStateManager.scale(1.0, 1.0, 1.0);
                 String s = tileentity.getDisplayText();
                 fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, -20, ((tileentity.getTxtRed() & 0xFF) * 65536) + ((tileentity.getTxtGreen() & 0xFF) * 256) + (tileentity.getTxtBlue() & 0xFF));
-                GL11.glDepthMask(true);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glPopMatrix();
+                GlStateManager.depthMask(true);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.popMatrix();
             }
         }
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
+        GlStateManager.alphaFunc(516, 0.5F);
     }
 
     @Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tick, int p_180535_9_)
+    public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tick, int p_180535_9_)
     {
         this.renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
     }
@@ -282,10 +282,10 @@ public class TileEntitySpotLightRender extends TileEntityInventorySpecialRendere
         {
             // System.out.println(i);
             // System.out.println(v.length);
-        	worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord, 1.0F, t3);
-        	worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord, 1.0F, t2);
-        	worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord + e.xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord + e.yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord + e.zCoord, 0.0F, t2);
-        	worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord, 0.0F, t3);
+            worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord, 1.0F, t3);
+            worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord, 1.0F, t2);
+            worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord + e.xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord + e.yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord + e.zCoord, 0.0F, t2);
+            worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord, 0.0F, t3);
         }
         // tessellator.addVertexWithUV(x + 0.5 + a.xCoord, y + 0.5 + a.yCoord, z + 0.5 + a.zCoord, 1.0F, t3);
         // tessellator.addVertexWithUV(x + 0.5 + a.xCoord + e.xCoord, y + 0.5 + a.yCoord + e.yCoord, z + 0.5 + a.zCoord + e.zCoord, 1.0F, t2);

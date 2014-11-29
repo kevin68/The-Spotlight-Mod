@@ -38,6 +38,8 @@ public class TheSpotLightMod
 
     public static final PacketManager packetHandler = new PacketManager("fr.mcnanotech.kevin_68.thespotlightmod.network.packets", MODID, "TheSpotLightMod");
 
+//    public static SimpleNetworkWrapper networkTest;
+
     public static Logger log;
 
     public static CreativeTabs tab = new CreativeTabs("thespotlightmod.tab")
@@ -54,6 +56,10 @@ public class TheSpotLightMod
     public void preInitTheSpotlightMod(FMLPreInitializationEvent event)
     {
         log = event.getModLog();
+
+		// networkTest = NetworkRegistry.INSTANCE.newSimpleChannel("TestTSM");
+		// networkTest.registerMessage(PacketTest.Handler.class, PacketTest.class, 0, Side.SERVER);
+
         TSMBlocks.initBlock();
         TSMItems.initItems();
         TSMTileEntity.registerTiles();

@@ -7,6 +7,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.minecraftforgefrance.ffmtlibs.network.FFMTPacket;
@@ -39,6 +40,7 @@ public class PacketSpotLightByte extends FFMTPacket
     @Override
     public void writeData(ByteBuf buffer) throws IOException
     {
+    	System.out.println("write");
         buffer.writeInt(x);
         buffer.writeInt(y);
         buffer.writeInt(z);
@@ -49,6 +51,7 @@ public class PacketSpotLightByte extends FFMTPacket
     @Override
     public void readData(ByteBuf buffer)
     {
+    	System.out.println("read");
         x = buffer.readInt();
         y = buffer.readInt();
         z = buffer.readInt();
@@ -59,12 +62,12 @@ public class PacketSpotLightByte extends FFMTPacket
     @Override
     public void handleClientSide(EntityPlayer player)
     {
-
     }
 
     @Override
     public void handleServerSide(EntityPlayer player)
     {
+    	System.out.println("server");
         World world = player.worldObj;
         TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 

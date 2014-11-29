@@ -1,0 +1,15 @@
+{
+	"parent": "thespotlightmod:block/tsm_spotlight",
+	"textures": {
+		"top": "blocks/beacon",
+		"side": "blocks/beacon",
+		"handle": "blocks/beacon"
+	},
+	"display": {
+		"thirdperson": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 1, 1, 1 ]
+		}
+	}
+}
