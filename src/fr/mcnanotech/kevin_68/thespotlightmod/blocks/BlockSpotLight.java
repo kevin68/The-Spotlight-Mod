@@ -65,12 +65,6 @@ public class BlockSpotLight extends BlockContainer
 		return false;
 	}
 
-	// @Override
-	// public boolean renderAsNormalBlock()
-	// {
-	// return false;
-	// }
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
