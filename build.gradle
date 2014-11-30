@@ -31,7 +31,7 @@ else {
 }
 
 minecraft {
-    version = "1.7.10-10.13.0.1160"
+    version = "1.7.10-10.13.0.1246"
     assetDir = "run/assets"
 	
     replace '@VERSION@', project.version
@@ -54,7 +54,7 @@ dependencies {
         lib.mkdirs()
     }
     
-    def ffmtlibUrl = "http://ci.mcnanotech.fr/job/FFMT-libs/105/artifact/build/libs/FFMT-libs-universal-1.5.0.105-mc1.7.10.jar"
+    def ffmtlibUrl = "http://ci.mcnanotech.fr/job/FFMT-libs/119/artifact/build/libs/FFMT-libs-universal-1.5.0.119-mc1.8.jar"
     def ffmtlib = new File(rootProject.projectDir, "libs/" + ffmtlibUrl.tokenize("/")[-1])
     if (!ffmtlib.exists()) {
         new URL(ffmtlibUrl).withInputStream{ i -> ffmtlib.withOutputStream{ it << i }}

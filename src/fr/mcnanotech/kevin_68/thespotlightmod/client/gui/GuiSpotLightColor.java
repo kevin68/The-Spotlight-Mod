@@ -3,6 +3,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 import java.util.ArrayList;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -16,11 +17,11 @@ import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiContainerSliderBase;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderForContainer;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
+import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 
-public class GuiSpotLightColor extends GuiContainerSliderBase
+public class GuiSpotLightColor extends GuiContainer implements ISliderButton
 {
 	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
@@ -44,13 +45,13 @@ public class GuiSpotLightColor extends GuiContainerSliderBase
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 
-		this.buttonList.add(new GuiSliderForContainer(this, 0, x - 40, y - 20, 256, 20, I18n.format("container.spotlight.red") + " : " + (tileSpotLight.getRed() & 0xFF), (tileSpotLight.getRed() & 0xFF) / 255.0F));
-		this.buttonList.add(new GuiSliderForContainer(this, 1, x - 40, y + 2, 256, 20, I18n.format("container.spotlight.green") + " : " + (tileSpotLight.getGreen() & 0xFF), (tileSpotLight.getGreen() & 0xFF) / 255.0F));
-		this.buttonList.add(new GuiSliderForContainer(this, 2, x - 40, y + 24, 256, 20, I18n.format("container.spotlight.blue") + " : " + (tileSpotLight.getBlue() & 0xFF), (tileSpotLight.getBlue() & 0xFF) / 255.0F));
+		this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, I18n.format("container.spotlight.red") + " : " + (tileSpotLight.getRed() & 0xFF), (tileSpotLight.getRed() & 0xFF) / 255.0F));
+		this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, I18n.format("container.spotlight.green") + " : " + (tileSpotLight.getGreen() & 0xFF), (tileSpotLight.getGreen() & 0xFF) / 255.0F));
+		this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 24, 256, 20, I18n.format("container.spotlight.blue") + " : " + (tileSpotLight.getBlue() & 0xFF), (tileSpotLight.getBlue() & 0xFF) / 255.0F));
 
-		this.buttonList.add(new GuiSliderForContainer(this, 3, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.red") + " : " + (tileSpotLight.getSecRed() & 0xFF), (tileSpotLight.getSecRed() & 0xFF) / 255.0F));
-		this.buttonList.add(new GuiSliderForContainer(this, 4, x - 40, y + 68, 256, 20, I18n.format("container.spotlight.green") + " : " + (tileSpotLight.getSecGreen() & 0xFF), (tileSpotLight.getSecGreen() & 0xFF) / 255.0F));
-		this.buttonList.add(new GuiSliderForContainer(this, 5, x - 40, y + 90, 256, 20, I18n.format("container.spotlight.blue") + " : " + (tileSpotLight.getSecBlue() & 0xFF), (tileSpotLight.getSecBlue() & 0xFF) / 255.0F));
+		this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.red") + " : " + (tileSpotLight.getSecRed() & 0xFF), (tileSpotLight.getSecRed() & 0xFF) / 255.0F));
+		this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 68, 256, 20, I18n.format("container.spotlight.green") + " : " + (tileSpotLight.getSecGreen() & 0xFF), (tileSpotLight.getSecGreen() & 0xFF) / 255.0F));
+		this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 90, 256, 20, I18n.format("container.spotlight.blue") + " : " + (tileSpotLight.getSecBlue() & 0xFF), (tileSpotLight.getSecBlue() & 0xFF) / 255.0F));
 
 		this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
 		this.buttonList.add(helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
