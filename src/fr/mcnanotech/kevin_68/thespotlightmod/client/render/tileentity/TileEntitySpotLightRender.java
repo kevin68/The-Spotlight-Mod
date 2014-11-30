@@ -1,6 +1,5 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity;
 
-import static java.lang.Math.cos;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelSign;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,10 +24,14 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 @SideOnly(Side.CLIENT)
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileEntityInventorySpecialRenderer
-// TODO
 {
 	private final ModelSign modelSign = new ModelSign();
 	private ModelSpotLight model;
+	private TSMVec3[] vM = null, vS = null;
+	private TSMVec3 e = null;
+	private double prevSize = -1, prevSizeSec = -1, prevA1 = -1, prevA2 = -1;
+	private int prevHeight = -1, prevSides = -1;
+	private byte prevAxe = -1;
 
 	// @Override
 	public void renderInventory(double x, double y, double z)
@@ -68,22 +71,22 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		{
 			GL11.glRotated(angl2, 0.0F, 1.0F, 0.0F);
 			GL11.glRotated(-angl, 0.0F, 0.0F, 1.0F);
-			GL11.glTranslated(0.0F, cos(Math.PI * (1.0F / 180.0F) * angl) - 1, 0.0F);
-			GL11.glTranslated(cos(Math.PI * (1.0F / 180.0F) * angl + Math.PI / 2.0F), 0.0F, 0.0F);
+			GL11.glTranslated(0.0F, Math.cos(Math.PI * (1.0F / 180.0F) * angl) - 1, 0.0F);
+			GL11.glTranslated(Math.cos(Math.PI * (1.0F / 180.0F) * angl + Math.PI / 2.0F), 0.0F, 0.0F);
 
 		}
 		else if(tileentity.getDisplayAxe() == 1)
 		{
 			GL11.glRotated(-angl2, 1.0F, 0.0F, 0.0F);
 			GL11.glRotated(angl + 90, 0.0F, 0.0F, 1.0F);
-			GL11.glTranslated(cos(Math.PI * 1 / 180 * angl) * cos(Math.PI * 1 / 180 * angl2), cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2));
+			GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl) * Math.cos(Math.PI * 1 / 180 * angl2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2));
 		}
 		else if(tileentity.getDisplayAxe() == 2)
 		{
 			GL11.glRotated(-angl2, 0.0F, 0.0F, 1.0F);
 			GL11.glRotated(angl, 1.0F, 0.0F, 0.0F);
 			GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
-			GL11.glTranslated(cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -cos(Math.PI * 1 / 180 * angl2) * cos(Math.PI * 1 / 180 * angl));
+			GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angl));
 		}
 
 		this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
@@ -112,14 +115,14 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 
 			worldrenderer.startDrawingQuads();
 			worldrenderer.func_178960_a((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
-			drawBeam(d4, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
+			drawBeam(worldrenderer, x, y, z, d4, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, false);
 			tess.draw();
 
 			if(tileentity.isSideLaser())
 			{
 				worldrenderer.startDrawingQuads();
 				worldrenderer.func_178960_a((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
-				drawBeam(d4, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
+				drawBeam(worldrenderer, x, y, z, d4, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, false);
 				tess.draw();
 			}
 
@@ -134,14 +137,14 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			{
 				worldrenderer.startDrawingQuads();
 				worldrenderer.func_178960_a((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
-				drawBeam(d5, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
+				drawBeam(worldrenderer, x, y, z, d5, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, true);
 				tess.draw();
 
 				if(tileentity.isSideLaser())
 				{
 					worldrenderer.startDrawingQuads();
 					worldrenderer.func_178960_a((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
-					drawBeam(d5, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), worldrenderer, x, y, z, t2, t3, (tileentity.getSides() & 0xFF) + 2);
+					drawBeam(worldrenderer, x, y, z, d5, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, true);
 					tess.draw();
 				}
 			}
@@ -203,129 +206,106 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		this.renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
 	}
 
-	public void drawBeam(double size, int height, double a1, double a2, byte axe, WorldRenderer worldrenderer, double x, double y, double z, double t2, double t3, int sides)
+	public void drawBeam(WorldRenderer worldrenderer, double x, double y, double z, double size, int height, double a1, double a2, byte axe, double t2, double t3, int sides, boolean secLaser)
+	{
+		TSMVec3[] v = null;
+
+		if(vM != null && vS != null)
+		{
+			if(height != prevHeight || a1 != prevA1 || a2 != prevA2 || axe != prevAxe || sides != prevSides)
+			{
+				prevHeight = height;
+				prevA1 = a1;
+				prevA2 = a2;
+				prevAxe = axe;
+				prevSides = sides;
+				v = process(size, height, a1, a2, axe, t2, t3, sides);
+			}
+			else if(secLaser && size != prevSizeSec)
+			{
+				prevSizeSec = size;
+				v = process(size, height, a1, a2, axe, t2, t3, sides);
+			}
+			else if(!secLaser && size != prevSize)
+			{
+				prevSize = size;
+				v = process(size, height, a1, a2, axe, t2, t3, sides);
+			}
+			else
+			{
+				if(secLaser)
+				{
+					v = vS;
+				}
+				else
+				{
+					v = vM;
+				}
+			}
+		}
+		else
+		{
+			v = process(size, height, a1, a2, axe, t2, t3, sides);
+		}
+
+		if(secLaser)
+		{
+			vS = v;
+		}
+		else
+		{
+			vM = v;
+		}
+
+		for(int i = 0; i < v.length; i++)
+		{
+			worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord, 1.0F, t3);
+			worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord, 1.0F, t2);
+			worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord + e.xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord + e.yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord + e.zCoord, 0.0F, t2);
+			worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord, 0.0F, t3);
+		}
+	}
+
+	private TSMVec3[] process(double size, int height, double a1, double a2, byte axe, double t2, double t3, int sides)
 	{
 		TSMVec3[] v = new TSMVec3[sides];
-		TSMVec3 e = null;
 		double angle = (Math.PI * 2) / sides;
 		if(axe == 0)
 		{
 			for(int i = 0; i < sides; i++)
 			{
 				v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(size, 2)) * Math.cos(angle * i + Math.PI / sides), 0.0D, Math.sqrt(2 * Math.pow(size, 2)) * Math.sin(angle * i + Math.PI / sides));
-
-				// if(i % 2 == 0)
-				// {
-				// v[i] = TSMVec3.createVectorHelper(size * Math.cos(angle * i),
-				// 0.0D, size * Math.sin(angle * (i == 0 ? sides - 1 : i - 1)));
-				//
-				// }
-				// else
-				// {
-				// v[i] = TSMVec3.createVectorHelper(size * Math.cos(angle * (i
-				// == 0 ? sides - 1 : i - 1)), 0.0D, size * Math.sin(angle *
-				// i));
-				// }
 				v[i].rotateAroundZ((float)a1);
 				v[i].rotateAroundY(-(float)a2);
 			}
-			// a = TSMVec3.createVectorHelper(size, 0.0D, size);
-			// b = TSMVec3.createVectorHelper(-size, 0.0D, size);
-			// c = TSMVec3.createVectorHelper(-size, 0.0D, -size);
-			// d = TSMVec3.createVectorHelper(size, 0.0D, -size);
 			e = new TSMVec3(0, height, 0);
-			// a.rotateAroundZ((float)a1);
-			// b.rotateAroundZ((float)a1);
-			// c.rotateAroundZ((float)a1);
-			// d.rotateAroundZ((float)a1);
 			e.rotateAroundZ((float)a1);
-			// a.rotateAroundY(-(float)a2);
-			// b.rotateAroundY(-(float)a2);
-			// c.rotateAroundY(-(float)a2);
-			// d.rotateAroundY(-(float)a2);
 			e.rotateAroundY(-(float)a2);
 		}
-		else if(axe == 1)// TODO sides
+		else if(axe == 1)
 		{
-			// a = TSMVec3.createVectorHelper(0, size, size);
-			// b = TSMVec3.createVectorHelper(0, -size, size);
-			// c = TSMVec3.createVectorHelper(0, -size, -size);
-			// d = TSMVec3.createVectorHelper(0, size, -size);
+			for(int i = 0; i < sides; i++)
+			{
+				v[i] = new TSMVec3(0.0D, Math.sqrt(2 * Math.pow(size, 2)) * Math.cos(angle * i + Math.PI / sides), Math.sqrt(2 * Math.pow(size, 2)) * Math.sin(angle * i + Math.PI / sides));
+				v[i].rotateAroundZ(-(float)a1);
+				v[i].rotateAroundX(-(float)a2);
+			}
 			e = new TSMVec3(height, 0, 0);
-			// a.rotateAroundZ(-(float)a1);
-			// b.rotateAroundZ(-(float)a1);
-			// c.rotateAroundZ(-(float)a1);
-			// d.rotateAroundZ(-(float)a1);
 			e.rotateAroundZ(-(float)a1);
-			// a.rotateAroundX(-(float)a2);
-			// b.rotateAroundX(-(float)a2);
-			// c.rotateAroundX(-(float)a2);
-			// d.rotateAroundX(-(float)a2);
 			e.rotateAroundX(-(float)a2);
 		}
 		else
-		// TODO sides
 		{
-			// a = TSMVec3.createVectorHelper(size, size, 0);
-			// b = TSMVec3.createVectorHelper(-size, size, 0);
-			// c = TSMVec3.createVectorHelper(-size, -size, 0);
-			// d = TSMVec3.createVectorHelper(size, -size, -0);
+			for(int i = 0; i < sides; i++)
+			{
+				v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(size, 2)) * Math.cos(angle * i + Math.PI / sides), Math.sqrt(2 * Math.pow(size, 2)) * Math.sin(angle * i + Math.PI / sides), 0.0D);
+				v[i].rotateAroundX((float)a1);
+				v[i].rotateAroundZ((float)a2);
+			}
 			e = new TSMVec3(0, 0, height);
-			// a.rotateAroundX((float)a1);
-			// b.rotateAroundX((float)a1);
-			// c.rotateAroundX((float)a1);
-			// d.rotateAroundX((float)a1);
 			e.rotateAroundX((float)a1);
-			// a.rotateAroundZ((float)a2);
-			// b.rotateAroundZ((float)a2);
-			// c.rotateAroundZ((float)a2);
-			// d.rotateAroundZ((float)a2);
 			e.rotateAroundZ((float)a2);
 		}
-
-		for(int i = 0; i < v.length; i++)
-		{
-			// System.out.println(i);
-			// System.out.println(v.length);
-			worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord, 1.0F, t3);
-			worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord, 1.0F, t2);
-			worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord + e.xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord + e.yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord + e.zCoord, 0.0F, t2);
-			worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord, 0.0F, t3);
-		}
-		// tessellator.addVertexWithUV(x + 0.5 + a.xCoord, y + 0.5 + a.yCoord, z
-		// + 0.5 + a.zCoord, 1.0F, t3);
-		// tessellator.addVertexWithUV(x + 0.5 + a.xCoord + e.xCoord, y + 0.5 +
-		// a.yCoord + e.yCoord, z + 0.5 + a.zCoord + e.zCoord, 1.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + b.xCoord + e.xCoord, y + 0.5 +
-		// b.yCoord + e.yCoord, z + 0.5 + b.zCoord + e.zCoord, 0.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + b.xCoord, y + 0.5 + b.yCoord, z
-		// + 0.5 + b.zCoord, 0.0F, t3);
-		//
-		// tessellator.addVertexWithUV(x + 0.5 + b.xCoord, y + 0.5 + b.yCoord, z
-		// + 0.5 + b.zCoord, 1.0F, t3);
-		// tessellator.addVertexWithUV(x + 0.5 + b.xCoord + e.xCoord, y + 0.5 +
-		// b.yCoord + e.yCoord, z + 0.5 + b.zCoord + e.zCoord, 1.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + c.xCoord + e.xCoord, y + 0.5 +
-		// c.yCoord + e.yCoord, z + 0.5 + c.zCoord + e.zCoord, 0.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + c.xCoord, y + 0.5 + c.yCoord, z
-		// + 0.5 + c.zCoord, 0.0F, t3);
-		//
-		// tessellator.addVertexWithUV(x + 0.5 + c.xCoord, y + 0.5 + c.yCoord, z
-		// + 0.5 + c.zCoord, 1.0F, t3);
-		// tessellator.addVertexWithUV(x + 0.5 + c.xCoord + e.xCoord, y + 0.5 +
-		// c.yCoord + e.yCoord, z + 0.5 + c.zCoord + e.zCoord, 1.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + d.xCoord + e.xCoord, y + 0.5 +
-		// d.yCoord + e.yCoord, z + 0.5 + d.zCoord + e.zCoord, 0.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + d.xCoord, y + 0.5 + d.yCoord, z
-		// + 0.5 + d.zCoord, 0.0F, t3);
-		//
-		// tessellator.addVertexWithUV(x + 0.5 + d.xCoord, y + 0.5 + d.yCoord, z
-		// + 0.5 + d.zCoord, 1.0F, t3);
-		// tessellator.addVertexWithUV(x + 0.5 + d.xCoord + e.xCoord, y + 0.5 +
-		// d.yCoord + e.yCoord, z + 0.5 + d.zCoord + e.zCoord, 1.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + a.xCoord + e.xCoord, y + 0.5 +
-		// a.yCoord + e.yCoord, z + 0.5 + a.zCoord + e.zCoord, 0.0F, t2);
-		// tessellator.addVertexWithUV(x + 0.5 + a.xCoord, y + 0.5 + a.yCoord, z
-		// + 0.5 + a.zCoord, 0.0F, t3);
+		return v;
 	}
 }

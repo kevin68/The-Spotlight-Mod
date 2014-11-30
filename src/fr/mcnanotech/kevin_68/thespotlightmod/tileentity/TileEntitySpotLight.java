@@ -701,13 +701,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		AxisAlignedBB cbb = getBlockType().getCollisionBoundingBox(worldObj, getPos(), worldObj.getBlockState(getPos()));
-		if(cbb != null)
-		{
-			bb = cbb;
-		}
-		return bb;
+		return INFINITE_EXTENT_AABB;
 	}
 
 	@Override
@@ -726,7 +720,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 
 	public void setByte(byte index, byte value)
 	{
-		System.out.println("SetByte");
 		switch(index)
 		{
 		case 0:

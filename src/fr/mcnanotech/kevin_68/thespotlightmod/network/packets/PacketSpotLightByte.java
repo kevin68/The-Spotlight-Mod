@@ -59,14 +59,12 @@ public class PacketSpotLightByte extends FFMTPacket
 	@Override
 	public void handleClientSide(EntityPlayer player)
 	{
-		// System.out.println(x + " " + y + " " + z + " " + index + " " +
-		// value);
+
 	}
 
 	@Override
 	public void handleServerSide(EntityPlayer player)
 	{
-		System.out.println("server");
 		World world = player.worldObj;
 		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
