@@ -3,6 +3,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.tileentity;
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +14,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants;
@@ -73,6 +75,8 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		{
 			this.isActive = true;
 
+			// checkBlocks(); TODO next
+
 			if(bVec != null)
 			{
 				if(this.getLaserHeight() != prevHeight || this.getAngle1() != prevA1 || this.getAngle2() != prevA2 || this.getAxe() != prevAxe || sides != prevSides || prevSize != this.getMainLaserSize() || prevSizeSec != this.getSecLaserSize())
@@ -94,104 +98,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 
 			if(isTimeLineEnabled())
 			{
-				ArrayList<Integer> keys = new ArrayList();
-
-				for(int i = 0; i < keyList.length; i++)
-				{
-					SpotLightEntry entry = keyList[i];
-					if(entry != null && entry.isActive())
-					{
-						keys.add(i * 10);
-					}
-				}
-
-				if(keys.isEmpty())
-				{
-					setBoolean((byte)22, false);
-				}
-
-				if(getTime() == 1199)
-				{
-					set(23, 0);
-				}
-				else
-				{
-					set(23, getTime() + 1);
-				}
-
-				if(!this.worldObj.isRemote)
-				{
-					if(this.isSmoothMode())
-					{
-						this.setByte((byte)0, (redKey[getTime()]));
-						this.setByte((byte)1, (greenKey[getTime()]));
-						this.setByte((byte)2, (blueKey[getTime()]));
-						this.setByte((byte)3, (secRedKey[getTime()]));
-						this.setByte((byte)4, (secGreenKey[getTime()]));
-						this.setByte((byte)5, (secBlueKey[getTime()]));
-						this.set(8, (angle1Key[getTime()]));
-						this.setByte((byte)9, (angle2Key[getTime()]));
-						this.setByte((byte)16, (mainSizeKey[getTime()]));
-						this.setByte((byte)17, (secSizeKey[getTime()]));
-						this.set(25, lazerHeightKey[getTime()]);
-						this.setByte((byte)28, (txtRedKey[getTime()]));
-						this.setByte((byte)29, (txtGreenKey[getTime()]));
-						this.setByte((byte)30, (txtBlueKey[getTime()]));
-						this.set(31, (txtAngle1Key[getTime()]));
-						this.setByte((byte)40, (sidesKey[getTime()]));
-						int curTime = this.getTime() / 10;
-						if(this.getKey(curTime) != null && lastTimeUse != time)
-						{
-							lastTimeUse = time;
-							this.worldObj.markBlockForUpdate(pos);
-							this.setBoolean((byte)10, this.getKey(curTime).isKeyAutRot());
-							this.setBoolean((byte)11, this.getKey(curTime).isKeyRevRot());
-							this.setByte((byte)12, this.getKey(curTime).getKeyRotSpe());
-							this.setBoolean((byte)13, this.getKey(curTime).isKeySecLas());
-							this.setByte((byte)14, this.getKey(curTime).getKeyDisplayAxe());
-							this.setBoolean((byte)15, this.getKey(curTime).isSideLaser());
-							this.setBoolean((byte)27, this.getKey(curTime).isKeyTextEnabled());
-
-							this.setBoolean((byte)33, this.getKey(curTime).isTxtAutoRotate());
-							this.setBoolean((byte)34, this.getKey(curTime).isTxtReverseRotation());
-							this.setByte((byte)35, this.getKey(curTime).getTxtRotationSpeed());
-						}
-					}
-					else
-					{
-						int curTime = this.getTime() / 10;
-						if(this.getKey(curTime) != null && lastTimeUse != time)
-						{
-							lastTimeUse = time;
-							this.setByte((byte)0, this.getKey(curTime).getKeyRed());
-							this.setByte((byte)1, this.getKey(curTime).getKeyGreen());
-							this.setByte((byte)2, this.getKey(curTime).getKeyBlue());
-							this.setByte((byte)3, this.getKey(curTime).getKeySecRed());
-							this.setByte((byte)4, this.getKey(curTime).getKeySecGreen());
-							this.setByte((byte)5, this.getKey(curTime).getKeySecBlue());
-							this.set(8, this.getKey(curTime).getKeyAngle1());
-							this.setByte((byte)9, this.getKey(curTime).getKeyAngle2());
-							this.setBoolean((byte)10, this.getKey(curTime).isKeyAutRot());
-							this.setBoolean((byte)11, this.getKey(curTime).isKeyRevRot());
-							this.setByte((byte)12, this.getKey(curTime).getKeyRotSpe());
-							this.setBoolean((byte)13, this.getKey(curTime).isKeySecLas());
-							this.setByte((byte)14, this.getKey(curTime).getKeyDisplayAxe());
-							this.setBoolean((byte)15, this.getKey(curTime).isSideLaser());
-							this.setByte((byte)16, this.getKey(curTime).getKeyMainLaserSize());
-							this.setByte((byte)17, this.getKey(curTime).getKeySecLaserSize());
-							this.set(25, this.getKey(curTime).getKeyLaserHeight());
-							this.setBoolean((byte)27, this.getKey(curTime).isKeyTextEnabled());
-							this.setByte((byte)28, this.getKey(curTime).getKeyTxtRed());
-							this.setByte((byte)29, this.getKey(curTime).getKeyTxtGreen());
-							this.setByte((byte)30, this.getKey(curTime).getKeyTxtBlue());
-							this.set(31, this.getKey(curTime).getTxtAngle1());
-							this.setBoolean((byte)33, this.getKey(curTime).isTxtAutoRotate());
-							this.setBoolean((byte)34, this.getKey(curTime).isTxtReverseRotation());
-							this.setByte((byte)35, this.getKey(curTime).getTxtRotationSpeed());
-							this.worldObj.markBlockForUpdate(pos);
-						}
-					}
-				}
+				applyKeys();
 			}
 		}
 		else
@@ -200,7 +107,135 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		}
 	}
 
-	public void keysProcess()
+	private void checkBlocks()
+	{
+		if(this.getAngle1() % 90 == 0 || this.getAngle2() % 90 == 0)
+		{
+
+		}
+		else
+		{
+			if(this.bVec != null)
+			{
+				TSMVec3 v = this.bVec[0].getLenVec();
+				double dirGround = v.zCoord / v.xCoord;
+				for(int i = 1; i < Math.floor(v.xCoord); i++)
+				{
+					for(int j = 1; j < Math.floor(v.zCoord); j++)
+					{
+						if(dirGround * i > j && dirGround * i < j + 1)
+						{
+							getWorld().setBlockState(new BlockPos(getPos().getX() + i, getPos().getY(), getPos().getZ() + j), Blocks.gold_block.getDefaultState());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void applyKeys()
+	{
+		ArrayList<Integer> keys = new ArrayList();
+
+		for(int i = 0; i < keyList.length; i++)
+		{
+			SpotLightEntry entry = keyList[i];
+			if(entry != null && entry.isActive())
+			{
+				keys.add(i * 10);
+			}
+		}
+
+		if(keys.isEmpty())
+		{
+			setBoolean((byte)22, false);
+		}
+
+		if(getTime() == 1199)
+		{
+			set(23, 0);
+		}
+		else
+		{
+			set(23, getTime() + 1);
+		}
+
+		if(!this.worldObj.isRemote)
+		{
+			if(this.isSmoothMode())
+			{
+				this.setByte((byte)0, (redKey[getTime()]));
+				this.setByte((byte)1, (greenKey[getTime()]));
+				this.setByte((byte)2, (blueKey[getTime()]));
+				this.setByte((byte)3, (secRedKey[getTime()]));
+				this.setByte((byte)4, (secGreenKey[getTime()]));
+				this.setByte((byte)5, (secBlueKey[getTime()]));
+				this.set(8, (angle1Key[getTime()]));
+				this.setByte((byte)9, (angle2Key[getTime()]));
+				this.setByte((byte)16, (mainSizeKey[getTime()]));
+				this.setByte((byte)17, (secSizeKey[getTime()]));
+				this.set(25, lazerHeightKey[getTime()]);
+				this.setByte((byte)28, (txtRedKey[getTime()]));
+				this.setByte((byte)29, (txtGreenKey[getTime()]));
+				this.setByte((byte)30, (txtBlueKey[getTime()]));
+				this.set(31, (txtAngle1Key[getTime()]));
+				this.setByte((byte)40, (sidesKey[getTime()]));
+				int curTime = this.getTime() / 10;
+				if(this.getKey(curTime) != null && lastTimeUse != time)
+				{
+					lastTimeUse = time;
+					this.worldObj.markBlockForUpdate(pos);
+					this.setBoolean((byte)10, this.getKey(curTime).isKeyAutRot());
+					this.setBoolean((byte)11, this.getKey(curTime).isKeyRevRot());
+					this.setByte((byte)12, this.getKey(curTime).getKeyRotSpe());
+					this.setBoolean((byte)13, this.getKey(curTime).isKeySecLas());
+					this.setByte((byte)14, this.getKey(curTime).getKeyDisplayAxe());
+					this.setBoolean((byte)15, this.getKey(curTime).isSideLaser());
+					this.setBoolean((byte)27, this.getKey(curTime).isKeyTextEnabled());
+
+					this.setBoolean((byte)33, this.getKey(curTime).isTxtAutoRotate());
+					this.setBoolean((byte)34, this.getKey(curTime).isTxtReverseRotation());
+					this.setByte((byte)35, this.getKey(curTime).getTxtRotationSpeed());
+				}
+			}
+			else
+			{
+				int curTime = this.getTime() / 10;
+				if(this.getKey(curTime) != null && lastTimeUse != time)
+				{
+					lastTimeUse = time;
+					this.setByte((byte)0, this.getKey(curTime).getKeyRed());
+					this.setByte((byte)1, this.getKey(curTime).getKeyGreen());
+					this.setByte((byte)2, this.getKey(curTime).getKeyBlue());
+					this.setByte((byte)3, this.getKey(curTime).getKeySecRed());
+					this.setByte((byte)4, this.getKey(curTime).getKeySecGreen());
+					this.setByte((byte)5, this.getKey(curTime).getKeySecBlue());
+					this.set(8, this.getKey(curTime).getKeyAngle1());
+					this.setByte((byte)9, this.getKey(curTime).getKeyAngle2());
+					this.setBoolean((byte)10, this.getKey(curTime).isKeyAutRot());
+					this.setBoolean((byte)11, this.getKey(curTime).isKeyRevRot());
+					this.setByte((byte)12, this.getKey(curTime).getKeyRotSpe());
+					this.setBoolean((byte)13, this.getKey(curTime).isKeySecLas());
+					this.setByte((byte)14, this.getKey(curTime).getKeyDisplayAxe());
+					this.setBoolean((byte)15, this.getKey(curTime).isSideLaser());
+					this.setByte((byte)16, this.getKey(curTime).getKeyMainLaserSize());
+					this.setByte((byte)17, this.getKey(curTime).getKeySecLaserSize());
+					this.set(25, this.getKey(curTime).getKeyLaserHeight());
+					this.setBoolean((byte)27, this.getKey(curTime).isKeyTextEnabled());
+					this.setByte((byte)28, this.getKey(curTime).getKeyTxtRed());
+					this.setByte((byte)29, this.getKey(curTime).getKeyTxtGreen());
+					this.setByte((byte)30, this.getKey(curTime).getKeyTxtBlue());
+					this.set(31, this.getKey(curTime).getTxtAngle1());
+					this.setBoolean((byte)33, this.getKey(curTime).isTxtAutoRotate());
+					this.setBoolean((byte)34, this.getKey(curTime).isTxtReverseRotation());
+					this.setByte((byte)35, this.getKey(curTime).getTxtRotationSpeed());
+					this.worldObj.markBlockForUpdate(pos);
+				}
+			}
+		}
+	}
+
+	private void keysProcess()
 	{
 		ArrayList<Integer> keys = new ArrayList();
 		ArrayList<Integer> timeBetwinKeys = new ArrayList();
@@ -500,18 +535,18 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	{
 		double[] sizes = new double[] {Math.sqrt(Math.pow(((this.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2), Math.sqrt(Math.pow(((this.getSecLaserSize() & 0xFF) / 200.0D), 2) / 2)};
 		double a1 = Math.toRadians(this.getAngle1());
-		double a2 = this.isAutoRotate() ? (((getWorld().getTotalWorldTime() * 0.025D * (1.0D - ((byte)1 & 1) * 2.5D)) * ((this.getRotationSpeed() & 0xFF) / 4.0D)) * (this.isReverseRotation() ? -1.0D : 1.0D)) : Math.toRadians(this.getAngle2());
+		double a2 = this.isAutoRotate() ? (((getWorld().getTotalWorldTime() * 0.025D * (1.0D - ((byte)1 & 1) * 2.5D)) * ((this.getRotationSpeed() & 0xFF) / 4.0D)) * (this.isReverseRotation() ? -1.0D : 1.0D)) : Math.toRadians(this.getAngle2() & 0xFF);
 
 		BeamVec[] vecs = new BeamVec[4];
 
 		for(int j = 0; j < 4; j++)
 		{
-			TSMVec3[] v = new TSMVec3[this.getSides() + 2];
+			TSMVec3[] v = new TSMVec3[(this.getSides() + 2)];
 			TSMVec3 e = null;
-			double angle = (Math.PI * 2) / this.getSides() + 2;
+			double angle = (Math.PI * 2) / (this.getSides() + 2);
 			if(this.getAxe() == 0)
 			{
-				for(int i = 0; i < this.getSides() + 2; i++)
+				for(int i = 0; i < (this.getSides() + 2); i++)
 				{
 					v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.getSides() + 2)), 0.0D, Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.getSides() + 2)));
 					v[i].rotateAroundZ((float)a1);
@@ -523,7 +558,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 			}
 			else if(this.getAxe() == 1)
 			{
-				for(int i = 0; i < this.getSides() + 2; i++)
+				for(int i = 0; i < (this.getSides() + 2); i++)
 				{
 					v[i] = new TSMVec3(0.0D, Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.getSides() + 2)), Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.getSides() + 2)));
 					v[i].rotateAroundZ(-(float)a1);
@@ -535,7 +570,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 			}
 			else
 			{
-				for(int i = 0; i < this.getSides() + 2; i++)
+				for(int i = 0; i < (this.getSides() + 2); i++)
 				{
 					v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.getSides() + 2)), Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.getSides() + 2)), 0.0D);
 					v[i].rotateAroundX((float)a1);
@@ -548,7 +583,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 
 			vecs[j] = new BeamVec(v, e);
 		}
-		System.out.println("Calculated");
 		return vecs;
 	}
 
