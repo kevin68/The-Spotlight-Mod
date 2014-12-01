@@ -22,7 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BeamVec;
 
 public class TileEntitySpotLight extends TileEntity implements IInventory, IUpdatePlayerListBox
 {
@@ -38,6 +40,10 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	public String textureName, secTextureName, displayText;
 	public boolean autoRotate, reverseRotation, secondaryLaser, sideLaser, timeLineEnabled, smoothMode, textEnabled, txtAutoRotate, txtReverseRotation;
 	public int time, lastTimeUse, angle1, lazerHeight, txtAngle1;
+
+	public BeamVec[] bVec = null;
+	private int prevHeight = -1, prevSides = -1, prevA1 = -1;
+	private byte prevAxe = -1, prevA2 = -1, prevSize = -1, prevSizeSec = -1;
 
 	public byte[] redKey = new byte[1200];
 	public byte[] greenKey = new byte[1200];
@@ -66,6 +72,25 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		if(this.worldObj.isBlockPowered(pos))
 		{
 			this.isActive = true;
+
+			if(bVec != null)
+			{
+				if(this.getLaserHeight() != prevHeight || this.getAngle1() != prevA1 || this.getAngle2() != prevA2 || this.getAxe() != prevAxe || sides != prevSides || prevSize != this.getMainLaserSize() || prevSizeSec != this.getSecLaserSize())
+				{
+					prevHeight = this.getLaserHeight();
+					prevA1 = this.getAngle1();
+					prevA2 = this.getAngle2();
+					prevAxe = this.getAxe();
+					prevSides = this.getSides();
+					prevSize = this.getMainLaserSize();
+					prevSizeSec = this.getSecLaserSize();
+					bVec = process();
+				}
+			}
+			else
+			{
+				bVec = process();
+			}
 
 			if(isTimeLineEnabled())
 			{
@@ -469,6 +494,62 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 				sidesKey[i] = keyList[keys.get(0) / 10].getSides();
 			}
 		}
+	}
+
+	private BeamVec[] process()
+	{
+		double[] sizes = new double[] {Math.sqrt(Math.pow(((this.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2), Math.sqrt(Math.pow(((this.getSecLaserSize() & 0xFF) / 200.0D), 2) / 2)};
+		double a1 = Math.toRadians(this.getAngle1());
+		double a2 = this.isAutoRotate() ? (((getWorld().getTotalWorldTime() * 0.025D * (1.0D - ((byte)1 & 1) * 2.5D)) * ((this.getRotationSpeed() & 0xFF) / 4.0D)) * (this.isReverseRotation() ? -1.0D : 1.0D)) : Math.toRadians(this.getAngle2());
+
+		BeamVec[] vecs = new BeamVec[4];
+
+		for(int j = 0; j < 4; j++)
+		{
+			TSMVec3[] v = new TSMVec3[this.getSides() + 2];
+			TSMVec3 e = null;
+			double angle = (Math.PI * 2) / this.getSides() + 2;
+			if(this.getAxe() == 0)
+			{
+				for(int i = 0; i < this.getSides() + 2; i++)
+				{
+					v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.getSides() + 2)), 0.0D, Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.getSides() + 2)));
+					v[i].rotateAroundZ((float)a1);
+					v[i].rotateAroundY(-(float)a2);
+				}
+				e = new TSMVec3(0, (j % 2 == 0 ? 1 : -1) * this.getLaserHeight(), 0);
+				e.rotateAroundZ((float)a1);
+				e.rotateAroundY(-(float)a2);
+			}
+			else if(this.getAxe() == 1)
+			{
+				for(int i = 0; i < this.getSides() + 2; i++)
+				{
+					v[i] = new TSMVec3(0.0D, Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.getSides() + 2)), Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.getSides() + 2)));
+					v[i].rotateAroundZ(-(float)a1);
+					v[i].rotateAroundX(-(float)a2);
+				}
+				e = new TSMVec3((j % 2 == 0 ? 1 : -1) * this.getLaserHeight(), 0, 0);
+				e.rotateAroundZ(-(float)a1);
+				e.rotateAroundX(-(float)a2);
+			}
+			else
+			{
+				for(int i = 0; i < this.getSides() + 2; i++)
+				{
+					v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.getSides() + 2)), Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.getSides() + 2)), 0.0D);
+					v[i].rotateAroundX((float)a1);
+					v[i].rotateAroundZ((float)a2);
+				}
+				e = new TSMVec3(0, 0, (j % 2 == 0 ? 1 : -1) * this.getLaserHeight());
+				e.rotateAroundX((float)a1);
+				e.rotateAroundZ((float)a2);
+			}
+
+			vecs[j] = new BeamVec(v, e);
+		}
+		System.out.println("Calculated");
+		return vecs;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -1037,7 +1118,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		return secondaryLaser;
 	}
 
-	public byte getDisplayAxe()
+	public byte getAxe()
 	{
 		return displayAxe;
 	}

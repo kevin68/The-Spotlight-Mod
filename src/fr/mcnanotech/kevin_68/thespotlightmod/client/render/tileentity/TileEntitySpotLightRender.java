@@ -20,6 +20,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.client.model.ModelSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BeamVec;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 @SideOnly(Side.CLIENT)
@@ -27,11 +28,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 {
 	private final ModelSign modelSign = new ModelSign();
 	private ModelSpotLight model;
-	private TSMVec3[] vM = null, vS = null;
-	private TSMVec3 e = null;
-	private double prevSize = -1, prevSizeSec = -1, prevA1 = -1, prevA2 = -1;
-	private int prevHeight = -1, prevSides = -1;
-	private byte prevAxe = -1;
 
 	// @Override
 	public void renderInventory(double x, double y, double z)
@@ -52,9 +48,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		byte b0 = 1;
 		float f2 = tileentity.getWorld().getTotalWorldTime() + tick;
 		double d3 = f2 * 0.025D * (1.0D - (b0 & 1) * 2.5D);
-		double angle1Deg = tileentity.getAngle1();
 		double angle2Deg = (tileentity.getAngle2() & 0xFF);
-		double a1 = Math.toRadians(angle1Deg);
 		double a2 = tileentity.isAutoRotate() ? ((d3 * ((tileentity.getRotationSpeed() & 0xFF) / 4.0D)) * (tileentity.isReverseRotation() ? -1.0D : 1.0D)) : Math.toRadians(angle2Deg);
 
 		GL11.glPushMatrix();
@@ -64,10 +58,10 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		model = new ModelSpotLight(ti);
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 
-		double angl = Math.toDegrees(a1);
+		double angl = tileentity.getAngle1();
 		double angl2 = Math.toDegrees(a2);
 
-		if(tileentity.getDisplayAxe() == 0)
+		if(tileentity.getAxe() == 0)
 		{
 			GL11.glRotated(angl2, 0.0F, 1.0F, 0.0F);
 			GL11.glRotated(-angl, 0.0F, 0.0F, 1.0F);
@@ -75,13 +69,13 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GL11.glTranslated(Math.cos(Math.PI * (1.0F / 180.0F) * angl + Math.PI / 2.0F), 0.0F, 0.0F);
 
 		}
-		else if(tileentity.getDisplayAxe() == 1)
+		else if(tileentity.getAxe() == 1)
 		{
 			GL11.glRotated(-angl2, 1.0F, 0.0F, 0.0F);
 			GL11.glRotated(angl + 90, 0.0F, 0.0F, 1.0F);
 			GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl) * Math.cos(Math.PI * 1 / 180 * angl2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angl + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2));
 		}
-		else if(tileentity.getDisplayAxe() == 2)
+		else if(tileentity.getAxe() == 2)
 		{
 			GL11.glRotated(-angl2, 0.0F, 0.0F, 1.0F);
 			GL11.glRotated(angl, 1.0F, 0.0F, 0.0F);
@@ -108,21 +102,20 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
 
 			float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
-			double d4 = Math.sqrt(Math.pow(b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2);// taille
 
 			double t2 = -1.0F - f3;
-			double t3 = tileentity.getLaserHeight() * f1 * (0.5D / d4) + t2;
+			double t3 = tileentity.getLaserHeight() * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
 
 			worldrenderer.startDrawingQuads();
 			worldrenderer.func_178960_a((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
-			drawBeam(worldrenderer, x, y, z, d4, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, false);
+			drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[0]);
 			tess.draw();
 
 			if(tileentity.isSideLaser())
 			{
 				worldrenderer.startDrawingQuads();
 				worldrenderer.func_178960_a((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
-				drawBeam(worldrenderer, x, y, z, d4, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, false);
+				drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[1]);
 				tess.draw();
 			}
 
@@ -131,20 +124,18 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.depthMask(false);
 
-			double d5 = Math.sqrt(Math.pow(b0 * ((tileentity.getSecLaserSize() & 0xFF) / 200.0D), 2) / 2);
-
 			if(tileentity.isSecondaryLaser())
 			{
 				worldrenderer.startDrawingQuads();
 				worldrenderer.func_178960_a((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
-				drawBeam(worldrenderer, x, y, z, d5, tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, true);
+				drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[2]);
 				tess.draw();
 
 				if(tileentity.isSideLaser())
 				{
 					worldrenderer.startDrawingQuads();
 					worldrenderer.func_178960_a((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
-					drawBeam(worldrenderer, x, y, z, d5, -tileentity.getLaserHeight(), a1, a2, tileentity.getDisplayAxe(), t2, t3, (tileentity.getSides() & 0xFF) + 2, true);
+					drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[3]);
 					tess.draw();
 				}
 			}
@@ -206,56 +197,10 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		this.renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
 	}
 
-	public void drawBeam(WorldRenderer worldrenderer, double x, double y, double z, double size, int height, double a1, double a2, byte axe, double t2, double t3, int sides, boolean secLaser)
+	public void drawBeam(WorldRenderer worldrenderer, double x, double y, double z, double t2, double t3, BeamVec vec)
 	{
-		TSMVec3[] v = null;
-
-		if(vM != null && vS != null)
-		{
-			if(height != prevHeight || a1 != prevA1 || a2 != prevA2 || axe != prevAxe || sides != prevSides)
-			{
-				prevHeight = height;
-				prevA1 = a1;
-				prevA2 = a2;
-				prevAxe = axe;
-				prevSides = sides;
-				v = process(size, height, a1, a2, axe, t2, t3, sides);
-			}
-			else if(secLaser && size != prevSizeSec)
-			{
-				prevSizeSec = size;
-				v = process(size, height, a1, a2, axe, t2, t3, sides);
-			}
-			else if(!secLaser && size != prevSize)
-			{
-				prevSize = size;
-				v = process(size, height, a1, a2, axe, t2, t3, sides);
-			}
-			else
-			{
-				if(secLaser)
-				{
-					v = vS;
-				}
-				else
-				{
-					v = vM;
-				}
-			}
-		}
-		else
-		{
-			v = process(size, height, a1, a2, axe, t2, t3, sides);
-		}
-
-		if(secLaser)
-		{
-			vS = v;
-		}
-		else
-		{
-			vM = v;
-		}
+		TSMVec3[] v = vec.getVecs();
+		TSMVec3 e = vec.getLenVec();
 
 		for(int i = 0; i < v.length; i++)
 		{
@@ -264,48 +209,5 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord + e.xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord + e.yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord + e.zCoord, 0.0F, t2);
 			worldrenderer.addVertexWithUV(x + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].xCoord, y + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].yCoord, z + 0.5 + v[(i == (v.length - 1) ? 0 : i + 1)].zCoord, 0.0F, t3);
 		}
-	}
-
-	private TSMVec3[] process(double size, int height, double a1, double a2, byte axe, double t2, double t3, int sides)
-	{
-		TSMVec3[] v = new TSMVec3[sides];
-		double angle = (Math.PI * 2) / sides;
-		if(axe == 0)
-		{
-			for(int i = 0; i < sides; i++)
-			{
-				v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(size, 2)) * Math.cos(angle * i + Math.PI / sides), 0.0D, Math.sqrt(2 * Math.pow(size, 2)) * Math.sin(angle * i + Math.PI / sides));
-				v[i].rotateAroundZ((float)a1);
-				v[i].rotateAroundY(-(float)a2);
-			}
-			e = new TSMVec3(0, height, 0);
-			e.rotateAroundZ((float)a1);
-			e.rotateAroundY(-(float)a2);
-		}
-		else if(axe == 1)
-		{
-			for(int i = 0; i < sides; i++)
-			{
-				v[i] = new TSMVec3(0.0D, Math.sqrt(2 * Math.pow(size, 2)) * Math.cos(angle * i + Math.PI / sides), Math.sqrt(2 * Math.pow(size, 2)) * Math.sin(angle * i + Math.PI / sides));
-				v[i].rotateAroundZ(-(float)a1);
-				v[i].rotateAroundX(-(float)a2);
-			}
-			e = new TSMVec3(height, 0, 0);
-			e.rotateAroundZ(-(float)a1);
-			e.rotateAroundX(-(float)a2);
-		}
-		else
-		{
-			for(int i = 0; i < sides; i++)
-			{
-				v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(size, 2)) * Math.cos(angle * i + Math.PI / sides), Math.sqrt(2 * Math.pow(size, 2)) * Math.sin(angle * i + Math.PI / sides), 0.0D);
-				v[i].rotateAroundX((float)a1);
-				v[i].rotateAroundZ((float)a2);
-			}
-			e = new TSMVec3(0, 0, height);
-			e.rotateAroundX((float)a1);
-			e.rotateAroundZ((float)a2);
-		}
-		return v;
 	}
 }
