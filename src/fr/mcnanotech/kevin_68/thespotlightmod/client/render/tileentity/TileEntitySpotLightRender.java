@@ -107,14 +107,14 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			double t3 = tileentity.getLaserHeight() * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * ((tileentity.getMainLaserSize() & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
 
 			worldrenderer.startDrawingQuads();
-			worldrenderer.func_178960_a((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
+			worldrenderer.setColorRGBA_F((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
 			drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[0]);
 			tess.draw();
 
 			if(tileentity.isSideLaser())
 			{
 				worldrenderer.startDrawingQuads();
-				worldrenderer.func_178960_a((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
+				worldrenderer.setColorRGBA_F((tileentity.getRed() & 0xFF) / 255.0F, (tileentity.getGreen() & 0xFF) / 255.0F, (tileentity.getBlue() & 0xFF) / 255.0F, 0.125F);
 				drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[1]);
 				tess.draw();
 			}
@@ -127,21 +127,21 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			if(tileentity.isSecondaryLaser())
 			{
 				worldrenderer.startDrawingQuads();
-				worldrenderer.func_178960_a((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
+				worldrenderer.setColorRGBA_F((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
 				drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[2]);
 				tess.draw();
 
 				if(tileentity.isSideLaser())
 				{
 					worldrenderer.startDrawingQuads();
-					worldrenderer.func_178960_a((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
+					worldrenderer.setColorRGBA_F((tileentity.getSecRed() & 0xFF) / 255.0F, (tileentity.getSecGreen() & 0xFF) / 255.0F, (tileentity.getSecBlue() & 0xFF) / 255.0F, 0.125F);
 					drawBeam(worldrenderer, x, y, z, t2, t3, tileentity.bVec[3]);
 					tess.draw();
 				}
 			}
 
 			GlStateManager.enableLighting();
-			GlStateManager.func_179098_w();
+			GlStateManager.enableTexture2D();
 			GlStateManager.depthMask(true);
 
 			if(tileentity.isTextEnabled() || true)

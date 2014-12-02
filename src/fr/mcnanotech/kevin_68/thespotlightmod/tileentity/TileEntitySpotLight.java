@@ -75,7 +75,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		{
 			this.isActive = true;
 
-			// checkBlocks(); TODO next
+			//checkBlocks();// TODO next
 
 			if(bVec != null)
 			{
@@ -109,7 +109,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 
 	private void checkBlocks()
 	{
-		if(this.getAngle1() % 90 == 0 || this.getAngle2() % 90 == 0)
+		if(this.getAngle1() % 90 == 0 || (this.getAngle2() & 0xFF % 90) == 0)
 		{
 
 		}
@@ -125,7 +125,14 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 					{
 						if(dirGround * i > j && dirGround * i < j + 1)
 						{
-							getWorld().setBlockState(new BlockPos(getPos().getX() + i, getPos().getY(), getPos().getZ() + j), Blocks.gold_block.getDefaultState());
+							if((this.getAngle2() & 0xFF) > 0 && (this.getAngle2() & 0xFF) < 90)
+							{
+								getWorld().setBlockState(new BlockPos(getPos().getX() + i, getPos().getY(), getPos().getZ() + j), Blocks.iron_block.getDefaultState());
+							}
+							else if((this.getAngle2() & 0xFF) > 90 && (this.getAngle2() & 0xFF) < 180)
+							{
+								getWorld().setBlockState(new BlockPos(getPos().getX() - i, getPos().getY(), getPos().getZ() + j), Blocks.iron_block.getDefaultState());
+							}
 						}
 					}
 				}
@@ -1667,7 +1674,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	}
 
 	@Override
-	public void clearInventory()
+	public void clear()
 	{
 		this.slots[0] = null;
 	}
