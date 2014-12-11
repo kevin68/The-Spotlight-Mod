@@ -12,91 +12,87 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 
 public class GuiSpotLightConfirm extends GuiContainer
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
+	protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
-    private String action;
-    private String yes;
-    private String no;
-    private int guiopen;
-    protected InventoryPlayer invPlayer;
-    protected TileEntitySpotLight tileSpotLight;
-    protected World world;
+	private String action;
+	private String yes;
+	private String no;
+	private int guiopen;
+	protected InventoryPlayer invPlayer;
+	protected TileEntitySpotLight tile;
+	protected World world;
 
-    public GuiSpotLightConfirm(TileEntitySpotLight tile, InventoryPlayer invplay, World world, String actionname, String yesbutton, String nobutton, int guiid)
-    {
-        super(new ContainerSpotLight(tile, invplay, world, 8));
-        action = actionname;
-        yes = yesbutton;
-        no = nobutton;
-        guiopen = guiid;
-        invPlayer = invplay;
-        tileSpotLight = tile;
-        this.world = world;
-    }
+	public GuiSpotLightConfirm(TileEntitySpotLight tile, InventoryPlayer invplay, World world, String actionname, String yesbutton, String nobutton, int guiid)
+	{
+		super(new ContainerSpotLight(tile, invplay, world, 8));
+		action = actionname;
+		yes = yesbutton;
+		no = nobutton;
+		guiopen = guiid;
+		invPlayer = invplay;
+		this.tile = tile;
+		this.world = world;
+	}
 
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-        this.buttonList.add(new GuiButton(1, x + 13, y + 90, 150, 20, yes));
-        this.buttonList.add(new GuiButton(2, x + 13, y + 115, 150, 20, no));
-    }
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
+		buttonList.add(new GuiButton(1, x + 13, y + 90, 150, 20, yes));
+		buttonList.add(new GuiButton(2, x + 13, y + 115, 150, 20, no));
+	}
 
-    @Override
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        if(guibutton.id == 1)
-        {
-            if(guiopen == 0)
-            {
-                SpotLightEntry entry = new SpotLightEntry(false, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, 0, (byte)0, false, false, (byte)0, true, (byte)0, false, (byte)0, (byte)0, 0, false, (byte)0, (byte)0, (byte)0, 0, false, false, (byte)0, (byte)0, (byte)0, (byte)0);
-                PacketSender.sendSpotLightPacket(tileSpotLight, tileSpotLight.getLastKeySelected() & 0xFF, entry);
-                this.tileSpotLight.setKey(tileSpotLight.getLastKeySelected() & 0xFF, entry);
-                this.mc.displayGuiScreen(new GuiSpotLightTimeLine(invPlayer, tileSpotLight, world));
-            }
-            else
-            {
-                createKey(tileSpotLight.getCreateKeyTime() & 0xFF);
-                this.mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tileSpotLight, world));
-            }
-        }
-        else
-        {
-            if(guiopen == 0)
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightTimeLine(invPlayer, tileSpotLight, world));
-            }
-            else
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tileSpotLight, world));
-            }
-        }
-    }
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		if(guibutton.id == 1)
+		{
+			if(guiopen == 0)
+			{
+				SpotLightEntry entry = new SpotLightEntry(false, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, 0, (byte)0, false, false, (byte)0, true, (byte)0, false, (byte)0, (byte)0, 0, false, (byte)0, (byte)0, (byte)0, 0, false, false, (byte)0, (byte)0, (byte)0, (byte)0);
+				PacketSender.sendSpotLightPacket(tile, (Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF, entry);
+				tile.setKey((Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF, entry);
+				mc.displayGuiScreen(new GuiSpotLightTimeLine(invPlayer, tile, world));
+			}
+			else
+			{
+				UtilSpotLight.createKey(tile);
+				mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tile, world));
+			}
+		}
+		else
+		{
+			if(guiopen == 0)
+			{
+				mc.displayGuiScreen(new GuiSpotLightTimeLine(invPlayer, tile, world));
+			}
+			else
+			{
+				mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tile, world));
+			}
+		}
+	}
 
-    public void createKey(int time)
-    {
-        SpotLightEntry entry = new SpotLightEntry(true, tileSpotLight.getRed(), tileSpotLight.getGreen(), tileSpotLight.getBlue(), tileSpotLight.getSecRed(), tileSpotLight.getSecGreen(), tileSpotLight.getSecBlue(), tileSpotLight.getAngle1(), tileSpotLight.getAngle2(), tileSpotLight.isAutoRotate(), tileSpotLight.isReverseRotation(), tileSpotLight.getRotationSpeed(), tileSpotLight.isSecondaryLaser(), tileSpotLight.getAxe(), tileSpotLight.isSideLaser(), tileSpotLight.getMainLaserSize(), tileSpotLight.getSecLaserSize(), tileSpotLight.getLaserHeight(), tileSpotLight.isTextEnabled(), tileSpotLight.getTxtRed(), tileSpotLight.getTxtGreen(), tileSpotLight.getTxtBlue(), tileSpotLight.getTxtAngle1(), tileSpotLight.isTxtAutoRotate(), tileSpotLight.isTxtReverseRotation(), tileSpotLight.getTxtRotationSpeed(), tileSpotLight.getTxtScale(), tileSpotLight.getTxtHeight(), tileSpotLight.getSides());
-        PacketSender.sendSpotLightPacket(tileSpotLight, time, entry);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
-    {
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-        this.mc.renderEngine.bindTexture(texture);
-        this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-        this.mc.renderEngine.bindTexture(icons);
-        this.drawTexturedModalRect(x + 15, y + 30, 0, 122, 57, 47);
-        this.drawTexturedModalRect(x + 105, y + 30, 0, 122, 57, 47);
-        this.drawCenteredString(this.fontRendererObj, action, width / 2, y + 10, 0xff0000);
-    }
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
+	{
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
+		mc.renderEngine.bindTexture(texture);
+		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+		mc.renderEngine.bindTexture(icons);
+		this.drawTexturedModalRect(x + 15, y + 30, 0, 122, 57, 47);
+		this.drawTexturedModalRect(x + 105, y + 30, 0, 122, 57, 47);
+		drawCenteredString(fontRendererObj, action, width / 2, y + 10, 0xff0000);
+	}
 }

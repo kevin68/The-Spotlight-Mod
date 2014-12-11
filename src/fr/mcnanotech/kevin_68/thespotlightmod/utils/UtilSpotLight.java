@@ -1,9 +1,17 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
+import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import io.netty.buffer.ByteBuf;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -257,7 +265,9 @@ public class UtilSpotLight
 			if(font.getStringWidth(cutted) >= maxSize)
 			{
 				if(i > 1)
+				{
 					cutted.substring(0, cutted.length() - words[i - 2].length());
+				}
 			}
 			list.add(cutted);
 			String forNext = "";
@@ -272,6 +282,48 @@ public class UtilSpotLight
 			list.add(str);
 		}
 		return list;
+	}
+
+	public static void writeObject(ByteBuf to, Object obj) throws IOException
+	{
+		byte[] serialized = serialize(obj);
+		to.writeInt(serialized.length);
+		for(int i = 0; i < serialized.length; i++)
+		{
+			to.writeByte(serialized[i]);
+		}
+	}
+
+	public static Object readObject(ByteBuf from) throws ClassNotFoundException, IOException
+	{
+		int len = from.readInt();
+		byte[] serialized = new byte[len];
+		for(int i = 0; i < len; i++)
+		{
+			serialized[i] = from.readByte();
+		}
+		return deserialize(serialized);
+	}
+
+	private static byte[] serialize(Object obj) throws IOException
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream os = new ObjectOutputStream(out);
+		os.writeObject(obj);
+		return out.toByteArray();
+	}
+
+	private static Object deserialize(byte[] data) throws IOException, ClassNotFoundException
+	{
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		ObjectInputStream is = new ObjectInputStream(in);
+		return is.readObject();
+	}
+
+	public static void createKey(TileEntitySpotLight t)
+	{
+		SpotLightEntry entry = new SpotLightEntry(true, (Byte)t.get(EnumLaserInformations.LASERRED), (Byte)t.get(EnumLaserInformations.LASERGREEN), (Byte)t.get(EnumLaserInformations.LASERBLUE), (Byte)t.get(EnumLaserInformations.LASERSECRED), (Byte)t.get(EnumLaserInformations.LASERSECGREEN), (Byte)t.get(EnumLaserInformations.LASERSECBLUE), (Integer)t.get(EnumLaserInformations.LASERANGLE1), (Byte)t.get(EnumLaserInformations.LASERANGLE2), (Boolean)t.get(EnumLaserInformations.LASERAUTOROTATE), (Boolean)t.get(EnumLaserInformations.LASERREVERSEROTATION), (Byte)t.get(EnumLaserInformations.LASERROTATIONSPEED), (Boolean)t.get(EnumLaserInformations.LASERSECONDARY), (Byte)t.get(EnumLaserInformations.LASERDISPLAYAXE), (Boolean)t.get(EnumLaserInformations.LASERDOUBLE), (Byte)t.get(EnumLaserInformations.LASERMAINSIZE), (Byte)t.get(EnumLaserInformations.LASERSECSIZE), (Integer)t.get(EnumLaserInformations.LASERHEIGHT), (Boolean)t.get(EnumLaserInformations.TEXTENABLED), (Byte)t.get(EnumLaserInformations.TEXTRED), (Byte)t.get(EnumLaserInformations.TEXTGREEN), (Byte)t.get(EnumLaserInformations.TEXTBLUE), (Integer)t.get(EnumLaserInformations.TEXTANGLE1), (Boolean)t.get(EnumLaserInformations.TEXTAUTOROTATE), (Boolean)t.get(EnumLaserInformations.TEXTREVERSEROTATION), (Byte)t.get(EnumLaserInformations.TEXTROTATIONSPEED), (Byte)t.get(EnumLaserInformations.TEXTSCALE), (Byte)t.get(EnumLaserInformations.TEXTHEIGHT), (Byte)t.get(EnumLaserInformations.LASERSIDESNUMBER));
+		PacketSender.sendSpotLightPacket(t, (Byte)t.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF, entry);
 	}
 
 	public static class BaseListEntry

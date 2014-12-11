@@ -16,6 +16,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
@@ -23,203 +24,203 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class GuiSpotLightTimeLine extends GuiContainer
 {
-    protected InventoryPlayer invPlayer;
-    protected TileEntitySpotLight tileSpotLight;
-    protected World world;
-    public GuiBooleanButton timeLineModeButton, smoothButton, helpButton;
-    public GuiButton removebutton;
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
-    protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
-    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+	protected InventoryPlayer invPlayer;
+	protected TileEntitySpotLight tile;
+	protected World world;
+	public GuiBooleanButton timeLineModeButton, smoothButton, helpButton;
+	public GuiButton removebutton;
+	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
+	protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
+	protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
-    public GuiSpotLightTimeLine(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
-    {
-        super(new ContainerSpotLight(tileEntity, playerInventory, world, 11));
-        invPlayer = playerInventory;
-        tileSpotLight = tileEntity;
-        this.world = world;
-    }
+	public GuiSpotLightTimeLine(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
+	{
+		super(new ContainerSpotLight(tileEntity, playerInventory, world, 11));
+		invPlayer = playerInventory;
+		tile = tileEntity;
+		this.world = world;
+	}
 
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-        this.xSize = 256;
-        this.ySize = 256;
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-        PacketSender.sendSpotLightPacketByte(this.tileSpotLight, (byte)20, (byte)-1);
-        this.buttonList.add(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")));
-        this.buttonList.add(timeLineModeButton = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), tileSpotLight.isTimeLineEnabled()));
-        this.buttonList.add(removebutton = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")));
-        this.buttonList.add(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.settimelineto") + " 0"));
-        this.buttonList.add(smoothButton = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), tileSpotLight.isSmoothMode()));
-        removebutton.enabled = false;
-        this.buttonList.add(helpButton = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", false));
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		xSize = 256;
+		ySize = 256;
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
+		PacketSender.send(EnumLaserInformations.TIMELINELASTKEYSELECTED, (byte)-1);
+		buttonList.add(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")));
+		buttonList.add(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")));
+		buttonList.add(timeLineModeButton = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"), (Boolean)tile.get(EnumLaserInformations.TIMELINEENABLED)));
+		buttonList.add(removebutton = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")));
+		buttonList.add(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.settimelineto") + " 0"));
+		buttonList.add(smoothButton = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), (Boolean)tile.get(EnumLaserInformations.TIMELINESMOOTH)));
+		removebutton.enabled = false;
+		buttonList.add(helpButton = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", false));
 
-        for(int i = 0; i < 121; i++)
-        {
-            if(tileSpotLight.getKey(i) != null && tileSpotLight.getKey(i).isActive())
-            {
-                this.buttonList.add(new GuiTimeKey(10 + i, width / 2 - 149 + (int)(i * 2.5), y + 50 + ((i % 2)) * 4));
-            }
-        }
-    }
+		for(int i = 0; i < 121; i++)
+		{
+			if(tile.getKey(i) != null && tile.getKey(i).isActive())
+			{
+				buttonList.add(new GuiTimeKey(10 + i, width / 2 - 149 + (int)(i * 2.5), y + 50 + i % 2 * 4));
+			}
+		}
+	}
 
-    @Override
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
 
-        if(guibutton.id == 2)
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(invPlayer, tileSpotLight, world));
-        }
-        else if(guibutton.id == 3)
-        {
-            this.mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tileSpotLight, world));
-        }
-        else if(guibutton.id == 4)
-        {
-            timeLineModeButton.toggle();
-            PacketSender.sendSpotLightPacketBoolean(this.tileSpotLight, (byte)22, timeLineModeButton.getIsActive());
-        }
-        else if(guibutton.id == 5)
-        {
-            if(tileSpotLight.getKey(tileSpotLight.getLastKeySelected() & 0xFF) != null && tileSpotLight.getKey(tileSpotLight.getCreateKeyTime() & 0xFF).isActive())
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightConfirm(tileSpotLight, invPlayer, world, I18n.format("container.spotlight.sure") + " " + I18n.format("container.spotlight.deleteKey"), I18n.format("container.spotlight.deleteKey"), I18n.format("container.spotlight.cancel"), 0));
-            }
-        }
-        else if(guibutton.id == 6)
-        {
-            PacketSender.sendSpotLightPacket(this.tileSpotLight, 23, 0);
-        }
-        else if(guibutton.id == 7)
-        {
-            smoothButton.toggle();
-            PacketSender.sendSpotLightPacketBoolean(this.tileSpotLight, (byte)24, smoothButton.getIsActive());
-        }
-        else if(guibutton.id == 8)
-        {
-            this.helpButton.toggle();
-        }
-        else if(guibutton.id >= 10)
-        {
-            int keyid = guibutton.id - 10;
-            if(tileSpotLight.getKey(keyid) != null)
-            {
-                PacketSender.sendSpotLightPacketByte(this.tileSpotLight, (byte)20, (byte)keyid);
-                removebutton.enabled = true;
-            }
-        }
-    }
+		if(guibutton.id == 2)
+		{
+			mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+		}
+		else if(guibutton.id == 3)
+		{
+			mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tile, world));
+		}
+		else if(guibutton.id == 4)
+		{
+			timeLineModeButton.toggle();
+			PacketSender.send(EnumLaserInformations.TIMELINEENABLED, timeLineModeButton.getIsActive());
+		}
+		else if(guibutton.id == 5)
+		{
+			if(tile.getKey((Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF) != null && tile.getKey((Byte)tile.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF).isActive())
+			{
+				mc.displayGuiScreen(new GuiSpotLightConfirm(tile, invPlayer, world, I18n.format("container.spotlight.sure") + " " + I18n.format("container.spotlight.deleteKey"), I18n.format("container.spotlight.deleteKey"), I18n.format("container.spotlight.cancel"), 0));
+			}
+		}
+		else if(guibutton.id == 6)
+		{
+			PacketSender.send(EnumLaserInformations.TIMELINETIME, 0);
+		}
+		else if(guibutton.id == 7)
+		{
+			smoothButton.toggle();
+			PacketSender.send(EnumLaserInformations.TIMELINESMOOTH, smoothButton.getIsActive());
+		}
+		else if(guibutton.id == 8)
+		{
+			helpButton.toggle();
+		}
+		else if(guibutton.id >= 10)
+		{
+			int keyid = guibutton.id - 10;
+			if(tile.getKey(keyid) != null)
+			{
+				PacketSender.send(EnumLaserInformations.TIMELINELASTKEYSELECTED, (byte)keyid);
+				removebutton.enabled = true;
+			}
+		}
+	}
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
-    {
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-        super.drawScreen(mouseX, mouseY, partialRenderTick);
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+	{
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
+		super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-        if(helpButton.getIsActive())
-        {
-            boolean reversed = mouseX > width / 2;
-            ArrayList<String> list = new ArrayList<String>();
-            if(mouseX > x - 27 && mouseX < x + 93)
-            {
-                if(mouseY > y + 69 && mouseY < y + 89)
-                {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.addkey"), mouseX, width, reversed);
-                }
+		if(helpButton.getIsActive())
+		{
+			boolean reversed = mouseX > width / 2;
+			ArrayList<String> list = new ArrayList<String>();
+			if(mouseX > x - 27 && mouseX < x + 93)
+			{
+				if(mouseY > y + 69 && mouseY < y + 89)
+				{
+					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timeline.addkey"), mouseX, width, reversed);
+				}
 
-                if(mouseY > y + 91 && mouseY < y + 111)
-                {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.delkey"), mouseX, width, reversed);
-                }
+				if(mouseY > y + 91 && mouseY < y + 111)
+				{
+					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timeline.delkey"), mouseX, width, reversed);
+				}
 
-                if(mouseY > y + 113 && mouseY < y + 133)
-                {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.set0"), mouseX, width, reversed);
-                }
+				if(mouseY > y + 113 && mouseY < y + 133)
+				{
+					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timeline.set0"), mouseX, width, reversed);
+				}
 
-                if(mouseY > y + 135 && mouseY < y + 155)
-                {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.smooth"), mouseX, width, reversed);
-                }
+				if(mouseY > y + 135 && mouseY < y + 155)
+				{
+					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timeline.smooth"), mouseX, width, reversed);
+				}
 
-                if(mouseY > y + 157 && mouseY < y + 177)
-                {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timelineswitch"), mouseX, width, reversed);
-                }
-            }
+				if(mouseY > y + 157 && mouseY < y + 177)
+				{
+					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timelineswitch"), mouseX, width, reversed);
+				}
+			}
 
-            if(mouseX > x - 20 && mouseX < x + 282 && mouseY > y + 40 && mouseY < y + 61)
-            {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.timeline"), mouseX, width, reversed);
-            }
+			if(mouseX > x - 20 && mouseX < x + 282 && mouseY > y + 40 && mouseY < y + 61)
+			{
+				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timeline.timeline"), mouseX, width, reversed);
+			}
 
-            if(mouseX > x + 95 && mouseX < x + 282 && mouseY > y + 69 && mouseY < y + 180)
-            {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.timeline.infos"), mouseX, width, reversed);
-            }
+			if(mouseX > x + 95 && mouseX < x + 282 && mouseY > y + 69 && mouseY < y + 180)
+			{
+				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.timeline.infos"), mouseX, width, reversed);
+			}
 
-            if(mouseX > x - 27 && mouseX < x + 38 && mouseY > y + 184 && mouseY < y + 204)
-            {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
-            }
+			if(mouseX > x - 27 && mouseX < x + 38 && mouseY > y + 184 && mouseY < y + 204)
+			{
+				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+			}
 
-            if(mouseX > x + 220 && mouseX < x + 240 && mouseY > y + 182 && mouseY < y + 202)
-            {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
-            }
+			if(mouseX > x + 220 && mouseX < x + 240 && mouseY > y + 182 && mouseY < y + 202)
+			{
+				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+			}
 
-            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
-            {
-                list.remove(list.size() - 1);
-            }
-            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
-        }
-    }
+			if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
+			{
+				list.remove(list.size() - 1);
+			}
+			GuiHelper.drawHoveringText(list, mouseX, mouseY, fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+		}
+	}
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
-    {
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.mc.renderEngine.bindTexture(texture);
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-        this.drawTexturedModalRect(x - 35, y + 19, 0, 0, xSize, ySize);
-        this.mc.renderEngine.bindTexture(texture2);
-        this.drawTexturedModalRect(x + 135, y + 19, 0, 0, xSize, ySize);
-        this.mc.renderEngine.bindTexture(icons);
-        this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
-        this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
-        this.drawTexturedModalRect(x - 20 + tileSpotLight.getTime() / 4, y + 40, 0, 105, 1, 12);
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
+	{
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		mc.renderEngine.bindTexture(texture);
+		int x = (width - xSize) / 2;
+		int y = (height - ySize) / 2;
+		this.drawTexturedModalRect(x - 35, y + 19, 0, 0, xSize, ySize);
+		mc.renderEngine.bindTexture(texture2);
+		this.drawTexturedModalRect(x + 135, y + 19, 0, 0, xSize, ySize);
+		mc.renderEngine.bindTexture(icons);
+		this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
+		this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
+		this.drawTexturedModalRect(x - 20 + (Integer)tile.get(EnumLaserInformations.TIMELINETIME) / 4, y + 40, 0, 105, 1, 12);
 
-        if(tileSpotLight.getKey(tileSpotLight.getLastKeySelected() & 0xFF) != null)
-        {
-            SpotLightEntry entry = tileSpotLight.getKey(tileSpotLight.getLastKeySelected() & 0xFF);
-            this.drawTexturedModalRect(x - 22 + (int)((tileSpotLight.getLastKeySelected() & 0xFF) * 2.5), y + 62, 0, 115, 5, 6);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.RED + I18n.format("container.spotlight.red") + " : " + (entry.getKeyRed() & 0xFF), x + 100, y + 70, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.GREEN + I18n.format("container.spotlight.green") + " : " + (entry.getKeyGreen() & 0xFF), x + 100, y + 80, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.BLUE + I18n.format("container.spotlight.blue") + " : " + (entry.getKeyBlue() & 0xFF), x + 100, y + 90, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.DARK_RED + I18n.format("container.spotlight.red") + " : " + (entry.getKeySecRed() & 0xFF), x + 185, y + 70, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.DARK_GREEN + I18n.format("container.spotlight.green") + " : " + (entry.getKeySecGreen() & 0xFF), x + 185, y + 80, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.DARK_BLUE + I18n.format("container.spotlight.blue") + " : " + (entry.getKeySecBlue() & 0xFF), x + 185, y + 90, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.angle") + " 1 : " + entry.getKeyAngle1(), x + 100, y + 100, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.angle") + " 2 : " + entry.getKeyAngle2(), x + 185, y + 100, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.rotate") + " : " + (entry.isKeyAutRot() ? I18n.format("container.spotlight.true") : I18n.format("container.spotlight.false")), x + 100, y + 110, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.rotationspeed") + " : " + entry.getKeyRotSpe(), x + 100, y + 120, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.rotationreverse") + " : " + (entry.isKeyRevRot() ? I18n.format("container.spotlight.true") : I18n.format("container.spotlight.false")), x + 100, y + 130, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.secondlazer") + " : " + (entry.isKeySecLas() ? I18n.format("container.spotlight.true") : I18n.format("container.spotlight.false")), x + 100, y + 140, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.axis") + " : " + (entry.getKeyDisplayAxe() == 0 ? "y" : entry.getKeyDisplayAxe() == 1 ? "x" : "z"), x + 100, y + 150, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.laserMode") + " : " + (entry.isSideLaser() ? I18n.format("container.spotlight.double") : I18n.format("container.spotlight.simple")), x + 100, y + 160, 0xffffff);
-            this.drawString(this.fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.size") + " " + I18n.format("container.spotlight.main") + " : " + entry.getKeyMainLaserSize() + " " + I18n.format("container.spotlight.sec") + " : " + entry.getKeySecLaserSize(), x + 100, y + 170, 0xffffff);
-        }
+		if(tile.getKey((Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF) != null)
+		{
+			SpotLightEntry entry = tile.getKey((Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF);
+			this.drawTexturedModalRect(x - 22 + (int)(((Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF) * 2.5), y + 62, 0, 115, 5, 6);
+			drawString(fontRendererObj, EnumChatFormatting.RED + I18n.format("container.spotlight.red") + " : " + (entry.getKeyRed() & 0xFF), x + 100, y + 70, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.GREEN + I18n.format("container.spotlight.green") + " : " + (entry.getKeyGreen() & 0xFF), x + 100, y + 80, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.BLUE + I18n.format("container.spotlight.blue") + " : " + (entry.getKeyBlue() & 0xFF), x + 100, y + 90, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.DARK_RED + I18n.format("container.spotlight.red") + " : " + (entry.getKeySecRed() & 0xFF), x + 185, y + 70, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.DARK_GREEN + I18n.format("container.spotlight.green") + " : " + (entry.getKeySecGreen() & 0xFF), x + 185, y + 80, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.DARK_BLUE + I18n.format("container.spotlight.blue") + " : " + (entry.getKeySecBlue() & 0xFF), x + 185, y + 90, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.angle") + " 1 : " + entry.getKeyAngle1(), x + 100, y + 100, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.angle") + " 2 : " + entry.getKeyAngle2(), x + 185, y + 100, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.rotate") + " : " + (entry.isKeyAutRot() ? I18n.format("container.spotlight.true") : I18n.format("container.spotlight.false")), x + 100, y + 110, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.rotationspeed") + " : " + entry.getKeyRotSpe(), x + 100, y + 120, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.rotationreverse") + " : " + (entry.isKeyRevRot() ? I18n.format("container.spotlight.true") : I18n.format("container.spotlight.false")), x + 100, y + 130, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.secondlazer") + " : " + (entry.isKeySecLas() ? I18n.format("container.spotlight.true") : I18n.format("container.spotlight.false")), x + 100, y + 140, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.axis") + " : " + (entry.getKeyDisplayAxe() == 0 ? "y" : entry.getKeyDisplayAxe() == 1 ? "x" : "z"), x + 100, y + 150, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.laserMode") + " : " + (entry.isSideLaser() ? I18n.format("container.spotlight.double") : I18n.format("container.spotlight.simple")), x + 100, y + 160, 0xffffff);
+			drawString(fontRendererObj, EnumChatFormatting.WHITE + I18n.format("container.spotlight.size") + " " + I18n.format("container.spotlight.main") + " : " + entry.getKeyMainLaserSize() + " " + I18n.format("container.spotlight.sec") + " : " + entry.getKeySecLaserSize(), x + 100, y + 170, 0xffffff);
+		}
 
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
-    }
+		fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
+	}
 }

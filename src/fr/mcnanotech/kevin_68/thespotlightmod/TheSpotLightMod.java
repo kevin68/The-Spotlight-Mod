@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import fr.mcnanotech.kevin_68.thespotlightmod.blocks.TSMBlocks;
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.GuiHandler;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketTest;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TSMTileEntity;
 import fr.minecraftforgefrance.ffmtlibs.network.PacketManager;
 
@@ -39,8 +37,6 @@ public class TheSpotLightMod
 	public static CommonProxy proxy;
 
 	public static final PacketManager packetHandler = new PacketManager("fr.mcnanotech.kevin_68.thespotlightmod.network.packets", MODID, "TheSpotLightMod");
-
-	public static SimpleNetworkWrapper networkTest;
 
 	public static Logger log;
 
@@ -59,14 +55,11 @@ public class TheSpotLightMod
 	{
 		log = event.getModLog();
 
-		networkTest = NetworkRegistry.INSTANCE.newSimpleChannel("TestTSM");
-		networkTest.registerMessage(PacketTest.Handler.class, PacketTest.class, 0, Side.SERVER);
-
 		TSMBlocks.initBlock();
 		TSMItems.initItems();
 		TSMTileEntity.registerTiles();
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(this.modInstance, new GuiHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(modInstance, new GuiHandler());
 	}
 
 	@EventHandler
