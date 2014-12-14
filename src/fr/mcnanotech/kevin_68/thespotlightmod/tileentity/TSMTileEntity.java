@@ -4,8 +4,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class TSMTileEntity
 {
-    public static void registerTiles()
-    {
-        GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
-    }
+	public static void registerTiles()
+	{
+		GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
+	}
 }

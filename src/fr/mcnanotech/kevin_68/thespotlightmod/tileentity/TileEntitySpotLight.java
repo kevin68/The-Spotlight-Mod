@@ -1,6 +1,8 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.tileentity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -46,24 +48,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	private int prevHeight = -1, prevSides = -1, prevA1 = -1;
 	private byte prevAxe = -1, prevA2 = -1, prevSize = -1, prevSizeSec = -1;
 
-	public byte[] redKey = new byte[1200];
-	public byte[] greenKey = new byte[1200];
-	public byte[] blueKey = new byte[1200];
-	public byte[] secRedKey = new byte[1200];
-	public byte[] secGreenKey = new byte[1200];
-	public byte[] secBlueKey = new byte[1200];
-	public int[] angle1Key = new int[1200];
-	public byte[] angle2Key = new byte[1200];
-	public byte[] mainSizeKey = new byte[1200];
-	public byte[] secSizeKey = new byte[1200];
-	public int[] lazerHeightKey = new int[1200];
-	public byte[] txtRedKey = new byte[1200];
-	public byte[] txtGreenKey = new byte[1200];
-	public byte[] txtBlueKey = new byte[1200];
-	public int[] txtAngle1Key = new int[1200];
-	public byte[] txtScaleKey = new byte[1200];
-	public byte[] txtHeightKey = new byte[1200];
-	public byte[] sidesKey = new byte[1200];
+	private Map<EnumLaserInformations, Object> keysMap = new HashMap<EnumLaserInformations, Object>();
 
 	private SpotLightEntry[] keyList = new SpotLightEntry[120];
 
@@ -73,8 +58,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		if(worldObj.isBlockPowered(pos))
 		{
 			isActive = true;
-
-			// checkBlocks();// TODO next
 
 			if(bVec != null)
 			{
@@ -103,15 +86,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		else
 		{
 			isActive = false;
-		}
-	}
-
-	private void checkBlocks()
-	{
-		if(bVec != null)
-		{
-			TSMVec3 v = bVec[0].getLenVec();
-			v.getLaserBlocksCrossedByVector(getWorld(), getPos().getX(), getPos().getY(), getPos().getZ());
 		}
 	}
 
@@ -146,37 +120,39 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		{
 			if(timelineSmooth)
 			{
-				set(EnumLaserInformations.LASERRED, redKey[timelineTime]);
-				set(EnumLaserInformations.LASERGREEN, greenKey[timelineTime]);
-				set(EnumLaserInformations.LASERBLUE, blueKey[timelineTime]);
-				set(EnumLaserInformations.LASERSECRED, secRedKey[timelineTime]);
-				set(EnumLaserInformations.LASERSECGREEN, secGreenKey[timelineTime]);
-				set(EnumLaserInformations.LASERSECBLUE, secBlueKey[timelineTime]);
-				set(EnumLaserInformations.LASERANGLE1, angle1Key[timelineTime]);
-				set(EnumLaserInformations.LASERANGLE2, angle2Key[timelineTime]);
-				set(EnumLaserInformations.LASERMAINSIZE, mainSizeKey[timelineTime]);
-				set(EnumLaserInformations.LASERSECSIZE, secSizeKey[timelineTime]);
-				set(EnumLaserInformations.LASERHEIGHT, lazerHeightKey[timelineTime]);
-				set(EnumLaserInformations.TEXTRED, txtRedKey[timelineTime]);
-				set(EnumLaserInformations.TEXTGREEN, txtGreenKey[timelineTime]);
-				set(EnumLaserInformations.TEXTBLUE, txtBlueKey[timelineTime]);
-				set(EnumLaserInformations.TEXTANGLE1, txtAngle1Key[timelineTime]);
-				set(EnumLaserInformations.LASERSIDESNUMBER, sidesKey[timelineTime]);
+				set(EnumLaserInformations.LASERRED);
+				set(EnumLaserInformations.LASERGREEN);
+				set(EnumLaserInformations.LASERBLUE);
+				set(EnumLaserInformations.LASERSECRED);
+				set(EnumLaserInformations.LASERSECGREEN);
+				set(EnumLaserInformations.LASERSECBLUE);
+				set(EnumLaserInformations.LASERANGLE1);
+				set(EnumLaserInformations.LASERANGLE2);
+				set(EnumLaserInformations.LASERMAINSIZE);
+				set(EnumLaserInformations.LASERSECSIZE);
+				set(EnumLaserInformations.LASERHEIGHT);
+				set(EnumLaserInformations.TEXTRED);
+				set(EnumLaserInformations.TEXTGREEN);
+				set(EnumLaserInformations.TEXTBLUE);
+				set(EnumLaserInformations.TEXTANGLE1);
+				set(EnumLaserInformations.TEXTSCALE);
+				set(EnumLaserInformations.TEXTHEIGHT);
+				set(EnumLaserInformations.LASERSIDESNUMBER);
 				int curTime = timelineTime / 10;
 				if(getKey(curTime) != null && lastTimeUse != timelineTime)
 				{
 					lastTimeUse = timelineTime;
 					worldObj.markBlockForUpdate(pos);
-					set(EnumLaserInformations.LASERAUTOROTATE, getKey(curTime).isKeyAutRot());
-					set(EnumLaserInformations.LASERREVERSEROTATION, getKey(curTime).isKeyRevRot());
-					set(EnumLaserInformations.LASERROTATIONSPEED, getKey(curTime).getKeyRotSpe());
-					set(EnumLaserInformations.LASERSECONDARY, getKey(curTime).isKeySecLas());
-					set(EnumLaserInformations.LASERDISPLAYAXE, getKey(curTime).getKeyDisplayAxe());
-					set(EnumLaserInformations.LASERDOUBLE, getKey(curTime).isSideLaser());
-					set(EnumLaserInformations.TEXTENABLED, getKey(curTime).isKeyTextEnabled());
-					set(EnumLaserInformations.TEXTAUTOROTATE, getKey(curTime).isTxtAutoRotate());
-					set(EnumLaserInformations.TEXTREVERSEROTATION, getKey(curTime).isTxtReverseRotation());
-					set(EnumLaserInformations.TEXTROTATIONSPEED, getKey(curTime).getTxtRotationSpeed());
+					set(EnumLaserInformations.LASERAUTOROTATE, getKey(curTime).get(EnumLaserInformations.LASERAUTOROTATE));
+					set(EnumLaserInformations.LASERREVERSEROTATION, getKey(curTime).get(EnumLaserInformations.LASERREVERSEROTATION));
+					set(EnumLaserInformations.LASERROTATIONSPEED, getKey(curTime).get(EnumLaserInformations.LASERROTATIONSPEED));
+					set(EnumLaserInformations.LASERSECONDARY, getKey(curTime).get(EnumLaserInformations.LASERSECONDARY));
+					set(EnumLaserInformations.LASERDISPLAYAXE, getKey(curTime).get(EnumLaserInformations.LASERDISPLAYAXE));
+					set(EnumLaserInformations.LASERDOUBLE, getKey(curTime).get(EnumLaserInformations.LASERDOUBLE));
+					set(EnumLaserInformations.TEXTENABLED, getKey(curTime).get(EnumLaserInformations.TEXTENABLED));
+					set(EnumLaserInformations.TEXTAUTOROTATE, getKey(curTime).get(EnumLaserInformations.TEXTAUTOROTATE));
+					set(EnumLaserInformations.TEXTREVERSEROTATION, getKey(curTime).get(EnumLaserInformations.TEXTREVERSEROTATION));
+					set(EnumLaserInformations.TEXTROTATIONSPEED, getKey(curTime).get(EnumLaserInformations.TEXTROTATIONSPEED));
 				}
 			}
 			else
@@ -185,31 +161,34 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 				if(getKey(curTime) != null && lastTimeUse != timelineTime)
 				{
 					lastTimeUse = timelineTime;
-					set(EnumLaserInformations.LASERRED, getKey(curTime).getKeyRed());
-					set(EnumLaserInformations.LASERGREEN, getKey(curTime).getKeyGreen());
-					set(EnumLaserInformations.LASERBLUE, getKey(curTime).getKeyBlue());
-					set(EnumLaserInformations.LASERSECRED, getKey(curTime).getKeySecRed());
-					set(EnumLaserInformations.LASERSECGREEN, getKey(curTime).getKeySecGreen());
-					set(EnumLaserInformations.LASERSECBLUE, getKey(curTime).getKeySecBlue());
-					set(EnumLaserInformations.LASERANGLE1, getKey(curTime).getKeyAngle1());
-					set(EnumLaserInformations.LASERANGLE2, getKey(curTime).getKeyAngle2());
-					set(EnumLaserInformations.LASERAUTOROTATE, getKey(curTime).isKeyAutRot());
-					set(EnumLaserInformations.LASERREVERSEROTATION, getKey(curTime).isKeyRevRot());
-					set(EnumLaserInformations.LASERROTATIONSPEED, getKey(curTime).getKeyRotSpe());
-					set(EnumLaserInformations.LASERSECONDARY, getKey(curTime).isKeySecLas());
-					set(EnumLaserInformations.LASERDISPLAYAXE, getKey(curTime).getKeyDisplayAxe());
-					set(EnumLaserInformations.LASERDOUBLE, getKey(curTime).isSideLaser());
-					set(EnumLaserInformations.LASERMAINSIZE, getKey(curTime).getKeyMainLaserSize());
-					set(EnumLaserInformations.LASERSECSIZE, getKey(curTime).getKeySecLaserSize());
-					set(EnumLaserInformations.LASERHEIGHT, getKey(curTime).getKeyLaserHeight());
-					set(EnumLaserInformations.TEXTENABLED, getKey(curTime).isKeyTextEnabled());
-					set(EnumLaserInformations.TEXTRED, getKey(curTime).getKeyTxtRed());
-					set(EnumLaserInformations.TEXTGREEN, getKey(curTime).getKeyTxtGreen());
-					set(EnumLaserInformations.TEXTBLUE, getKey(curTime).getKeyTxtBlue());
-					set(EnumLaserInformations.TEXTANGLE1, getKey(curTime).getTxtAngle1());
-					set(EnumLaserInformations.TEXTAUTOROTATE, getKey(curTime).isTxtAutoRotate());
-					set(EnumLaserInformations.TEXTREVERSEROTATION, getKey(curTime).isTxtReverseRotation());
-					set(EnumLaserInformations.TEXTROTATIONSPEED, getKey(curTime).getTxtRotationSpeed());
+					set(EnumLaserInformations.LASERRED, getKey(curTime).get(EnumLaserInformations.LASERRED));
+					set(EnumLaserInformations.LASERGREEN, getKey(curTime).get(EnumLaserInformations.LASERGREEN));
+					set(EnumLaserInformations.LASERBLUE, getKey(curTime).get(EnumLaserInformations.LASERBLUE));
+					set(EnumLaserInformations.LASERSECRED, getKey(curTime).get(EnumLaserInformations.LASERSECRED));
+					set(EnumLaserInformations.LASERSECGREEN, getKey(curTime).get(EnumLaserInformations.LASERSECGREEN));
+					set(EnumLaserInformations.LASERSECBLUE, getKey(curTime).get(EnumLaserInformations.LASERSECBLUE));
+					set(EnumLaserInformations.LASERANGLE1, getKey(curTime).get(EnumLaserInformations.LASERANGLE1));
+					set(EnumLaserInformations.LASERANGLE2, getKey(curTime).get(EnumLaserInformations.LASERANGLE2));
+					set(EnumLaserInformations.LASERAUTOROTATE, getKey(curTime).get(EnumLaserInformations.LASERAUTOROTATE));
+					set(EnumLaserInformations.LASERREVERSEROTATION, getKey(curTime).get(EnumLaserInformations.LASERREVERSEROTATION));
+					set(EnumLaserInformations.LASERROTATIONSPEED, getKey(curTime).get(EnumLaserInformations.LASERROTATIONSPEED));
+					set(EnumLaserInformations.LASERSECONDARY, getKey(curTime).get(EnumLaserInformations.LASERSECONDARY));
+					set(EnumLaserInformations.LASERDISPLAYAXE, getKey(curTime).get(EnumLaserInformations.LASERDISPLAYAXE));
+					set(EnumLaserInformations.LASERDOUBLE, getKey(curTime).get(EnumLaserInformations.LASERDOUBLE));
+					set(EnumLaserInformations.LASERMAINSIZE, getKey(curTime).get(EnumLaserInformations.LASERMAINSIZE));
+					set(EnumLaserInformations.LASERSECSIZE, getKey(curTime).get(EnumLaserInformations.LASERSECSIZE));
+					set(EnumLaserInformations.LASERHEIGHT, getKey(curTime).get(EnumLaserInformations.LASERHEIGHT));
+					set(EnumLaserInformations.LASERSIDESNUMBER, getKey(curTime).get(EnumLaserInformations.LASERSIDESNUMBER));
+					set(EnumLaserInformations.TEXTENABLED, getKey(curTime).get(EnumLaserInformations.TEXTENABLED));
+					set(EnumLaserInformations.TEXTRED, getKey(curTime).get(EnumLaserInformations.TEXTRED));
+					set(EnumLaserInformations.TEXTGREEN, getKey(curTime).get(EnumLaserInformations.TEXTGREEN));
+					set(EnumLaserInformations.TEXTBLUE, getKey(curTime).get(EnumLaserInformations.TEXTBLUE));
+					set(EnumLaserInformations.TEXTANGLE1, getKey(curTime).get(EnumLaserInformations.TEXTANGLE1));
+					set(EnumLaserInformations.TEXTAUTOROTATE, getKey(curTime).get(EnumLaserInformations.TEXTAUTOROTATE));
+					set(EnumLaserInformations.TEXTREVERSEROTATION, getKey(curTime).get(EnumLaserInformations.TEXTREVERSEROTATION));
+					set(EnumLaserInformations.TEXTROTATIONSPEED, getKey(curTime).get(EnumLaserInformations.TEXTROTATIONSPEED));
+					set(EnumLaserInformations.TEXTSCALE, getKey(curTime).get(EnumLaserInformations.TEXTSCALE));
+					set(EnumLaserInformations.TEXTHEIGHT, getKey(curTime).get(EnumLaserInformations.TEXTHEIGHT));
 					worldObj.markBlockForUpdate(pos);
 				}
 			}
@@ -240,274 +219,118 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 
 			for(int k = 0; k < keys.size() - 1; k++)
 			{
-				int startRed = keyList[keys.get(k) / 10].getKeyRed() & 0xFF;
-				int endRed = keyList[keys.get(k + 1) / 10].getKeyRed() & 0xFF;
-				int deltaRed = endRed - startRed;
-				float tickRed = (float)deltaRed / (float)timeBetwinKeys.get(k);
-
-				int startGreen = keyList[keys.get(k) / 10].getKeyGreen() & 0xFF;
-				int endGreen = keyList[keys.get(k + 1) / 10].getKeyGreen() & 0xFF;
-				int deltaGreen = endGreen - startGreen;
-				float tickGreen = (float)deltaGreen / (float)timeBetwinKeys.get(k);
-
-				int startBlue = keyList[keys.get(k) / 10].getKeyBlue() & 0xFF;
-				int endBlue = keyList[keys.get(k + 1) / 10].getKeyBlue() & 0xFF;
-				int deltaBlue = endBlue - startBlue;
-				float tickBlue = (float)deltaBlue / (float)timeBetwinKeys.get(k);
-
-				int startSecRed = keyList[keys.get(k) / 10].getKeySecRed() & 0xFF;
-				int endSecRed = keyList[keys.get(k + 1) / 10].getKeySecRed() & 0xFF;
-				int deltaSecRed = endSecRed - startSecRed;
-				float tickSecRed = (float)deltaSecRed / (float)timeBetwinKeys.get(k);
-
-				int startSecGreen = keyList[keys.get(k) / 10].getKeySecGreen() & 0xFF;
-				int endSecGreen = keyList[keys.get(k + 1) / 10].getKeySecGreen() & 0xFF;
-				int deltaSecGreen = endSecGreen - startSecGreen;
-				float tickSecGreen = (float)deltaSecGreen / (float)timeBetwinKeys.get(k);
-
-				int startSecBlue = keyList[keys.get(k) / 10].getKeySecBlue() & 0xFF;
-				int endSecBlue = keyList[keys.get(k + 1) / 10].getKeySecBlue() & 0xFF;
-				int deltaSecBlue = endSecBlue - startSecBlue;
-				float tickSecBlue = (float)deltaSecBlue / (float)timeBetwinKeys.get(k);
-
-				int startAngle1 = keyList[keys.get(k) / 10].getKeyAngle1();
-				int endAngle1 = keyList[keys.get(k + 1) / 10].getKeyAngle1();
-				int deltaAngle1 = endAngle1 - startAngle1;
-				float tickAngle1 = (float)deltaAngle1 / (float)timeBetwinKeys.get(k);
-
-				int startAngle2 = keyList[keys.get(k) / 10].getKeyAngle2() & 0xFF;
-				int endAngle2 = keyList[keys.get(k + 1) / 10].getKeyAngle2() & 0xFF;
-				int deltaAngle2 = endAngle2 - startAngle2;
-				float tickAngle2 = (float)deltaAngle2 / (float)timeBetwinKeys.get(k);
-
-				int startMainSize = keyList[keys.get(k) / 10].getKeyMainLaserSize() & 0xFF;
-				int endMainSize = keyList[keys.get(k + 1) / 10].getKeyMainLaserSize() & 0xFF;
-				int deltaMainSize = endMainSize - startMainSize;
-				float tickMainSize = (float)deltaMainSize / (float)timeBetwinKeys.get(k);
-
-				int startSecSize = keyList[keys.get(k) / 10].getKeySecLaserSize() & 0xFF;
-				int endSecSize = keyList[keys.get(k + 1) / 10].getKeySecLaserSize() & 0xFF;
-				int deltaSecSize = endSecSize - startSecSize;
-				float tickSecSize = (float)deltaSecSize / (float)timeBetwinKeys.get(k);
-
-				int startLaserHeight = keyList[keys.get(k) / 10].getKeyLaserHeight();
-				int endLaserHeight = keyList[keys.get(k + 1) / 10].getKeyLaserHeight();
-				int deltaLaserHeight = endLaserHeight - startLaserHeight;
-				float tickLaserHeight = (float)deltaLaserHeight / (float)timeBetwinKeys.get(k);
-
-				int startTxtRed = keyList[keys.get(k) / 10].getKeyTxtRed() & 0xFF;
-				int endTxtRed = keyList[keys.get(k + 1) / 10].getKeyTxtRed() & 0xFF;
-				int deltaTxtRed = endTxtRed - startTxtRed;
-				float tickTxtRed = (float)deltaTxtRed / (float)timeBetwinKeys.get(k);
-
-				int startTxtGreen = keyList[keys.get(k) / 10].getKeyTxtGreen() & 0xFF;
-				int endTxtGreen = keyList[keys.get(k + 1) / 10].getKeyTxtGreen() & 0xFF;
-				int deltaTxtGreen = endTxtGreen - startTxtGreen;
-				float tickTxtGreen = (float)deltaTxtGreen / (float)timeBetwinKeys.get(k);
-
-				int startTxtBlue = keyList[keys.get(k) / 10].getKeyTxtBlue() & 0xFF;
-				int endTxtBlue = keyList[keys.get(k + 1) / 10].getKeyTxtBlue() & 0xFF;
-				int deltaTxtBlue = endTxtBlue - startTxtBlue;
-				float tickTxtBlue = (float)deltaTxtBlue / (float)timeBetwinKeys.get(k);
-
-				int startTxtAngle1 = keyList[keys.get(k) / 10].getTxtAngle1();
-				int endTxtAngle1 = keyList[keys.get(k + 1) / 10].getTxtAngle1();
-				int deltaTxtAngle1 = endTxtAngle1 - startTxtAngle1;
-				float tickTxtAngle1 = (float)deltaTxtAngle1 / (float)timeBetwinKeys.get(k);
-
-				int startTxtScale = keyList[keys.get(k) / 10].getTxtScale() & 0xFF;
-				int endTxtScale = keyList[keys.get(k + 1) / 10].getTxtScale() & 0xFF;
-				int deltaTxtScale = endTxtScale - startTxtScale;
-				float tickTxtScale = (float)deltaTxtScale / (float)timeBetwinKeys.get(k);
-
-				int startTxtHeight = keyList[keys.get(k) / 10].getTxtHeight() & 0xFF;
-				int endTxtHeight = keyList[keys.get(k + 1) / 10].getTxtHeight() & 0xFF;
-				int deltaTxtHeight = endTxtHeight - startTxtHeight;
-				float tickTxtHeight = (float)deltaTxtHeight / (float)timeBetwinKeys.get(k);
-
-				int startSides = keyList[keys.get(k) / 10].getSides() & 0xFF;
-				int endSides = keyList[keys.get(k + 1) / 10].getSides() & 0xFF;
-				int deltaSides = endSides - startSides;
-				float tickSides = (float)deltaSides / (float)timeBetwinKeys.get(k);
-
-				for(int l = keys.get(k); l < keys.get(k + 1); l++)
+				for(EnumLaserInformations e : EnumLaserInformations.values())
 				{
-					redKey[l] = (byte)(startRed + tickRed * (l - keys.get(k)));
-					greenKey[l] = (byte)(startGreen + tickGreen * (l - keys.get(k)));
-					blueKey[l] = (byte)(startBlue + tickBlue * (l - keys.get(k)));
-					secRedKey[l] = (byte)(startSecRed + tickSecRed * (l - keys.get(k)));
-					secGreenKey[l] = (byte)(startSecGreen + tickSecGreen * (l - keys.get(k)));
-					secBlueKey[l] = (byte)(startSecBlue + tickSecBlue * (l - keys.get(k)));
-					angle1Key[l] = (int)(startAngle1 + tickAngle1 * (l - keys.get(k)));
-					angle2Key[l] = (byte)(startAngle2 + tickAngle2 * (l - keys.get(k)));
-					mainSizeKey[l] = (byte)(startMainSize + tickMainSize * (l - keys.get(k)));
-					secSizeKey[l] = (byte)(startSecSize + tickSecSize * (l - keys.get(k)));
-					lazerHeightKey[l] = (int)(startLaserHeight + tickLaserHeight * (l - keys.get(k)));
-					txtRedKey[l] = (byte)(startTxtRed + tickTxtRed * (l - keys.get(k)));
-					txtGreenKey[l] = (byte)(startTxtGreen + tickTxtGreen * (l - keys.get(k)));
-					txtBlueKey[l] = (byte)(startTxtBlue + tickTxtBlue * (l - keys.get(k)));
-					txtAngle1Key[l] = (int)(startTxtAngle1 + tickTxtAngle1 * (l - keys.get(k)));
-					txtScaleKey[l] = (byte)(startTxtScale + tickTxtScale * (l - keys.get(k)));
-					txtHeightKey[l] = (byte)(startTxtHeight + tickTxtHeight * (l - keys.get(k)));
-					sidesKey[l] = (byte)(startSides + tickSides * (l - keys.get(k)));
+					if(e.shouldProcessKeys())
+					{
+						switch(e.getType())
+						{
+						case 0:
+							int startB = (Byte)keyList[keys.get(k) / 10].get(e) & 0xFF;
+							int endB = (Byte)keyList[keys.get(k + 1) / 10].get(e) & 0xFF;
+							int deltaB = endB - startB;
+							float tickB = (float)deltaB / (float)timeBetwinKeys.get(k);
+							byte[] b = new byte[1200];
+
+							for(int l = keys.get(k); l < keys.get(k + 1); l++)
+							{
+								b[l] = (byte)(startB + tickB * (l - keys.get(k)));
+							}
+
+							keysMap.put(e, b);
+							break;
+						case 1:
+							int startI = (Integer)keyList[keys.get(k) / 10].get(e) & 0xFF;
+							int endI = (Integer)keyList[keys.get(k + 1) / 10].get(e) & 0xFF;
+							int deltaI = endI - startI;
+							float tickI = (float)deltaI / (float)timeBetwinKeys.get(k);
+							int[] in = new int[1200];
+
+							for(int l = keys.get(k); l < keys.get(k + 1); l++)
+							{
+								in[l] = (byte)(startI + tickI * (l - keys.get(k)));
+							}
+
+							keysMap.put(e, in);
+							break;
+						}
+					}
 				}
 			}
 
-			int startRed = keyList[keys.get(keys.size() - 1) / 10].getKeyRed() & 0xFF;
-			int endRed = keyList[keys.get(0) / 10].getKeyRed() & 0xFF;
-			int deltaRed = endRed - startRed;
-			float tickRed = (float)deltaRed / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startGreen = keyList[keys.get(keys.size() - 1) / 10].getKeyGreen() & 0xFF;
-			int endGreen = keyList[keys.get(0) / 10].getKeyGreen() & 0xFF;
-			int deltaGreen = endGreen - startGreen;
-			float tickGreen = (float)deltaGreen / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startBlue = keyList[keys.get(keys.size() - 1) / 10].getKeyBlue() & 0xFF;
-			int endBlue = keyList[keys.get(0) / 10].getKeyBlue() & 0xFF;
-			int deltaBlue = endBlue - startBlue;
-			float tickBlue = (float)deltaBlue / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startSecRed = keyList[keys.get(keys.size() - 1) / 10].getKeySecRed() & 0xFF;
-			int endSecRed = keyList[keys.get(0) / 10].getKeySecRed() & 0xFF;
-			int deltaSecRed = endSecRed - startSecRed;
-			float tickSecRed = (float)deltaSecRed / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startSecGreen = keyList[keys.get(keys.size() - 1) / 10].getKeySecGreen() & 0xFF;
-			int endSecGreen = keyList[keys.get(0) / 10].getKeySecGreen() & 0xFF;
-			int deltaSecGreen = endSecGreen - startSecGreen;
-			float tickSecGreen = (float)deltaSecGreen / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startSecBlue = keyList[keys.get(keys.size() - 1) / 10].getKeySecBlue() & 0xFF;
-			int endSecBlue = keyList[keys.get(0) / 10].getKeySecBlue() & 0xFF;
-			int deltaSecBlue = endSecBlue - startSecBlue;
-			float tickSecBlue = (float)deltaSecBlue / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startAngle1 = keyList[keys.get(keys.size() - 1) / 10].getKeyAngle1();
-			int endAngle1 = keyList[keys.get(0) / 10].getKeyAngle1();
-			int deltaAngle1 = endAngle1 - startAngle1;
-			float tickAngle1 = (float)deltaAngle1 / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startAngle2 = keyList[keys.get(keys.size() - 1) / 10].getKeyAngle2() & 0xFF;
-			int endAngle2 = keyList[keys.get(0) / 10].getKeyAngle2() & 0xFF;
-			int deltaAngle2 = endAngle2 - startAngle2;
-			float tickAngle2 = (float)deltaAngle2 / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startMainSize = keyList[keys.get(keys.size() - 1) / 10].getKeyMainLaserSize() & 0xFF;
-			int endMainSize = keyList[keys.get(0) / 10].getKeyMainLaserSize() & 0xFF;
-			int deltaMainSize = endMainSize - startMainSize;
-			float tickMainSize = (float)deltaMainSize / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startSecSize = keyList[keys.get(keys.size() - 1) / 10].getKeySecLaserSize() & 0xFF;
-			int endSecSize = keyList[keys.get(0) / 10].getKeySecLaserSize() & 0xFF;
-			int deltaSecSize = endSecSize - startSecSize;
-			float tickSecSize = (float)deltaSecSize / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startLaserHeight = keyList[keys.get(keys.size() - 1) / 10].getKeyLaserHeight();
-			int endLaserHeight = keyList[keys.get(0) / 10].getKeyLaserHeight();
-			int deltaLaserHeight = endLaserHeight - startLaserHeight;
-			float tickLaserHeight = (float)deltaLaserHeight / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startTxtRed = keyList[keys.get(keys.size() - 1) / 10].getKeyTxtRed() & 0xFF;
-			int endTxtRed = keyList[keys.get(0) / 10].getKeyTxtRed() & 0xFF;
-			int deltaTxtRed = endTxtRed - startTxtRed;
-			float tickTxtRed = (float)deltaTxtRed / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startTxtGreen = keyList[keys.get(keys.size() - 1) / 10].getKeyTxtGreen() & 0xFF;
-			int endTxtGreen = keyList[keys.get(0) / 10].getKeyTxtGreen() & 0xFF;
-			int deltaTxtGreen = endTxtGreen - startTxtGreen;
-			float tickTxtGreen = (float)deltaTxtGreen / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startTxtBlue = keyList[keys.get(keys.size() - 1) / 10].getKeyTxtBlue() & 0xFF;
-			int endTxtBlue = keyList[keys.get(0) / 10].getKeyTxtBlue() & 0xFF;
-			int deltaTxtBlue = endTxtBlue - startTxtBlue;
-			float tickTxtBlue = (float)deltaTxtBlue / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startTxtAngle1 = keyList[keys.get(keys.size() - 1) / 10].getTxtAngle1();
-			int endTxtAngle1 = keyList[keys.get(0) / 10].getTxtAngle1();
-			int deltaTxtAngle1 = endTxtAngle1 - startTxtAngle1;
-			float tickTxtAngle1 = (float)deltaTxtAngle1 / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startTxtScale = keyList[keys.get(keys.size() - 1) / 10].getTxtScale() & 0xFF;
-			int endTxtScale = keyList[keys.get(0) / 10].getTxtScale() & 0xFF;
-			int deltaTxtScale = endTxtScale - startTxtBlue;
-			float tickTxtScale = (float)deltaTxtScale / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startTxtHeight = keyList[keys.get(keys.size() - 1) / 10].getTxtHeight() & 0xFF;
-			int endTxtHeight = keyList[keys.get(0) / 10].getTxtHeight() & 0xFF;
-			int deltaTxtHeight = endTxtHeight - startTxtHeight;
-			float tickTxtHeight = (float)deltaTxtHeight / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			int startSides = keyList[keys.get(keys.size() - 1) / 10].getSides() & 0xFF;
-			int endSides = keyList[keys.get(0) / 10].getSides() & 0xFF;
-			int deltaSides = endSides - startSides;
-			float tickSides = (float)deltaSides / (float)timeBetwinKeys.get(keys.size() - 1);
-
-			for(int m = keys.get(keys.size() - 1); m < 1200; m++)
+			for(EnumLaserInformations e : EnumLaserInformations.values())
 			{
-				redKey[m] = (byte)(startRed + tickRed * (m - keys.get(keys.size() - 1)));
-				greenKey[m] = (byte)(startGreen + tickGreen * (m - keys.get(keys.size() - 1)));
-				blueKey[m] = (byte)(startBlue + tickBlue * (m - keys.get(keys.size() - 1)));
-				secRedKey[m] = (byte)(startSecRed + tickSecRed * (m - keys.get(keys.size() - 1)));
-				secGreenKey[m] = (byte)(startSecGreen + tickSecGreen * (m - keys.get(keys.size() - 1)));
-				secBlueKey[m] = (byte)(startSecBlue + tickSecBlue * (m - keys.get(keys.size() - 1)));
-				angle1Key[m] = (int)(startAngle1 + tickAngle1 * (m - keys.get(keys.size() - 1)));
-				angle2Key[m] = (byte)(startAngle2 + tickAngle2 * (m - keys.get(keys.size() - 1)));
-				mainSizeKey[m] = (byte)(startMainSize + tickMainSize * (m - keys.get(keys.size() - 1)));
-				secSizeKey[m] = (byte)(startSecSize + tickSecSize * (m - keys.get(keys.size() - 1)));
-				lazerHeightKey[m] = (int)(startLaserHeight + tickLaserHeight * (m - keys.get(keys.size() - 1)));
-				txtRedKey[m] = (byte)(startTxtRed + tickTxtRed * (m - keys.get(keys.size() - 1)));
-				txtGreenKey[m] = (byte)(startTxtGreen + tickTxtGreen * (m - keys.get(keys.size() - 1)));
-				txtBlueKey[m] = (byte)(startTxtBlue + tickTxtBlue * (m - keys.get(keys.size() - 1)));
-				txtAngle1Key[m] = (int)(startTxtAngle1 + tickTxtAngle1 * (m - keys.get(keys.size() - 1)));
-				txtScaleKey[m] = (byte)(startTxtScale + tickTxtScale * (m - keys.get(keys.size() - 1)));
-				txtHeightKey[m] = (byte)(startTxtHeight + tickTxtHeight * (m - keys.get(keys.size() - 1)));
-				sidesKey[m] = (byte)(startSides + tickSides * (m - keys.get(keys.size() - 1)));
-			}
-			for(int n = 0; n < keys.get(0); n++)
-			{
-				redKey[n] = (byte)(redKey[1199] + tickRed * n);
-				greenKey[n] = (byte)(greenKey[1199] + tickGreen * n);
-				blueKey[n] = (byte)(blueKey[1199] + tickBlue * n);
-				secRedKey[n] = (byte)(secRedKey[1199] + tickSecRed * n);
-				secGreenKey[n] = (byte)(secGreenKey[1199] + tickSecGreen * n);
-				secBlueKey[n] = (byte)(secBlueKey[1199] + tickSecBlue * n);
-				angle1Key[n] = (int)(angle1Key[1199] + tickAngle1 * n);
-				angle2Key[n] = (byte)(angle2Key[1199] + tickAngle2 * n);
-				mainSizeKey[n] = (byte)(mainSizeKey[1199] + tickMainSize * n);
-				secSizeKey[n] = (byte)(secSizeKey[1199] + tickSecSize * n);
-				lazerHeightKey[n] = (int)(lazerHeightKey[1199] + tickLaserHeight * n);
-				txtRedKey[n] = (byte)(txtRedKey[1199] + tickTxtRed * n);
-				txtGreenKey[n] = (byte)(txtGreenKey[1199] + tickTxtGreen * n);
-				txtBlueKey[n] = (byte)(txtBlueKey[1199] + tickTxtBlue * n);
-				txtAngle1Key[n] = (int)(txtAngle1Key[1199] + tickTxtAngle1 * n);
-				txtScaleKey[n] = (byte)(txtScaleKey[1199] + tickTxtScale * n);
-				txtHeightKey[n] = (byte)(txtHeightKey[1199] + tickTxtHeight * n);
-				sidesKey[n] = (byte)(sidesKey[1199] + tickSides * n);
+				if(e.shouldProcessKeys())
+				{
+					switch(e.getType())
+					{
+					case 0:
+						int startB = (Byte)keyList[keys.get(keys.size() - 1) / 10].get(e) & 0xFF;
+						int endB = (Byte)keyList[keys.get(0) / 10].get(e) & 0xFF;
+						int deltaB = endB - startB;
+						float tickB = (float)deltaB / (float)timeBetwinKeys.get(keys.size() - 1);
+						byte[] b = new byte[1200];
+
+						for(int m = keys.get(keys.size() - 1); m < 1200; m++)
+						{
+							b[m] = (byte)(startB + tickB * (m - keys.get(keys.size() - 1)));
+						}
+						for(int n = 0; n < keys.get(0); n++)
+						{
+							b[n] = (byte)(((byte[])keysMap.get(e))[1199] + tickB * n);
+						}
+						keysMap.put(e, b);
+
+						break;
+					case 1:
+						int startI = (Integer)keyList[keys.get(keys.size() - 1) / 10].get(e);
+						int endI = (Integer)keyList[keys.get(0) / 10].get(e);
+						int deltaI = endI - startI;
+						float tickI = (float)deltaI / (float)timeBetwinKeys.get(keys.size() - 1);
+						int[] in = new int[1200];
+
+						for(int m = keys.get(keys.size() - 1); m < 1200; m++)
+						{
+							in[m] = (int)(startI + tickI * (m - keys.get(keys.size() - 1)));
+						}
+						for(int n = 0; n < keys.get(0); n++)
+						{
+							in[n] = (int)(((int[])keysMap.get(e))[1199] + tickI * n);
+						}
+						keysMap.put(e, in);
+						break;
+					}
+				}
 			}
 		}
 		else if(keys.size() == 1)
 		{
-			for(int i = 0; i < 1200; i++)
+
+			for(EnumLaserInformations e : EnumLaserInformations.values())
 			{
-				redKey[i] = keyList[keys.get(0) / 10].getKeyRed();
-				greenKey[i] = keyList[keys.get(0) / 10].getKeyGreen();
-				blueKey[i] = keyList[keys.get(0) / 10].getKeyBlue();
-				secRedKey[i] = keyList[keys.get(0) / 10].getKeySecRed();
-				secGreenKey[i] = keyList[keys.get(0) / 10].getKeySecGreen();
-				secBlueKey[i] = keyList[keys.get(0) / 10].getKeySecBlue();
-				angle1Key[i] = keyList[keys.get(0) / 10].getKeyAngle1();
-				angle2Key[i] = keyList[keys.get(0) / 10].getKeyAngle2();
-				mainSizeKey[i] = keyList[keys.get(0) / 10].getKeyMainLaserSize();
-				secSizeKey[i] = keyList[keys.get(0) / 10].getKeySecLaserSize();
-				lazerHeightKey[i] = keyList[keys.get(0) / 10].getKeyLaserHeight();
-				txtRedKey[i] = keyList[keys.get(0) / 10].getKeyTxtRed();
-				txtGreenKey[i] = keyList[keys.get(0) / 10].getKeyTxtGreen();
-				txtBlueKey[i] = keyList[keys.get(0) / 10].getKeyTxtBlue();
-				txtAngle1Key[i] = keyList[keys.get(0) / 10].getTxtAngle1();
-				txtScaleKey[i] = keyList[keys.get(0) / 10].getTxtScale();
-				txtHeightKey[i] = keyList[keys.get(0) / 10].getTxtHeight();
-				sidesKey[i] = keyList[keys.get(0) / 10].getSides();
+				if(e.shouldProcessKeys())
+				{
+					switch(e.getType())
+					{
+					case 0:
+						byte[] b = new byte[1200];
+
+						for(int i = 0; i < 1200; i++)
+						{
+							b[i] = (Byte)keyList[keys.get(0) / 10].get(e);
+						}
+						break;
+					case 1:
+						int[] in = new int[1200];
+
+						for(int i = 0; i < 1200; i++)
+						{
+							in[i] = (Integer)keyList[keys.get(0) / 10].get(e);
+						}
+						break;
+					}
+
+				}
 			}
 		}
 	}
@@ -657,24 +480,24 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		nbtTagCompound.setByte("TxtHeight", textHeight);
 		nbtTagCompound.setByte("Sides", laserSidesNumber);
 
-		nbtTagCompound.setByteArray("RedKey", redKey);
-		nbtTagCompound.setByteArray("GreenKey", greenKey);
-		nbtTagCompound.setByteArray("BlueKey", blueKey);
-		nbtTagCompound.setByteArray("SecRedKey", secRedKey);
-		nbtTagCompound.setByteArray("SecGreenKey", secGreenKey);
-		nbtTagCompound.setByteArray("SecBlueKey", secBlueKey);
-		nbtTagCompound.setIntArray("Angle1Key", angle1Key);
-		nbtTagCompound.setByteArray("Angle2Key", angle2Key);
-		nbtTagCompound.setByteArray("MainLazerSize", mainSizeKey);
-		nbtTagCompound.setByteArray("SecLazerSize", secSizeKey);
-		nbtTagCompound.setIntArray("LazerHeightKey", lazerHeightKey);
-		nbtTagCompound.setByteArray("TxtRedKey", txtRedKey);
-		nbtTagCompound.setByteArray("TxtGreenKey", txtGreenKey);
-		nbtTagCompound.setByteArray("TxtBlueKey", txtBlueKey);
-		nbtTagCompound.setIntArray("TxtAngle1Key", txtAngle1Key);
-		nbtTagCompound.setByteArray("TxtScaleKey", txtScaleKey);
-		nbtTagCompound.setByteArray("TxtHeightKey", txtHeightKey);
-		nbtTagCompound.setByteArray("SidesKey", sidesKey);
+		nbtTagCompound.setByteArray("RedKey", (byte[])keysMap.get(EnumLaserInformations.LASERRED));
+		nbtTagCompound.setByteArray("GreenKey", (byte[])keysMap.get(EnumLaserInformations.LASERGREEN));
+		nbtTagCompound.setByteArray("BlueKey", (byte[])keysMap.get(EnumLaserInformations.LASERBLUE));
+		nbtTagCompound.setByteArray("SecRedKey", (byte[])keysMap.get(EnumLaserInformations.LASERSECRED));
+		nbtTagCompound.setByteArray("SecGreenKey", (byte[])keysMap.get(EnumLaserInformations.LASERSECGREEN));
+		nbtTagCompound.setByteArray("SecBlueKey", (byte[])keysMap.get(EnumLaserInformations.LASERSECBLUE));
+		nbtTagCompound.setIntArray("Angle1Key", (int[])keysMap.get(EnumLaserInformations.LASERANGLE1));
+		nbtTagCompound.setByteArray("Angle2Key", (byte[])keysMap.get(EnumLaserInformations.LASERANGLE2));
+		nbtTagCompound.setByteArray("MainLazerSize", (byte[])keysMap.get(EnumLaserInformations.LASERMAINSIZE));
+		nbtTagCompound.setByteArray("SecLazerSize", (byte[])keysMap.get(EnumLaserInformations.LASERSECSIZE));
+		nbtTagCompound.setIntArray("LazerHeightKey", (int[])keysMap.get(EnumLaserInformations.LASERHEIGHT));
+		nbtTagCompound.setByteArray("SidesKey", (byte[])keysMap.get(EnumLaserInformations.LASERSIDESNUMBER));
+		nbtTagCompound.setByteArray("TxtRedKey", (byte[])keysMap.get(EnumLaserInformations.TEXTRED));
+		nbtTagCompound.setByteArray("TxtGreenKey", (byte[])keysMap.get(EnumLaserInformations.TEXTGREEN));
+		nbtTagCompound.setByteArray("TxtBlueKey", (byte[])keysMap.get(EnumLaserInformations.TEXTBLUE));
+		nbtTagCompound.setIntArray("TxtAngle1Key", (int[])keysMap.get(EnumLaserInformations.TEXTANGLE1));
+		nbtTagCompound.setByteArray("TxtScaleKey", (byte[])keysMap.get(EnumLaserInformations.TEXTSCALE));
+		nbtTagCompound.setByteArray("TxtHeightKey", (byte[])keysMap.get(EnumLaserInformations.TEXTHEIGHT));
 
 		NBTTagList nbttaglist = new NBTTagList();
 		for(int i = 0; i < keyList.length; ++i)
@@ -744,24 +567,24 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		textHeight = nbtTagCompound.getByte("TxtHeight");
 		laserSidesNumber = nbtTagCompound.getByte("Sides");
 
-		redKey = nbtTagCompound.getByteArray("RedKey");
-		greenKey = nbtTagCompound.getByteArray("GreenKey");
-		blueKey = nbtTagCompound.getByteArray("BlueKey");
-		secRedKey = nbtTagCompound.getByteArray("SecRedKey");
-		secGreenKey = nbtTagCompound.getByteArray("SecGreenKey");
-		secBlueKey = nbtTagCompound.getByteArray("SecBlueKey");
-		angle1Key = nbtTagCompound.getIntArray("Angle1Key");
-		angle2Key = nbtTagCompound.getByteArray("Angle2Key");
-		mainSizeKey = nbtTagCompound.getByteArray("MainLazerSize");
-		secSizeKey = nbtTagCompound.getByteArray("SecLazerSize");
-		lazerHeightKey = nbtTagCompound.getIntArray("LazerHeightKey");
-		txtRedKey = nbtTagCompound.getByteArray("TxtRedKey");
-		txtGreenKey = nbtTagCompound.getByteArray("TxtGreenKey");
-		txtBlueKey = nbtTagCompound.getByteArray("TxtBlueKey");
-		txtAngle1Key = nbtTagCompound.getIntArray("TxtAngle1Key");
-		txtScaleKey = nbtTagCompound.getByteArray("TxtScaleKey");
-		txtHeightKey = nbtTagCompound.getByteArray("TxtHeightKey");
-		sidesKey = nbtTagCompound.getByteArray("SidesKey");
+		keysMap.put(EnumLaserInformations.LASERRED, nbtTagCompound.getByteArray("RedKey"));
+		keysMap.put(EnumLaserInformations.LASERGREEN, nbtTagCompound.getByteArray("GreenKey"));
+		keysMap.put(EnumLaserInformations.LASERBLUE, nbtTagCompound.getByteArray("BlueKey"));
+		keysMap.put(EnumLaserInformations.LASERSECRED, nbtTagCompound.getByteArray("SecRedKey"));
+		keysMap.put(EnumLaserInformations.LASERSECGREEN, nbtTagCompound.getByteArray("SecGreenKey"));
+		keysMap.put(EnumLaserInformations.LASERSECBLUE, nbtTagCompound.getByteArray("SecBlueKey"));
+		keysMap.put(EnumLaserInformations.LASERANGLE1, nbtTagCompound.getIntArray("Angle1Key"));
+		keysMap.put(EnumLaserInformations.LASERANGLE2, nbtTagCompound.getByteArray("Angle2Key"));
+		keysMap.put(EnumLaserInformations.LASERMAINSIZE, nbtTagCompound.getByteArray("MainLazerSize"));
+		keysMap.put(EnumLaserInformations.LASERSECSIZE, nbtTagCompound.getByteArray("SecLazerSize"));
+		keysMap.put(EnumLaserInformations.LASERHEIGHT, nbtTagCompound.getIntArray("LazerHeightKey"));
+		keysMap.put(EnumLaserInformations.LASERSIDESNUMBER, nbtTagCompound.getByteArray("SidesKey"));
+		keysMap.put(EnumLaserInformations.TEXTRED, nbtTagCompound.getByteArray("TxtRedKey"));
+		keysMap.put(EnumLaserInformations.TEXTGREEN, nbtTagCompound.getByteArray("TxtGreenKey"));
+		keysMap.put(EnumLaserInformations.TEXTBLUE, nbtTagCompound.getByteArray("TxtBlueKey"));
+		keysMap.put(EnumLaserInformations.TEXTANGLE1, nbtTagCompound.getIntArray("TxtAngle1Key"));
+		keysMap.put(EnumLaserInformations.TEXTSCALE, nbtTagCompound.getByteArray("TxtScaleKey"));
+		keysMap.put(EnumLaserInformations.TEXTHEIGHT, nbtTagCompound.getByteArray("TxtHeightKey"));
 
 		NBTTagList nbttaglist = nbtTagCompound.getTagList("SpotLightKeys", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i < nbttaglist.tagCount(); ++i)
@@ -992,6 +815,24 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		worldObj.markBlockForUpdate(pos);
 	}
 
+	/**
+	 * Only used for keys
+	 * 
+	 * @param e
+	 */
+	public void set(EnumLaserInformations e)
+	{
+		switch(e.getType())
+		{
+		case 0:
+			set(e, ((byte[])keysMap.get(e))[timelineTime]);
+			break;
+		case 1:
+			set(e, ((int[])keysMap.get(e))[timelineTime]);
+			break;
+		}
+	}
+
 	public Object get(EnumLaserInformations e)
 	{
 		switch(e)
@@ -1136,24 +977,24 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		textScale = (byte)10;
 		textHeight = (byte)128;
 		laserSidesNumber = (byte)2;
-		redKey = new byte[1200];
-		greenKey = new byte[1200];
-		blueKey = new byte[1200];
-		secRedKey = new byte[1200];
-		secGreenKey = new byte[1200];
-		secBlueKey = new byte[1200];
-		angle1Key = new int[1200];
-		angle2Key = new byte[1200];
-		mainSizeKey = new byte[1200];
-		secSizeKey = new byte[1200];
-		lazerHeightKey = new int[1200];
-		txtRedKey = new byte[1200];
-		txtGreenKey = new byte[1200];
-		txtBlueKey = new byte[1200];
-		txtAngle1Key = new int[1200];
-		txtScaleKey = new byte[1200];
-		txtHeightKey = new byte[1200];
-		sidesKey = new byte[1200];
+		keysMap.put(EnumLaserInformations.LASERRED, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERGREEN, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERBLUE, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERSECRED, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERSECGREEN, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERSECBLUE, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERANGLE1, new int[1200]);
+		keysMap.put(EnumLaserInformations.LASERANGLE2, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERMAINSIZE, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERSECSIZE, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERHEIGHT, new int[1200]);
+		keysMap.put(EnumLaserInformations.TEXTRED, new byte[1200]);
+		keysMap.put(EnumLaserInformations.TEXTGREEN, new byte[1200]);
+		keysMap.put(EnumLaserInformations.TEXTBLUE, new byte[1200]);
+		keysMap.put(EnumLaserInformations.TEXTANGLE1, new int[1200]);
+		keysMap.put(EnumLaserInformations.TEXTSCALE, new byte[1200]);
+		keysMap.put(EnumLaserInformations.TEXTHEIGHT, new byte[1200]);
+		keysMap.put(EnumLaserInformations.LASERSIDESNUMBER, new byte[1200]);
 		keyList = new SpotLightEntry[120];
 		worldObj.markBlockForUpdate(pos);
 	}
@@ -1205,24 +1046,24 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 				textHeight = conf.getByte("TxtHeight");
 				laserSidesNumber = conf.getByte("Sides");
 
-				redKey = conf.getByteArray("RedKey");
-				greenKey = conf.getByteArray("GreenKey");
-				blueKey = conf.getByteArray("BlueKey");
-				secRedKey = conf.getByteArray("SecRedKey");
-				secGreenKey = conf.getByteArray("SecGreenKey");
-				secBlueKey = conf.getByteArray("SecBlueKey");
-				angle1Key = conf.getIntArray("Angle1Key");
-				angle2Key = conf.getByteArray("Angle2Key");
-				mainSizeKey = conf.getByteArray("MainLazerSize");
-				secSizeKey = conf.getByteArray("SecLazerSize");
-				lazerHeightKey = conf.getIntArray("LazerHeightKey");
-				txtRedKey = conf.getByteArray("TxtRedKey");
-				txtGreenKey = conf.getByteArray("TxtGreenKey");
-				txtBlueKey = conf.getByteArray("TxtBlueKey");
-				txtAngle1Key = conf.getIntArray("TxtAngle1Key");
-				txtScaleKey = conf.getByteArray("TxtScaleKey");
-				txtHeightKey = conf.getByteArray("TxtHeightKey");
-				sidesKey = conf.getByteArray("SidesKey");
+				keysMap.put(EnumLaserInformations.LASERRED, conf.getByteArray("RedKey"));
+				keysMap.put(EnumLaserInformations.LASERGREEN, conf.getByteArray("GreenKey"));
+				keysMap.put(EnumLaserInformations.LASERBLUE, conf.getByteArray("BlueKey"));
+				keysMap.put(EnumLaserInformations.LASERSECRED, conf.getByteArray("SecRedKey"));
+				keysMap.put(EnumLaserInformations.LASERSECGREEN, conf.getByteArray("SecGreenKey"));
+				keysMap.put(EnumLaserInformations.LASERSECBLUE, conf.getByteArray("SecBlueKey"));
+				keysMap.put(EnumLaserInformations.LASERANGLE1, conf.getIntArray("Angle1Key"));
+				keysMap.put(EnumLaserInformations.LASERANGLE2, conf.getByteArray("Angle2Key"));
+				keysMap.put(EnumLaserInformations.LASERMAINSIZE, conf.getByteArray("MainLazerSize"));
+				keysMap.put(EnumLaserInformations.LASERSECSIZE, conf.getByteArray("SecLazerSize"));
+				keysMap.put(EnumLaserInformations.LASERHEIGHT, conf.getIntArray("LazerHeightKey"));
+				keysMap.put(EnumLaserInformations.TEXTRED, conf.getByteArray("TxtRedKey"));
+				keysMap.put(EnumLaserInformations.TEXTGREEN, conf.getByteArray("TxtGreenKey"));
+				keysMap.put(EnumLaserInformations.TEXTBLUE, conf.getByteArray("TxtBlueKey"));
+				keysMap.put(EnumLaserInformations.TEXTANGLE1, conf.getIntArray("TxtAngle1Key"));
+				keysMap.put(EnumLaserInformations.TEXTSCALE, conf.getByteArray("TxtScaleKey"));
+				keysMap.put(EnumLaserInformations.TEXTHEIGHT, conf.getByteArray("TxtHeightKey"));
+				keysMap.put(EnumLaserInformations.LASERSIDESNUMBER, conf.getByteArray("SidesKey"));
 
 				NBTTagList nbttaglist = conf.getTagList("SpotLightKeys", Constants.NBT.TAG_COMPOUND);
 				for(int i = 0; i < nbttaglist.tagCount(); ++i)
@@ -1331,24 +1172,24 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		nbtTagCompound.setByte("TxtHeight", textHeight);
 		nbtTagCompound.setByte("Sides", laserSidesNumber);
 
-		nbtTagCompound.setByteArray("RedKey", redKey);
-		nbtTagCompound.setByteArray("GreenKey", greenKey);
-		nbtTagCompound.setByteArray("BlueKey", blueKey);
-		nbtTagCompound.setByteArray("SecRedKey", secRedKey);
-		nbtTagCompound.setByteArray("SecGreenKey", secGreenKey);
-		nbtTagCompound.setByteArray("SecBlueKey", secBlueKey);
-		nbtTagCompound.setIntArray("Angle1Key", angle1Key);
-		nbtTagCompound.setByteArray("Angle2Key", angle2Key);
-		nbtTagCompound.setByteArray("MainLazerSize", mainSizeKey);
-		nbtTagCompound.setByteArray("SecLazerSize", secSizeKey);
-		nbtTagCompound.setIntArray("LazerHeightKey", lazerHeightKey);
-		nbtTagCompound.setByteArray("TxtRedKey", txtRedKey);
-		nbtTagCompound.setByteArray("TxtGreenKey", txtGreenKey);
-		nbtTagCompound.setByteArray("TxtBlueKey", txtBlueKey);
-		nbtTagCompound.setIntArray("TxtAngle1Key", txtAngle1Key);
-		nbtTagCompound.setByteArray("TxtScaleKey", txtScaleKey);
-		nbtTagCompound.setByteArray("TxtHeightKey", txtHeightKey);
-		nbtTagCompound.setByteArray("SidesKey", sidesKey);
+		nbtTagCompound.setByteArray("RedKey", (byte[])keysMap.get(EnumLaserInformations.LASERRED));
+		nbtTagCompound.setByteArray("GreenKey", (byte[])keysMap.get(EnumLaserInformations.LASERGREEN));
+		nbtTagCompound.setByteArray("BlueKey", (byte[])keysMap.get(EnumLaserInformations.LASERBLUE));
+		nbtTagCompound.setByteArray("SecRedKey", (byte[])keysMap.get(EnumLaserInformations.LASERSECRED));
+		nbtTagCompound.setByteArray("SecGreenKey", (byte[])keysMap.get(EnumLaserInformations.LASERSECGREEN));
+		nbtTagCompound.setByteArray("SecBlueKey", (byte[])keysMap.get(EnumLaserInformations.LASERSECBLUE));
+		nbtTagCompound.setIntArray("Angle1Key", (int[])keysMap.get(EnumLaserInformations.LASERANGLE1));
+		nbtTagCompound.setByteArray("Angle2Key", (byte[])keysMap.get(EnumLaserInformations.LASERANGLE2));
+		nbtTagCompound.setByteArray("MainLazerSize", (byte[])keysMap.get(EnumLaserInformations.LASERMAINSIZE));
+		nbtTagCompound.setByteArray("SecLazerSize", (byte[])keysMap.get(EnumLaserInformations.LASERSECSIZE));
+		nbtTagCompound.setIntArray("LazerHeightKey", (int[])keysMap.get(EnumLaserInformations.LASERHEIGHT));
+		nbtTagCompound.setByteArray("SidesKey", (byte[])keysMap.get(EnumLaserInformations.LASERSIDESNUMBER));
+		nbtTagCompound.setByteArray("TxtRedKey", (byte[])keysMap.get(EnumLaserInformations.TEXTRED));
+		nbtTagCompound.setByteArray("TxtGreenKey", (byte[])keysMap.get(EnumLaserInformations.TEXTGREEN));
+		nbtTagCompound.setByteArray("TxtBlueKey", (byte[])keysMap.get(EnumLaserInformations.TEXTBLUE));
+		nbtTagCompound.setIntArray("TxtAngle1Key", (int[])keysMap.get(EnumLaserInformations.TEXTANGLE1));
+		nbtTagCompound.setByteArray("TxtScaleKey", (byte[])keysMap.get(EnumLaserInformations.TEXTSCALE));
+		nbtTagCompound.setByteArray("TxtHeightKey", (byte[])keysMap.get(EnumLaserInformations.TEXTHEIGHT));
 
 		NBTTagList nbttaglist = new NBTTagList();
 		for(int i = 0; i < keyList.length; ++i)

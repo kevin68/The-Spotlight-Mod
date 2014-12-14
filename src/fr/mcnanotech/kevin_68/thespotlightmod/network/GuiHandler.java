@@ -12,25 +12,25 @@ import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 public class GuiHandler implements IGuiHandler
 {
 
-    @Override
-    public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
-    {
-        TileEntity tileentity = world.getTileEntity(new BlockPos(x, y, z));
-        if(tileentity instanceof TileEntitySpotLight)
-        {
-            return new ContainerSpotLightSlotConfig((TileEntitySpotLight)tileentity, player.inventory, world);
-        }
-        return null;
-    }
+	@Override
+	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
+	{
+		TileEntity tileentity = world.getTileEntity(new BlockPos(x, y, z));
+		if(tileentity instanceof TileEntitySpotLight)
+		{
+			return new ContainerSpotLightSlotConfig((TileEntitySpotLight)tileentity, player.inventory, world);
+		}
+		return null;
+	}
 
-    @Override
-    public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
-    {
-        TileEntity tileentity = world.getTileEntity(new BlockPos(x, y, z));
-        if(tileentity instanceof TileEntitySpotLight)
-        {
-            return new GuiSpotLight(player.inventory, (TileEntitySpotLight)tileentity, world);
-        }
-        return null;
-    }
+	@Override
+	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
+	{
+		TileEntity tileentity = world.getTileEntity(new BlockPos(x, y, z));
+		if(tileentity instanceof TileEntitySpotLight)
+		{
+			return new GuiSpotLight(player.inventory, (TileEntitySpotLight)tileentity, world);
+		}
+		return null;
+	}
 }

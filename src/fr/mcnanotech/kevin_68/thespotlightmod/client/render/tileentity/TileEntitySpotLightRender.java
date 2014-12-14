@@ -31,18 +31,19 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 	private ModelSpotLight model;
 
 	// @Override
-	public void renderInventory(double x, double y, double z)
-	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png"));
-		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		GL11.glScalef(0.8F, 0.8F, 0.8F);
-		GL11.glTranslatef(0.0F, 0.38F, 0.0F);
-		model = new ModelSpotLight(0);
-		model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
-		GL11.glPopMatrix();
-	}
+	// public void renderInventory(double x, double y, double z)
+	// {
+	// GL11.glPushMatrix();
+	// GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+	// bindTexture(new ResourceLocation(TheSpotLightMod.MODID,
+	// "textures/blocks/spotlight.png"));
+	// GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+	// GL11.glScalef(0.8F, 0.8F, 0.8F);
+	// GL11.glTranslatef(0.0F, 0.38F, 0.0F);
+	// model = new ModelSpotLight(0);
+	// model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+	// GL11.glPopMatrix();
+	// }
 
 	public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
 	{
@@ -105,7 +106,8 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
 
 			double t2 = -1.0F - f3;
-			double t3 = (Integer)tile.get(EnumLaserInformations.LASERHEIGHT) * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * (((Byte)tile.get(EnumLaserInformations.LASERMAINSIZE) & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
+			double t3 = tile.bVec[0].getLenVec().norm() * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * (((Byte)tile.get(EnumLaserInformations.LASERMAINSIZE) & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
+			double t4 = tile.bVec[1].getLenVec().norm() * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * (((Byte)tile.get(EnumLaserInformations.LASERMAINSIZE) & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
 
 			float r = ((Byte)tile.get(EnumLaserInformations.LASERRED) & 0xFF) / 255.0F;
 			float g = ((Byte)tile.get(EnumLaserInformations.LASERGREEN) & 0xFF) / 255.0F;
@@ -121,7 +123,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			{
 				worldrenderer.startDrawingQuads();
 				worldrenderer.setColorRGBA_F(r, g, b, 0.125F);
-				drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[1]);
+				drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[1]);
 				tess.draw();
 			}
 
@@ -144,7 +146,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 				{
 					worldrenderer.startDrawingQuads();
 					worldrenderer.setColorRGBA_F(sR, sG, sB, 0.125F);
-					drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[3]);
+					drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[3]);
 					tess.draw();
 				}
 			}

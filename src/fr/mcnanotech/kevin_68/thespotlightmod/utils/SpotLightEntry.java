@@ -1,288 +1,131 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SpotLightEntry
 {
-    private boolean active;
+	private boolean active;
 
-    private byte keyRed;
-    private byte keyGreen;
-    private byte keyBlue;
-    private byte keySecRed;
-    private byte keySecGreen;
-    private byte keySecBlue;
-    private int keyAngle1;
-    private byte keyAngle2;
-    private boolean keyAutRot;
-    private boolean keyRevRot;
-    private byte keyRotSpe;
-    private boolean keySecLas;
-    private byte displayAxe;
-    private boolean sideLaser;
-    private byte mainLaserSize;
-    private byte secLaserSize;
-    private int laserHeight;
-    private boolean textEnabled;
-    private byte txtRed;
-    private byte txtGreen;
-    private byte txtBlue;
-    private int txtAngle1;
-    private boolean txtAutoRotate;
-    private boolean txtReverseRotation;
-    private byte txtRotationSpeed;
-    private byte txtScale;
-    private byte txtHeight;
-    private byte sides;
+	private Map<EnumLaserInformations, Object> map = new HashMap<EnumLaserInformations, Object>();
 
-    public SpotLightEntry(boolean active, byte red, byte green, byte blue, byte secRed, byte secGreen, byte secBlue, int angle1, byte angle2, boolean autoRot, boolean revRot, byte rotSpe, boolean secLas, byte displayAxe, boolean sideLaser, byte mainLaserSize, byte secLaserSize, int laserHeight, boolean textEnabled, byte keyTxtRed, byte keyTxtGreen, byte keyTxtBlue, int txtAngle1, boolean txtAutoRotate, boolean txtReveseRotation, byte txtRotationSpeed, byte txtScale, byte txtHeight, byte sides)
-    {
-        this.active = active;
-        this.keyRed = red;
-        this.keyGreen = green;
-        this.keyBlue = blue;
-        this.keySecRed = secRed;
-        this.keySecGreen = secGreen;
-        this.keySecBlue = secBlue;
-        this.keyAngle1 = angle1;
-        this.keyAngle2 = angle2;
-        this.keyAutRot = autoRot;
-        this.keyRevRot = revRot;
-        this.keyRotSpe = rotSpe;
-        this.keySecLas = secLas;
-        this.displayAxe = displayAxe;
-        this.sideLaser = sideLaser;
-        this.mainLaserSize = mainLaserSize;
-        this.secLaserSize = secLaserSize;
-        this.laserHeight = laserHeight;
-        this.textEnabled = textEnabled;
-        this.txtRed = keyTxtRed;
-        this.txtGreen = keyTxtGreen;
-        this.txtBlue = keyTxtBlue;
-        this.txtAngle1 = txtAngle1;
-        this.txtAutoRotate = txtAutoRotate;
-        this.txtReverseRotation = txtReveseRotation;
-        this.txtRotationSpeed = txtRotationSpeed;
-        this.txtScale = txtScale;
-        this.txtHeight = txtHeight;
-        this.sides = sides;
-    }
+	public SpotLightEntry(boolean active, byte red, byte green, byte blue, byte secRed, byte secGreen, byte secBlue, int angle1, byte angle2, boolean autoRot, boolean revRot, byte rotSpe, boolean secLas, byte displayAxe, boolean sideLaser, byte mainLaserSize, byte secLaserSize, int laserHeight, boolean textEnabled, byte keyTxtRed, byte keyTxtGreen, byte keyTxtBlue, int txtAngle1, boolean txtAutoRotate, boolean txtReveseRotation, byte txtRotationSpeed, byte txtScale, byte txtHeight, byte sides)
+	{
+		this.active = active;
+		map.put(EnumLaserInformations.LASERRED, red);
+		map.put(EnumLaserInformations.LASERGREEN, green);
+		map.put(EnumLaserInformations.LASERBLUE, blue);
+		map.put(EnumLaserInformations.LASERSECRED, secRed);
+		map.put(EnumLaserInformations.LASERSECGREEN, secGreen);
+		map.put(EnumLaserInformations.LASERSECBLUE, secBlue);
+		map.put(EnumLaserInformations.LASERANGLE1, angle1);
+		map.put(EnumLaserInformations.LASERANGLE2, angle2);
+		map.put(EnumLaserInformations.LASERAUTOROTATE, autoRot);
+		map.put(EnumLaserInformations.LASERREVERSEROTATION, revRot);
+		map.put(EnumLaserInformations.LASERROTATIONSPEED, rotSpe);
+		map.put(EnumLaserInformations.LASERSECONDARY, secLas);
+		map.put(EnumLaserInformations.LASERDISPLAYAXE, displayAxe);
+		map.put(EnumLaserInformations.LASERDOUBLE, sideLaser);
+		map.put(EnumLaserInformations.LASERMAINSIZE, mainLaserSize);
+		map.put(EnumLaserInformations.LASERSECSIZE, secLaserSize);
+		map.put(EnumLaserInformations.LASERHEIGHT, laserHeight);
+		map.put(EnumLaserInformations.LASERSIDESNUMBER, sides);
+		map.put(EnumLaserInformations.TEXTENABLED, textEnabled);
+		map.put(EnumLaserInformations.TEXTRED, keyTxtRed);
+		map.put(EnumLaserInformations.TEXTGREEN, keyTxtGreen);
+		map.put(EnumLaserInformations.TEXTBLUE, keyTxtBlue);
+		map.put(EnumLaserInformations.TEXTANGLE1, txtAngle1);
+		map.put(EnumLaserInformations.TEXTAUTOROTATE, txtAutoRotate);
+		map.put(EnumLaserInformations.TEXTREVERSEROTATION, txtReveseRotation);
+		map.put(EnumLaserInformations.TEXTROTATIONSPEED, txtRotationSpeed);
+		map.put(EnumLaserInformations.TEXTSCALE, txtScale);
+		map.put(EnumLaserInformations.TEXTHEIGHT, txtHeight);
+	}
 
-    private SpotLightEntry()
-    {}
+	private SpotLightEntry()
+	{}
 
-    public boolean isActive()
-    {
-        return active;
-    }
+	public boolean isActive()
+	{
+		return active;
+	}
 
-    public byte getKeyRed()
-    {
-        return keyRed;
-    }
+	public Object get(EnumLaserInformations e)
+	{
+		return map.get(e);
+	}
 
-    public byte getKeyGreen()
-    {
-        return keyGreen;
-    }
+	public static SpotLightEntry loadSpotLightEntryFromNBT(NBTTagCompound nbtTagCompound)
+	{
+		SpotLightEntry entry = new SpotLightEntry();
+		entry.readFromNBT(nbtTagCompound);
+		return entry;
+	}
 
-    public byte getKeyBlue()
-    {
-        return keyBlue;
-    }
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
+	{
+		nbtTagCompound.setBoolean("Active", active);
+		nbtTagCompound.setByte("red", (Byte)map.get(EnumLaserInformations.LASERRED));
+		nbtTagCompound.setByte("green", (Byte)map.get(EnumLaserInformations.LASERGREEN));
+		nbtTagCompound.setByte("blue", (Byte)map.get(EnumLaserInformations.LASERBLUE));
+		nbtTagCompound.setByte("secRed", (Byte)map.get(EnumLaserInformations.LASERSECRED));
+		nbtTagCompound.setByte("secGreen", (Byte)map.get(EnumLaserInformations.LASERSECGREEN));
+		nbtTagCompound.setByte("secBlue", (Byte)map.get(EnumLaserInformations.LASERSECBLUE));
+		nbtTagCompound.setInteger("angle1", (Integer)map.get(EnumLaserInformations.LASERANGLE1));
+		nbtTagCompound.setByte("angle2", (Byte)map.get(EnumLaserInformations.LASERANGLE2));
+		nbtTagCompound.setBoolean("autoRot", (Boolean)map.get(EnumLaserInformations.LASERAUTOROTATE));
+		nbtTagCompound.setBoolean("revRot", (Boolean)map.get(EnumLaserInformations.LASERREVERSEROTATION));
+		nbtTagCompound.setByte("rotSpe", (Byte)map.get(EnumLaserInformations.LASERROTATIONSPEED));
+		nbtTagCompound.setBoolean("secLas", (Boolean)map.get(EnumLaserInformations.LASERSECONDARY));
+		nbtTagCompound.setByte("displayAxe", (Byte)map.get(EnumLaserInformations.LASERDISPLAYAXE));
+		nbtTagCompound.setBoolean("sideLaser", (Boolean)map.get(EnumLaserInformations.LASERDOUBLE));
+		nbtTagCompound.setByte("mainLaserSize", (Byte)map.get(EnumLaserInformations.LASERMAINSIZE));
+		nbtTagCompound.setByte("secLaserSize", (Byte)map.get(EnumLaserInformations.LASERSECSIZE));
+		nbtTagCompound.setInteger("laserHeight", (Integer)map.get(EnumLaserInformations.LASERHEIGHT));
+		nbtTagCompound.setByte("Sides", (Byte)map.get(EnumLaserInformations.LASERSIDESNUMBER));
+		nbtTagCompound.setBoolean("textEnabled", (Boolean)map.get(EnumLaserInformations.TEXTENABLED));
+		nbtTagCompound.setByte("txtRed", (Byte)map.get(EnumLaserInformations.TEXTRED));
+		nbtTagCompound.setByte("txtGreen", (Byte)map.get(EnumLaserInformations.TEXTGREEN));
+		nbtTagCompound.setByte("txtBlue", (Byte)map.get(EnumLaserInformations.TEXTBLUE));
+		nbtTagCompound.setInteger("txtAngle1", (Integer)map.get(EnumLaserInformations.TEXTANGLE1));
+		nbtTagCompound.setBoolean("txtAutoRot", (Boolean)map.get(EnumLaserInformations.TEXTAUTOROTATE));
+		nbtTagCompound.setBoolean("txtRevRot", (Boolean)map.get(EnumLaserInformations.TEXTREVERSEROTATION));
+		nbtTagCompound.setByte("txtRotSpe", (Byte)map.get(EnumLaserInformations.TEXTROTATIONSPEED));
+		return nbtTagCompound;
+	}
 
-    public byte getKeySecRed()
-    {
-        return keySecRed;
-    }
-
-    public byte getKeySecGreen()
-    {
-        return keySecGreen;
-    }
-
-    public byte getKeySecBlue()
-    {
-        return keySecBlue;
-    }
-
-    public int getKeyAngle1()
-    {
-        return keyAngle1;
-    }
-
-    public byte getKeyAngle2()
-    {
-        return keyAngle2;
-    }
-
-    public boolean isKeyAutRot()
-    {
-        return keyAutRot;
-    }
-
-    public boolean isKeyRevRot()
-    {
-        return keyRevRot;
-    }
-
-    public byte getKeyRotSpe()
-    {
-        return keyRotSpe;
-    }
-
-    public boolean isKeySecLas()
-    {
-        return keySecLas;
-    }
-
-    public byte getKeyDisplayAxe()
-    {
-        return displayAxe;
-    }
-
-    public boolean isSideLaser()
-    {
-        return sideLaser;
-    }
-
-    public byte getKeyMainLaserSize()
-    {
-        return mainLaserSize;
-    }
-
-    public byte getKeySecLaserSize()
-    {
-        return secLaserSize;
-    }
-
-    public int getKeyLaserHeight()
-    {
-        return laserHeight;
-    }
-
-    public boolean isKeyTextEnabled()
-    {
-        return textEnabled;
-    }
-
-    public byte getKeyTxtRed()
-    {
-        return txtRed;
-    }
-
-    public byte getKeyTxtGreen()
-    {
-        return txtGreen;
-    }
-
-    public byte getKeyTxtBlue()
-    {
-        return txtBlue;
-    }
-
-    public int getTxtAngle1()
-    {
-        return txtAngle1;
-    }
-
-    public boolean isTxtAutoRotate()
-    {
-        return txtAutoRotate;
-    }
-
-    public boolean isTxtReverseRotation()
-    {
-        return txtReverseRotation;
-    }
-
-    public byte getTxtRotationSpeed()
-    {
-        return txtRotationSpeed;
-    }
-
-    public byte getTxtScale()
-    {
-        return txtScale;
-    }
-
-    public byte getTxtHeight()
-    {
-        return txtHeight;
-    }
-
-    public byte getSides()
-    {
-        return sides;
-    }
-
-    public static SpotLightEntry loadSpotLightEntryFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        SpotLightEntry entry = new SpotLightEntry();
-        entry.readFromNBT(nbtTagCompound);
-        return entry;
-    }
-
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
-    {
-        nbtTagCompound.setBoolean("Active", this.active);
-        nbtTagCompound.setByte("red", this.keyRed);
-        nbtTagCompound.setByte("green", this.keyGreen);
-        nbtTagCompound.setByte("blue", this.keyBlue);
-        nbtTagCompound.setByte("secRed", this.keySecRed);
-        nbtTagCompound.setByte("secGreen", this.keySecGreen);
-        nbtTagCompound.setByte("secBlue", this.keySecBlue);
-        nbtTagCompound.setInteger("angle1", this.keyAngle1);
-        nbtTagCompound.setByte("angle2", this.keyAngle2);
-        nbtTagCompound.setBoolean("autoRot", this.keyAutRot);
-        nbtTagCompound.setBoolean("revRot", this.keyRevRot);
-        nbtTagCompound.setByte("rotSpe", this.keyRotSpe);
-        nbtTagCompound.setBoolean("secLas", this.keySecLas);
-        nbtTagCompound.setByte("displayAxe", this.displayAxe);
-        nbtTagCompound.setBoolean("sideLaser", sideLaser);
-        nbtTagCompound.setByte("mainLaserSize", this.mainLaserSize);
-        nbtTagCompound.setByte("secLaserSize", this.secLaserSize);
-        nbtTagCompound.setInteger("laserHeight", this.laserHeight);
-        nbtTagCompound.setBoolean("textEnabled", this.textEnabled);
-        nbtTagCompound.setByte("txtRed", this.txtRed);
-        nbtTagCompound.setByte("txtGreen", this.txtGreen);
-        nbtTagCompound.setByte("txtBlue", this.txtBlue);
-        nbtTagCompound.setInteger("txtAngle1", this.txtAngle1);
-        nbtTagCompound.setBoolean("txtAutoRot", this.txtAutoRotate);
-        nbtTagCompound.setBoolean("txtRevRot", this.txtReverseRotation);
-        nbtTagCompound.setByte("txtRotSpe", this.txtRotationSpeed);
-        nbtTagCompound.setByte("Sides", this.sides);
-        return nbtTagCompound;
-    }
-
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        this.active = nbtTagCompound.getBoolean("Active");
-        this.keyRed = nbtTagCompound.getByte("red");
-        this.keyGreen = nbtTagCompound.getByte("green");
-        this.keyBlue = nbtTagCompound.getByte("blue");
-        this.keySecRed = nbtTagCompound.getByte("secRed");
-        this.keySecGreen = nbtTagCompound.getByte("secGreen");
-        this.keySecBlue = nbtTagCompound.getByte("secBlue");
-        this.keyAngle1 = nbtTagCompound.getInteger("angle1");
-        this.keyAngle2 = nbtTagCompound.getByte("angle2");
-        this.keyAutRot = nbtTagCompound.getBoolean("autoRot");
-        this.keyRevRot = nbtTagCompound.getBoolean("revRot");
-        this.keyRotSpe = nbtTagCompound.getByte("rotSpe");
-        this.keySecLas = nbtTagCompound.getBoolean("secLas");
-        this.displayAxe = nbtTagCompound.getByte("displayAxe");
-        this.sideLaser = nbtTagCompound.getBoolean("sideLaser");
-        this.mainLaserSize = nbtTagCompound.getByte("mainLaserSize");
-        this.secLaserSize = nbtTagCompound.getByte("secLaserSize");
-        this.laserHeight = nbtTagCompound.getInteger("laserHeight");
-        this.textEnabled = nbtTagCompound.getBoolean("textEnabled");
-        this.txtRed = nbtTagCompound.getByte("txtRed");
-        this.txtGreen = nbtTagCompound.getByte("txtGreen");
-        this.txtBlue = nbtTagCompound.getByte("txtBlue");
-        this.txtAngle1 = nbtTagCompound.getInteger("txtAngle1");
-        this.txtAutoRotate = nbtTagCompound.getBoolean("txtAutoRot");
-        this.txtReverseRotation = nbtTagCompound.getBoolean("txtRevRot");
-        this.txtRotationSpeed = nbtTagCompound.getByte("txtRotSpe");
-        this.sides = nbtTagCompound.getByte("Sides");
-    }
+	public void readFromNBT(NBTTagCompound nbtTagCompound)
+	{
+		active = nbtTagCompound.getBoolean("Active");
+		map.put(EnumLaserInformations.LASERRED, nbtTagCompound.getByte("red"));
+		map.put(EnumLaserInformations.LASERGREEN, nbtTagCompound.getByte("green"));
+		map.put(EnumLaserInformations.LASERBLUE, nbtTagCompound.getByte("blue"));
+		map.put(EnumLaserInformations.LASERSECRED, nbtTagCompound.getByte("secRed"));
+		map.put(EnumLaserInformations.LASERSECGREEN, nbtTagCompound.getByte("secGreen"));
+		map.put(EnumLaserInformations.LASERSECBLUE, nbtTagCompound.getByte("secBlue"));
+		map.put(EnumLaserInformations.LASERANGLE1, nbtTagCompound.getInteger("angle1"));
+		map.put(EnumLaserInformations.LASERANGLE2, nbtTagCompound.getByte("angle2"));
+		map.put(EnumLaserInformations.LASERAUTOROTATE, nbtTagCompound.getBoolean("autoRot"));
+		map.put(EnumLaserInformations.LASERREVERSEROTATION, nbtTagCompound.getBoolean("revRot"));
+		map.put(EnumLaserInformations.LASERROTATIONSPEED, nbtTagCompound.getByte("rotSpe"));
+		map.put(EnumLaserInformations.LASERSECONDARY, nbtTagCompound.getBoolean("secLas"));
+		map.put(EnumLaserInformations.LASERDISPLAYAXE, nbtTagCompound.getByte("displayAxe"));
+		map.put(EnumLaserInformations.LASERDOUBLE, nbtTagCompound.getBoolean("sideLaser"));
+		map.put(EnumLaserInformations.LASERMAINSIZE, nbtTagCompound.getByte("mainLaserSize"));
+		map.put(EnumLaserInformations.LASERSECSIZE, nbtTagCompound.getByte("secLaserSize"));
+		map.put(EnumLaserInformations.LASERHEIGHT, nbtTagCompound.getInteger("laserHeight"));
+		map.put(EnumLaserInformations.LASERSIDESNUMBER, nbtTagCompound.getByte("Sides"));
+		map.put(EnumLaserInformations.TEXTENABLED, nbtTagCompound.getBoolean("textEnabled"));
+		map.put(EnumLaserInformations.TEXTRED, nbtTagCompound.getByte("txtRed"));
+		map.put(EnumLaserInformations.TEXTGREEN, nbtTagCompound.getByte("txtGreen"));
+		map.put(EnumLaserInformations.TEXTBLUE, nbtTagCompound.getByte("txtBlue"));
+		map.put(EnumLaserInformations.TEXTANGLE1, nbtTagCompound.getInteger("txtAngle1"));
+		map.put(EnumLaserInformations.TEXTAUTOROTATE, nbtTagCompound.getBoolean("txtAutoRot"));
+		map.put(EnumLaserInformations.TEXTREVERSEROTATION, nbtTagCompound.getBoolean("txtRevRot"));
+		map.put(EnumLaserInformations.TEXTROTATIONSPEED, nbtTagCompound.getByte("txtRotSpe"));
+		map.put(EnumLaserInformations.TEXTSCALE, nbtTagCompound.getByte("txtScale"));
+		map.put(EnumLaserInformations.TEXTHEIGHT, nbtTagCompound.getByte("txtHeight"));
+	}
 }
