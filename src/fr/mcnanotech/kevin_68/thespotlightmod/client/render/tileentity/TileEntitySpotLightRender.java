@@ -44,7 +44,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 	// model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
 	// GL11.glPopMatrix();
 	// }
-
 	public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
 	{
 		byte b0 = 1;
@@ -53,14 +52,12 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		int angle1Deg = (Integer)tile.get(EnumLaserInformations.LASERANGLE1);
 		double angle2Deg = (Byte)tile.get(EnumLaserInformations.LASERANGLE2) & 0xFF;
 		double a2 = (Boolean)tile.get(EnumLaserInformations.LASERAUTOROTATE) ? d3 * (((Byte)tile.get(EnumLaserInformations.LASERROTATIONSPEED) & 0xFF) / 4.0D) * ((Boolean)tile.get(EnumLaserInformations.LASERREVERSEROTATION) ? -1.0D : 1.0D) : Math.toRadians(angle2Deg);
-
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png"));
 		int ti = (int)(tile.getWorld().getTotalWorldTime() / 4 % 3);
 		model = new ModelSpotLight(ti);
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-
 		double angl2 = Math.toDegrees(a2);
 		byte axe = (Byte)tile.get(EnumLaserInformations.LASERDISPLAYAXE);
 		if(axe == 0)
@@ -69,7 +66,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GL11.glRotated(-angle1Deg, 0.0F, 0.0F, 1.0F);
 			GL11.glTranslated(0.0F, Math.cos(Math.PI * (1.0F / 180.0F) * angle1Deg) - 1, 0.0F);
 			GL11.glTranslated(Math.cos(Math.PI * (1.0F / 180.0F) * angle1Deg + Math.PI / 2.0F), 0.0F, 0.0F);
-
 		}
 		else if(axe == 1)
 		{
@@ -84,10 +80,8 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angle1Deg + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angle1Deg));
 		}
-
 		model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
 		GL11.glPopMatrix();
-
 		float f1 = tile.isActive();
 		GlStateManager.alphaFunc(516, 0.1F);
 		if(f1 > 0.0F)
@@ -102,13 +96,10 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GlStateManager.disableBlend();
 			GlStateManager.depthMask(true);
 			GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
-
 			float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
-
 			double t2 = -1.0F - f3;
 			double t3 = tile.bVec[0].getLenVec().norm() * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * (((Byte)tile.get(EnumLaserInformations.LASERMAINSIZE) & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
 			double t4 = tile.bVec[1].getLenVec().norm() * f1 * (0.5D / /* d4 */Math.sqrt(Math.pow(b0 * (((Byte)tile.get(EnumLaserInformations.LASERMAINSIZE) & 0xFF) / 200.0D), 2) / 2)/* d4 */) + t2;
-
 			float r = ((Byte)tile.get(EnumLaserInformations.LASERRED) & 0xFF) / 255.0F;
 			float g = ((Byte)tile.get(EnumLaserInformations.LASERGREEN) & 0xFF) / 255.0F;
 			float b = ((Byte)tile.get(EnumLaserInformations.LASERBLUE) & 0xFF) / 255.0F;
@@ -116,9 +107,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			worldrenderer.setColorRGBA_F(r, g, b, 0.125F);
 			drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[0]);
 			tess.draw();
-
 			boolean laserDouble = (Boolean)tile.get(EnumLaserInformations.LASERDOUBLE);
-
 			if(laserDouble)
 			{
 				worldrenderer.startDrawingQuads();
@@ -126,12 +115,10 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 				drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[1]);
 				tess.draw();
 			}
-
 			GuiHelper.bindTexture(UtilSpotLight.getEntryByName((String)tile.get(EnumLaserInformations.LASERSECTEXTURE)).getPath());
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.depthMask(false);
-
 			if((Boolean)tile.get(EnumLaserInformations.LASERSECONDARY))
 			{
 				float sR = ((Byte)tile.get(EnumLaserInformations.LASERSECRED) & 0xFF) / 255.0F;
@@ -141,7 +128,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 				worldrenderer.setColorRGBA_F(sR, sG, sB, 0.125F);
 				drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[2]);
 				tess.draw();
-
 				if(laserDouble)
 				{
 					worldrenderer.startDrawingQuads();
@@ -150,11 +136,9 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 					tess.draw();
 				}
 			}
-
 			GlStateManager.enableLighting();
 			GlStateManager.enableTexture2D();
 			GlStateManager.depthMask(true);
-
 			if((Boolean)tile.get(EnumLaserInformations.TEXTENABLED))
 			{
 				GL11.glPushMatrix();
@@ -213,7 +197,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 	{
 		TSMVec3[] v = vec.getVecs();
 		TSMVec3 e = vec.getLenVec();
-
 		for(int i = 0; i < v.length; i++)
 		{
 			worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord, 1.0F, t3);

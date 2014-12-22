@@ -9,25 +9,27 @@ import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerReflector;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightSlotConfig;
+import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntityReflector;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.network.FFMTPacket;
 
-public class PacketSpotLight extends FFMTPacket
+public class PacketSpotLightMod extends FFMTPacket
 {
 	private EnumLaserInformations e;
 	private Object obj;
 	private boolean failed = false;
 
-	public PacketSpotLight()
+	public PacketSpotLightMod()
 	{
 
 	}
 
-	public PacketSpotLight(EnumLaserInformations e, Object obj)
+	public PacketSpotLightMod(EnumLaserInformations e, Object obj)
 	{
 		this.e = e;
 		this.obj = obj;
@@ -119,6 +121,11 @@ public class PacketSpotLight extends FFMTPacket
 			else if(c instanceof ContainerSpotLightSlotConfig)
 			{
 				TileEntitySpotLight te = ((ContainerSpotLightSlotConfig)c).getSpotLight();
+				te.set(e, obj);
+			}
+			else if(c instanceof ContainerReflector)
+			{
+				TileEntityReflector te = ((ContainerReflector)c).getReflector();
 				te.set(e, obj);
 			}
 		}

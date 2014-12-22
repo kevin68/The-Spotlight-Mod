@@ -2,6 +2,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.tileentity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants;
@@ -45,6 +47,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	private int timelineTime, lastTimeUse, laserAngle1, laserHeight, textAngle1;
 
 	public BeamVec[] bVec = null;
+	public List<BeamVec[]> beams = new ArrayList<BeamVec[]>();
 	private int prevHeight = -1, prevSides = -1, prevA1 = -1;
 	private byte prevAxe = -1, prevA2 = -1, prevSize = -1, prevSizeSec = -1;
 
@@ -335,6 +338,58 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		}
 	}
 
+	private void proc()
+	{
+		double a1 = Math.toRadians(laserAngle1);
+		double a2 = laserAutoRotate ? getWorld().getTotalWorldTime() * 0.025D * (1.0D - ((byte)1 & 1) * 2.5D) * ((laserRotationSpeed & 0xFF) / 4.0D) * (laserReverseRotation ? -1.0D : 1.0D) : Math.toRadians(laserAngle2 & 0xFF);
+		double laserlen = laserHeight;
+
+		BeamVec[] vecs = new BeamVec[4];
+
+		for(int j = 0; j < 4; j++)
+		{
+			TSMVec3 height = null;
+			if(laserDisplayAxe == 0)
+			{
+				height = new TSMVec3(0, (j % 2 == 0 ? 1 : -1) * laserHeight, 0);
+				height.rotateAroundZ((float)a1);
+				height.rotateAroundY(-(float)a2);
+			}
+			else if(laserDisplayAxe == 1)
+			{
+				height = new TSMVec3((j % 2 == 0 ? 1 : -1) * laserHeight, 0, 0);
+				height.rotateAroundZ(-(float)a1);
+				height.rotateAroundX(-(float)a2);
+			}
+			else
+			{
+				height = new TSMVec3(0, 0, (j % 2 == 0 ? 1 : -1) * laserHeight);
+				height.rotateAroundX((float)a1);
+				height.rotateAroundZ((float)a2);
+			}
+
+			if(height.getReflectorCrossedByVector(worldObj, pos.getX(), pos.getY(), pos.getZ()) == null)
+			{
+				vecs[j] = new BeamVec(null, height);
+			}
+			IReflector prev = null;
+
+			while(height.getReflectorCrossedByVector(worldObj, pos.getX(), pos.getY(), pos.getZ()) != null)
+			{
+				IReflector ref = height.getReflectorCrossedByVector(worldObj, pos.getX(), pos.getY(), pos.getZ());
+				BlockPos p = prev == null ? pos : prev.getBlockPos();
+				TSMVec3 l = new TSMVec3(ref.getBlockPos().getX() - p.getX(), ref.getBlockPos().getY() - p.getY(), ref.getBlockPos().getZ() - p.getZ());
+				TSMVec3 normal = ref.normal().add(l).norm() <= ref.normalRev().add(l).norm() ? ref.normal() : ref.normalRev();
+				laserlen -= l.norm();
+				TSMVec3 e = l.multiply(l.norm() / laserHeight * laserlen);
+				e.rotateAround(normal, (float)(Math.PI / 2));
+				height = e;
+				prev = ref;
+
+			}
+		}
+	}
+
 	private BeamVec[] process()
 	{
 		double[] sizes = new double[] {Math.sqrt(Math.pow((laserMainSize & 0xFF) / 200.0D, 2) / 2), Math.sqrt(Math.pow((laserSecSize & 0xFF) / 200.0D, 2) / 2)};
@@ -384,7 +439,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 				e.rotateAroundX((float)a1);
 				e.rotateAroundZ((float)a2);
 			}
-
 			vecs[j] = new BeamVec(v, e);
 		}
 		return vecs;

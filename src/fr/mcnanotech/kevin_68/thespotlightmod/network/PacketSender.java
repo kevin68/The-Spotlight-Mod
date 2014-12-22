@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLightKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLightOpenConfigList;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
@@ -18,7 +18,7 @@ public class PacketSender
 	{
 		try
 		{
-			TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLight(en, value));
+			TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLightMod(en, value));
 		}
 		catch(Exception e)
 		{
