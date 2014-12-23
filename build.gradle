@@ -33,7 +33,9 @@ else {
 
 minecraft {
     version = "1.8-11.14.0.1274-1.8"
-    assetDir = "run/assets"
+    runDir = "run"
+	
+	mappings = "snapshot_nodoc_20141130"
 	
     replace '@VERSION@', project.version
 }
@@ -49,18 +51,20 @@ sourceSets {
     }
 }
 
+repositories {
+    maven {
+        name = "mff"
+        url = "http://files.minecraftforgefrance.fr/maven/"
+    }
+}
+
+configurations {
+    deployerJars
+}
+
 dependencies {
-    def lib = new File(rootProject.projectDir, 'libs')
-    if(!lib.exists()) {
-        lib.mkdirs()
-    }
-    
-    def ffmtlibUrl = "http://ci.mcnanotech.fr/job/FFMT-libs/119/artifact/build/libs/FFMT-libs-universal-1.5.0.119-mc1.8.jar"
-    def ffmtlib = new File(rootProject.projectDir, "libs/" + ffmtlibUrl.tokenize("/")[-1])
-    if (!ffmtlib.exists()) {
-        new URL(ffmtlibUrl).withInputStream{ i -> ffmtlib.withOutputStream{ it << i }}
-    }
-    compile files(ffmtlib.getPath())
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.5.0.125-mc1.8:dev'
+    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
 processResources
@@ -88,19 +92,21 @@ jar {
     version = "${project.version}-mc${project.minecraft.version}"
 }
 
-configurations {
-    deployerJars
-}
-
-repositories {
-    maven {
-        name = "mff"
-        url = "http://files.minecraftforgefrance.fr/maven/"
+task devJar(type: Jar) {
+    from(sourceSets.main.allSource) {
+        include 'fr/**/**'
     }
+    from(sourceSets.main.output) {
+        include '**'
+    }
+    classifier = 'dev'
+    version = "${project.version}-mc${project.minecraft.version}"
 }
 
-dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
+build.dependsOn devJar
+
+artifacts {
+    archives devJar
 }
 
 uploadArchives {
