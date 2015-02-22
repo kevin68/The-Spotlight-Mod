@@ -68,7 +68,7 @@ public class GuiSpotLightText extends GuiContainer implements ISliderButton
 		buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 48, 256, 20, I18n.format("container.spotlight.angle") + " 1 : " + a, a / 360.0F));
 		buttonList.add(rotateButton = new GuiBooleanButton(7, x - 40, y + 94, 127, 20, I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.off"), (Boolean)tile.get(EnumLaserInformations.TEXTAUTOROTATE)));
 		buttonList.add(revRotaButton = new GuiBooleanButton(8, x + 90, y + 72, 127, 20, I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.off"), (Boolean)tile.get(EnumLaserInformations.TEXTREVERSEROTATION)));
-		byte s = (Byte)tile.get(EnumLaserInformations.TEXTREVERSEROTATION);
+		byte s = (Byte)tile.get(EnumLaserInformations.TEXTROTATIONSPEED);
 		buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 72, 127, 20, I18n.format("container.spotlight.rotationspeed") + " : " + (s & 0xFF), s / 20.0F));
 
 		buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
