@@ -32,10 +32,10 @@ else {
 }
 
 minecraft {
-    version = "1.8-11.14.0.1274-1.8"
+    version = "1.8-11.14.1.1325"
     runDir = "run"
 	
-	mappings = "snapshot_nodoc_20141130"
+	mappings = "snapshot_nodoc_20150221"
 	
     replace '@VERSION@', project.version
 }

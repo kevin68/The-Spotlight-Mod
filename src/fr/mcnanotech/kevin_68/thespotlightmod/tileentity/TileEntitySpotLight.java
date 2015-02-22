@@ -1326,7 +1326,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 	}
 
 	@Override
-	public String getName()
+	public String getCommandSenderName()
 	{
 		return "container.spotlight";
 	}
