@@ -23,9 +23,10 @@ import fr.mcnanotech.kevin_68.thespotlightmod.blocks.TSMBlocks;
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.GuiHandler;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TSMTileEntity;
+import fr.minecraftforgefrance.ffmtlibs.FFMTVersionChecker;
 import fr.minecraftforgefrance.ffmtlibs.network.PacketManager;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs")
+@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs", acceptableRemoteVersions = "[@VERSION@],["+ FFMTVersionChecker.DEV_VERSION + "]")
 public class TheSpotLightMod
 {
 	public static final String MODID = "thespotlightmod";
