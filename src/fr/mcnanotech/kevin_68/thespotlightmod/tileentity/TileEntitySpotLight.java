@@ -367,26 +367,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 				height.rotateAroundX((float)a1);
 				height.rotateAroundZ((float)a2);
 			}
-
-			if(height.getReflectorCrossedByVector(worldObj, pos.getX(), pos.getY(), pos.getZ()) == null)
-			{
-				vecs[j] = new BeamVec(null, height);
-			}
-			IReflector prev = null;
-
-			while(height.getReflectorCrossedByVector(worldObj, pos.getX(), pos.getY(), pos.getZ()) != null)
-			{
-				IReflector ref = height.getReflectorCrossedByVector(worldObj, pos.getX(), pos.getY(), pos.getZ());
-				BlockPos p = prev == null ? pos : prev.getBlockPos();
-				TSMVec3 l = new TSMVec3(ref.getBlockPos().getX() - p.getX(), ref.getBlockPos().getY() - p.getY(), ref.getBlockPos().getZ() - p.getZ());
-				TSMVec3 normal = ref.normal().add(l).norm() <= ref.normalRev().add(l).norm() ? ref.normal() : ref.normalRev();
-				laserlen -= l.norm();
-				TSMVec3 e = l.multiply(l.norm() / laserHeight * laserlen);
-				e.rotateAround(normal, (float)(Math.PI / 2));
-				height = e;
-				prev = ref;
-
-			}
 		}
 	}
 

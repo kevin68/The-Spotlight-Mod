@@ -18,7 +18,7 @@ public class PacketSender
 	{
 		try
 		{
-			TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLightMod(en, value));
+			TheSpotLightMod.network.sendToServer(new PacketSpotLightMod(en, value));
 		}
 		catch(Exception e)
 		{
@@ -31,7 +31,7 @@ public class PacketSender
 	{
 		try
 		{
-			TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLightKey(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), index, entry));
+			TheSpotLightMod.network.sendToServer(new PacketSpotLightKey(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), index, entry));
 		}
 		catch(Exception e)
 		{
@@ -46,11 +46,11 @@ public class PacketSender
 		{
 			if(toServer)
 			{
-				TheSpotLightMod.packetHandler.sendToServer(new PacketSpotLightOpenConfigList(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), null, type));
+				TheSpotLightMod.network.sendToServer(new PacketSpotLightOpenConfigList(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), null, type));
 			}
 			else
 			{
-				TheSpotLightMod.packetHandler.sendTo(new PacketSpotLightOpenConfigList(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), list, type), client);
+				TheSpotLightMod.network.sendTo(new PacketSpotLightOpenConfigList(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), list, type), client);
 			}
 		}
 		catch(Exception e)

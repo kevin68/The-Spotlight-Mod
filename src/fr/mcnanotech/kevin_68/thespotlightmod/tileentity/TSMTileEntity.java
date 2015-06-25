@@ -7,6 +7,5 @@ public class TSMTileEntity
 	public static void registerTiles()
 	{
 		GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
-		GameRegistry.registerTileEntity(TileEntityReflector.class, "TheSpotLightMod_Reflector");
 	}
 }

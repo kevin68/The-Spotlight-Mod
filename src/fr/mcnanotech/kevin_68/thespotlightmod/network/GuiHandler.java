@@ -5,11 +5,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiReflector;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerReflector;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightSlotConfig;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntityReflector;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 
 public class GuiHandler implements IGuiHandler
@@ -23,10 +20,6 @@ public class GuiHandler implements IGuiHandler
 		{
 			return new ContainerSpotLightSlotConfig((TileEntitySpotLight)tileentity, player.inventory, world);
 		}
-		else if(tileentity instanceof TileEntityReflector)
-		{
-			return new ContainerReflector((TileEntityReflector)tileentity, player.inventory, world);
-		}
 		return null;
 	}
 
@@ -37,10 +30,6 @@ public class GuiHandler implements IGuiHandler
 		if(tileentity instanceof TileEntitySpotLight)
 		{
 			return new GuiSpotLight(player.inventory, (TileEntitySpotLight)tileentity, world);
-		}
-		else if(tileentity instanceof TileEntityReflector)
-		{
-			return new GuiReflector(player.inventory, (TileEntityReflector)tileentity, world);
 		}
 		return null;
 	}

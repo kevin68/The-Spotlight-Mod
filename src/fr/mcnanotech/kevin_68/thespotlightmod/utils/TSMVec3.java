@@ -1,10 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.IReflector;
 
 public class TSMVec3
 {
@@ -97,28 +93,5 @@ public class TSMVec3
 	public double norm()
 	{
 		return Math.sqrt(xCoord * xCoord + yCoord * yCoord + zCoord * zCoord);
-	}
-
-	public IReflector getReflectorCrossedByVector(World world, int xB, int yB, int zB)
-	{
-		double x = xCoord / norm();
-		double y = yCoord / norm();
-		double z = zCoord / norm();
-
-		for(int i = 0; i < norm() + 1; i++)
-		{
-			int cX = MathHelper.floor_double(xB + x * i + 0.5);
-			int cY = MathHelper.floor_double(yB + y * i + 0.5);
-			int cZ = MathHelper.floor_double(zB + z * i + 0.5);
-			if(cX != xB || cY != yB || cZ != zB)
-			{
-				TileEntity t = world.getTileEntity(new BlockPos(cX, cY, cZ));
-				if(t instanceof IReflector)
-				{
-					return (IReflector)t;
-				}
-			}
-		}
-		return null;
 	}
 }
