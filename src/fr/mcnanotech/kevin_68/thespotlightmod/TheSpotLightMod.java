@@ -26,7 +26,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TSMTileEntity;
 import fr.minecraftforgefrance.ffmtlibs.FFMTVersionChecker;
 import fr.minecraftforgefrance.ffmtlibs.network.PacketManager;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs", acceptableRemoteVersions = "*")
+@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.3.1446,)", acceptableRemoteVersions = "*")
 public class TheSpotLightMod
 {
 	public static final String MODID = "thespotlightmod";
@@ -60,19 +60,20 @@ public class TheSpotLightMod
 		TSMItems.initItems();
 		TSMTileEntity.registerTiles();
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(modInstance, new GuiHandler());
+		proxy.registerModel();
+		
 	}
 
 	@EventHandler
 	public void initTheSpotlightMod(FMLInitializationEvent event)
 	{
-
+        NetworkRegistry.INSTANCE.registerGuiHandler(modInstance, new GuiHandler());
+        proxy.registerRender();
 	}
 
 	@EventHandler
 	public void postInitTheSpotlightMod(FMLPostInitializationEvent event)
 	{
-		proxy.register();
 		GameRegistry.addRecipe(new ItemStack(TSMBlocks.spotlight, 1, 0), new Object[] {"OGO", "RDR", "OGO", 'O', Blocks.obsidian, 'G', Blocks.glass, 'R', Items.redstone, 'D', Items.diamond});
 		GameRegistry.addShapelessRecipe(new ItemStack(TSMItems.configSaver, 1, 0), new Object[] {Items.redstone, Blocks.obsidian});
 	}
