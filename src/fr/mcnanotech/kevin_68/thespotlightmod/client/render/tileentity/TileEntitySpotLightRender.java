@@ -30,20 +30,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 	private final ModelSign modelSign = new ModelSign();
 	private ModelSpotLight model;
 
-	// @Override
-	// public void renderInventory(double x, double y, double z)
-	// {
-	// GL11.glPushMatrix();
-	// GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-	// bindTexture(new ResourceLocation(TheSpotLightMod.MODID,
-	// "textures/blocks/spotlight.png"));
-	// GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-	// GL11.glScalef(0.8F, 0.8F, 0.8F);
-	// GL11.glTranslatef(0.0F, 0.38F, 0.0F);
-	// model = new ModelSpotLight(0);
-	// model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
-	// GL11.glPopMatrix();
-	// }
 	public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
 	{
 		byte b0 = 1;
