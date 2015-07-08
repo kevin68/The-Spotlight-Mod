@@ -18,7 +18,7 @@ public class GuiHandler implements IGuiHandler
 		TileEntity tileentity = world.getTileEntity(new BlockPos(x, y, z));
 		if(tileentity instanceof TileEntitySpotLight)
 		{
-			return new ContainerSpotLightSlotConfig((TileEntitySpotLight)tileentity, player.inventory, world);
+			return new ContainerSpotLightSlotConfig((TileEntitySpotLight)tileentity, player.inventory);
 		}
 		return null;
 	}

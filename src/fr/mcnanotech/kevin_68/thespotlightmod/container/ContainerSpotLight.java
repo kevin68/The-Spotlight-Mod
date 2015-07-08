@@ -11,22 +11,16 @@ import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 public class ContainerSpotLight extends Container
 {
 	protected TileEntitySpotLight tileSpotLight;
-	private World worldObj;
-	private boolean configSlot;
-	private int widthMove;
-
 	public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world, int widthMove)
 	{
-		worldObj = world;
-		tileSpotLight = tileEntity;
-		this.widthMove = widthMove;
+		this.tileSpotLight = tileEntity;
 		bindPlayerInventory(inventoryPlayer, widthMove);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player)
 	{
-		return tileSpotLight.isUseableByPlayer(player);
+		return this.tileSpotLight.isUseableByPlayer(player);
 	}
 
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int widthMove)
@@ -41,19 +35,19 @@ public class ContainerSpotLight extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
 	{
 		ItemStack itemstack = null;
-		Slot slot = (Slot)inventorySlots.get(slotId);
+		Slot slot = (Slot)this.inventorySlots.get(slotId);
 		if(slot != null && slot.getHasStack())
 		{
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			if(slotId < tileSpotLight.getSizeInventory())
+			if(slotId < this.tileSpotLight.getSizeInventory())
 			{
-				if(!mergeItemStack(itemstack1, tileSpotLight.getSizeInventory(), inventorySlots.size(), true))
+				if(!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
 				{
 					return null;
 				}
 			}
-			else if(!mergeItemStack(itemstack1, 0, tileSpotLight.getSizeInventory(), false))
+			else if(!mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
 			{
 				return null;
 			}
@@ -71,6 +65,6 @@ public class ContainerSpotLight extends Container
 
 	public TileEntitySpotLight getSpotLight()
 	{
-		return tileSpotLight;
+		return this.tileSpotLight;
 	}
 }

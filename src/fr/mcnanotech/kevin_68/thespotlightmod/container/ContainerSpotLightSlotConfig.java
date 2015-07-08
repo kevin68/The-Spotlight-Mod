@@ -5,17 +5,14 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 
 public class ContainerSpotLightSlotConfig extends Container
 {
     protected TileEntitySpotLight tileSpotLight;
-    private World worldObj;
 
-    public ContainerSpotLightSlotConfig(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world)
+    public ContainerSpotLightSlotConfig(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer)
     {
-        this.worldObj = world;
         this.tileSpotLight = tileEntity;
         addSlotToContainer(new Slot(tileEntity, 0, 8, 114));
         bindPlayerInventory(inventoryPlayer);
@@ -24,7 +21,7 @@ public class ContainerSpotLightSlotConfig extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return tileSpotLight.isUseableByPlayer(player);
+        return this.tileSpotLight.isUseableByPlayer(player);
     }
 
     protected void bindPlayerInventory(InventoryPlayer inventoryPlayer)
@@ -69,6 +66,6 @@ public class ContainerSpotLightSlotConfig extends Container
 
     public TileEntitySpotLight getSpotLight()
     {
-        return tileSpotLight;
+        return this.tileSpotLight;
     }
 }

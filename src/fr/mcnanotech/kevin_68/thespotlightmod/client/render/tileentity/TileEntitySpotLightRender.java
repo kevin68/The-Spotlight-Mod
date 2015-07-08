@@ -42,7 +42,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png"));
 		int ti = (int)(tile.getWorld().getTotalWorldTime() / 4 % 3);
-		model = new ModelSpotLight(ti);
+		this.model = new ModelSpotLight(ti);
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		double angl2 = Math.toDegrees(a2);
 		byte axe = (Byte)tile.get(EnumLaserInformations.LASERDISPLAYAXE);
@@ -66,7 +66,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 			GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angl2 + Math.PI / 2), Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angle1Deg + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angl2) * Math.cos(Math.PI * 1 / 180 * angle1Deg));
 		}
-		model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+		this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
 		GL11.glPopMatrix();
 		float f1 = tile.isActive();
 		GlStateManager.alphaFunc(516, 0.1F);
@@ -146,11 +146,11 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer// TileE
 				{
 					GL11.glRotatef((Integer)tile.get(EnumLaserInformations.TEXTANGLE1), 0.0F, 1.0F, 0.0F);
 				}
-				modelSign.signStick.showModel = false;
+				this.modelSign.signStick.showModel = false;
 				GlStateManager.pushMatrix();
 				GlStateManager.scale(f11, -f11, -f11);
 				GlStateManager.scale(0.5F, 0.5F, 0.5F);
-				modelSign.renderSign();
+				this.modelSign.renderSign();
 				GlStateManager.popMatrix();
 				FontRenderer fontrenderer = getFontRenderer();
 				f21 = 0.016666668F * f11;

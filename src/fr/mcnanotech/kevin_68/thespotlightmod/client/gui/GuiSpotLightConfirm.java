@@ -32,11 +32,11 @@ public class GuiSpotLightConfirm extends GuiContainer
 	public GuiSpotLightConfirm(TileEntitySpotLight tile, InventoryPlayer invplay, World world, String actionname, String yesbutton, String nobutton, int guiid)
 	{
 		super(new ContainerSpotLight(tile, invplay, world, 8));
-		action = actionname;
-		yes = yesbutton;
-		no = nobutton;
-		guiopen = guiid;
-		invPlayer = invplay;
+		this.action = actionname;
+		this.yes = yesbutton;
+		this.no = nobutton;
+		this.guiopen = guiid;
+		this.invPlayer = invplay;
 		this.tile = tile;
 		this.world = world;
 	}
@@ -45,10 +45,10 @@ public class GuiSpotLightConfirm extends GuiContainer
 	public void initGui()
 	{
 		super.initGui();
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		buttonList.add(new GuiButton(1, x + 13, y + 90, 150, 20, yes));
-		buttonList.add(new GuiButton(2, x + 13, y + 115, 150, 20, no));
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
+		this.buttonList.add(new GuiButton(1, x + 13, y + 90, 150, 20, this.yes));
+		this.buttonList.add(new GuiButton(2, x + 13, y + 115, 150, 20, this.no));
 	}
 
 	@Override
@@ -56,28 +56,28 @@ public class GuiSpotLightConfirm extends GuiContainer
 	{
 		if(guibutton.id == 1)
 		{
-			if(guiopen == 0)
+			if(this.guiopen == 0)
 			{
 				SpotLightEntry entry = new SpotLightEntry(false, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, 0, (byte)0, false, false, (byte)0, true, (byte)0, false, (byte)0, (byte)0, 0, false, (byte)0, (byte)0, (byte)0, 0, false, false, (byte)0, (byte)0, (byte)0, (byte)0);
-				PacketSender.sendSpotLightPacket(tile, (Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF, entry);
-				tile.setKey((Byte)tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF, entry);
-				mc.displayGuiScreen(new GuiSpotLightTimeLine(invPlayer, tile, world));
+				PacketSender.sendSpotLightPacket(this.tile, (Byte)this.tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF, entry);
+				this.tile.setKey((Byte)this.tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED) & 0xFF, entry);
+				this.mc.displayGuiScreen(new GuiSpotLightTimeLine(this.invPlayer, this.tile, this.world));
 			}
 			else
 			{
-				UtilSpotLight.createKey(tile);
-				mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tile, world));
+				UtilSpotLight.createKey(this.tile);
+				this.mc.displayGuiScreen(new GuiSpotLightCreateKey(this.invPlayer, this.tile, this.world));
 			}
 		}
 		else
 		{
-			if(guiopen == 0)
+			if(this.guiopen == 0)
 			{
-				mc.displayGuiScreen(new GuiSpotLightTimeLine(invPlayer, tile, world));
+				this.mc.displayGuiScreen(new GuiSpotLightTimeLine(this.invPlayer, this.tile, this.world));
 			}
 			else
 			{
-				mc.displayGuiScreen(new GuiSpotLightCreateKey(invPlayer, tile, world));
+				this.mc.displayGuiScreen(new GuiSpotLightCreateKey(this.invPlayer, this.tile, this.world));
 			}
 		}
 	}
@@ -86,13 +86,13 @@ public class GuiSpotLightConfirm extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		mc.renderEngine.bindTexture(texture);
-		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		mc.renderEngine.bindTexture(icons);
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
+		this.mc.renderEngine.bindTexture(texture);
+		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+		this.mc.renderEngine.bindTexture(icons);
 		this.drawTexturedModalRect(x + 15, y + 30, 0, 122, 57, 47);
 		this.drawTexturedModalRect(x + 105, y + 30, 0, 122, 57, 47);
-		drawCenteredString(fontRendererObj, action, width / 2, y + 10, 0xff0000);
+		drawCenteredString(this.fontRendererObj, this.action, this.width / 2, y + 10, 0xff0000);
 	}
 }

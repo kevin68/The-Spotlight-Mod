@@ -339,12 +339,12 @@ public class UtilSpotLight
 
 		public String getName()
 		{
-			return name;
+			return this.name;
 		}
 
 		public int getTxtColor()
 		{
-			return txtColor;
+			return this.txtColor;
 		}
 	}
 
@@ -360,7 +360,7 @@ public class UtilSpotLight
 
 		public String getPath()
 		{
-			return path;
+			return this.path;
 		}
 	}
 
@@ -376,7 +376,7 @@ public class UtilSpotLight
 
 		public int getId()
 		{
-			return id;
+			return this.id;
 		}
 	}
 
@@ -393,12 +393,12 @@ public class UtilSpotLight
 
 		public TSMVec3[] getVecs()
 		{
-			return vecs;
+			return this.vecs;
 		}
 
 		public TSMVec3 getLenVec()
 		{
-			return lenght;
+			return this.lenght;
 		}
 	}
 }

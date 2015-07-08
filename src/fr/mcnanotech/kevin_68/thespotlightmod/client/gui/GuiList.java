@@ -29,44 +29,44 @@ public class GuiList
     {
         this.gui = gui;
         this.list = list;
-        xS = xStart;
-        yS = yStart;
-        xE = xEnd;
-        yE = yEnd;
+        this.xS = xStart;
+        this.yS = yStart;
+        this.xE = xEnd;
+        this.yE = yEnd;
 
-        height = yEnd - yStart;
-        heightWithoutButton = height - 22;
-        numberOfLine = (heightWithoutButton - (heightWithoutButton % 15)) / 15;
-        width = xEnd - xStart;
+        this.height = yEnd - yStart;
+        this.heightWithoutButton = this.height - 22;
+        this.numberOfLine = (this.heightWithoutButton - (this.heightWithoutButton % 15)) / 15;
+        this.width = xEnd - xStart;
 
         int l = 0;
         int currentPage = 0;
-        ButtonEntry[] entry = new ButtonEntry[numberOfLine + 1];
+        ButtonEntry[] entry = new ButtonEntry[this.numberOfLine + 1];
         for(int k = 0; k < list.size(); k++)
         {
             int color = list.get(k).getTxtColor();
-            if(l < numberOfLine)
+            if(l < this.numberOfLine)
             {
-                entry[l] = new ButtonEntry(k + 5, list.get(k).getName(), xStart, yStart + (15 * l), (width / 2) - 2, 14, xStart + 2 + (width / 2), color);
+                entry[l] = new ButtonEntry(k + 5, list.get(k).getName(), xStart, yStart + (15 * l), (this.width / 2) - 2, 14, xStart + 2 + (this.width / 2), color);
                 l++;
             }
             else
             {
-                arrList.add(currentPage, entry);
-                entry = new ButtonEntry[numberOfLine];
+                this.arrList.add(currentPage, entry);
+                entry = new ButtonEntry[this.numberOfLine];
                 currentPage++;
                 l = 0;
-                entry[l] = new ButtonEntry(k + 5, list.get(k).getName(), xStart, yStart + (15 * l), (width / 2) - 2, 14, xStart + 2 + (width / 2), color);
+                entry[l] = new ButtonEntry(k + 5, list.get(k).getName(), xStart, yStart + (15 * l), (this.width / 2) - 2, 14, xStart + 2 + (this.width / 2), color);
                 l++;
             }
 
             if(k == list.size() - 1)
             {
-                arrList.add(currentPage, entry);
+                this.arrList.add(currentPage, entry);
             }
         }
 
-        numberOfPage = arrList.size() - 1;
+        this.numberOfPage = this.arrList.size() - 1;
     }
 
     protected void actionPerformed(GuiButton guibutton, List buttonList)
@@ -95,11 +95,11 @@ public class GuiList
             }
             default:
             {
-                if(lastSelected != null)
+                if(this.lastSelected != null)
                 {
-                    lastSelected.selected = false;
+                    this.lastSelected.selected = false;
                 }
-                gui.setSelected(list.get(guibutton.id - 5));
+                this.gui.setSelected(this.list.get(guibutton.id - 5));
                 if(guibutton instanceof GuiButtonList)
                 {
                     GuiButtonList button = (GuiButtonList)guibutton;
@@ -112,13 +112,13 @@ public class GuiList
 
     public void drawScreen(int x, int y)
     {
-        GuiHelper.drawCenteredString(Minecraft.getMinecraft().fontRendererObj, (currentPageDiplayed + 1) + "/" + (numberOfPage + 1), x + (width / 2) + 6, y + (height) + 5, EggColor.GRAY);
+        GuiHelper.drawCenteredString(Minecraft.getMinecraft().fontRendererObj, (this.currentPageDiplayed + 1) + "/" + (this.numberOfPage + 1), x + (this.width / 2) + 6, y + (this.height) + 5, EggColor.GRAY);
     }
 
     public void addButton(List buttonList)
     {
-        buttonList.add(3, next = new GuiButton(2, xE - 20, yE - 20, 20, 20, ">"));
-        buttonList.add(4, prev = new GuiButton(3, xS, yE - 20, 20, 20, "<"));
+        buttonList.add(3, this.next = new GuiButton(2, this.xE - 20, this.yE - 20, 20, 20, ">"));
+        buttonList.add(4, this.prev = new GuiButton(3, this.xS, this.yE - 20, 20, 20, "<"));
         this.updatePage();
         this.updateList(buttonList);
     }
@@ -182,7 +182,7 @@ public class GuiList
                 if(buttonList.get(k) instanceof GuiButtonList)
                 {
                     GuiButtonList button = (GuiButtonList)buttonList.get(k);
-                    if(button.entry.getName() == lastSelected.entry.getName() && button.entry.x == lastSelected.entry.x && button.entry.xR == lastSelected.entry.xR && button.entry.y == lastSelected.entry.y)
+                    if(button.entry.getName() == this.lastSelected.entry.getName() && button.entry.x == this.lastSelected.entry.x && button.entry.xR == this.lastSelected.entry.xR && button.entry.y == this.lastSelected.entry.y)
                     {
                         button.selected = true;
                         this.lastSelected = button;
@@ -211,11 +211,11 @@ public class GuiList
         GuiButton guibutton = (GuiButton)buttonList.get(id);
         if(guibutton.id > 4)
         {
-            if(lastSelected != null)
+            if(this.lastSelected != null)
             {
-                lastSelected.selected = false;
+                this.lastSelected.selected = false;
             }
-            gui.setSelected(list.get(guibutton.id - 5));
+            this.gui.setSelected(this.list.get(guibutton.id - 5));
             if(guibutton instanceof GuiButtonList)
             {
                 GuiButtonList button = (GuiButtonList)guibutton;
@@ -282,7 +282,7 @@ public class GuiList
             if(this.visible)
             {
                 FontRenderer fontrenderer = mc.fontRendererObj;
-                mc.getTextureManager().bindTexture(texture);
+                mc.getTextureManager().bindTexture(this.texture);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
                 int k = this.getHoverState(this.hovered);
@@ -295,17 +295,17 @@ public class GuiList
                 String txt;
                 if(this.displayString.length() * 5 < this.width)
                 {
-                    txt = displayString;
+                    txt = this.displayString;
                 }
                 else
                 {
-                    txt = String.valueOf(displayString.subSequence(0, this.width / 4 - 10)) + "...";
+                    txt = String.valueOf(this.displayString.subSequence(0, this.width / 4 - 10)) + "...";
                 }
-                this.drawCenteredString(fontrenderer, txt, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, entry.getTxtColor());
+                this.drawCenteredString(fontrenderer, txt, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, this.entry.getTxtColor());
 
                 if(k == 2 && !(this.displayString.length() * 5 < this.width))
                 {
-                    this.renderOverlayText(mouseX, mouseY, displayString, entry.getTxtColor());
+                    this.renderOverlayText(mouseX, mouseY, this.displayString, this.entry.getTxtColor());
                 }
             }
         }

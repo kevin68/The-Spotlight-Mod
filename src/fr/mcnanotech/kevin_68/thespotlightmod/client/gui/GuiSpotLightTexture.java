@@ -31,28 +31,27 @@ public class GuiSpotLightTexture extends GuiContainer implements GuiListBase
 	public World world;
 	private GuiList gList;
 	private ArrayList<BaseListEntry> list = UtilSpotLight.listTextures();
-	private TextureEntry selected;
 	private GuiBooleanButton booButton, helpButton;
 
 	public GuiSpotLightTexture(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
 	{
 		super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
-		invPlayer = playerInventory;
-		tileSpotLight = tileEntity;
-		world = wrld;
+		this.invPlayer = playerInventory;
+		this.tileSpotLight = tileEntity;
+		this.world = wrld;
 	}
 
 	@Override
 	public void initGui()
 	{
 		super.initGui();
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		buttonList.add(0, new GuiButton(0, x + 6, y + 117, 78, 20, I18n.format("container.spotlight.back")));
-		buttonList.add(1, booButton = new GuiBooleanButton(1, x + 91, y + 117, 78, 20, I18n.format("container.spotlight.main"), I18n.format("container.spotlight.sec"), true));
-		buttonList.add(2, helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
-		gList = new GuiList(this, list, x + 6, y + 17, x + 169, y + 115);
-		gList.addButton(buttonList);
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
+		this.buttonList.add(0, new GuiButton(0, x + 6, y + 117, 78, 20, I18n.format("container.spotlight.back")));
+		this.buttonList.add(1, this.booButton = new GuiBooleanButton(1, x + 91, y + 117, 78, 20, I18n.format("container.spotlight.main"), I18n.format("container.spotlight.sec"), true));
+		this.buttonList.add(2, this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+		this.gList = new GuiList(this, this.list, x + 6, y + 17, x + 169, y + 115);
+		this.gList.addButton(this.buttonList);
 	}
 
 	@Override
@@ -62,22 +61,22 @@ public class GuiSpotLightTexture extends GuiContainer implements GuiListBase
 		{
 		case 0:
 		{
-			mc.displayGuiScreen(new GuiSpotLight(invPlayer, tileSpotLight, world));
+			this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tileSpotLight, this.world));
 			break;
 		}
 		case 1:
 		{
-			booButton.toggle();
+			this.booButton.toggle();
 			break;
 		}
 		case 20:
 		{
-			helpButton.toggle();
+			this.helpButton.toggle();
 			break;
 		}
 		default:
 		{
-			gList.actionPerformed(guibutton, buttonList);
+			this.gList.actionPerformed(guibutton, this.buttonList);
 		}
 		}
 	}
@@ -88,8 +87,7 @@ public class GuiSpotLightTexture extends GuiContainer implements GuiListBase
 		if(entry instanceof TextureEntry)
 		{
 			TextureEntry ent = (TextureEntry)entry;
-			selected = ent;
-			if(booButton.getIsActive())
+			if(this.booButton.getIsActive())
 			{
 				PacketSender.send(EnumLaserInformations.LASERMAINTEXTURE, ent.getName());
 			}
@@ -103,31 +101,31 @@ public class GuiSpotLightTexture extends GuiContainer implements GuiListBase
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
 	{
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
 		super.drawScreen(mouseX, mouseY, partialRenderTick);
-		gList.drawScreen(x, y);
+		this.gList.drawScreen(x, y);
 
-		if(helpButton.getIsActive())
+		if(this.helpButton.getIsActive())
 		{
-			boolean reversed = mouseX > width / 2;
+			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();
 
 			if(mouseX > x + 6 && mouseX < x + 169 && mouseY > y + 17 && mouseY < y + 90)
 			{
-				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.textures.slots"), mouseX, width, reversed);
+				list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.textures.slots"), mouseX, this.width, reversed);
 			}
 
 			if(mouseY > y + 95 && mouseY < y + 115)
 			{
 				if(mouseX > x + 6 && mouseX < x + 26)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.textures.prevpage"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.textures.prevpage"), mouseX, this.width, reversed);
 				}
 
 				if(mouseX > x + 149 && mouseX < x + 169)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.textures.nextpage"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.textures.nextpage"), mouseX, this.width, reversed);
 				}
 			}
 
@@ -135,25 +133,25 @@ public class GuiSpotLightTexture extends GuiContainer implements GuiListBase
 			{
 				if(mouseX > x + 6 && mouseX < x + 84)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, this.width, reversed);
 				}
 
 				if(mouseX > x + 91 && mouseX < x + 169)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.textures.lasers"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.textures.lasers"), mouseX, this.width, reversed);
 				}
 			}
 
 			if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
 			{
-				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+				list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, this.width, reversed);
 			}
 
 			if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
 			{
 				list.remove(list.size() - 1);
 			}
-			GuiHelper.drawHoveringText(list, mouseX, mouseY, fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+			GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, this.height, 0x00ff00);
 		}
 	}
 
@@ -161,11 +159,11 @@ public class GuiSpotLightTexture extends GuiContainer implements GuiListBase
 	protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		mc.renderEngine.bindTexture(texture);
-		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x + 5, y + 8, 4210752);
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
+		this.mc.renderEngine.bindTexture(texture);
+		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+		this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x + 5, y + 8, 4210752);
 
 	}
 }

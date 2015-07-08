@@ -2,12 +2,10 @@ package fr.mcnanotech.kevin_68.thespotlightmod.network.packets;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
@@ -22,11 +20,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightDeleteConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightLoadConfig;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BaseListEntry;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.ConfigEntry;
-import fr.minecraftforgefrance.ffmtlibs.network.FFMTPacket;
 
 public class PacketSpotLightOpenConfigList implements IMessage
 {

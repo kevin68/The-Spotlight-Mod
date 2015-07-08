@@ -37,35 +37,35 @@ public class GuiSpotLightBeamSpec extends GuiContainer implements ISliderButton
 	public GuiSpotLightBeamSpec(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
 	{
 		super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
-		invPlayer = playerInventory;
-		tile = tileEntity;
-		world = wrld;
+		this.invPlayer = playerInventory;
+		this.tile = tileEntity;
+		this.world = wrld;
 	}
 
 	@Override
 	public void initGui()
 	{
 		super.initGui();
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
 
-		int a1 = (Integer)tile.get(EnumLaserInformations.LASERANGLE1);
-		byte a2 = (Byte)tile.get(EnumLaserInformations.LASERANGLE2);
-		buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, I18n.format("container.spotlight.angle") + " 1 : " + a1, a1 / 360.0F));
-		buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, I18n.format("container.spotlight.angle") + " 2 : " + (a2 & 0xFF), (a2 & 0xFF) / 180.0F));
-		buttonList.add(rotateButton = new GuiBooleanButton(2, x - 40, y + 24, 127, 20, I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.off"), (Boolean)tile.get(EnumLaserInformations.LASERAUTOROTATE)));
-		buttonList.add(revRotaButton = new GuiBooleanButton(3, x + 90, y + 24, 127, 20, I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.off"), (Boolean)tile.get(EnumLaserInformations.LASERREVERSEROTATION)));
-		byte s = (Byte)tile.get(EnumLaserInformations.LASERROTATIONSPEED);
-		buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 48, 127, 20, I18n.format("container.spotlight.rotationspeed") + " : " + (s & 0xFF), (s & 0xFF) / 20.0F));
-		buttonList.add(secLaserButton = new GuiBooleanButton(5, x + 90, y + 48, 127, 20, I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.off"), (Boolean)tile.get(EnumLaserInformations.LASERSECONDARY)));
-		buttonList.add(axeButton = new GuiMultipleOptionButton(7, x + 146, y + 113, 70, 20, I18n.format("container.spotlight.axis") + " : ", new String[] {"y", "x", "z"}, (Byte)tile.get(EnumLaserInformations.LASERDISPLAYAXE) & 0xFF));
-		buttonList.add(new GuiSliderButton(this, 11, x - 40, y + 70, 256, 20, I18n.format("container.spotlight.laserHeight") + " : " + tile.get(EnumLaserInformations.LASERHEIGHT), (Integer)tile.get(EnumLaserInformations.LASERHEIGHT) / 256.0F));
-		buttonList.add(sideLaser = new GuiBooleanButton(8, x - 40, y + 113, 70, 20, I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"), (Boolean)tile.get(EnumLaserInformations.LASERDOUBLE)));
-		byte mS = (Byte)tile.get(EnumLaserInformations.LASERMAINSIZE), sS = (Byte)tile.get(EnumLaserInformations.LASERSECSIZE);
-		buttonList.add(new GuiSliderButton(this, 9, x - 40, y + 92, 127, 20, I18n.format("container.spotlight.sizeMain") + " : " + (mS & 0xFF), (mS & 0xFF) / 100.0F));
-		buttonList.add(new GuiSliderButton(this, 10, x + 89, y + 92, 127, 20, I18n.format("container.spotlight.sizeSec") + " : " + (sS & 0xFF), (sS & 0xFF) / 100.0F));
-		buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-		buttonList.add(helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+		int a1 = (Integer)this.tile.get(EnumLaserInformations.LASERANGLE1);
+		byte a2 = (Byte)this.tile.get(EnumLaserInformations.LASERANGLE2);
+		this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, I18n.format("container.spotlight.angle") + " 1 : " + a1, a1 / 360.0F));
+		this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, I18n.format("container.spotlight.angle") + " 2 : " + (a2 & 0xFF), (a2 & 0xFF) / 180.0F));
+		this.buttonList.add(this.rotateButton = new GuiBooleanButton(2, x - 40, y + 24, 127, 20, I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.LASERAUTOROTATE)));
+		this.buttonList.add(this.revRotaButton = new GuiBooleanButton(3, x + 90, y + 24, 127, 20, I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.LASERREVERSEROTATION)));
+		byte s = (Byte)this.tile.get(EnumLaserInformations.LASERROTATIONSPEED);
+		this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 48, 127, 20, I18n.format("container.spotlight.rotationspeed") + " : " + (s & 0xFF), (s & 0xFF) / 20.0F));
+		this.buttonList.add(this.secLaserButton = new GuiBooleanButton(5, x + 90, y + 48, 127, 20, I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.LASERSECONDARY)));
+		this.buttonList.add(this.axeButton = new GuiMultipleOptionButton(7, x + 146, y + 113, 70, 20, I18n.format("container.spotlight.axis") + " : ", new String[] {"y", "x", "z"}, (Byte)this.tile.get(EnumLaserInformations.LASERDISPLAYAXE) & 0xFF));
+		this.buttonList.add(new GuiSliderButton(this, 11, x - 40, y + 70, 256, 20, I18n.format("container.spotlight.laserHeight") + " : " + this.tile.get(EnumLaserInformations.LASERHEIGHT), (Integer)this.tile.get(EnumLaserInformations.LASERHEIGHT) / 256.0F));
+		this.buttonList.add(this.sideLaser = new GuiBooleanButton(8, x - 40, y + 113, 70, 20, I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"), (Boolean)this.tile.get(EnumLaserInformations.LASERDOUBLE)));
+		byte mS = (Byte)this.tile.get(EnumLaserInformations.LASERMAINSIZE), sS = (Byte)this.tile.get(EnumLaserInformations.LASERSECSIZE);
+		this.buttonList.add(new GuiSliderButton(this, 9, x - 40, y + 92, 127, 20, I18n.format("container.spotlight.sizeMain") + " : " + (mS & 0xFF), (mS & 0xFF) / 100.0F));
+		this.buttonList.add(new GuiSliderButton(this, 10, x + 89, y + 92, 127, 20, I18n.format("container.spotlight.sizeSec") + " : " + (sS & 0xFF), (sS & 0xFF) / 100.0F));
+		this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
+		this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
 	}
 
 	@Override
@@ -74,30 +74,30 @@ public class GuiSpotLightBeamSpec extends GuiContainer implements ISliderButton
 		switch(guibutton.id)
 		{
 		case 2:
-			rotateButton.toggle();
-			PacketSender.send(EnumLaserInformations.LASERAUTOROTATE, rotateButton.getIsActive());
+			this.rotateButton.toggle();
+			PacketSender.send(EnumLaserInformations.LASERAUTOROTATE, this.rotateButton.getIsActive());
 			break;
 		case 3:
-			revRotaButton.toggle();
-			PacketSender.send(EnumLaserInformations.LASERREVERSEROTATION, revRotaButton.getIsActive());
+			this.revRotaButton.toggle();
+			PacketSender.send(EnumLaserInformations.LASERREVERSEROTATION, this.revRotaButton.getIsActive());
 			break;
 		case 5:
-			secLaserButton.toggle();
-			PacketSender.send(EnumLaserInformations.LASERSECONDARY, secLaserButton.getIsActive());
+			this.secLaserButton.toggle();
+			PacketSender.send(EnumLaserInformations.LASERSECONDARY, this.secLaserButton.getIsActive());
 			break;
 		case 6:
-			mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+			this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
 			break;
 		case 7:
-			axeButton.next();
-			PacketSender.send(EnumLaserInformations.LASERDISPLAYAXE, (byte)axeButton.getState());
+			this.axeButton.next();
+			PacketSender.send(EnumLaserInformations.LASERDISPLAYAXE, (byte)this.axeButton.getState());
 			break;
 		case 8:
-			sideLaser.toggle();
-			PacketSender.send(EnumLaserInformations.LASERDOUBLE, sideLaser.getIsActive());
+			this.sideLaser.toggle();
+			PacketSender.send(EnumLaserInformations.LASERDOUBLE, this.sideLaser.getIsActive());
 			break;
 		case 20:
-			helpButton.toggle();
+			this.helpButton.toggle();
 			break;
 		}
 	}
@@ -159,28 +159,28 @@ public class GuiSpotLightBeamSpec extends GuiContainer implements ISliderButton
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
 	{
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
 		super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-		if(helpButton.getIsActive())
+		if(this.helpButton.getIsActive())
 		{
-			boolean reversed = mouseX > width / 2;
+			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();
 
 			if(mouseX > x - 40 && mouseX < x + 216)
 			{
 				if(mouseY > y - 20 && mouseY < y)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.angle1"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.angle1"), mouseX, this.width, reversed);
 				}
 				if(mouseY > y + 2 && mouseY < y + 22)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.angle2"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.angle2"), mouseX, this.width, reversed);
 				}
 				if(mouseY > y + 68 && mouseY < y + 88)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.height"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.height"), mouseX, this.width, reversed);
 				}
 			}
 
@@ -188,20 +188,20 @@ public class GuiSpotLightBeamSpec extends GuiContainer implements ISliderButton
 			{
 				if(mouseY > y + 24 && mouseY < y + 44)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.autorotate"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.autorotate"), mouseX, this.width, reversed);
 				}
 				if(mouseY > y + 46 && mouseY < y + 66)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.rotationspeed"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.rotationspeed"), mouseX, this.width, reversed);
 				}
 				if(mouseY > y + 90 && mouseY < y + 110)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.mainlasersize"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.mainlasersize"), mouseX, this.width, reversed);
 				}
 
 				if(mouseY > y + 113 && mouseY < y + 133 && mouseX < x + 30)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.simple"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.simple"), mouseX, this.width, reversed);
 				}
 			}
 
@@ -209,38 +209,38 @@ public class GuiSpotLightBeamSpec extends GuiContainer implements ISliderButton
 			{
 				if(mouseY > y + 24 && mouseY < y + 44)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.reverserotate"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.reverserotate"), mouseX, this.width, reversed);
 				}
 				if(mouseY > y + 46 && mouseY < y + 66)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.seclaserswitch"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.seclaserswitch"), mouseX, this.width, reversed);
 				}
 				if(mouseY > y + 90 && mouseY < y + 110)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.seclasersize"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.seclasersize"), mouseX, this.width, reversed);
 				}
 
 				if(mouseY > y + 113 && mouseY < y + 133 && mouseX > x + 146)
 				{
-					list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.props.axe"), mouseX, width, reversed);
+					list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.props.axe"), mouseX, this.width, reversed);
 				}
 			}
 
 			if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY < y + 137)
 			{
-				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, width, reversed);
+				list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, this.width, reversed);
 			}
 
 			if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
 			{
-				list = UtilSpotLight.formatedText(fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, width, reversed);
+				list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, this.width, reversed);
 			}
 
 			if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
 			{
 				list.remove(list.size() - 1);
 			}
-			GuiHelper.drawHoveringText(list, mouseX, mouseY, fontRendererObj, reversed ? 0 : 200000, height, 0x00ff00);
+			GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, this.height, 0x00ff00);
 		}
 	}
 
@@ -248,10 +248,10 @@ public class GuiSpotLightBeamSpec extends GuiContainer implements ISliderButton
 	protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		mc.renderEngine.bindTexture(texture);
-		this.drawTexturedModalRect(x, y + 114, 69, 81, xSize, 52);
-		fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.beamspecs")), x - 30, y - 35, 0xffffff);
+		int x = (this.width - this.xSize) / 2;
+		int y = (this.height - this.ySize) / 2;
+		this.mc.renderEngine.bindTexture(texture);
+		this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
+		this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.beamspecs")), x - 30, y - 35, 0xffffff);
 	}
 }

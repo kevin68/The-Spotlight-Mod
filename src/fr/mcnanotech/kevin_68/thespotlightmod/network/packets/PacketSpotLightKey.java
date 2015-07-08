@@ -1,10 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.network.packets;
 
 import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -15,7 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.SpotLightEntry;
-import fr.minecraftforgefrance.ffmtlibs.network.FFMTPacket;
 
 public class PacketSpotLightKey implements IMessage
 {

@@ -59,11 +59,11 @@ public enum EnumLaserInformations
 
 	public byte getType()
 	{
-		return type;
+		return this.type;
 	}
 
 	public boolean shouldProcessKeys()
 	{
-		return key;
+		return this.key;
 	}
 }

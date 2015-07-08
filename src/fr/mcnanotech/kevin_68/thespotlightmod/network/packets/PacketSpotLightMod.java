@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 
 import net.minecraft.inventory.Container;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -37,25 +36,25 @@ public class PacketSpotLightMod implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        e = EnumLaserInformations.values()[buf.readInt()];
-        switch(e.getType())
+        this.e = EnumLaserInformations.values()[buf.readInt()];
+        switch(this.e.getType())
         {
             case 0:
-                obj = buf.readByte();
+                this.obj = buf.readByte();
                 break;
             case 1:
-                obj = buf.readInt();
+                this.obj = buf.readInt();
                 break;
             case 2:
-                obj = buf.readBoolean();
+                this.obj = buf.readBoolean();
                 break;
             case 3:
-                obj = ByteBufUtils.readUTF8String(buf);
+                this.obj = ByteBufUtils.readUTF8String(buf);
                 break;
             case 4:
                 try
                 {
-                    obj = UtilSpotLight.readObject(buf);
+                    this.obj = UtilSpotLight.readObject(buf);
                 }
                 catch(Exception e)
                 {
@@ -70,25 +69,25 @@ public class PacketSpotLightMod implements IMessage
     @Override
     public void toBytes(ByteBuf buf)
     {
-        buf.writeInt(e.ordinal());
-        switch(e.getType())
+        buf.writeInt(this.e.ordinal());
+        switch(this.e.getType())
         {
             case 0:
-                buf.writeByte((Byte)obj);
+                buf.writeByte((Byte)this.obj);
                 break;
             case 1:
-                buf.writeInt((Integer)obj);
+                buf.writeInt((Integer)this.obj);
                 break;
             case 2:
-                buf.writeBoolean((Boolean)obj);
+                buf.writeBoolean((Boolean)this.obj);
                 break;
             case 3:
-                ByteBufUtils.writeUTF8String(buf, (String)obj);
+                ByteBufUtils.writeUTF8String(buf, (String)this.obj);
                 break;
             case 4:
                 try
                 {
-                    UtilSpotLight.writeObject(buf, obj);
+                    UtilSpotLight.writeObject(buf, this.obj);
                 }
                 catch(IOException e1)
                 {
@@ -105,7 +104,6 @@ public class PacketSpotLightMod implements IMessage
         @Override
         public IMessage onMessage(PacketSpotLightMod message, MessageContext ctx)
         {
-            World world = ctx.getServerHandler().playerEntity.worldObj;
             Container c = ctx.getServerHandler().playerEntity.openContainer;
             if(!message.failed)
             {
