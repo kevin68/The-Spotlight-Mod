@@ -50,11 +50,8 @@ public class BlockSpotLight extends BlockContainer
 		{
 			return false;
 		}
-		else
-		{
-			player.openGui(TheSpotLightMod.modInstance, 0, world, pos.getX(), pos.getY(), pos.getZ());
-			return true;
-		}
+        player.openGui(TheSpotLightMod.modInstance, 0, world, pos.getX(), pos.getY(), pos.getZ());
+        return true;
 	}
 
 	@Override

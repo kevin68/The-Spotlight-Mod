@@ -19,7 +19,7 @@ import fr.minecraftforgefrance.ffmtlibs.entity.EggColor;
 public class GuiList
 {
     private ArrayList<ButtonEntry[]> arrList = new ArrayList();
-    private int xS, yS, xE, yE, currentPageDiplayed, height, heightWithoutButton, numberOfLine, numberOfPage, width;
+    private int xS, xE, yE, currentPageDiplayed, height, heightWithoutButton, numberOfLine, numberOfPage, width;
     private GuiButton next, prev;
     private ArrayList<BaseListEntry> list;
     private GuiListBase gui;
@@ -30,7 +30,6 @@ public class GuiList
         this.gui = gui;
         this.list = list;
         this.xS = xStart;
-        this.yS = yStart;
         this.xE = xEnd;
         this.yE = yEnd;
 

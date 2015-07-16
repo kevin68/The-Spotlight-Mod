@@ -430,30 +430,27 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 		{
 			return 0.0F;
 		}
-		else
-		{
-			int i = (int)(this.worldObj.getTotalWorldTime() - this.worldTimeClient);
-			this.worldTimeClient = this.worldObj.getTotalWorldTime();
+        int i = (int)(this.worldObj.getTotalWorldTime() - this.worldTimeClient);
+        this.worldTimeClient = this.worldObj.getTotalWorldTime();
 
-			if(i > 1)
-			{
-				this.activeBooleanFloat -= i / 40.0F;
+        if(i > 1)
+        {
+        	this.activeBooleanFloat -= i / 40.0F;
 
-				if(this.activeBooleanFloat < 0.0F)
-				{
-					this.activeBooleanFloat = 0.0F;
-				}
-			}
+        	if(this.activeBooleanFloat < 0.0F)
+        	{
+        		this.activeBooleanFloat = 0.0F;
+        	}
+        }
 
-			this.activeBooleanFloat += 0.025F;
+        this.activeBooleanFloat += 0.025F;
 
-			if(this.activeBooleanFloat > 1.0F)
-			{
-				this.activeBooleanFloat = 1.0F;
-			}
+        if(this.activeBooleanFloat > 1.0F)
+        {
+        	this.activeBooleanFloat = 1.0F;
+        }
 
-			return this.activeBooleanFloat;
-		}
+        return this.activeBooleanFloat;
 	}
 
 	@Override
@@ -1263,20 +1260,14 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 				this.slots[slot] = null;
 				return itemstack;
 			}
-			else
-			{
-				itemstack = this.slots[slot].splitStack(amount);
-				if(this.slots[slot].stackSize == 0)
-				{
-					this.slots[slot] = null;
-				}
-				return itemstack;
-			}
+            itemstack = this.slots[slot].splitStack(amount);
+            if(this.slots[slot].stackSize == 0)
+            {
+            	this.slots[slot] = null;
+            }
+            return itemstack;
 		}
-		else
-		{
-			return null;
-		}
+        return null;
 	}
 
 	@Override
@@ -1288,10 +1279,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 			this.slots[slot] = null;
 			return itemstack;
 		}
-		else
-		{
-			return null;
-		}
+        return null;
 	}
 
 	@Override
