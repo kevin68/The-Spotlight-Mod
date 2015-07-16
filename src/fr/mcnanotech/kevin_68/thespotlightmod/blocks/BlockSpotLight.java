@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.minecraftforgefrance.ffmtlibs.FFMTClientRegistry;
 
 public class BlockSpotLight extends BlockContainer
 {
@@ -68,7 +67,7 @@ public class BlockSpotLight extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return FFMTClientRegistry.tesrRenderId;
+		return 2;
 	}
 
 	@Override
