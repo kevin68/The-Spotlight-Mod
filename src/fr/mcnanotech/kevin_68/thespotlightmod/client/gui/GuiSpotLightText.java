@@ -16,13 +16,10 @@ import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 
 public class GuiSpotLightText extends GuiContainer implements ISliderButton
@@ -52,24 +49,24 @@ public class GuiSpotLightText extends GuiContainer implements ISliderButton
 
 		Keyboard.enableRepeatEvents(true);
 		this.txtField = new GuiTextField(10, this.fontRendererObj, x - 40, y - 40, 256, 12);
-		byte r = (Byte)this.tile.get(EnumLaserInformations.TEXTRED);
-		byte g = (Byte)this.tile.get(EnumLaserInformations.TEXTGREEN);
-		byte b = (Byte)this.tile.get(EnumLaserInformations.TEXTBLUE);
-		this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
+//		byte r = (Byte)this.tile.get(EnumLaserInformations.TEXTRED);
+//		byte g = (Byte)this.tile.get(EnumLaserInformations.TEXTGREEN);
+//		byte b = (Byte)this.tile.get(EnumLaserInformations.TEXTBLUE);
+//		this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
 		this.txtField.setEnableBackgroundDrawing(true);
 		this.txtField.setMaxStringLength(40);
 		this.txtField.setEnabled(true);
-		this.txtField.setText((String)this.tile.get(EnumLaserInformations.TEXT));
+//		this.txtField.setText((String)this.tile.get(EnumLaserInformations.TEXT));
 
-		this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, I18n.format("container.spotlight.red") + " : " + (r & 0xFF), (r & 0xFF) / 255.0F));
-		this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, I18n.format("container.spotlight.green") + " : " + (g & 0xFF), (g & 0xFF) / 255.0F));
-		this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 25, 256, 20, I18n.format("container.spotlight.blue") + " : " + (b & 0xFF), (b & 0xFF) / 255.0F));
-		int a = (Integer)this.tile.get(EnumLaserInformations.TEXTANGLE1);
-		this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 48, 256, 20, I18n.format("container.spotlight.angle") + " 1 : " + a, a / 360.0F));
-		this.buttonList.add(this.rotateButton = new GuiBooleanButton(7, x - 40, y + 94, 127, 20, I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.TEXTAUTOROTATE)));
-		this.buttonList.add(this.revRotaButton = new GuiBooleanButton(8, x + 90, y + 72, 127, 20, I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.TEXTREVERSEROTATION)));
-		byte s = (Byte)this.tile.get(EnumLaserInformations.TEXTROTATIONSPEED);
-		this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 72, 127, 20, I18n.format("container.spotlight.rotationspeed") + " : " + (s & 0xFF), s / 20.0F));
+//		this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, I18n.format("container.spotlight.red") + " : " + (r & 0xFF), (r & 0xFF) / 255.0F));
+//		this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, I18n.format("container.spotlight.green") + " : " + (g & 0xFF), (g & 0xFF) / 255.0F));
+//		this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 25, 256, 20, I18n.format("container.spotlight.blue") + " : " + (b & 0xFF), (b & 0xFF) / 255.0F));
+//		int a = (Integer)this.tile.get(EnumLaserInformations.TEXTANGLE1);
+//		this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 48, 256, 20, I18n.format("container.spotlight.angle") + " 1 : " + a, a / 360.0F));
+//		this.buttonList.add(this.rotateButton = new GuiBooleanButton(7, x - 40, y + 94, 127, 20, I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.TEXTAUTOROTATE)));
+//		this.buttonList.add(this.revRotaButton = new GuiBooleanButton(8, x + 90, y + 72, 127, 20, I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " " + I18n.format("container.spotlight.off"), (Boolean)this.tile.get(EnumLaserInformations.TEXTREVERSEROTATION)));
+//		byte s = (Byte)this.tile.get(EnumLaserInformations.TEXTROTATIONSPEED);
+//		this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 72, 127, 20, I18n.format("container.spotlight.rotationspeed") + " : " + (s & 0xFF), s / 20.0F));
 
 		this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
 		this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
@@ -85,11 +82,11 @@ public class GuiSpotLightText extends GuiContainer implements ISliderButton
 			break;
 		case 7:
 			this.rotateButton.toggle();
-			PacketSender.send(EnumLaserInformations.TEXTAUTOROTATE, this.rotateButton.getIsActive());
+//			PacketSender.send(EnumLaserInformations.TEXTAUTOROTATE, this.rotateButton.isActive());
 			break;
 		case 8:
 			this.revRotaButton.toggle();
-			PacketSender.send(EnumLaserInformations.TEXTREVERSEROTATION, this.revRotaButton.getIsActive());
+//			PacketSender.send(EnumLaserInformations.TEXTREVERSEROTATION, this.revRotaButton.isActive());
 			break;
 		case 20:
 			this.helpButton.toggle();
@@ -100,32 +97,32 @@ public class GuiSpotLightText extends GuiContainer implements ISliderButton
 	@Override
 	public void handlerSliderAction(int sliderId, float sliderValue)
 	{
-		byte r = (Byte)this.tile.get(EnumLaserInformations.TEXTRED);
-		byte g = (Byte)this.tile.get(EnumLaserInformations.TEXTGREEN);
-		byte b = (Byte)this.tile.get(EnumLaserInformations.TEXTBLUE);
+//		byte r = (Byte)this.tile.get(EnumLaserInformations.TEXTRED);
+//		byte g = (Byte)this.tile.get(EnumLaserInformations.TEXTGREEN);
+//		byte b = (Byte)this.tile.get(EnumLaserInformations.TEXTBLUE);
 
 		switch(sliderId)
 		{
 		case 0:
-			PacketSender.send(EnumLaserInformations.TEXTRED, (byte)(sliderValue * 255.0F));
-			r = (Byte)this.tile.get(EnumLaserInformations.TEXTRED);
-			this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
+//			PacketSender.send(EnumLaserInformations.TEXTRED, (byte)(sliderValue * 255.0F));
+//			r = (Byte)this.tile.get(EnumLaserInformations.TEXTRED);
+//			this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
 			break;
 		case 1:
-			PacketSender.send(EnumLaserInformations.TEXTGREEN, (byte)(sliderValue * 255.0F));
-			g = (Byte)this.tile.get(EnumLaserInformations.TEXTGREEN);
-			this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
+//			PacketSender.send(EnumLaserInformations.TEXTGREEN, (byte)(sliderValue * 255.0F));
+//			g = (Byte)this.tile.get(EnumLaserInformations.TEXTGREEN);
+//			this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
 			break;
 		case 2:
-			PacketSender.send(EnumLaserInformations.TEXTBLUE, (byte)(sliderValue * 255.0F));
-			b = (Byte)this.tile.get(EnumLaserInformations.TEXTBLUE);
-			this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
+//			PacketSender.send(EnumLaserInformations.TEXTBLUE, (byte)(sliderValue * 255.0F));
+//			b = (Byte)this.tile.get(EnumLaserInformations.TEXTBLUE);
+//			this.txtField.setTextColor((r & 0xFF * 65536) + (g & 0xFF * 256) + (b & 0xFF));
 			break;
 		case 3:
-			PacketSender.send(EnumLaserInformations.TEXTANGLE1, (int)(sliderValue * 360.0F));
+//			PacketSender.send(EnumLaserInformations.TEXTANGLE1, (int)(sliderValue * 360.0F));
 			break;
 		case 5:
-			PacketSender.send(EnumLaserInformations.TEXTROTATIONSPEED, (byte)(sliderValue * 20.0F));
+//			PacketSender.send(EnumLaserInformations.TEXTROTATIONSPEED, (byte)(sliderValue * 20.0F));
 			break;
 		}
 	}
@@ -175,7 +172,7 @@ public class GuiSpotLightText extends GuiContainer implements ISliderButton
 
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();
@@ -251,7 +248,7 @@ public class GuiSpotLightText extends GuiContainer implements ISliderButton
 	{
 		if(this.txtField.textboxKeyTyped(chr, chrValue))
 		{
-			PacketSender.send(EnumLaserInformations.TEXT, this.txtField.getText());
+//			PacketSender.send(EnumLaserInformations.TEXT, this.txtField.getText());
 		}
 	}
 

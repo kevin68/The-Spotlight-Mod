@@ -13,9 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BaseListEntry;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.ConfigEntry;
@@ -87,8 +85,8 @@ public class GuiSpotLightLoadConfig extends GuiContainer implements GuiListBase
 	{
 		if(entry instanceof ConfigEntry)
 		{
-			ConfigEntry ent = (ConfigEntry)entry;
-			PacketSender.send(EnumLaserInformations.COMMANDAPPLYCONFIG, ent.getId());
+//			ConfigEntry ent = (ConfigEntry)entry;
+//			PacketSender.send(EnumLaserInformations.COMMANDAPPLYCONFIG, ent.getId());
 		}
 	}
 
@@ -100,7 +98,7 @@ public class GuiSpotLightLoadConfig extends GuiContainer implements GuiListBase
 		super.drawScreen(mouseX, mouseY, partialRenderTick);
 		this.gList.drawScreen(x, y);
 
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();

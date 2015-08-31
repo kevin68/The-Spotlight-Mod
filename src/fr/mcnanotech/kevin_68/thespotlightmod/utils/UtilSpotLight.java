@@ -1,6 +1,5 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import io.netty.buffer.ByteBuf;
 
@@ -322,8 +321,8 @@ public class UtilSpotLight
 
 	public static void createKey(TileEntitySpotLight t)
 	{
-		SpotLightEntry entry = new SpotLightEntry(true, (Byte)t.get(EnumLaserInformations.LASERRED), (Byte)t.get(EnumLaserInformations.LASERGREEN), (Byte)t.get(EnumLaserInformations.LASERBLUE), (Byte)t.get(EnumLaserInformations.LASERSECRED), (Byte)t.get(EnumLaserInformations.LASERSECGREEN), (Byte)t.get(EnumLaserInformations.LASERSECBLUE), (Integer)t.get(EnumLaserInformations.LASERANGLE1), (Byte)t.get(EnumLaserInformations.LASERANGLE2), (Boolean)t.get(EnumLaserInformations.LASERAUTOROTATE), (Boolean)t.get(EnumLaserInformations.LASERREVERSEROTATION), (Byte)t.get(EnumLaserInformations.LASERROTATIONSPEED), (Boolean)t.get(EnumLaserInformations.LASERSECONDARY), (Byte)t.get(EnumLaserInformations.LASERDISPLAYAXE), (Boolean)t.get(EnumLaserInformations.LASERDOUBLE), (Byte)t.get(EnumLaserInformations.LASERMAINSIZE), (Byte)t.get(EnumLaserInformations.LASERSECSIZE), (Integer)t.get(EnumLaserInformations.LASERHEIGHT), (Boolean)t.get(EnumLaserInformations.TEXTENABLED), (Byte)t.get(EnumLaserInformations.TEXTRED), (Byte)t.get(EnumLaserInformations.TEXTGREEN), (Byte)t.get(EnumLaserInformations.TEXTBLUE), (Integer)t.get(EnumLaserInformations.TEXTANGLE1), (Boolean)t.get(EnumLaserInformations.TEXTAUTOROTATE), (Boolean)t.get(EnumLaserInformations.TEXTREVERSEROTATION), (Byte)t.get(EnumLaserInformations.TEXTROTATIONSPEED), (Byte)t.get(EnumLaserInformations.TEXTSCALE), (Byte)t.get(EnumLaserInformations.TEXTHEIGHT), (Byte)t.get(EnumLaserInformations.LASERSIDESNUMBER));
-		PacketSender.sendSpotLightPacket(t, (Byte)t.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF, entry);
+//		SpotLightEntry entry = new SpotLightEntry(true, (Byte)t.get(EnumLaserInformations.LASERRED), (Byte)t.get(EnumLaserInformations.LASERGREEN), (Byte)t.get(EnumLaserInformations.LASERBLUE), (Byte)t.get(EnumLaserInformations.LASERSECRED), (Byte)t.get(EnumLaserInformations.LASERSECGREEN), (Byte)t.get(EnumLaserInformations.LASERSECBLUE), (Integer)t.get(EnumLaserInformations.LASERANGLE1), (Byte)t.get(EnumLaserInformations.LASERANGLE2), (Boolean)t.get(EnumLaserInformations.LASERAUTOROTATE), (Boolean)t.get(EnumLaserInformations.LASERREVERSEROTATION), (Byte)t.get(EnumLaserInformations.LASERROTATIONSPEED), (Boolean)t.get(EnumLaserInformations.LASERSECONDARY), (Byte)t.get(EnumLaserInformations.LASERDISPLAYAXE), (Boolean)t.get(EnumLaserInformations.LASERDOUBLE), (Byte)t.get(EnumLaserInformations.LASERMAINSIZE), (Byte)t.get(EnumLaserInformations.LASERSECSIZE), (Integer)t.get(EnumLaserInformations.LASERHEIGHT), (Boolean)t.get(EnumLaserInformations.TEXTENABLED), (Byte)t.get(EnumLaserInformations.TEXTRED), (Byte)t.get(EnumLaserInformations.TEXTGREEN), (Byte)t.get(EnumLaserInformations.TEXTBLUE), (Integer)t.get(EnumLaserInformations.TEXTANGLE1), (Boolean)t.get(EnumLaserInformations.TEXTAUTOROTATE), (Boolean)t.get(EnumLaserInformations.TEXTREVERSEROTATION), (Byte)t.get(EnumLaserInformations.TEXTROTATIONSPEED), (Byte)t.get(EnumLaserInformations.TEXTSCALE), (Byte)t.get(EnumLaserInformations.TEXTHEIGHT), (Byte)t.get(EnumLaserInformations.LASERSIDESNUMBER));
+//		PacketSender.sendSpotLightPacket(t, (Byte)t.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF, entry);
 	}
 
 	public static class BaseListEntry

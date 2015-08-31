@@ -119,7 +119,7 @@ public class GuiSpotLightAddTexture extends GuiContainer
 		drawString(this.fontRendererObj, I18n.format("container.spotlight.texname") + " : ", x + 10, y + 10, 0xffffff);
 		drawString(this.fontRendererObj, I18n.format("container.spotlight.texpath") + " : ", x + 10, y + 40, 0xffffff);
 		drawString(this.fontRendererObj, I18n.format("container.spotlight.delname") + " : ", x + 10, y + 70, 0xffffff);
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();

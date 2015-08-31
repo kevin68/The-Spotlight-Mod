@@ -13,13 +13,10 @@ import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 
 public class GuiSpotLightText2 extends GuiContainer implements ISliderButton
@@ -46,10 +43,10 @@ public class GuiSpotLightText2 extends GuiContainer implements ISliderButton
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 
-		byte h = (Byte)this.tile.get(EnumLaserInformations.TEXTHEIGHT);
-		byte s = (Byte)this.tile.get(EnumLaserInformations.TEXTSCALE);
-		this.buttonList.add(new GuiSliderButton(this, 0, x - 87, y - 20, 350, 20, I18n.format("container.spotlight.scale") + " : " + (int)((s & 0xFF) * 3.96F + 10) + " %", (s & 0xFF) / 250.0F));
-		this.buttonList.add(new GuiSliderButton(this, 1, x - 87, y + 2, 350, 20, I18n.format("container.spotlight.height") + " : " + ((h & 0xFF) - 125), (h & 0xFF) / 250.0F));
+//		byte h = (Byte)this.tile.get(EnumLaserInformations.TEXTHEIGHT);
+//		byte s = (Byte)this.tile.get(EnumLaserInformations.TEXTSCALE);
+//		this.buttonList.add(new GuiSliderButton(this, 0, x - 87, y - 20, 350, 20, I18n.format("container.spotlight.scale") + " : " + (int)((s & 0xFF) * 3.96F + 10) + " %", (s & 0xFF) / 250.0F));
+//		this.buttonList.add(new GuiSliderButton(this, 1, x - 87, y + 2, 350, 20, I18n.format("container.spotlight.height") + " : " + ((h & 0xFF) - 125), (h & 0xFF) / 250.0F));
 
 		this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
 		this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
@@ -79,10 +76,10 @@ public class GuiSpotLightText2 extends GuiContainer implements ISliderButton
 		switch(sliderId)
 		{
 		case 0:
-			PacketSender.send(EnumLaserInformations.TEXTSCALE, (byte)(sliderValue * 250.0F));
+//			PacketSender.send(EnumLaserInformations.TEXTSCALE, (byte)(sliderValue * 250.0F));
 			break;
 		case 1:
-			PacketSender.send(EnumLaserInformations.TEXTHEIGHT, (byte)(sliderValue * 250.0F));
+//			PacketSender.send(EnumLaserInformations.TEXTHEIGHT, (byte)(sliderValue * 250.0F));
 			break;
 		}
 	}
@@ -114,7 +111,7 @@ public class GuiSpotLightText2 extends GuiContainer implements ISliderButton
 
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();

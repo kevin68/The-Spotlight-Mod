@@ -13,9 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
@@ -49,7 +47,7 @@ public class GuiSpotLightCreateKey extends GuiContainer implements ISliderButton
 		this.buttonList.add(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")));
 		this.buttonList.add(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")));
 		this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
-		PacketSender.send(EnumLaserInformations.TIMELINECREATEKEYTIME, (byte)0);
+//		PacketSender.send(EnumLaserInformations.TIMELINECREATEKEYTIME, (byte)0);
 	}
 
 	@Override
@@ -61,14 +59,14 @@ public class GuiSpotLightCreateKey extends GuiContainer implements ISliderButton
 		}
 		if(guibutton.id == 2)
 		{
-			if(this.tile.getKey((Byte)this.tile.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF) != null && this.tile.getKey((Byte)this.tile.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF).isActive())
-			{
-				this.mc.displayGuiScreen(new GuiSpotLightConfirm(this.tile, this.invPlayer, this.world, I18n.format("container.spotlight.sure") + " " + I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.cancel"), 1));
-			}
-			else
-			{
-				UtilSpotLight.createKey(this.tile);
-			}
+//			if(this.tile.getKey((Byte)this.tile.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF) != null && this.tile.getKey((Byte)this.tile.get(EnumLaserInformations.TIMELINECREATEKEYTIME) & 0xFF).isActive())
+//			{
+//				this.mc.displayGuiScreen(new GuiSpotLightConfirm(this.tile, this.invPlayer, this.world, I18n.format("container.spotlight.sure") + " " + I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.cancel"), 1));
+//			}
+//			else
+//			{
+//				UtilSpotLight.createKey(this.tile);
+//			}
 		}
 		if(guibutton.id == 20)
 		{
@@ -81,7 +79,7 @@ public class GuiSpotLightCreateKey extends GuiContainer implements ISliderButton
 	{
 		if(sliderId == 0)
 		{
-			PacketSender.send(EnumLaserInformations.TIMELINECREATEKEYTIME, (byte)(sliderValue * 119));
+//			PacketSender.send(EnumLaserInformations.TIMELINECREATEKEYTIME, (byte)(sliderValue * 119));
 		}
 	}
 
@@ -103,7 +101,7 @@ public class GuiSpotLightCreateKey extends GuiContainer implements ISliderButton
 		int y = (this.height - this.ySize) / 2;
 		super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();

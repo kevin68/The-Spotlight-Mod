@@ -14,9 +14,7 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightSlotConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
@@ -75,17 +73,16 @@ public class GuiSpotLightConfigs extends GuiContainer
 		}
 		case 2:
 		{
-			PacketSender.sendSpotLightPacketConfig(this.tileSpotLight, true, null, null, 0);
+//			PacketSender.sendSpotLightPacketConfig(this.tileSpotLight, true, null, null, 0);
 			break;
 		}
 		case 3:
 		{
-			PacketSender.sendSpotLightPacketConfig(this.tileSpotLight, true, null, null, 1);
+//			PacketSender.sendSpotLightPacketConfig(this.tileSpotLight, true, null, null, 1);
 			break;
 		}
 		case 4:
 		{
-			PacketSender.send(EnumLaserInformations.COMMANDSETDEFAULT, (byte)0);
 			break;
 		}
 		case 20:
@@ -112,7 +109,7 @@ public class GuiSpotLightConfigs extends GuiContainer
 		int y = (this.height - this.ySize) / 2;
 		super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();

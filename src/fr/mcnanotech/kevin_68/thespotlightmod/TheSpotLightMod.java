@@ -23,9 +23,10 @@ import org.apache.logging.log4j.Logger;
 import fr.mcnanotech.kevin_68.thespotlightmod.blocks.TSMBlocks;
 import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.GuiHandler;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLightKey;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketSpotLightOpenConfigList;
+import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketData;
+import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketRegenerateFile;
+import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketRequestData;
+import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TSMTileEntity;
 
 @Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.3.1446,)", acceptableRemoteVersions = "*")
@@ -68,10 +69,18 @@ public class TheSpotLightMod
     public void initTheSpotlightMod(FMLInitializationEvent event)
     {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-        network.registerMessage(PacketSpotLightMod.Handler.class, PacketSpotLightMod.class, 0, Side.SERVER);
-        network.registerMessage(PacketSpotLightKey.Handler.class, PacketSpotLightKey.class, 1, Side.SERVER);
-        network.registerMessage(PacketSpotLightOpenConfigList.ClientHandler.class, PacketSpotLightOpenConfigList.class, 2, Side.CLIENT);
-        network.registerMessage(PacketSpotLightOpenConfigList.ServerHandler.class, PacketSpotLightOpenConfigList.class, 2, Side.SERVER);
+        // network.registerMessage(PacketSpotLightMod.Handler.class,
+        // PacketSpotLightMod.class, 0, Side.SERVER);
+        // network.registerMessage(PacketSpotLightKey.Handler.class,
+        // PacketSpotLightKey.class, 1, Side.SERVER);
+        // network.registerMessage(PacketSpotLightOpenConfigList.ClientHandler.class,
+        // PacketSpotLightOpenConfigList.class, 2, Side.CLIENT);
+        // network.registerMessage(PacketSpotLightOpenConfigList.ServerHandler.class,
+        // PacketSpotLightOpenConfigList.class, 2, Side.SERVER);
+        network.registerMessage(PacketRequestData.Handler.class, PacketRequestData.class, 3, Side.SERVER);
+        network.registerMessage(PacketData.Handler.class, PacketData.class, 4, Side.CLIENT);
+        network.registerMessage(PacketUpdateData.Handler.class, PacketUpdateData.class, 5, Side.SERVER);
+        network.registerMessage(PacketRegenerateFile.Handler.class, PacketRegenerateFile.class, 6, Side.SERVER);
         NetworkRegistry.INSTANCE.registerGuiHandler(modInstance, new GuiHandler());
         proxy.registerRender();
     }

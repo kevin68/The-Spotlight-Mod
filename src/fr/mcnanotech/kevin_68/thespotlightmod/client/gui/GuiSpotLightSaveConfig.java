@@ -16,9 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.PacketSender;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.EnumLaserInformations;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
@@ -75,7 +73,7 @@ public class GuiSpotLightSaveConfig extends GuiContainer
 		{
 			if(this.createButton.enabled)
 			{
-				PacketSender.send(EnumLaserInformations.COMMANDCREATECONFIG, this.txtField.getText());
+//				PacketSender.send(EnumLaserInformations.COMMANDCREATECONFIG, this.txtField.getText());
 				this.mc.displayGuiScreen(new GuiSpotLightConfigs(this.invPlayer, this.tileSpotLight, this.world));
 			}
 			break;
@@ -109,7 +107,7 @@ public class GuiSpotLightSaveConfig extends GuiContainer
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 
-		if(this.helpButton.getIsActive())
+		if(this.helpButton.isActive())
 		{
 			boolean reversed = mouseX > this.width / 2;
 			ArrayList<String> list = new ArrayList<String>();
