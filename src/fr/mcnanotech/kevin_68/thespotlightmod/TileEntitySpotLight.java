@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.tileentity;
+package fr.mcnanotech.kevin_68.thespotlightmod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketRequestData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
@@ -1278,7 +1276,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
         {
         case 0:
         {
-            return stack != null && stack.getItem() != null && stack.getItem() == TSMItems.configSaver;
+            return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaver;
         }
         case 1:
         case 2:

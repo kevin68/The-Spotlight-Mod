@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.items;
+package fr.mcnanotech.kevin_68.thespotlightmod;
 
 import java.util.List;
 

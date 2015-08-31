@@ -7,13 +7,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import org.lwjgl.opengl.GL11;
-
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketUpdateData;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
@@ -313,10 +310,11 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)//TODO help
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)// TODO
+                                                                           // help
     {
-//         int x = (this.width - this.xSize) / 2;
-//         int y = (this.height - this.ySize) / 2;
+        // int x = (this.width - this.xSize) / 2;
+        // int y = (this.height - this.ySize) / 2;
         super.drawScreen(mouseX, mouseY, partialRenderTick);
 
         // if(this.helpButton.isActive())

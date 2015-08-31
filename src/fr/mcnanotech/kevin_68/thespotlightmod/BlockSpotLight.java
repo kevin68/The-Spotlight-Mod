@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.blocks;
+package fr.mcnanotech.kevin_68.thespotlightmod;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -12,8 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 
 public class BlockSpotLight extends BlockContainer

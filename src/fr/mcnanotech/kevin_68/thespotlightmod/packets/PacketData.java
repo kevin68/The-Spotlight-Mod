@@ -1,6 +1,6 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.network.packets;
+package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

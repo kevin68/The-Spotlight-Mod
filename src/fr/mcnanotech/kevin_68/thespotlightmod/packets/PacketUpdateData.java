@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.network.packets;
+package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;

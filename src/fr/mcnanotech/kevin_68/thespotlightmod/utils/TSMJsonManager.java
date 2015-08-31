@@ -19,8 +19,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketRegenerateFile;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 
 public class TSMJsonManager
 {

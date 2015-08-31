@@ -1,9 +1,11 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -20,14 +22,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.apache.logging.log4j.Logger;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.blocks.TSMBlocks;
-import fr.mcnanotech.kevin_68.thespotlightmod.items.TSMItems;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.GuiHandler;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketData;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketRegenerateFile;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketRequestData;
-import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketUpdateData;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TSMTileEntity;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 
 @Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.3.1446,)", acceptableRemoteVersions = "*")
 public class TheSpotLightMod
@@ -43,13 +42,16 @@ public class TheSpotLightMod
     public static SimpleNetworkWrapper network;
     public static Logger log;
 
+    public static Block spotlight;
+    public static Item configSaver;
+
     public static CreativeTabs tab = new CreativeTabs("thespotlightmod.tab")
     {
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem()
         {
-            return Item.getItemFromBlock(TSMBlocks.spotlight);
+            return Item.getItemFromBlock(spotlight);
         }
     };
 
@@ -58,9 +60,11 @@ public class TheSpotLightMod
     {
         log = event.getModLog();
 
-        TSMBlocks.initBlock();
-        TSMItems.initItems();
-        TSMTileEntity.registerTiles();
+        spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab).setStepSound(Block.soundTypeMetal);
+        GameRegistry.registerBlock(spotlight, ItemBlock.class, "tsm_spotlight");
+        configSaver = new ItemConfigSaver().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
+        GameRegistry.registerItem(configSaver, "tsm_configsaver", TheSpotLightMod.MODID);
+        GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
 
         proxy.registerModel();
     }
@@ -69,14 +73,7 @@ public class TheSpotLightMod
     public void initTheSpotlightMod(FMLInitializationEvent event)
     {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-        // network.registerMessage(PacketSpotLightMod.Handler.class,
-        // PacketSpotLightMod.class, 0, Side.SERVER);
-        // network.registerMessage(PacketSpotLightKey.Handler.class,
-        // PacketSpotLightKey.class, 1, Side.SERVER);
-        // network.registerMessage(PacketSpotLightOpenConfigList.ClientHandler.class,
-        // PacketSpotLightOpenConfigList.class, 2, Side.CLIENT);
-        // network.registerMessage(PacketSpotLightOpenConfigList.ServerHandler.class,
-        // PacketSpotLightOpenConfigList.class, 2, Side.SERVER);
+        network.registerMessage(PacketOpenGui.Handler.class, PacketOpenGui.class, 0, Side.SERVER);
         network.registerMessage(PacketRequestData.Handler.class, PacketRequestData.class, 3, Side.SERVER);
         network.registerMessage(PacketData.Handler.class, PacketData.class, 4, Side.CLIENT);
         network.registerMessage(PacketUpdateData.Handler.class, PacketUpdateData.class, 5, Side.SERVER);
@@ -88,7 +85,7 @@ public class TheSpotLightMod
     @EventHandler
     public void postInitTheSpotlightMod(FMLPostInitializationEvent event)
     {
-        GameRegistry.addRecipe(new ItemStack(TSMBlocks.spotlight, 1, 0), new Object[] {"OGO", "RDR", "OGO", 'O', Blocks.obsidian, 'G', Blocks.glass, 'R', Items.redstone, 'D', Items.diamond});
-        GameRegistry.addShapelessRecipe(new ItemStack(TSMItems.configSaver, 1, 0), new Object[] {Items.redstone, Blocks.obsidian});
+        GameRegistry.addRecipe(new ItemStack(spotlight, 1, 0), new Object[] {"OGO", "RDR", "OGO", 'O', Blocks.obsidian, 'G', Blocks.glass, 'R', Items.redstone, 'D', Items.diamond});
+        GameRegistry.addShapelessRecipe(new ItemStack(configSaver, 1, 0), new Object[] {Items.redstone, Blocks.obsidian});
     }
 }

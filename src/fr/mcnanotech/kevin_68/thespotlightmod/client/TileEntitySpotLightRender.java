@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity;
+package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -6,8 +6,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -20,90 +18,32 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.model.ModelSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 
 @SideOnly(Side.CLIENT)
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
 {
-    private ModelSpotLight model;
+    private ModelSpotLight model = new ModelSpotLight();
     private static final ResourceLocation tex = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
     private static final ResourceLocation defaultBeam = new ResourceLocation("textures/entity/beacon_beam.png");
 
-    @SuppressWarnings("unused")
     public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
     {
         byte b0 = 1;
         float f2 = tile.getWorld().getTotalWorldTime() + tick;
-        double d3 = f2 * 0.025D * (1.0D - (b0 & 1) * 2.5D);
-        // int angleZ = (Integer)tile.get(EnumLaserInformations.LASERANGLE1);
-        // double angle2Deg = (Byte)tile.get(EnumLaserInformations.LASERANGLE2)
-        // & 0xFF;
         float timer = getWorld().getTotalWorldTime() * 0.00125F;
         float angleX = tile.beamAutoRotateX ? timer * tile.beamRotationSpeedX * (tile.beamReverseRotateX ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleX);
         float angleY = tile.beamAutoRotateY ? timer * tile.beamRotationSpeedY * (tile.beamReverseRotateY ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleY);
         float angleZ = tile.beamAutoRotateZ ? timer * tile.beamRotationSpeedZ * (tile.beamReverseRotateZ ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleZ);
-
-        // TODO autorotate all angles
-        // double a2 = (Boolean)tile.get(EnumLaserInformations.LASERAUTOROTATE)
-        // ? d3 * (((Byte)tile.get(EnumLaserInformations.LASERROTATIONSPEED) &
-        // 0xFF) / 4.0D) *
-        // ((Boolean)tile.get(EnumLaserInformations.LASERREVERSEROTATION) ?
-        // -1.0D : 1.0D) : Math.toRadians(angle2Deg);
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
         bindTexture(tex);
-        int ti = (int)(tile.getWorld().getTotalWorldTime() / 4 % 3);
-        this.model = new ModelSpotLight();
         this.model.setRotation(-angleX, angleY, -angleZ);
         GlStateManager.scale(1.2F, 1.2F, 1.2F);
-        // GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-
-        // System.out.println((float)Math.cos(Math.PI / 180 * angleX +
-        // Math.PI));
-
-        // GlStateManager.rotate(angleX, -1.0F, 0.0F, 0.0F);
-        // GlStateManager.rotate(angleY, 0.0F, 1.0F, 0.0F);
-        // GlStateManager.rotate(-angleZ, 0.0F, 0.0F, 1.0F);
-        // GlStateManager.translate(Math.cos(Math.PI / 180 * angleY +
-        // Math.PI/2), Math.cos(Math.PI / 180 * angleX) - 1, Math.cos(Math.PI *
-        // 1 / 180 * angleX + Math.PI/2) * Math.cos(Math.PI * 1 / 180 *
-        // angleY));
-        // double angleY = Math.toDegrees(a2);
-        // byte axe = 0;//
-        // (Byte)tile.get(EnumLaserInformations.LASERDISPLAYAXE);
-        // if(axe == 0)
-        // {
-        // GL11.glRotated(angleY, 0.0F, 1.0F, 0.0F);
-        // GL11.glRotated(-angleZ, 0.0F, 0.0F, 1.0F);
-        // GL11.glTranslated(Math.cos(Math.PI * (1.0F / 180.0F) * angleZ +
-        // Math.PI / 2.0F), Math.cos(Math.PI * (1.0F / 180.0F) * angleZ) - 1,
-        // 0.0F);
-        // }
-        // else if(axe == 1)
-        // {
-        // GL11.glRotated(-angleY, 1.0F, 0.0F, 0.0F);
-        // GL11.glRotated(angleZ + 90, 0.0F, 0.0F, 1.0F);
-        // GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angleZ) *
-        // Math.cos(Math.PI * 1 / 180 * angleY), Math.cos(Math.PI * 1 / 180 *
-        // angleY) * Math.cos(Math.PI * 1 / 180 * angleZ + Math.PI / 2) - 1,
-        // -Math.cos(Math.PI * 1 / 180 * angleY + Math.PI / 2));
-        // }
-        // else if(axe == 2)
-        // {
-        // GL11.glRotated(-angleY, 0.0F, 0.0F, 1.0F);
-        // GL11.glRotated(angleZ, 1.0F, 0.0F, 0.0F);
-        // GL11.glRotated(90, 1.0F, 0.0F, 0.0F);
-        // GL11.glTranslated(Math.cos(Math.PI * 1 / 180 * angleY + Math.PI / 2),
-        // Math.cos(Math.PI * 1 / 180 * angleY) * Math.cos(Math.PI * 1 / 180 *
-        // angleZ + Math.PI / 2) - 1, -Math.cos(Math.PI * 1 / 180 * angleY) *
-        // Math.cos(Math.PI * 1 / 180 * angleZ));
-        // }
-
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         float f1 = tile.isActive();
         GlStateManager.alphaFunc(516, 0.1F);
         if(f1 > 0.0F)

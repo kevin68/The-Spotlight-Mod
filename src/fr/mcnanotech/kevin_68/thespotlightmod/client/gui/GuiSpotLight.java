@@ -10,8 +10,9 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 
@@ -68,7 +69,8 @@ public class GuiSpotLight extends GuiContainer
         }
         case 3:
         {
-            this.mc.displayGuiScreen(new GuiSpotLightTextures(this.invPlayer, this.tile, this.world));
+            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 1));
+//            this.mc.displayGuiScreen(new GuiSpotLightTextures(this.invPlayer, this.tile, this.world));
             break;
         }
         case 20:

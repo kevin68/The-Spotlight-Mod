@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.client.model;
+package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
