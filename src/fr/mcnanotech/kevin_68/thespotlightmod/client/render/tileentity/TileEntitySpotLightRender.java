@@ -1,10 +1,16 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.render.tileentity;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -16,8 +22,8 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.model.ModelSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight.BeamVec;
 
 @SideOnly(Side.CLIENT)
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
@@ -57,10 +63,10 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
 
         // System.out.println((float)Math.cos(Math.PI / 180 * angleX +
         // Math.PI));
-        
-//        GlStateManager.rotate(angleX, -1.0F, 0.0F, 0.0F);
-//        GlStateManager.rotate(angleY, 0.0F, 1.0F, 0.0F);
-//        GlStateManager.rotate(-angleZ, 0.0F, 0.0F, 1.0F);
+
+        // GlStateManager.rotate(angleX, -1.0F, 0.0F, 0.0F);
+        // GlStateManager.rotate(angleY, 0.0F, 1.0F, 0.0F);
+        // GlStateManager.rotate(-angleZ, 0.0F, 0.0F, 1.0F);
         // GlStateManager.translate(Math.cos(Math.PI / 180 * angleY +
         // Math.PI/2), Math.cos(Math.PI / 180 * angleX) - 1, Math.cos(Math.PI *
         // 1 / 180 * angleX + Math.PI/2) * Math.cos(Math.PI * 1 / 180 *
@@ -104,7 +110,15 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         {
             Tessellator tess = Tessellator.getInstance();
             WorldRenderer worldrenderer = tess.getWorldRenderer();
-            bindTexture(defaultBeam);
+            ItemStack s = tile.getStackInSlot(1);
+            if(s != null && s.getItem() != null)
+            {
+                bindTexture(getResourceLocationStack(s));
+            }
+            else
+            {
+                bindTexture(defaultBeam);
+            }
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
             GlStateManager.disableLighting();
@@ -130,7 +144,15 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                 drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[1]);
                 tess.draw();
             }
-            bindTexture(defaultBeam);
+            ItemStack s2 = tile.getStackInSlot(2);
+            if(s2 != null && s2.getItem() != null)
+            {
+                bindTexture(getResourceLocationStack(s2));
+            }
+            else
+            {
+                bindTexture(defaultBeam);
+            }
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.depthMask(false);
@@ -233,5 +255,28 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             worldrenderer.addVertexWithUV(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord, 0.0F, t2);
             worldrenderer.addVertexWithUV(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord, 0.0F, t3);
         }
+    }
+
+    private ResourceLocation getResourceLocationStack(ItemStack stack)
+    {
+        TextureAtlasSprite sprite = null;
+        Block b = Block.getBlockFromItem(stack.getItem());
+        if(b != null)
+        {
+            sprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getDefaultState());
+        }
+        else
+        {
+            sprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(stack.getItem());
+        }
+
+        String iconName = sprite.getIconName();
+        String[] strs = iconName.split(":");
+        if(strs.length > 1)
+        {
+            String resource = strs[0] + ":textures/" + strs[1] + ".png";
+            return new ResourceLocation(resource);
+        }
+        return null;
     }
 }

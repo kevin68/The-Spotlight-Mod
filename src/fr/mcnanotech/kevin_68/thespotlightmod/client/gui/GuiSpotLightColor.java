@@ -16,7 +16,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.network.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.tileentity.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.UtilSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
@@ -174,38 +174,38 @@ public class GuiSpotLightColor extends GuiContainer implements ISliderButton
             {
                 if(mouseY > y - 20 && mouseY < y)
                 {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.red"), mouseX, this.width, reversed);
+                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.red"), mouseX, this.width, reversed);
                 }
                 if(mouseY > y + 2 && mouseY < y + 22)
                 {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.green"), mouseX, this.width, reversed);
+                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.green"), mouseX, this.width, reversed);
                 }
                 if(mouseY > y + 24 && mouseY < y + 44)
                 {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.blue"), mouseX, this.width, reversed);
+                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.blue"), mouseX, this.width, reversed);
                 }
                 if(mouseY > y + 46 && mouseY < y + 66)
                 {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secred"), mouseX, this.width, reversed);
+                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secred"), mouseX, this.width, reversed);
                 }
                 if(mouseY > y + 68 && mouseY < y + 88)
                 {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secgreen"), mouseX, this.width, reversed);
+                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secgreen"), mouseX, this.width, reversed);
                 }
                 if(mouseY > y + 90 && mouseY < y + 110)
                 {
-                    list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secblue"), mouseX, this.width, reversed);
+                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secblue"), mouseX, this.width, reversed);
                 }
             }
 
             if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY < y + 137)
             {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, this.width, reversed);
+                list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, this.width, reversed);
             }
 
             if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
             {
-                list = UtilSpotLight.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, this.width, reversed);
+                list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, this.width, reversed);
             }
 
             if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
