@@ -35,9 +35,11 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         // int angleZ = (Integer)tile.get(EnumLaserInformations.LASERANGLE1);
         // double angle2Deg = (Byte)tile.get(EnumLaserInformations.LASERANGLE2)
         // & 0xFF;
-        float angleX = tile.beamAngleX;
-        float angleY = tile.beamAngleY;
-        float angleZ = tile.beamAngleZ;
+        float timer = getWorld().getTotalWorldTime() * 0.00125F;
+        float angleX = tile.beamAutoRotateX ? timer * tile.beamRotationSpeedX * (tile.beamReverseRotateX ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleX);
+        float angleY = tile.beamAutoRotateY ? timer * tile.beamRotationSpeedY * (tile.beamReverseRotateY ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleY);
+        float angleZ = tile.beamAutoRotateZ ? timer * tile.beamRotationSpeedZ * (tile.beamReverseRotateZ ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleZ);
+
         // TODO autorotate all angles
         // double a2 = (Boolean)tile.get(EnumLaserInformations.LASERAUTOROTATE)
         // ? d3 * (((Byte)tile.get(EnumLaserInformations.LASERROTATIONSPEED) &
@@ -49,7 +51,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         bindTexture(tex);
         int ti = (int)(tile.getWorld().getTotalWorldTime() / 4 % 3);
         this.model = new ModelSpotLight();
-        this.model.setRotation(-(float)Math.toRadians(angleX), (float)Math.toRadians(angleY), -(float)Math.toRadians(angleZ));
+        this.model.setRotation(-angleX, angleY, -angleZ);
         GlStateManager.scale(1.2F, 1.2F, 1.2F);
         // GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 

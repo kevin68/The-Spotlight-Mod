@@ -19,7 +19,7 @@ apply plugin: 'forge'
 apply plugin: 'maven'
 
 ext.buildnumber = 0
-version = "0.0.0"
+version = "0.0.1"
 group= "fr.mcnanotech.kevin_68"
 archivesBaseName = "TheSpotlightMod"
 
@@ -32,10 +32,10 @@ else {
 }
 
 minecraft {
-    version = "1.8-11.14.3.1480"
+    version = "1.8-11.14.3.1502"
     runDir = "run"
 	
-	mappings = "snapshot_nodoc_20150625"
+	mappings = "snapshot_20150808"
 	
     replace '@VERSION@', project.version
 }
@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.0.129-mc1.8:dev'
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.0.137-mc1.8:dev'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
