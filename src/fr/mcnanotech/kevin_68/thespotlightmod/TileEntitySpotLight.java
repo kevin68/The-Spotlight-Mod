@@ -39,7 +39,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
      */
     public boolean updated = false, updating = false;
     public int dimensionID;
-    public boolean isBeam; //false = text mode
+    public boolean isBeam; // false = text mode
     // -------------------------------------Beam Colors
     public short beamRed, beamGreen, beamBlue, secBeamRed, secBeamGreen, secBeamBlue;
     // -------------------------------------Beam Angles
@@ -50,11 +50,16 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     public boolean secBeamEnabled, beamDouble;
     // -------------------------------------Previous values for processing
     private short prevBeamHeight = -1, prevBeamSides = -1, prevBeamAngleX = -1, prevBeamAngleY = -1, prevBeamAngleZ = -1, prevBeamSize = -1, prevSecBeamSize = -1;
-    private boolean prevBeamAutoRotateX, prevBeamAutoRotateY, prevBeamAutoRotateZ;
-    //-------------------------------------Text
+    private boolean prevBeamAutoRotateX, prevBeamAutoRotateY, prevBeamAutoRotateZ, prevWasBeam;
+    // -------------------------------------Text Colors
     public String text;
     public short textRed, textGreen, textBlue;
-    
+    // -------------------------------------Text Angles
+    public short textAngleY, textRotationSpeedY;
+    public boolean textAutoRotateY, textReverseRotateY;
+    // -------------------------------------Text Properties
+    public short textHeight, textScale;
+
     // private byte timelineCreateKeyTime, tilelineLastKeySelected, textRed,
     // textGreen, textBlue, textRotationSpeed, textScale, textHeight;
     // private String laserMainTexture, laserSecTexture, text;
@@ -94,7 +99,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
 
                 if(this.bVec != null)
                 {
-                    if(this.beamAutoRotateX || this.beamAutoRotateY || this.beamAutoRotateZ || this.prevBeamAngleX != this.beamAngleX || this.prevBeamAngleY != this.beamAngleY || this.prevBeamAngleZ != this.beamAngleZ || this.prevBeamHeight != this.beamHeight || this.prevBeamSides != this.beamSides || this.prevBeamSize != this.beamSize || this.prevSecBeamSize != this.secBeamSize || this.prevBeamAutoRotateX != this.beamAutoRotateX || this.prevBeamAutoRotateY != this.beamAutoRotateY || this.prevBeamAutoRotateZ != this.beamAutoRotateZ)
+                    if(this.beamAutoRotateX || this.beamAutoRotateY || this.beamAutoRotateZ || this.prevBeamAngleX != this.beamAngleX || this.prevBeamAngleY != this.beamAngleY || this.prevBeamAngleZ != this.beamAngleZ || this.prevBeamHeight != this.beamHeight || this.prevBeamSides != this.beamSides || this.prevBeamSize != this.beamSize || this.prevSecBeamSize != this.secBeamSize || this.prevBeamAutoRotateX != this.beamAutoRotateX || this.prevBeamAutoRotateY != this.beamAutoRotateY || this.prevBeamAutoRotateZ != this.beamAutoRotateZ || this.prevWasBeam != this.isBeam)
                     {
                         this.prevBeamAngleX = this.beamAngleX;
                         this.prevBeamAngleY = this.beamAngleY;
@@ -106,6 +111,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
                         this.prevBeamAutoRotateX = this.beamAutoRotateX;
                         this.prevBeamAutoRotateY = this.beamAutoRotateY;
                         this.prevBeamAutoRotateZ = this.beamAutoRotateZ;
+                        this.prevWasBeam = this.isBeam;
                         this.bVec = process();
                     }
                 }

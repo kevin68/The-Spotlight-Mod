@@ -43,27 +43,21 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(this.buttonX = new GuiBooleanButton(0, x - 50, y + 110, 20, 20, "X"));
-        this.buttonX.setActive(true);
-        this.buttonList.add(this.buttonY = new GuiBooleanButton(1, x - 25, y + 110, 20, 20, "Y"));
-        this.buttonX.setActive(false);
-        this.buttonList.add(this.buttonZ = new GuiBooleanButton(2, x, y + 110, 20, 20, "Z"));
-        this.buttonX.setActive(false);
+        this.buttonList.add(this.buttonX = new GuiBooleanButton(0, x - 50, y + 110, 20, 20, "X", true));
+        this.buttonList.add(this.buttonY = new GuiBooleanButton(1, x - 25, y + 110, 20, 20, "Y", false));
+        this.buttonList.add(this.buttonZ = new GuiBooleanButton(2, x, y + 110, 20, 20, "Z", false));
         this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angle") + " X: " + this.tile.beamAngleX, this.tile.beamAngleX / 360.0F));
-        this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, ""));
-        this.buttonAR.setActive(this.tile.beamAutoRotateX);
+        this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.beamAutoRotateX));
         this.buttonAR.setTexts(I18n.format("container.spotlight.rotate") + " X: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " X: " + I18n.format("container.spotlight.off"));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
-        this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, ""));
-        this.buttonRR.setActive(this.tile.beamReverseRotateX);
+        this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.beamReverseRotateX));
         this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.off"));
         this.buttonRR.enabled = this.buttonAR.enabled;
         this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed") + " X: " + this.tile.beamRotationSpeedX, this.tile.beamRotationSpeedX / 200.0F));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?"));
-        this.buttonHelp.setActive(false);
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
     @Override

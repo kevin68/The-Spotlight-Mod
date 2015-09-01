@@ -60,8 +60,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.textField.setText(this.tile.text);
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?"));
-        this.buttonHelp.setActive(false);
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
     @Override

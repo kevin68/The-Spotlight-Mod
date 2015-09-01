@@ -41,9 +41,9 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         float angleZ = tile.beamAutoRotateZ ? timer * tile.beamRotationSpeedZ * (tile.beamReverseRotateZ ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleZ);
         if(!tile.isBeam)
         {
-            // angleX = ;
-            // angleY = ;
-            // angleZ = ;
+            angleX = 0.0F;
+            angleY = tile.textAutoRotateY ? timer * tile.textRotationSpeedY * (tile.textReverseRotateY ? -1.0F : 1.0F) : (float)Math.toRadians(tile.textAngleY);
+            angleZ = 0.0F;
         }
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
@@ -131,42 +131,25 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             else
             {
                 GL11.glPushMatrix();
-                // float d21 = tile.getWorld().getTotalWorldTime() + tick;
-                // byte b1 = 1;
-                // double d31 = d21 * 0.025D * (1.0D - (b1 & 1) * 2.5D);
-                // double i1 =
-                // (Boolean)tile.get(EnumLaserInformations.TEXTREVERSEROTATION)
-                // ? -1.0D : 1.0D;
                 GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * 0.6666667F, (float)z + 0.5F);
                 GlStateManager.translate(0.0F, -0.4F, 0.0F);
                 GlStateManager.scale(0.9D, 0.9D, 0.9D);
-                // if((Boolean)tile.get(EnumLaserInformations.TEXTAUTOROTATE))
-                // {
-                // GL11.glRotatef((float)(d31 *
-                // ((Byte)tile.get(EnumLaserInformations.TEXTROTATIONSPEED) &
-                // 0xFF) * i1 * 16), 0.0F, 1.0F, 0.0F);
-                // }
-                // else
-                // {
-                // GL11.glRotatef((Integer)tile.get(EnumLaserInformations.TEXTANGLE1),
-                // 0.0F, 1.0F, 0.0F);
-                // }
+                GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
                 FontRenderer fontrenderer = getFontRenderer();
                 float f21 = 0.016666668F * 0.6666667F;
                 GlStateManager.translate(0.0F, 0.5F * 0.6666667F, 0.07F * 0.6666667F);
                 GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
                 GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
                 GlStateManager.depthMask(false);
-                // GlStateManager.translate(0.0F,
-                // -(((Byte)tile.get(EnumLaserInformations.TEXTHEIGHT) & 0xFF) -
-                // 125.0F) * 2, 0.0F);
-                // byte tS = (Byte)tile.get(EnumLaserInformations.TEXTSCALE);
-                // GlStateManager.translate(0.0F, -13 + (int)((tS & 0xFF) *
-                // 3.96F + 10) / 7.8F, 0.0F);
-                // GlStateManager.scale((int)((tS & 0xFF) * 3.96F + 10) /
-                // 100.0F, (int)((tS & 0xFF) * 3.96F + 10) / 100.0F, (int)((tS &
-                // 0xFF) * 3.96F + 10) / 100.0F);
-                GlStateManager.scale(1.0, 1.0, 1.0);
+                GlStateManager.translate(0.0F, 100.0F-tile.textHeight*2.0F, 0.0F);
+                GlStateManager.translate(0.0F, tile.textScale*0.8F+1.0F, 0.0F);
+                if(tile.textHeight < 50)
+                {
+                    GlStateManager.translate(0.0F, 25.0F + 1.0F+tile.textScale*0.45F, 0.0F);
+                }
+                GlStateManager.scale(1.0+tile.textScale/16.0F, 1.0+tile.textScale/16.0F, 1.0+tile.textScale/16.0F);
+                fontrenderer.drawString(tile.text, -fontrenderer.getStringWidth(tile.text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue);
+                GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                 fontrenderer.drawString(tile.text, -fontrenderer.getStringWidth(tile.text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue);
                 GlStateManager.depthMask(true);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

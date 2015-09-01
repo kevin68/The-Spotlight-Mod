@@ -87,6 +87,17 @@ public class TSMJsonManager
         tColors.addProperty("G", 255);
         tColors.addProperty("B", 255);
         text.add("Colors", tColors);
+        JsonObject tAngles = new JsonObject();
+        tAngles.addProperty("Y", 0);
+        tAngles.addProperty("ARY", false);
+        tAngles.addProperty("RRY", false);
+        tAngles.addProperty("RSY", 0);
+        text.add("Angles", tAngles);
+        JsonObject tProperties = new JsonObject();
+        tProperties.addProperty("H", 50);
+        tProperties.addProperty("S", 0);
+        text.add("Properties", tProperties);
+
         json.add("Text", text);
 
         write(new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json"), json);
@@ -162,6 +173,14 @@ public class TSMJsonManager
             tile.textRed = tColors.get("R").getAsShort();
             tile.textGreen = tColors.get("G").getAsShort();
             tile.textBlue = tColors.get("B").getAsShort();
+            JsonObject tAngles = (JsonObject)text.get("Angles");
+            tile.textAngleY = tAngles.get("Y").getAsShort();
+            tile.textAutoRotateY = tAngles.get("ARY").getAsBoolean();
+            tile.textReverseRotateY = tAngles.get("RRY").getAsBoolean();
+            tile.textRotationSpeedY = tAngles.get("RSY").getAsShort();
+            JsonObject tProperties = (JsonObject)text.get("Properties");
+            tile.textHeight = tProperties.get("H").getAsShort();
+            tile.textScale = tProperties.get("S").getAsShort();
 
             tile.markForUpdate();
             return true;
@@ -268,8 +287,18 @@ public class TSMJsonManager
         tColors.addProperty("G", tile.textGreen);
         tColors.addProperty("B", tile.textBlue);
         text.add("Colors", tColors);
+        JsonObject tAngles = new JsonObject();
+        tAngles.addProperty("Y", tile.textAngleY);
+        tAngles.addProperty("ARY", tile.textAutoRotateY);
+        tAngles.addProperty("RRY", tile.textReverseRotateY);
+        tAngles.addProperty("RSY", tile.textRotationSpeedY);
+        text.add("Angles", tAngles);
+        JsonObject tProperties = new JsonObject();
+        tProperties.addProperty("H", tile.textHeight);
+        tProperties.addProperty("S", tile.textScale);
+        text.add("Properties", tProperties);
         json.add("Text", text);
-
+        
         return json;
     }
 
@@ -361,14 +390,14 @@ public class TSMJsonManager
         {
             return str;
         }
-//        System.out.println("String length : " + str.length());
+        // System.out.println("String length : " + str.length());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(out);
         gzip.write(str.getBytes());
         gzip.close();
         String outStr = out.toString("ISO-8859-1");
-//        System.out.println(outStr);
-//        System.out.println("Output String lenght : " + outStr.length());
+        // System.out.println(outStr);
+        // System.out.println("Output String lenght : " + outStr.length());
         return outStr;
     }
 
