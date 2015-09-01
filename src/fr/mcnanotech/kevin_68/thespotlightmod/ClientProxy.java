@@ -13,6 +13,7 @@ public class ClientProxy extends CommonProxy
     {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(TheSpotLightMod.spotlight), 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_spotlight", "inventory"));
         ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.configSaver, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.configSaver_full, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver_full", "inventory"));
     }
 
     @Override

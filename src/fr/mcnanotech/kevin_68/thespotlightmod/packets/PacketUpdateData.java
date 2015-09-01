@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
+import java.io.IOException;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import io.netty.buffer.ByteBuf;
@@ -23,7 +25,14 @@ public class PacketUpdateData implements IMessage
         this.y = y;
         this.z = z;
         this.dimID = dimID;
-        this.newData = newData;
+        try
+        {
+            this.newData = TSMJsonManager.compress(newData);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -51,8 +60,15 @@ public class PacketUpdateData implements IMessage
         @Override
         public IMessage onMessage(PacketUpdateData message, MessageContext ctx)
         {
-            TSMJsonManager.updateJsonData(message.dimID, new BlockPos(message.x, message.y, message.z), message.newData);
-            TheSpotLightMod.network.sendToAll(new PacketData(message.x, message.y, message.z, message.newData));
+            try
+            {
+                TSMJsonManager.updateJsonData(message.dimID, new BlockPos(message.x, message.y, message.z), TSMJsonManager.decompress(message.newData));
+                TheSpotLightMod.network.sendToAll(new PacketData(message.x, message.y, message.z, TSMJsonManager.decompress(message.newData)));
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
             return null;
         }
     }

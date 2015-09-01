@@ -9,13 +9,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightTextures;
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 
-public class GuiSpotLightTextures extends GuiContainer
+public class GuiSpotLightConfig extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
     protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
@@ -25,9 +25,9 @@ public class GuiSpotLightTextures extends GuiContainer
     public World world;
     private GuiBooleanButton buttonHelp;
 
-    public GuiSpotLightTextures(InventoryPlayer inventory, TileEntitySpotLight tile, World world)
+    public GuiSpotLightConfig(InventoryPlayer inventory, TileEntitySpotLight tile, World world)
     {
-        super(new ContainerSpotLightTextures(tile, inventory));
+        super(new ContainerSpotLightConfig(tile, inventory));
         this.invPlayer = inventory;
         this.tile = tile;
         this.world = world;
@@ -87,8 +87,15 @@ public class GuiSpotLightTextures extends GuiContainer
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
         this.mc.renderEngine.bindTexture(icons);
-        this.drawTexturedModalRect(x + 39, y + 79, 238, 18, 18, 18);
-        this.drawTexturedModalRect(x + 119, y + 79, 238,36, 18, 18);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x - 30, y - 35, 0xffffff);
+        this.drawTexturedModalRect(x + 39, y + 79, 220, 0, 18, 18);
+        this.drawTexturedModalRect(x + 79, y + 79, 220, 0, 18, 18);
+        this.drawTexturedModalRect(x + 39, y + 29, 238, 0, 18, 18);
+        this.drawTexturedModalRect(x + 79, y + 29, 220, 0, 18, 18);
+        this.drawTexturedModalRect(x + 119, y + 29, 220, 0, 18, 18);
+        this.drawTexturedModalRect(x + 119, y + 79, 238, 0, 18, 18);
+        this.drawTexturedModalRect(x + 122, y + 49, 213, 21, 13, 26);
+        this.drawTexturedModalRect(x + 82, y + 49, 213, 21, 13, 26);
+        this.drawTexturedModalRect(x + 42, y + 49, 213, 21, 13, 26);
+        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.config")), x - 30, y - 35, 0xffffff);
     }
 }

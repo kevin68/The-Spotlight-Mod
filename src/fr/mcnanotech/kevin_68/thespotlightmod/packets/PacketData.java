@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
+import java.io.IOException;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import io.netty.buffer.ByteBuf;
@@ -24,7 +26,14 @@ public class PacketData implements IMessage
         this.x = x;
         this.y = y;
         this.z = z;
-        this.data = data;
+        try
+        {
+            this.data = TSMJsonManager.compress(data);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -54,7 +63,14 @@ public class PacketData implements IMessage
             if(te instanceof TileEntitySpotLight)
             {
                 TileEntitySpotLight tile = (TileEntitySpotLight)te;
-                tile.updated = TSMJsonManager.updateTileData(tile, message.data);
+                try
+                {
+                    tile.updated = TSMJsonManager.updateTileData(tile, TSMJsonManager.decompress(message.data));
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
                 tile.updating = false;
             }
             return null;

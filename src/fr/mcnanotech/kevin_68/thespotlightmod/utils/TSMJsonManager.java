@@ -1,11 +1,19 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -20,6 +28,7 @@ import com.google.gson.JsonParser;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 
 public class TSMJsonManager
@@ -84,6 +93,10 @@ public class TSMJsonManager
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+        }
         JsonObject json = read(file);
         return updateTileData(tile, json);
     }
@@ -164,6 +177,10 @@ public class TSMJsonManager
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+        }
         write(file, data);
     }
 
@@ -171,6 +188,10 @@ public class TSMJsonManager
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+        }
         JsonObject json = read(file);
         if(json != null)
         {
@@ -179,7 +200,7 @@ public class TSMJsonManager
         return null;
     }
 
-    public static String getDataFromTile(TileEntitySpotLight tile)
+    public static JsonObject getDataFromTile(TileEntitySpotLight tile)
     {
         JsonObject json = new JsonObject();
         json.addProperty("DimID", tile.dimensionID);
@@ -220,9 +241,41 @@ public class TSMJsonManager
         beam.add("Properties", properties);
         json.add("Beam", beam);
 
-        return json.toString();
+        return json;
+    }
+    
+    public static void saveConfig(ItemStack stack, TileEntitySpotLight tile)
+    {
+        String configName = String.valueOf(System.currentTimeMillis());
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("ConfigName", configName);
+        stack.setTagCompound(tag);
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
+        File file = new File(folder, configName + ".json");
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+        }
+        write(file, getDataFromTile(tile));
+    }
+    
+    public static void loadConfig(ItemStack stack, TileEntitySpotLight tile)
+    {
+        String configName = stack.getTagCompound().getString("ConfigName");
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
+        File file = new File(folder, configName + ".json");
+        updateTileData(tile, read(file));
+        TheSpotLightMod.network.sendToAll(new PacketData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), getDataFromTile(tile).toString()));
     }
 
+    public static void deleteConfig(ItemStack stack)
+    {
+        String configName = stack.getTagCompound().getString("ConfigName");
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
+        File file = new File(folder, configName + ".json");
+        file.delete();
+    }
+    
     private static void write(File dir, JsonObject obj)
     {
         write(dir, obj.toString());
@@ -271,5 +324,40 @@ public class TSMJsonManager
             generateNewFile(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         return null;
+    }
+
+    public static String compress(String str) throws IOException
+    {
+        if(str == null || str.length() == 0)
+        {
+            return str;
+        }
+        // System.out.println("String length : " + str.length());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(out);
+        gzip.write(str.getBytes());
+        gzip.close();
+        String outStr = out.toString("ISO-8859-1");
+        // System.out.println("Output String lenght : " + outStr.length());
+        return outStr;
+    }
+
+    public static String decompress(String str) throws IOException
+    {
+        if(str == null || str.length() == 0)
+        {
+            return str;
+        }
+        // System.out.println("Input String length : " + str.length());
+        GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(str.getBytes("ISO-8859-1")));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(gis, "ISO-8859-1"));
+        String outStr = "";
+        String line;
+        while((line = bf.readLine()) != null)
+        {
+            outStr += line;
+        }
+        // System.out.println("Output String lenght : " + outStr.length());
+        return outStr;
     }
 }

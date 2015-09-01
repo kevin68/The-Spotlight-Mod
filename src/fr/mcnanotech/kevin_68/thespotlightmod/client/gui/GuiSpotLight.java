@@ -44,6 +44,7 @@ public class GuiSpotLight extends GuiContainer
         this.buttonList.add(new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")));
         this.buttonList.add(new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
         this.buttonList.add(new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")));
+        this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, ""));
         this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
@@ -70,7 +71,11 @@ public class GuiSpotLight extends GuiContainer
         case 3:
         {
             TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 1));
-//            this.mc.displayGuiScreen(new GuiSpotLightTextures(this.invPlayer, this.tile, this.world));
+            break;
+        }
+        case 19:
+        {
+            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 2));
             break;
         }
         case 20:

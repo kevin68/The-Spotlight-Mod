@@ -14,8 +14,8 @@ public class ContainerSpotLightTextures extends Container
     public ContainerSpotLightTextures(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer)
     {
         this.tileSpotLight = tileEntity;
-        addSlotToContainer(new Slot(tileEntity, 1, 40, 80));
-        addSlotToContainer(new Slot(tileEntity, 2, 120, 80));
+        addSlotToContainer(new Slot(tileEntity, 6, 40, 80));
+        addSlotToContainer(new Slot(tileEntity, 7, 120, 80));
         bindPlayerInventory(inventoryPlayer);
     }
 

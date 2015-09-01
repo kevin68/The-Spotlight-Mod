@@ -26,7 +26,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 
 public class TileEntitySpotLight extends TileEntity implements IInventory, IUpdatePlayerListBox
 {
-    private ItemStack[] slots = new ItemStack[3];
+    private ItemStack[] slots = new ItemStack[8];
 
     @SideOnly(Side.CLIENT)
     private long worldTimeClient;
@@ -1272,19 +1272,23 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        switch(slot)
-        {
-        case 0:
-        {
-            return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaver;
-        }
-        case 1:
-        case 2:
-        {
-            return stack != null && stack.getItem() != null;
-        }
-        }
-        return false;
+        // switch(slot)
+        // {
+        // case 0:
+        // case 2:
+        // case 4:
+        // {
+        // return stack != null && stack.getItem() != null && stack.getItem() ==
+        // TheSpotLightMod.configSaver;
+        // }
+        // case 1:
+        // case 3:
+        // case 5:
+        // {
+        // return false;
+        // }
+        // }
+        return true;
     }
 
     @Override
@@ -1315,5 +1319,34 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     public IChatComponent getDisplayName()
     {
         return new ChatComponentText("Test");
+    }
+
+    public void craftConfig()
+    {
+        if(!this.worldObj.isRemote)
+        {
+            if(this.getStackInSlot(0) != null && this.getStackInSlot(1) == null)
+            {
+                this.decrStackSize(0, 1);
+                ItemStack stack = new ItemStack(TheSpotLightMod.configSaver_full);
+                TSMJsonManager.saveConfig(stack, this);
+                this.setInventorySlotContents(1, stack);
+            }
+            if(this.getStackInSlot(2) != null && this.getStackInSlot(3) == null)
+            {
+                ItemStack stack = this.getStackInSlot(2).copy();
+                this.decrStackSize(2, 1);
+                TSMJsonManager.loadConfig(stack, this);
+                this.setInventorySlotContents(3, stack);
+            }
+            if(this.getStackInSlot(4) != null && this.getStackInSlot(5) == null)
+            {
+                TSMJsonManager.deleteConfig(getStackInSlot(4));
+                this.decrStackSize(4, 1);
+                ItemStack stack = new ItemStack(TheSpotLightMod.configSaver);
+                this.setInventorySlotContents(5, stack);
+            }
+        }
+        this.markForUpdate();
     }
 }

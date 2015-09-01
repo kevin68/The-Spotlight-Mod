@@ -12,6 +12,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
@@ -60,7 +61,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile)));
+        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -101,7 +102,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                 this.buttonRR.enabled = this.buttonAR.isActive();
                 this.buttonRR.enabledS = I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.on");
                 this.buttonRR.disabled = I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.off");
-                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile)));
+                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
             }
             break;
         }
@@ -137,7 +138,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                 this.buttonRR.enabled = this.buttonAR.isActive();
                 this.buttonRR.enabledS = I18n.format("container.spotlight.rotationreverse") + " Y: " + I18n.format("container.spotlight.on");
                 this.buttonRR.disabled = I18n.format("container.spotlight.rotationreverse") + " Y: " + I18n.format("container.spotlight.off");
-                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile)));
+                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
             }
             break;
         }
@@ -173,7 +174,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                 this.buttonRR.enabled = this.buttonAR.isActive();
                 this.buttonRR.enabledS = I18n.format("container.spotlight.rotationreverse") + " Z: " + I18n.format("container.spotlight.on");
                 this.buttonRR.disabled = I18n.format("container.spotlight.rotationreverse") + " Z: " + I18n.format("container.spotlight.off");
-                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile)));
+                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
             }
             break;
         }
@@ -310,122 +311,128 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)// TODO
-                                                                           // help
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
-        // int x = (this.width - this.xSize) / 2;
-        // int y = (this.height - this.ySize) / 2;
+
         super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-        // if(this.helpButton.isActive())
-        // {
-        // boolean reversed = mouseX > this.width / 2;
-        // ArrayList<String> list = new ArrayList<String>();
-        //
-        // if(mouseX > x - 40 && mouseX < x + 216)
-        // {
-        // if(mouseY > y - 20 && mouseY < y)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.angle1"), mouseX, this.width,
-        // reversed);
-        // }
-        // if(mouseY > y + 2 && mouseY < y + 22)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.angle2"), mouseX, this.width,
-        // reversed);
-        // }
-        // if(mouseY > y + 68 && mouseY < y + 88)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.height"), mouseX, this.width,
-        // reversed);
-        // }
-        // }
-        //
-        // if(mouseX > x - 40 && mouseX < x + 87)
-        // {
-        // if(mouseY > y + 24 && mouseY < y + 44)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.autorotate"), mouseX,
-        // this.width, reversed);
-        // }
-        // if(mouseY > y + 46 && mouseY < y + 66)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.rotationspeed"), mouseX,
-        // this.width, reversed);
-        // }
-        // if(mouseY > y + 90 && mouseY < y + 110)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.mainlasersize"), mouseX,
-        // this.width, reversed);
-        // }
-        //
-        // if(mouseY > y + 113 && mouseY < y + 133 && mouseX < x + 30)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.simple"), mouseX, this.width,
-        // reversed);
-        // }
-        // }
-        //
-        // if(mouseX > x + 90 && mouseX < x + 216)
-        // {
-        // if(mouseY > y + 24 && mouseY < y + 44)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.reverserotate"), mouseX,
-        // this.width, reversed);
-        // }
-        // if(mouseY > y + 46 && mouseY < y + 66)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.seclaserswitch"), mouseX,
-        // this.width, reversed);
-        // }
-        // if(mouseY > y + 90 && mouseY < y + 110)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.seclasersize"), mouseX,
-        // this.width, reversed);
-        // }
-        //
-        // if(mouseY > y + 113 && mouseY < y + 133 && mouseX > x + 146)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props.axe"), mouseX, this.width,
-        // reversed);
-        // }
-        // }
-        //
-        // if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY
-        // < y + 137)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.back"), mouseX, this.width,
-        // reversed);
-        // }
-        //
-        // if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY
-        // < y + 160)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.help"), mouseX, this.width,
-        // reversed);
-        // }
-        //
-        // if(list.size() > 0 && (list.get(list.size() - 1) == " " ||
-        // list.get(list.size() - 1).isEmpty()))
-        // {
-        // list.remove(list.size() - 1);
-        // }
-        // GuiHelper.drawHoveringText(list, mouseX, mouseY,
-        // this.fontRendererObj, reversed ? 0 : 200000, this.height, 0x00ff00);
-        // }
+        if(this.buttonHelp.isActive())
+        {
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            // boolean reversed = mouseX > this.width / 2;
+            // ArrayList<String> list = new ArrayList<String>();
+            //
+            // if(mouseX > x - 40 && mouseX < x + 216)
+            // {
+            // if(mouseY > y - 20 && mouseY < y)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.angle1"), mouseX,
+            // this.width,
+            // reversed);
+            // }
+            // if(mouseY > y + 2 && mouseY < y + 22)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.angle2"), mouseX,
+            // this.width,
+            // reversed);
+            // }
+            // if(mouseY > y + 68 && mouseY < y + 88)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.height"), mouseX,
+            // this.width,
+            // reversed);
+            // }
+            // }
+            //
+            // if(mouseX > x - 40 && mouseX < x + 87)
+            // {
+            // if(mouseY > y + 24 && mouseY < y + 44)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.autorotate"), mouseX,
+            // this.width, reversed);
+            // }
+            // if(mouseY > y + 46 && mouseY < y + 66)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.rotationspeed"), mouseX,
+            // this.width, reversed);
+            // }
+            // if(mouseY > y + 90 && mouseY < y + 110)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.mainlasersize"), mouseX,
+            // this.width, reversed);
+            // }
+            //
+            // if(mouseY > y + 113 && mouseY < y + 133 && mouseX < x + 30)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.simple"), mouseX,
+            // this.width,
+            // reversed);
+            // }
+            // }
+            //
+            // if(mouseX > x + 90 && mouseX < x + 216)
+            // {
+            // if(mouseY > y + 24 && mouseY < y + 44)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.reverserotate"), mouseX,
+            // this.width, reversed);
+            // }
+            // if(mouseY > y + 46 && mouseY < y + 66)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.seclaserswitch"), mouseX,
+            // this.width, reversed);
+            // }
+            // if(mouseY > y + 90 && mouseY < y + 110)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.seclasersize"), mouseX,
+            // this.width, reversed);
+            // }
+            //
+            // if(mouseY > y + 113 && mouseY < y + 133 && mouseX > x + 146)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.props.axe"), mouseX, this.width,
+            // reversed);
+            // }
+            // }
+            //
+            // if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 &&
+            // mouseY
+            // < y + 137)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.back"), mouseX, this.width,
+            // reversed);
+            // }
+            //
+            // if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 &&
+            // mouseY
+            // < y + 160)
+            // {
+            // list = UtilSpotLight.formatedText(this.fontRendererObj,
+            // I18n.format("tutorial.spotlight.help"), mouseX, this.width,
+            // reversed);
+            // }
+            //
+            // if(list.size() > 0 && (list.get(list.size() - 1) == " " ||
+            // list.get(list.size() - 1).isEmpty()))
+            // {
+            // list.remove(list.size() - 1);
+            // }
+            // GuiHelper.drawHoveringText(list, mouseX, mouseY,
+            // this.fontRendererObj, reversed ? 0 : 200000, this.height,
+            // 0x00ff00);
+        }
     }
 
     @Override

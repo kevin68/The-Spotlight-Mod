@@ -14,6 +14,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
@@ -59,7 +60,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile)));
+        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -153,52 +154,14 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)// TODO
-                                                                           // help
+    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
-        // int x = (this.width - this.xSize) / 2;
-        // int y = (this.height - this.ySize) / 2;
         super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-        // if(this.helpButton.isActive())
-        // {
-        // boolean reversed = mouseX > this.width / 2;
-        // ArrayList<String> list = new ArrayList<String>();
-        //
-        // if(mouseX > x - 40 && mouseX < x + 216)
-        // {
-        // if(mouseY > y - 20 && mouseY < y)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.props2.sides"), mouseX, this.width,
-        // reversed);
-        // }
-        // }
-        //
-        // if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY
-        // < y + 137)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.back"), mouseX, this.width,
-        // reversed);
-        // }
-        //
-        // if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY
-        // < y + 160)
-        // {
-        // list = UtilSpotLight.formatedText(this.fontRendererObj,
-        // I18n.format("tutorial.spotlight.help"), mouseX, this.width,
-        // reversed);
-        // }
-        //
-        // if(list.size() > 0 && (list.get(list.size() - 1) == " " ||
-        // list.get(list.size() - 1).isEmpty()))
-        // {
-        // list.remove(list.size() - 1);
-        // }
-        // GuiHelper.drawHoveringText(list, mouseX, mouseY,
-        // this.fontRendererObj, reversed ? 0 : 200000, this.height, 0x00ff00);
-        // }
+         if(this.helpButton.isActive())
+         {
+             TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+         }
     }
 
     @Override

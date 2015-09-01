@@ -1,7 +1,5 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
-import java.util.ArrayList;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -18,7 +16,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 
@@ -62,14 +59,14 @@ public class GuiSpotLightColor extends GuiContainer implements ISliderButton
         this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 68, 256, 20, I18n.format("container.spotlight.green") + " : " + this.tile.secBeamGreen, this.tile.secBeamGreen / 255.0F));
         this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 90, 256, 20, I18n.format("container.spotlight.blue") + " : " + this.tile.secBeamBlue, this.tile.secBeamBlue / 255.0F));
 
-        this.buttonList.add(new GuiButton(6, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
+        this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
 
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile)));
+        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -78,7 +75,7 @@ public class GuiSpotLightColor extends GuiContainer implements ISliderButton
     {
         switch(guibutton.id)
         {
-        case 6:
+        case 19:
         {
             this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
             break;
@@ -161,58 +158,11 @@ public class GuiSpotLightColor extends GuiContainer implements ISliderButton
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
     {
-        int x = (this.width - this.xSize) / 2;
-        int y = (this.height - this.ySize) / 2;
         super.drawScreen(mouseX, mouseY, partialRenderTick);
 
         if(this.helpButton.isActive())
         {
-            boolean reversed = mouseX > this.width / 2;
-            ArrayList<String> list = new ArrayList<String>();
-
-            if(mouseX > x - 40 && mouseX < x + 216)
-            {
-                if(mouseY > y - 20 && mouseY < y)
-                {
-                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.red"), mouseX, this.width, reversed);
-                }
-                if(mouseY > y + 2 && mouseY < y + 22)
-                {
-                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.green"), mouseX, this.width, reversed);
-                }
-                if(mouseY > y + 24 && mouseY < y + 44)
-                {
-                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.blue"), mouseX, this.width, reversed);
-                }
-                if(mouseY > y + 46 && mouseY < y + 66)
-                {
-                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secred"), mouseX, this.width, reversed);
-                }
-                if(mouseY > y + 68 && mouseY < y + 88)
-                {
-                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secgreen"), mouseX, this.width, reversed);
-                }
-                if(mouseY > y + 90 && mouseY < y + 110)
-                {
-                    list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.colors.secblue"), mouseX, this.width, reversed);
-                }
-            }
-
-            if(mouseX > x + 38 && mouseX < x + 138 && mouseY > y + 117 && mouseY < y + 137)
-            {
-                list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.back"), mouseX, this.width, reversed);
-            }
-
-            if(mouseX > x + 180 && mouseX < x + 200 && mouseY > y + 140 && mouseY < y + 160)
-            {
-                list = TSMUtils.formatedText(this.fontRendererObj, I18n.format("tutorial.spotlight.help"), mouseX, this.width, reversed);
-            }
-
-            if(list.size() > 0 && (list.get(list.size() - 1) == " " || list.get(list.size() - 1).isEmpty()))
-            {
-                list.remove(list.size() - 1);
-            }
-            GuiHelper.drawHoveringText(list, mouseX, mouseY, this.fontRendererObj, reversed ? 0 : 200000, this.height, 0x00ff00);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
         }
     }
 

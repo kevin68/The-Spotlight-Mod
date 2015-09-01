@@ -43,7 +43,7 @@ public class TheSpotLightMod
     public static Logger log;
 
     public static Block spotlight;
-    public static Item configSaver;
+    public static Item configSaver, configSaver_full;
 
     public static CreativeTabs tab = new CreativeTabs("thespotlightmod.tab")
     {
@@ -62,8 +62,10 @@ public class TheSpotLightMod
 
         spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab).setStepSound(Block.soundTypeMetal);
         GameRegistry.registerBlock(spotlight, ItemBlock.class, "tsm_spotlight");
-        configSaver = new ItemConfigSaver().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
+        configSaver = new Item().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64);
         GameRegistry.registerItem(configSaver, "tsm_configsaver", TheSpotLightMod.MODID);
+        configSaver_full = new Item().setUnlocalizedName("configsaver_full").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
+        GameRegistry.registerItem(configSaver_full, "tsm_configsaver_full", TheSpotLightMod.MODID);
         GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
 
         proxy.registerModel();
