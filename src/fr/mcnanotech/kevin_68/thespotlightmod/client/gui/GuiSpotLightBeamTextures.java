@@ -15,7 +15,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 
-public class GuiSpotLightTextures extends GuiContainer
+public class GuiSpotLightBeamTextures extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
     protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
@@ -25,7 +25,7 @@ public class GuiSpotLightTextures extends GuiContainer
     public World world;
     private GuiBooleanButton buttonHelp;
 
-    public GuiSpotLightTextures(InventoryPlayer inventory, TileEntitySpotLight tile, World world)
+    public GuiSpotLightBeamTextures(InventoryPlayer inventory, TileEntitySpotLight tile, World world)
     {
         super(new ContainerSpotLightTextures(tile, inventory));
         this.invPlayer = inventory;

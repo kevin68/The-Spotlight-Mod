@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightConfig;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextures;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamTextures;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightTextures;
@@ -49,7 +49,7 @@ public class GuiHandler implements IGuiHandler
             {
             case 1:
             {
-                return new GuiSpotLightTextures(player.inventory, (TileEntitySpotLight)tileentity, world);
+                return new GuiSpotLightBeamTextures(player.inventory, (TileEntitySpotLight)tileentity, world);
             }
             case 2:
             {

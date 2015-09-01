@@ -11,9 +11,9 @@ import net.minecraft.inventory.Slot;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamAngles;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamProperties;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightColor;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamColor;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightConfig;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextures;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamTextures;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class TSMUtils
@@ -64,9 +64,9 @@ public class TSMUtils
 
     public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, int height, List buttons, GuiScreen gui)
     {
-        if(gui instanceof GuiSpotLightTextures)
+        if(gui instanceof GuiSpotLightBeamTextures)
         {
-            GuiSpotLightTextures g = (GuiSpotLightTextures)gui;
+            GuiSpotLightBeamTextures g = (GuiSpotLightBeamTextures)gui;
             Slot s = g.getSlotUnderMouse();
             if(s != null)
             {
@@ -175,7 +175,7 @@ public class TSMUtils
                     }
                     }
                 }
-                else if(gui instanceof GuiSpotLightColor)
+                else if(gui instanceof GuiSpotLightBeamColor)
                 {
                     switch(button.id)
                     {
@@ -319,7 +319,7 @@ public class TSMUtils
                     }
                     }
                 }
-                else if(gui instanceof GuiSpotLightTextures)
+                else if(gui instanceof GuiSpotLightBeamTextures)
                 {
                     switch(button.id)
                     {

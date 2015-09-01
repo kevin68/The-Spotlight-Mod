@@ -2,10 +2,12 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -37,6 +39,12 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         float angleX = tile.beamAutoRotateX ? timer * tile.beamRotationSpeedX * (tile.beamReverseRotateX ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleX);
         float angleY = tile.beamAutoRotateY ? timer * tile.beamRotationSpeedY * (tile.beamReverseRotateY ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleY);
         float angleZ = tile.beamAutoRotateZ ? timer * tile.beamRotationSpeedZ * (tile.beamReverseRotateZ ? -1.0F : 1.0F) : (float)Math.toRadians(tile.beamAngleZ);
+        if(!tile.isBeam)
+        {
+            // angleX = ;
+            // angleY = ;
+            // angleZ = ;
+        }
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
         bindTexture(tex);
@@ -48,132 +56,122 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         GlStateManager.alphaFunc(516, 0.1F);
         if(f1 > 0.0F)
         {
-            Tessellator tess = Tessellator.getInstance();
-            WorldRenderer worldrenderer = tess.getWorldRenderer();
-            ItemStack s = tile.getStackInSlot(6);
-            if(s != null && s.getItem() != null)
+            if(tile.isBeam)
             {
-                bindTexture(getResourceLocationStack(s));
-            }
-            else
-            {
-                bindTexture(defaultBeam);
-            }
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
-            GlStateManager.disableLighting();
-            GlStateManager.disableCull();
-            GlStateManager.disableBlend();
-            GlStateManager.depthMask(true);
-            GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
-            float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
-            double t2 = -1.0F - f3;
-            double t3 = tile.bVec[0].getLenVec().norm() * f1 * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
-            double t4 = tile.bVec[1].getLenVec().norm() * f1 * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
-            float r = tile.beamRed / 255.0F;
-            float g = tile.beamGreen / 255.0F;
-            float b = tile.beamBlue / 255.0F;
-            worldrenderer.startDrawingQuads();
-            worldrenderer.setColorRGBA_F(r, g, b, 0.125F);
-            drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[0]);
-            tess.draw();
-            if(tile.beamDouble)
-            {
+                Tessellator tess = Tessellator.getInstance();
+                WorldRenderer worldrenderer = tess.getWorldRenderer();
+
+                ItemStack s = tile.getStackInSlot(6);
+                if(s != null && s.getItem() != null)
+                {
+                    bindTexture(getResourceLocationStack(s) != null ? getResourceLocationStack(s) : TextureMap.LOCATION_MISSING_TEXTURE);
+                }
+                else
+                {
+                    bindTexture(defaultBeam);
+                }
+                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
+                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
+                GlStateManager.disableLighting();
+                GlStateManager.disableCull();
+                GlStateManager.disableBlend();
+                GlStateManager.depthMask(true);
+                GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
+                float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
+                double t2 = -1.0F - f3;
+                double t3 = tile.bVec[0].getLenVec().norm() * f1 * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
+                double t4 = tile.bVec[1].getLenVec().norm() * f1 * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
+                float r = tile.beamRed / 255.0F;
+                float g = tile.beamGreen / 255.0F;
+                float b = tile.beamBlue / 255.0F;
                 worldrenderer.startDrawingQuads();
                 worldrenderer.setColorRGBA_F(r, g, b, 0.125F);
-                drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[1]);
-                tess.draw();
-            }
-            ItemStack s2 = tile.getStackInSlot(7);
-            if(s2 != null && s2.getItem() != null)
-            {
-                bindTexture(getResourceLocationStack(s2));
-            }
-            else
-            {
-                bindTexture(defaultBeam);
-            }
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.depthMask(false);
-            if(tile.secBeamEnabled)
-            {
-                float sR = tile.secBeamRed / 255.0F;
-                float sG = tile.secBeamGreen / 255.0F;
-                float sB = tile.secBeamBlue / 255.0F;
-                worldrenderer.startDrawingQuads();
-                worldrenderer.setColorRGBA_F(sR, sG, sB, 0.125F);
-                drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[2]);
+                drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[0]);
                 tess.draw();
                 if(tile.beamDouble)
                 {
                     worldrenderer.startDrawingQuads();
-                    worldrenderer.setColorRGBA_F(sR, sG, sB, 0.125F);
-                    drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[3]);
+                    worldrenderer.setColorRGBA_F(r, g, b, 0.125F);
+                    drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[1]);
                     tess.draw();
                 }
+                ItemStack s2 = tile.getStackInSlot(7);
+                if(s2 != null && s2.getItem() != null)
+                {
+                    bindTexture(getResourceLocationStack(s2) != null ? getResourceLocationStack(s2) : TextureMap.LOCATION_MISSING_TEXTURE);
+                }
+                else
+                {
+                    bindTexture(defaultBeam);
+                }
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+                GlStateManager.depthMask(false);
+                if(tile.secBeamEnabled)
+                {
+                    float sR = tile.secBeamRed / 255.0F;
+                    float sG = tile.secBeamGreen / 255.0F;
+                    float sB = tile.secBeamBlue / 255.0F;
+                    worldrenderer.startDrawingQuads();
+                    worldrenderer.setColorRGBA_F(sR, sG, sB, 0.125F);
+                    drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[2]);
+                    tess.draw();
+                    if(tile.beamDouble)
+                    {
+                        worldrenderer.startDrawingQuads();
+                        worldrenderer.setColorRGBA_F(sR, sG, sB, 0.125F);
+                        drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[3]);
+                        tess.draw();
+                    }
+                }
+                GlStateManager.enableLighting();
+                GlStateManager.enableTexture2D();
+                GlStateManager.depthMask(true);
             }
-            GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
-            GlStateManager.depthMask(true);
-            // if((Boolean)tile.get(EnumLaserInformations.TEXTENABLED))
-            // {
-            // GL11.glPushMatrix();
-            // float f11 = 0.6666667F;
-            // float f21 = 0.0F;
-            // float d21 = tile.getWorld().getTotalWorldTime() + tick;
-            // byte b1 = 1;
-            // double d31 = d21 * 0.025D * (1.0D - (b1 & 1) * 2.5D);
-            // double i1 =
-            // (Boolean)tile.get(EnumLaserInformations.TEXTREVERSEROTATION) ?
-            // -1.0D : 1.0D;
-            // GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * f11,
-            // (float)z + 0.5F);
-            // GlStateManager.rotate(-f21, 0.0F, 1.0F, 0.0F);
-            // GlStateManager.translate(0.0F, -0.4F, 0.0F);
-            // GlStateManager.scale(0.9D, 0.9D, 0.9D);
-            // if((Boolean)tile.get(EnumLaserInformations.TEXTAUTOROTATE))
-            // {
-            // GL11.glRotatef((float)(d31 *
-            // ((Byte)tile.get(EnumLaserInformations.TEXTROTATIONSPEED) & 0xFF)
-            // * i1 * 16), 0.0F, 1.0F, 0.0F);
-            // }
-            // else
-            // {
-            // GL11.glRotatef((Integer)tile.get(EnumLaserInformations.TEXTANGLE1),
-            // 0.0F, 1.0F, 0.0F);
-            // }
-            // this.modelSign.signStick.showModel = false;
-            // GlStateManager.pushMatrix();
-            // GlStateManager.scale(f11, -f11, -f11);
-            // GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            // this.modelSign.renderSign();
-            // GlStateManager.popMatrix();
-            // FontRenderer fontrenderer = getFontRenderer();
-            // f21 = 0.016666668F * f11;
-            // GlStateManager.translate(0.0F, 0.5F * f11, 0.07F * f11);
-            // GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
-            // GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-            // GlStateManager.depthMask(false);
-            // GlStateManager.translate(0.0F,
-            // -(((Byte)tile.get(EnumLaserInformations.TEXTHEIGHT) & 0xFF) -
-            // 125.0F) * 2, 0.0F);
-            // byte tS = (Byte)tile.get(EnumLaserInformations.TEXTSCALE);
-            // GlStateManager.translate(0.0F, -13 + (int)((tS & 0xFF) * 3.96F +
-            // 10) / 7.8F, 0.0F);
-            // GlStateManager.scale((int)((tS & 0xFF) * 3.96F + 10) / 100.0F,
-            // (int)((tS & 0xFF) * 3.96F + 10) / 100.0F, (int)((tS & 0xFF) *
-            // 3.96F + 10) / 100.0F);
-            // GlStateManager.scale(1.0, 1.0, 1.0);
-            // String s = (String)tile.get(EnumLaserInformations.TEXT);
-            // fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2,
-            // -20, ((Byte)tile.get(EnumLaserInformations.TEXTRED) & 0xFF) *
-            // 65536 + ((Byte)tile.get(EnumLaserInformations.TEXTGREEN) & 0xFF)
-            // * 256 + ((Byte)tile.get(EnumLaserInformations.TEXTBLUE) & 0xFF));
-            // GlStateManager.depthMask(true);
-            // GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            // GlStateManager.popMatrix();
-            // }
+            else
+            {
+                GL11.glPushMatrix();
+                // float d21 = tile.getWorld().getTotalWorldTime() + tick;
+                // byte b1 = 1;
+                // double d31 = d21 * 0.025D * (1.0D - (b1 & 1) * 2.5D);
+                // double i1 =
+                // (Boolean)tile.get(EnumLaserInformations.TEXTREVERSEROTATION)
+                // ? -1.0D : 1.0D;
+                GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * 0.6666667F, (float)z + 0.5F);
+                GlStateManager.translate(0.0F, -0.4F, 0.0F);
+                GlStateManager.scale(0.9D, 0.9D, 0.9D);
+                // if((Boolean)tile.get(EnumLaserInformations.TEXTAUTOROTATE))
+                // {
+                // GL11.glRotatef((float)(d31 *
+                // ((Byte)tile.get(EnumLaserInformations.TEXTROTATIONSPEED) &
+                // 0xFF) * i1 * 16), 0.0F, 1.0F, 0.0F);
+                // }
+                // else
+                // {
+                // GL11.glRotatef((Integer)tile.get(EnumLaserInformations.TEXTANGLE1),
+                // 0.0F, 1.0F, 0.0F);
+                // }
+                FontRenderer fontrenderer = getFontRenderer();
+                float f21 = 0.016666668F * 0.6666667F;
+                GlStateManager.translate(0.0F, 0.5F * 0.6666667F, 0.07F * 0.6666667F);
+                GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
+                GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
+                GlStateManager.depthMask(false);
+                // GlStateManager.translate(0.0F,
+                // -(((Byte)tile.get(EnumLaserInformations.TEXTHEIGHT) & 0xFF) -
+                // 125.0F) * 2, 0.0F);
+                // byte tS = (Byte)tile.get(EnumLaserInformations.TEXTSCALE);
+                // GlStateManager.translate(0.0F, -13 + (int)((tS & 0xFF) *
+                // 3.96F + 10) / 7.8F, 0.0F);
+                // GlStateManager.scale((int)((tS & 0xFF) * 3.96F + 10) /
+                // 100.0F, (int)((tS & 0xFF) * 3.96F + 10) / 100.0F, (int)((tS &
+                // 0xFF) * 3.96F + 10) / 100.0F);
+                GlStateManager.scale(1.0, 1.0, 1.0);
+                fontrenderer.drawString(tile.text, -fontrenderer.getStringWidth(tile.text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue);
+                GlStateManager.depthMask(true);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.popMatrix();
+            }
         }
         GlStateManager.alphaFunc(516, 0.5F);
     }
@@ -203,13 +201,17 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         Block b = Block.getBlockFromItem(stack.getItem());
         if(b != null)
         {
-            sprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getDefaultState());
+            sprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getStateFromMeta(stack.getMetadata()));
         }
         else
         {
             sprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(stack.getItem());
         }
 
+        if(sprite == null)
+        {
+            return null;
+        }
         String iconName = sprite.getIconName();
         String[] strs = iconName.split(":");
         if(strs.length > 1)

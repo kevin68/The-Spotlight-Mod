@@ -45,39 +45,49 @@ public class TSMJsonManager
         json.addProperty("X", pos.getX());
         json.addProperty("Y", pos.getY());
         json.addProperty("Z", pos.getZ());
+        json.addProperty("ModeBeam", true);
 
         JsonObject beam = new JsonObject();
-        JsonObject colors = new JsonObject();
-        colors.addProperty("R", 255);
-        colors.addProperty("G", 255);
-        colors.addProperty("B", 255);
-        colors.addProperty("SR", 255);
-        colors.addProperty("SG", 255);
-        colors.addProperty("SB", 255);
-        beam.add("Colors", colors);
-        JsonObject angles = new JsonObject();
-        angles.addProperty("X", 0);
-        angles.addProperty("Y", 0);
-        angles.addProperty("Z", 0);
-        angles.addProperty("ARX", false);
-        angles.addProperty("ARY", false);
-        angles.addProperty("ARZ", false);
-        angles.addProperty("RRX", false);
-        angles.addProperty("RRY", false);
-        angles.addProperty("RRZ", false);
-        angles.addProperty("RSX", 0);
-        angles.addProperty("RSY", 0);
-        angles.addProperty("RSZ", 0);
-        beam.add("Angles", angles);
-        JsonObject properties = new JsonObject();
-        properties.addProperty("Size", 40);
-        properties.addProperty("SSize", 75);
-        properties.addProperty("SBeam", true);
-        properties.addProperty("Dbl", false);
-        properties.addProperty("H", 256);
-        properties.addProperty("Sides", 2);
-        beam.add("Properties", properties);
+        JsonObject bColors = new JsonObject();
+        bColors.addProperty("R", 255);
+        bColors.addProperty("G", 255);
+        bColors.addProperty("B", 255);
+        bColors.addProperty("SR", 255);
+        bColors.addProperty("SG", 255);
+        bColors.addProperty("SB", 255);
+        beam.add("Colors", bColors);
+        JsonObject bAngles = new JsonObject();
+        bAngles.addProperty("X", 0);
+        bAngles.addProperty("Y", 0);
+        bAngles.addProperty("Z", 0);
+        bAngles.addProperty("ARX", false);
+        bAngles.addProperty("ARY", false);
+        bAngles.addProperty("ARZ", false);
+        bAngles.addProperty("RRX", false);
+        bAngles.addProperty("RRY", false);
+        bAngles.addProperty("RRZ", false);
+        bAngles.addProperty("RSX", 0);
+        bAngles.addProperty("RSY", 0);
+        bAngles.addProperty("RSZ", 0);
+        beam.add("Angles", bAngles);
+        JsonObject bProperties = new JsonObject();
+        bProperties.addProperty("Size", 40);
+        bProperties.addProperty("SSize", 75);
+        bProperties.addProperty("SBeam", true);
+        bProperties.addProperty("Dbl", false);
+        bProperties.addProperty("H", 256);
+        bProperties.addProperty("Sides", 2);
+        beam.add("Properties", bProperties);
         json.add("Beam", beam);
+
+        JsonObject text = new JsonObject();
+        text.addProperty("Text", "");
+        JsonObject tColors = new JsonObject();
+        tColors.addProperty("R", 255);
+        tColors.addProperty("G", 255);
+        tColors.addProperty("B", 255);
+        text.add("Colors", tColors);
+        json.add("Text", text);
 
         write(new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json"), json);
     }
@@ -116,34 +126,43 @@ public class TSMJsonManager
     {
         try
         {
+            tile.isBeam = json.get("ModeBeam").getAsBoolean();
             JsonObject beam = (JsonObject)json.get("Beam");
-            JsonObject colors = (JsonObject)beam.get("Colors");
-            tile.beamRed = colors.get("R").getAsShort();
-            tile.beamGreen = colors.get("G").getAsShort();
-            tile.beamBlue = colors.get("B").getAsShort();
-            tile.secBeamRed = colors.get("SR").getAsShort();
-            tile.secBeamGreen = colors.get("SG").getAsShort();
-            tile.secBeamBlue = colors.get("SB").getAsShort();
-            JsonObject angles = (JsonObject)beam.get("Angles");
-            tile.beamAngleX = angles.get("X").getAsShort();
-            tile.beamAngleY = angles.get("Y").getAsShort();
-            tile.beamAngleZ = angles.get("Z").getAsShort();
-            tile.beamAutoRotateX = angles.get("ARX").getAsBoolean();
-            tile.beamAutoRotateY = angles.get("ARY").getAsBoolean();
-            tile.beamAutoRotateZ = angles.get("ARZ").getAsBoolean();
-            tile.beamReverseRotateX = angles.get("RRX").getAsBoolean();
-            tile.beamReverseRotateY = angles.get("RRY").getAsBoolean();
-            tile.beamReverseRotateZ = angles.get("RRZ").getAsBoolean();
-            tile.beamRotationSpeedX = angles.get("RSX").getAsShort();
-            tile.beamRotationSpeedY = angles.get("RSY").getAsShort();
-            tile.beamRotationSpeedZ = angles.get("RSZ").getAsShort();
-            JsonObject properties = (JsonObject)beam.get("Properties");
-            tile.beamSize = properties.get("Size").getAsShort();
-            tile.secBeamSize = properties.get("SSize").getAsShort();
-            tile.secBeamEnabled = properties.get("SBeam").getAsBoolean();
-            tile.beamDouble = properties.get("Dbl").getAsBoolean();
-            tile.beamHeight = properties.get("H").getAsShort();
-            tile.beamSides = properties.get("Sides").getAsShort();
+            JsonObject bColors = (JsonObject)beam.get("Colors");
+            tile.beamRed = bColors.get("R").getAsShort();
+            tile.beamGreen = bColors.get("G").getAsShort();
+            tile.beamBlue = bColors.get("B").getAsShort();
+            tile.secBeamRed = bColors.get("SR").getAsShort();
+            tile.secBeamGreen = bColors.get("SG").getAsShort();
+            tile.secBeamBlue = bColors.get("SB").getAsShort();
+            JsonObject bAngles = (JsonObject)beam.get("Angles");
+            tile.beamAngleX = bAngles.get("X").getAsShort();
+            tile.beamAngleY = bAngles.get("Y").getAsShort();
+            tile.beamAngleZ = bAngles.get("Z").getAsShort();
+            tile.beamAutoRotateX = bAngles.get("ARX").getAsBoolean();
+            tile.beamAutoRotateY = bAngles.get("ARY").getAsBoolean();
+            tile.beamAutoRotateZ = bAngles.get("ARZ").getAsBoolean();
+            tile.beamReverseRotateX = bAngles.get("RRX").getAsBoolean();
+            tile.beamReverseRotateY = bAngles.get("RRY").getAsBoolean();
+            tile.beamReverseRotateZ = bAngles.get("RRZ").getAsBoolean();
+            tile.beamRotationSpeedX = bAngles.get("RSX").getAsShort();
+            tile.beamRotationSpeedY = bAngles.get("RSY").getAsShort();
+            tile.beamRotationSpeedZ = bAngles.get("RSZ").getAsShort();
+            JsonObject bProperties = (JsonObject)beam.get("Properties");
+            tile.beamSize = bProperties.get("Size").getAsShort();
+            tile.secBeamSize = bProperties.get("SSize").getAsShort();
+            tile.secBeamEnabled = bProperties.get("SBeam").getAsBoolean();
+            tile.beamDouble = bProperties.get("Dbl").getAsBoolean();
+            tile.beamHeight = bProperties.get("H").getAsShort();
+            tile.beamSides = bProperties.get("Sides").getAsShort();
+
+            JsonObject text = (JsonObject)json.get("Text");
+            tile.text = text.get("Text").getAsString();
+            JsonObject tColors = (JsonObject)text.get("Colors");
+            tile.textRed = tColors.get("R").getAsShort();
+            tile.textGreen = tColors.get("G").getAsShort();
+            tile.textBlue = tColors.get("B").getAsShort();
+
             tile.markForUpdate();
             return true;
         }
@@ -207,43 +226,53 @@ public class TSMJsonManager
         json.addProperty("X", tile.getPos().getX());
         json.addProperty("Y", tile.getPos().getY());
         json.addProperty("Z", tile.getPos().getZ());
+        json.addProperty("ModeBeam", tile.isBeam);
 
         JsonObject beam = new JsonObject();
-        JsonObject colors = new JsonObject();
-        colors.addProperty("R", tile.beamRed);
-        colors.addProperty("G", tile.beamGreen);
-        colors.addProperty("B", tile.beamBlue);
-        colors.addProperty("SR", tile.secBeamRed);
-        colors.addProperty("SG", tile.secBeamGreen);
-        colors.addProperty("SB", tile.secBeamBlue);
-        beam.add("Colors", colors);
-        JsonObject angles = new JsonObject();
-        angles.addProperty("X", tile.beamAngleX);
-        angles.addProperty("Y", tile.beamAngleY);
-        angles.addProperty("Z", tile.beamAngleZ);
-        angles.addProperty("ARX", tile.beamAutoRotateX);
-        angles.addProperty("ARY", tile.beamAutoRotateY);
-        angles.addProperty("ARZ", tile.beamAutoRotateZ);
-        angles.addProperty("RRX", tile.beamReverseRotateX);
-        angles.addProperty("RRY", tile.beamReverseRotateY);
-        angles.addProperty("RRZ", tile.beamReverseRotateZ);
-        angles.addProperty("RSX", tile.beamRotationSpeedX);
-        angles.addProperty("RSY", tile.beamRotationSpeedY);
-        angles.addProperty("RSZ", tile.beamRotationSpeedZ);
-        beam.add("Angles", angles);
-        JsonObject properties = new JsonObject();
-        properties.addProperty("Size", tile.beamSize);
-        properties.addProperty("SSize", tile.secBeamSize);
-        properties.addProperty("SBeam", tile.secBeamEnabled);
-        properties.addProperty("Dbl", tile.beamDouble);
-        properties.addProperty("H", tile.beamHeight);
-        properties.addProperty("Sides", tile.beamSides);
-        beam.add("Properties", properties);
+        JsonObject bColors = new JsonObject();
+        bColors.addProperty("R", tile.beamRed);
+        bColors.addProperty("G", tile.beamGreen);
+        bColors.addProperty("B", tile.beamBlue);
+        bColors.addProperty("SR", tile.secBeamRed);
+        bColors.addProperty("SG", tile.secBeamGreen);
+        bColors.addProperty("SB", tile.secBeamBlue);
+        beam.add("Colors", bColors);
+        JsonObject bAngles = new JsonObject();
+        bAngles.addProperty("X", tile.beamAngleX);
+        bAngles.addProperty("Y", tile.beamAngleY);
+        bAngles.addProperty("Z", tile.beamAngleZ);
+        bAngles.addProperty("ARX", tile.beamAutoRotateX);
+        bAngles.addProperty("ARY", tile.beamAutoRotateY);
+        bAngles.addProperty("ARZ", tile.beamAutoRotateZ);
+        bAngles.addProperty("RRX", tile.beamReverseRotateX);
+        bAngles.addProperty("RRY", tile.beamReverseRotateY);
+        bAngles.addProperty("RRZ", tile.beamReverseRotateZ);
+        bAngles.addProperty("RSX", tile.beamRotationSpeedX);
+        bAngles.addProperty("RSY", tile.beamRotationSpeedY);
+        bAngles.addProperty("RSZ", tile.beamRotationSpeedZ);
+        beam.add("Angles", bAngles);
+        JsonObject bProperties = new JsonObject();
+        bProperties.addProperty("Size", tile.beamSize);
+        bProperties.addProperty("SSize", tile.secBeamSize);
+        bProperties.addProperty("SBeam", tile.secBeamEnabled);
+        bProperties.addProperty("Dbl", tile.beamDouble);
+        bProperties.addProperty("H", tile.beamHeight);
+        bProperties.addProperty("Sides", tile.beamSides);
+        beam.add("Properties", bProperties);
         json.add("Beam", beam);
+
+        JsonObject text = new JsonObject();
+        text.addProperty("Text", tile.text);
+        JsonObject tColors = new JsonObject();
+        tColors.addProperty("R", tile.textRed);
+        tColors.addProperty("G", tile.textGreen);
+        tColors.addProperty("B", tile.textBlue);
+        text.add("Colors", tColors);
+        json.add("Text", text);
 
         return json;
     }
-    
+
     public static void saveConfig(ItemStack stack, TileEntitySpotLight tile)
     {
         String configName = String.valueOf(System.currentTimeMillis());
@@ -258,7 +287,7 @@ public class TSMJsonManager
         }
         write(file, getDataFromTile(tile));
     }
-    
+
     public static void loadConfig(ItemStack stack, TileEntitySpotLight tile)
     {
         String configName = stack.getTagCompound().getString("ConfigName");
@@ -275,7 +304,7 @@ public class TSMJsonManager
         File file = new File(folder, configName + ".json");
         file.delete();
     }
-    
+
     private static void write(File dir, JsonObject obj)
     {
         write(dir, obj.toString());
@@ -332,13 +361,14 @@ public class TSMJsonManager
         {
             return str;
         }
-        // System.out.println("String length : " + str.length());
+//        System.out.println("String length : " + str.length());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(out);
         gzip.write(str.getBytes());
         gzip.close();
         String outStr = out.toString("ISO-8859-1");
-        // System.out.println("Output String lenght : " + outStr.length());
+//        System.out.println(outStr);
+//        System.out.println("Output String lenght : " + outStr.length());
         return outStr;
     }
 
