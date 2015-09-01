@@ -26,7 +26,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     private InventoryPlayer invPlayer;
     private TileEntitySpotLight tile;
     private World world;
-    private GuiBooleanButton helpButton;
+    private GuiBooleanButton buttonHelp;
     private GuiSliderButton sliderSecBeamSize;
     private GuiBooleanButton buttonSecBeamEnabled, buttonDoubleBeam;
 
@@ -46,15 +46,20 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         int y = (this.height - this.ySize) / 2;
         this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain") + " : " + this.tile.beamSize, this.tile.beamSize / 100.0F));
         this.buttonList.add(this.sliderSecBeamSize = new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec") + " : " + this.tile.secBeamSize, this.tile.secBeamSize / 100.0F));
-        this.buttonList.add(this.buttonSecBeamEnabled = new GuiBooleanButton(2, x - 50, y + 5, 130, 20, I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.off"), this.tile.secBeamEnabled));
-        this.buttonList.add(this.buttonDoubleBeam = new GuiBooleanButton(3, x + 90, y + 5, 130, 20, I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"), this.tile.beamDouble));
+        this.buttonList.add(this.buttonSecBeamEnabled = new GuiBooleanButton(2, x - 50, y + 5, 130, 20, ""));
+        this.buttonSecBeamEnabled.setActive(this.tile.secBeamEnabled);
+        this.buttonSecBeamEnabled.setTexts(I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.secondlazer") + " " + I18n.format("container.spotlight.off"));
+        this.buttonList.add(this.buttonDoubleBeam = new GuiBooleanButton(3, x + 90, y + 5, 130, 20, ""));
+        this.buttonDoubleBeam.setActive(this.tile.beamDouble);
+        this.buttonDoubleBeam.setTexts(I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"));
         this.buttonList.add(new GuiSliderButton(this, 4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight") + " : " + this.tile.beamHeight, this.tile.beamHeight / 512.0F));
-        this.buttonList.add(new GuiSliderButton(this, 5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides") + " : " + (this.tile.beamSides+2), this.tile.beamSides / 48.0F));
+        this.buttonList.add(new GuiSliderButton(this, 5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides") + " : " + (this.tile.beamSides + 2), this.tile.beamSides / 48.0F));
         this.buttonDoubleBeam.shouldNotChangeTextColor(true);
         this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?"));
+        this.buttonHelp.setActive(false);
     }
 
     @Override
@@ -89,7 +94,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         }
         case 20:
         {
-            this.helpButton.toggle();
+            this.buttonHelp.toggle();
             break;
         }
         }
@@ -158,10 +163,10 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     {
         super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-         if(this.helpButton.isActive())
-         {
-             TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
-         }
+        if(this.buttonHelp.isActive())
+        {
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+        }
     }
 
     @Override

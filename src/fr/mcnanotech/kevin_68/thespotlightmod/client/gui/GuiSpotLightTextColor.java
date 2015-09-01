@@ -30,7 +30,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
     public World world;
-    public GuiBooleanButton helpButton;
+    public GuiBooleanButton buttonHelp;
     public GuiTextField textField;
 
     public GuiSpotLightTextColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
@@ -60,7 +60,8 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.textField.setText(this.tile.text);
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?"));
+        this.buttonHelp.setActive(false);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         }
         case 20:
         {
-            this.helpButton.toggle();
+            this.buttonHelp.toggle();
             break;
         }
         }
@@ -138,7 +139,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         GL11.glDisable(GL11.GL_LIGHTING);
         this.textField.drawTextBox();
-        if(this.helpButton.isActive())
+        if(this.buttonHelp.isActive())
         {
             TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
         }

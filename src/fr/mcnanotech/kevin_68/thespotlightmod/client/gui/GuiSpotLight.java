@@ -48,10 +48,13 @@ public class GuiSpotLight extends GuiContainer
         this.buttonList.add(new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")));
         this.buttonList.add(new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
         this.buttonList.add(this.buttonTextures = new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")));
-        this.buttonList.add(this.buttonMode = new GuiBooleanButton(4, x + 5, y + 112, 80, 20, I18n.format("container.spotlight.modebeam"), I18n.format("container.spotlight.modetext"), this.tile.isBeam));
+        this.buttonList.add(this.buttonMode = new GuiBooleanButton(4, x + 5, y + 112, 80, 20, ""));
+        this.buttonMode.setActive(this.tile.isBeam);
+        this.buttonMode.setTexts(I18n.format("container.spotlight.modebeam"), I18n.format("container.spotlight.modetext"));
         this.buttonMode.shouldNotChangeTextColor(true);
         this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, "C"));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?"));
+        this.buttonHelp.setActive(false);
         this.buttonTextures.enabled = this.buttonMode.isActive();
     }
 

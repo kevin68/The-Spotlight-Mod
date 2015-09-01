@@ -26,7 +26,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
     public World world;
-    public GuiBooleanButton helpButton;
+    public GuiBooleanButton buttonHelp;
 
     public GuiSpotLightBeamColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -52,7 +52,8 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 90, 256, 20, I18n.format("container.spotlight.blue") + " : " + this.tile.secBeamBlue, this.tile.secBeamBlue / 255.0F));
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.helpButton = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?"));
+        this.buttonHelp.setActive(false);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         }
         case 20:
         {
-            this.helpButton.toggle();
+            this.buttonHelp.toggle();
             break;
         }
         }
@@ -152,7 +153,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
     {
         super.drawScreen(mouseX, mouseY, partialRenderTick);
 
-        if(this.helpButton.isActive())
+        if(this.buttonHelp.isActive())
         {
             TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
         }
