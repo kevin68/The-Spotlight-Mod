@@ -8,12 +8,16 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Slot;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamAngles;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamProperties;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamColor;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamTextures;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextAngles;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextColor;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextProperties;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class TSMUtils
@@ -64,6 +68,18 @@ public class TSMUtils
 
     public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, int height, List buttons, GuiScreen gui)
     {
+        if(gui instanceof GuiSpotLightTextColor)
+        {
+            ArrayList list = new ArrayList();
+            boolean flag = mouseX >= ((GuiSpotLightTextColor)gui).textField.xPosition && mouseX < ((GuiSpotLightTextColor)gui).textField.xPosition + ((GuiSpotLightTextColor)gui).textField.width && mouseY >= ((GuiSpotLightTextColor)gui).textField.yPosition && mouseY < ((GuiSpotLightTextColor)gui).textField.yPosition + ((GuiSpotLightTextColor)gui).textField.height;
+
+            if(flag)
+            {
+                list = formatedText(font, I18n.format("tutorial.spotlight.textcolors.text"), mouseX, width, mouseX > width / 2);
+            }
+            GuiHelper.drawHoveringText(list, mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
+        }
+
         if(gui instanceof GuiSpotLightBeamTextures)
         {
             GuiSpotLightBeamTextures g = (GuiSpotLightBeamTextures)gui;
@@ -141,26 +157,37 @@ public class TSMUtils
                 ArrayList list = new ArrayList();
                 if(gui instanceof GuiSpotLight)
                 {
+                    boolean isBeam = ((GuiSpotLight)gui).tile.isBeam;
                     switch(button.id)
                     {
                     case 0:
                     {
-                        list = formatedText(font, I18n.format("tutorial.spotlight.colors"), mouseX, width, mouseX > width / 2);
+                        list = formatedText(font, isBeam ? I18n.format("tutorial.spotlight.colors") : I18n.format("tutorial.spotlight.textcolors"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 1:
                     {
-                        list = formatedText(font, I18n.format("tutorial.spotlight.beamangle"), mouseX, width, mouseX > width / 2);
+                        list = formatedText(font, isBeam ? I18n.format("tutorial.spotlight.beamangle") : I18n.format("tutorial.spotlight.textangle"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 2:
                     {
-                        list = formatedText(font, I18n.format("tutorial.spotlight.beamprops"), mouseX, width, mouseX > width / 2);
+                        list = formatedText(font, isBeam ? I18n.format("tutorial.spotlight.beamprops") : I18n.format("tutorial.spotlight.textprops"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 3:
                     {
                         list = formatedText(font, I18n.format("tutorial.spotlight.texture"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 4:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.mode"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 18:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.redstone"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 19:
@@ -351,8 +378,107 @@ public class TSMUtils
                     }
                     }
                 }
+                else if(gui instanceof GuiSpotLightTextColor)
+                {
+                    switch(button.id)
+                    {
+                    case 0:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textcolors.red"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 1:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textcolors.green"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 2:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textcolors.blue"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 19:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.back"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 20:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.help"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    }
+                }
+                else if(gui instanceof GuiSpotLightTextAngles)
+                {
+                    switch(button.id)
+                    {
+                    case 3:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textangles.angle"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 4:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textangles.autorotate"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 5:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textangles.reverserotation"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 6:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textangles.rotationspeed"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 19:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.back"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 20:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.help"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    }
+                }
+                else if (gui instanceof GuiSpotLightTextProperties)
+                {
+                    switch(button.id)
+                    {
+                    case 0:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.height"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 1:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.scale"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    
+                    case 19:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.back"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 20:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.help"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    }
+                }
                 GuiHelper.drawHoveringText(list, mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
             }
         }
+    }
+    
+    public static TSMKey createKey(short time, TileEntitySpotLight tile)
+    {
+        return new TSMKey(time, tile.beamRed, tile.beamGreen, tile.beamBlue);//TODO fill
     }
 }

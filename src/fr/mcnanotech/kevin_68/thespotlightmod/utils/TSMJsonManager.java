@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
@@ -21,6 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -36,9 +39,14 @@ public class TSMJsonManager
     public static void generateNewFile(int dimID, BlockPos pos)
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         if(!folder.exists())
         {
             folder.mkdirs();
+        }
+        if(file.exists())
+        {
+            deleteFile(dimID, pos);
         }
         JsonObject json = new JsonObject();
         json.addProperty("DimID", dimID);
@@ -46,6 +54,7 @@ public class TSMJsonManager
         json.addProperty("Y", pos.getY());
         json.addProperty("Z", pos.getZ());
         json.addProperty("ModeBeam", true);
+        json.addProperty("Redstone", true);
 
         JsonObject beam = new JsonObject();
         JsonObject bColors = new JsonObject();
@@ -97,17 +106,33 @@ public class TSMJsonManager
         tProperties.addProperty("H", 50);
         tProperties.addProperty("S", 0);
         text.add("Properties", tProperties);
-
         json.add("Text", text);
 
-        write(new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json"), json);
+        JsonObject timeline = new JsonObject();
+        JsonObject calculated = new JsonObject();
+        getObjFromTab(calculated, "BR", new short[1200]);
+        getObjFromTab(calculated, "BG", new short[1200]);
+        getObjFromTab(calculated, "BB", new short[1200]);
+        // TODO fill
+        timeline.add("Calculated", calculated);
+        timeline.add("Keys", getJsonFromTSMKeys(new TSMKey[120]));
+        json.add("Timeline", timeline);
+
+        write(file, json);
     }
 
     public static void deleteFile(int dimID, BlockPos pos)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
-        File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
-        file.delete();
+        try
+        {
+            File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+            File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+            file.delete();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static boolean updateTileData(int dimID, BlockPos pos, TileEntitySpotLight tile)
@@ -138,6 +163,7 @@ public class TSMJsonManager
         try
         {
             tile.isBeam = json.get("ModeBeam").getAsBoolean();
+            tile.redstone = json.get("Redstone").getAsBoolean();
             JsonObject beam = (JsonObject)json.get("Beam");
             JsonObject bColors = (JsonObject)beam.get("Colors");
             tile.beamRed = bColors.get("R").getAsShort();
@@ -182,11 +208,21 @@ public class TSMJsonManager
             tile.textHeight = tProperties.get("H").getAsShort();
             tile.textScale = tProperties.get("S").getAsShort();
 
+            JsonObject timeline = (JsonObject)json.get("Timeline");
+            JsonArray keys = (JsonArray)timeline.get("Keys");
+            getKeysFromObj(tile, keys);
+            JsonObject calculated = (JsonObject)timeline.get("Calculated");
+            tile.tlBRed = getTabFromObj(calculated, "BR");
+            tile.tlBGreen = getTabFromObj(calculated, "BG");
+            tile.tlBBlue = getTabFromObj(calculated, "BB");
+            // TODO fill
+
             tile.markForUpdate();
             return true;
         }
         catch(NullPointerException e)
         {
+            e.printStackTrace();
             try
             {
                 TheSpotLightMod.log.error("An entry is missing, regenerating file");
@@ -202,10 +238,7 @@ public class TSMJsonManager
             }
             catch(NullPointerException fatal)
             {
-                for(int i = 0; i < 20; i++)
-                {
-                    TheSpotLightMod.log.fatal("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
-                }
+                TheSpotLightMod.log.fatal("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
             }
         }
         return false;
@@ -246,6 +279,7 @@ public class TSMJsonManager
         json.addProperty("Y", tile.getPos().getY());
         json.addProperty("Z", tile.getPos().getZ());
         json.addProperty("ModeBeam", tile.isBeam);
+        json.addProperty("Redstone", tile.redstone);
 
         JsonObject beam = new JsonObject();
         JsonObject bColors = new JsonObject();
@@ -298,7 +332,17 @@ public class TSMJsonManager
         tProperties.addProperty("S", tile.textScale);
         text.add("Properties", tProperties);
         json.add("Text", text);
-        
+
+        JsonObject timeline = new JsonObject();
+        JsonObject calculated = new JsonObject();
+        getObjFromTab(calculated, "BR", tile.tlBRed);
+        getObjFromTab(calculated, "BG", tile.tlBGreen);
+        getObjFromTab(calculated, "BB", tile.tlBBlue);
+        // TODO fill
+        timeline.add("Calculated", calculated);
+        timeline.add("Keys", getJsonFromTSMKeys(tile.getKeys()));
+        json.add("Timeline", timeline);
+
         return json;
     }
 
@@ -322,7 +366,9 @@ public class TSMJsonManager
         String configName = stack.getTagCompound().getString("ConfigName");
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
         File file = new File(folder, configName + ".json");
-        updateTileData(tile, read(file));
+        JsonObject json = read(file);
+        json.addProperty("DimID", tile.dimensionID);
+        updateTileData(tile, json);
         TheSpotLightMod.network.sendToAll(new PacketData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), getDataFromTile(tile).toString()));
     }
 
@@ -332,6 +378,66 @@ public class TSMJsonManager
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
         File file = new File(folder, configName + ".json");
         file.delete();
+    }
+
+    private static JsonArray getJsonFromTSMKeys(TSMKey[] keys)
+    {
+        JsonArray obj = new JsonArray();
+        for(TSMKey key : keys)
+        {
+            if(key != null)
+            {
+                JsonObject o = new JsonObject();
+                o.addProperty("Time", key.time);
+                o.addProperty("BR", key.bRed);
+                o.addProperty("BG", key.bGreen);
+                o.addProperty("BB", key.bBlue);
+                obj.add(o);
+            }
+        }
+        return obj;
+    }
+
+    private static void getKeysFromObj(TileEntitySpotLight tile, JsonArray keys)
+    {
+        for(int i = 0; i < keys.size(); i++)
+        {
+            JsonObject obj = keys.get(i).getAsJsonObject();
+            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort());
+            tile.setKey(obj.get("Time").getAsShort(), k);
+            // keyTab[obj.get("Time").getAsShort()] = k;
+            // System.out.println(k.toString());
+        }
+    }
+
+    private static void getObjFromTab(JsonObject obj, String name, short[] tab)
+    {
+        String str = "";
+        for(int i = 0; i < tab.length; i++)
+        {
+            str += ":" + tab[i];
+        }
+        str = str.substring(1);
+        obj.addProperty(name, str);
+    }
+
+    private static short[] getTabFromObj(JsonObject calculated, String name)
+    {
+        String str = calculated.get(name).getAsString();
+        String[] strs = str.split(":");
+        short[] tab = new short[1200];
+        for(int i = 0; i < strs.length; i++)
+        {
+            if(StringUtils.isNumeric(strs[i]))
+            {
+                tab[i] = Short.valueOf(strs[i]);
+            }
+            else
+            {
+                tab[i] = 0;
+            }
+        }
+        return tab;
     }
 
     private static void write(File dir, JsonObject obj)
@@ -396,7 +502,6 @@ public class TSMJsonManager
         gzip.write(str.getBytes());
         gzip.close();
         String outStr = out.toString("ISO-8859-1");
-        // System.out.println(outStr);
         // System.out.println("Output String lenght : " + outStr.length());
         return outStr;
     }

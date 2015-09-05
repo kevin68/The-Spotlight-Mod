@@ -1,6 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 public class TSMVec3
 {
@@ -93,5 +94,10 @@ public class TSMVec3
 	public double norm()
 	{
 		return Math.sqrt(this.xCoord * this.xCoord + this.yCoord * this.yCoord + this.zCoord * this.zCoord);
+	}
+	
+	public Vec3 toMcVec3()
+	{
+	    return new Vec3(this.xCoord, this.yCoord, this.zCoord);
 	}
 }

@@ -26,8 +26,8 @@ public class GuiSpotLight extends GuiContainer
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
     public World world;
-    public GuiButton buttonTextures;
-    public GuiBooleanButton buttonMode, buttonHelp;
+    public GuiButton buttonTextures, buttonColors, buttonAngle, buttonBeamSpecs;
+    public GuiBooleanButton buttonMode, buttonHelp, buttonRedstone;
 
     public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -44,17 +44,23 @@ public class GuiSpotLight extends GuiContainer
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(new GuiButton(0, x + 5, y + 20, 80, 20, I18n.format("container.spotlight.color")));
-        this.buttonList.add(new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")));
-        this.buttonList.add(new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
+        this.buttonList.add(this.buttonColors = new GuiButton(0, x + 5, y + 20, 80, 20, this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor")));
+        this.buttonColors.enabled = !this.tile.timelineEnabled;
+        this.buttonList.add(this.buttonAngle = new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")));
+        this.buttonAngle.enabled = !this.tile.timelineEnabled;
+        this.buttonList.add(this.buttonBeamSpecs = new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
+        this.buttonBeamSpecs.enabled = !this.tile.timelineEnabled;
         this.buttonList.add(this.buttonTextures = new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")));
         this.buttonList.add(this.buttonMode = new GuiBooleanButton(4, x + 5, y + 112, 80, 20, "", this.tile.isBeam));
+        this.buttonMode.enabled = !this.tile.timelineEnabled;
         this.buttonMode.setTexts(I18n.format("container.spotlight.modebeam"), I18n.format("container.spotlight.modetext"));
         this.buttonMode.shouldNotChangeTextColor(true);
         this.buttonMode.shouldChangeTextureOnToggle(false);
+        this.buttonList.add(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")));
+        this.buttonList.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "R", this.tile.redstone));
         this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, "C"));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
-        this.buttonTextures.enabled = this.buttonMode.isActive();
+        this.buttonTextures.enabled = !this.tile.timelineEnabled && this.buttonMode.isActive();
     }
 
     @Override
@@ -64,7 +70,6 @@ public class GuiSpotLight extends GuiContainer
         super.onGuiClosed();
     }
 
-    
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
@@ -116,6 +121,18 @@ public class GuiSpotLight extends GuiContainer
             this.buttonMode.toggle();
             this.tile.isBeam = this.buttonMode.isActive();
             this.buttonTextures.enabled = this.buttonMode.isActive();
+            this.buttonColors.displayString = this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor");
+            break;
+        }
+        case 5:
+        {
+            this.mc.displayGuiScreen(new GuiSpotlightTimeline(this.invPlayer, this.tile, this.world));
+            break;
+        }
+        case 18:
+        {
+            this.buttonRedstone.toggle();
+            this.tile.redstone = this.buttonRedstone.isActive();
             break;
         }
         case 19:

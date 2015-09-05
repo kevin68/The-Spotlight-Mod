@@ -19,9 +19,11 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 
 public class TileEntitySpotLight extends TileEntity implements IInventory, IUpdatePlayerListBox
@@ -35,11 +37,13 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     public boolean isActive;
 
     /**
-     * updated = common, data are loaded updating = client waiting for packet
+     * updated = common, data are loaded; updating = client waiting for packet
      */
     public boolean updated = false, updating = false;
     public int dimensionID;
     public boolean isBeam; // false = text mode
+    public boolean redstone; // Require redstone signal
+
     // -------------------------------------Beam Colors
     public short beamRed, beamGreen, beamBlue, secBeamRed, secBeamGreen, secBeamBlue;
     // -------------------------------------Beam Angles
@@ -48,9 +52,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     // -------------------------------------Beam Properties
     public short beamSize, secBeamSize, beamHeight, beamSides;
     public boolean secBeamEnabled, beamDouble;
-    // -------------------------------------Previous values for processing
-    private short prevBeamHeight = -1, prevBeamSides = -1, prevBeamAngleX = -1, prevBeamAngleY = -1, prevBeamAngleZ = -1, prevBeamSize = -1, prevSecBeamSize = -1;
-    private boolean prevBeamAutoRotateX, prevBeamAutoRotateY, prevBeamAutoRotateZ, prevWasBeam;
     // -------------------------------------Text Colors
     public String text;
     public short textRed, textGreen, textBlue;
@@ -59,71 +60,103 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     public boolean textAutoRotateY, textReverseRotateY;
     // -------------------------------------Text Properties
     public short textHeight, textScale;
+    // -------------------------------------TimeLine
+    public short time;
+    public boolean timelineEnabled, timelineSmooth;
+    private TSMKey[] tsmKeys = new TSMKey[120];
+    // ------------------------------------- TimeLine calculated values
+    public short[] tlBRed = new short[1200], tlBGreen = new short[1200], tlBBlue = new short[1200];// TODO
+                                                                                                   // fill
 
-    // private byte timelineCreateKeyTime, tilelineLastKeySelected, textRed,
-    // textGreen, textBlue, textRotationSpeed, textScale, textHeight;
-    // private String laserMainTexture, laserSecTexture, text;
-    // private boolean timelineEnabled, timelineSmooth, textEnabled,
-    // textAutoRotate, textReverseRotation;
-    // private int timelineTime, lastTimeUse, textAngle1;
+    // -------------------------------------Previous values for determining
+    // processing
+    private short prevBeamHeight = -1, prevBeamSides = -1, prevBeamAngleX = -1, prevBeamAngleY = -1, prevBeamAngleZ = -1, prevBeamSize = -1, prevSecBeamSize = -1;
+    private boolean prevBeamAutoRotateX, prevBeamAutoRotateY, prevBeamAutoRotateZ, prevWasBeam;
 
+    // -------------------------------------Vec for renders
     public BeamVec[] bVec = null;
     public List<BeamVec[]> beams = new ArrayList<BeamVec[]>();
 
-    // private Map<EnumLaserInformations, Object> keysMap = new
-    // HashMap<EnumLaserInformations, Object>();
+    public void setKey(short time, TSMKey key)
+    {
+        // System.out.println(time + " " + key.toString());
+        this.tsmKeys[time] = key;
+        if(!this.worldObj.isRemote)
+        {
+            processTimelineValues();
+        }
+        this.markForUpdate();
+    }
 
-    // private SpotLightEntry[] keyList = new SpotLightEntry[120];
+    public TSMKey getKey(short time)
+    {
+        return this.tsmKeys[time];
+    }
+
+    public TSMKey[] getKeys()
+    {
+        return this.tsmKeys;
+    }
 
     @Override
     public void update()
     {
-        if(!this.updated)
+        try
         {
-            if(!this.worldObj.isRemote)
+            if(!this.updated)
             {
-                this.updated = TSMJsonManager.updateTileData(this.dimensionID, this.pos, this);
-            }
-            else if(!this.updating)
-            {
-                this.updating = true;
-                TheSpotLightMod.network.sendToServer(new PacketRequestData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
-            }
-        }
-
-        if(this.worldObj.isRemote)
-        {
-            if(this.worldObj.isBlockPowered(this.pos))
-            {
-                this.isActive = true;
-
-                if(this.bVec != null)
+                if(!this.worldObj.isRemote)
                 {
-                    if(this.beamAutoRotateX || this.beamAutoRotateY || this.beamAutoRotateZ || this.prevBeamAngleX != this.beamAngleX || this.prevBeamAngleY != this.beamAngleY || this.prevBeamAngleZ != this.beamAngleZ || this.prevBeamHeight != this.beamHeight || this.prevBeamSides != this.beamSides || this.prevBeamSize != this.beamSize || this.prevSecBeamSize != this.secBeamSize || this.prevBeamAutoRotateX != this.beamAutoRotateX || this.prevBeamAutoRotateY != this.beamAutoRotateY || this.prevBeamAutoRotateZ != this.beamAutoRotateZ || this.prevWasBeam != this.isBeam)
+                    this.updated = TSMJsonManager.updateTileData(this.dimensionID, this.pos, this);
+                }
+                else if(!this.updating)
+                {
+                    this.updating = true;
+                    TheSpotLightMod.network.sendToServer(new PacketRequestData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+                }
+            }
+
+            if(this.worldObj.isBlockPowered(this.pos) || !this.redstone)
+            {
+                if(this.worldObj.isRemote)
+                {
+                    this.isActive = true;
+                    if(this.bVec != null)
                     {
-                        this.prevBeamAngleX = this.beamAngleX;
-                        this.prevBeamAngleY = this.beamAngleY;
-                        this.prevBeamAngleZ = this.beamAngleZ;
-                        this.prevBeamHeight = this.beamHeight;
-                        this.prevBeamSides = this.beamSides;
-                        this.prevBeamSize = this.beamSize;
-                        this.prevSecBeamSize = this.secBeamSize;
-                        this.prevBeamAutoRotateX = this.beamAutoRotateX;
-                        this.prevBeamAutoRotateY = this.beamAutoRotateY;
-                        this.prevBeamAutoRotateZ = this.beamAutoRotateZ;
-                        this.prevWasBeam = this.isBeam;
+                        if(this.beamAutoRotateX || this.beamAutoRotateY || this.beamAutoRotateZ || this.prevBeamAngleX != this.beamAngleX || this.prevBeamAngleY != this.beamAngleY || this.prevBeamAngleZ != this.beamAngleZ || this.prevBeamHeight != this.beamHeight || this.prevBeamSides != this.beamSides || this.prevBeamSize != this.beamSize || this.prevSecBeamSize != this.secBeamSize || this.prevBeamAutoRotateX != this.beamAutoRotateX || this.prevBeamAutoRotateY != this.beamAutoRotateY || this.prevBeamAutoRotateZ != this.beamAutoRotateZ || this.prevWasBeam != this.isBeam)
+                        {
+                            this.prevBeamAngleX = this.beamAngleX;
+                            this.prevBeamAngleY = this.beamAngleY;
+                            this.prevBeamAngleZ = this.beamAngleZ;
+                            this.prevBeamHeight = this.beamHeight;
+                            this.prevBeamSides = this.beamSides;
+                            this.prevBeamSize = this.beamSize;
+                            this.prevSecBeamSize = this.secBeamSize;
+                            this.prevBeamAutoRotateX = this.beamAutoRotateX;
+                            this.prevBeamAutoRotateY = this.beamAutoRotateY;
+                            this.prevBeamAutoRotateZ = this.beamAutoRotateZ;
+                            this.prevWasBeam = this.isBeam;
+                            this.bVec = process();
+                        }
+                    }
+                    else
+                    {
                         this.bVec = process();
                     }
                 }
-                else
+                if(this.timelineEnabled)
                 {
-                    this.bVec = process();
+                    this.runTimeLine();
                 }
             }
             else
             {
                 this.isActive = false;
             }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -132,330 +165,123 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
         this.worldObj.markBlockForUpdate(getPos());
     }
 
-    //
-    // @Deprecated
-    // private void applyKeys()
-    // {
-    // ArrayList<Integer> keys = new ArrayList();
-    //
-    // for(int i = 0; i < this.keyList.length; i++)
-    // {
-    // SpotLightEntry entry = this.keyList[i];
-    // if(entry != null && entry.isActive())
-    // {
-    // keys.add(i * 10);
-    // }
-    // }
-    //
-    // if(keys.isEmpty())
-    // {
-    // set(EnumLaserInformations.TIMELINEENABLED, false);
-    // }
-    //
-    // if(this.timelineTime == 1199)
-    // {
-    // set(EnumLaserInformations.TIMELINETIME, 0);
-    // }
-    // else
-    // {
-    // set(EnumLaserInformations.TIMELINETIME, this.timelineTime + 1);
-    // }
-    //
-    // if(!this.worldObj.isRemote)
-    // {
-    // if(this.timelineSmooth)
-    // {
-    // set(EnumLaserInformations.LASERRED);
-    // set(EnumLaserInformations.LASERGREEN);
-    // set(EnumLaserInformations.LASERBLUE);
-    // set(EnumLaserInformations.LASERSECRED);
-    // set(EnumLaserInformations.LASERSECGREEN);
-    // set(EnumLaserInformations.LASERSECBLUE);
-    // set(EnumLaserInformations.LASERANGLE1);
-    // set(EnumLaserInformations.LASERANGLE2);
-    // set(EnumLaserInformations.LASERMAINSIZE);
-    // set(EnumLaserInformations.LASERSECSIZE);
-    // set(EnumLaserInformations.LASERHEIGHT);
-    // set(EnumLaserInformations.TEXTRED);
-    // set(EnumLaserInformations.TEXTGREEN);
-    // set(EnumLaserInformations.TEXTBLUE);
-    // set(EnumLaserInformations.TEXTANGLE1);
-    // set(EnumLaserInformations.TEXTSCALE);
-    // set(EnumLaserInformations.TEXTHEIGHT);
-    // set(EnumLaserInformations.LASERSIDESNUMBER);
-    // int curTime = this.timelineTime / 10;
-    // if(getKey(curTime) != null && this.lastTimeUse != this.timelineTime)
-    // {
-    // this.lastTimeUse = this.timelineTime;
-    // this.worldObj.markBlockForUpdate(this.pos);
-    // set(EnumLaserInformations.LASERAUTOROTATE,
-    // getKey(curTime).get(EnumLaserInformations.LASERAUTOROTATE));
-    // set(EnumLaserInformations.LASERREVERSEROTATION,
-    // getKey(curTime).get(EnumLaserInformations.LASERREVERSEROTATION));
-    // set(EnumLaserInformations.LASERROTATIONSPEED,
-    // getKey(curTime).get(EnumLaserInformations.LASERROTATIONSPEED));
-    // set(EnumLaserInformations.LASERSECONDARY,
-    // getKey(curTime).get(EnumLaserInformations.LASERSECONDARY));
-    // set(EnumLaserInformations.LASERDISPLAYAXE,
-    // getKey(curTime).get(EnumLaserInformations.LASERDISPLAYAXE));
-    // set(EnumLaserInformations.LASERDOUBLE,
-    // getKey(curTime).get(EnumLaserInformations.LASERDOUBLE));
-    // set(EnumLaserInformations.TEXTENABLED,
-    // getKey(curTime).get(EnumLaserInformations.TEXTENABLED));
-    // set(EnumLaserInformations.TEXTAUTOROTATE,
-    // getKey(curTime).get(EnumLaserInformations.TEXTAUTOROTATE));
-    // set(EnumLaserInformations.TEXTREVERSEROTATION,
-    // getKey(curTime).get(EnumLaserInformations.TEXTREVERSEROTATION));
-    // set(EnumLaserInformations.TEXTROTATIONSPEED,
-    // getKey(curTime).get(EnumLaserInformations.TEXTROTATIONSPEED));
-    // }
-    // }
-    // else
-    // {
-    // int curTime = this.timelineTime / 10;
-    // if(getKey(curTime) != null && this.lastTimeUse != this.timelineTime)
-    // {
-    // this.lastTimeUse = this.timelineTime;
-    // set(EnumLaserInformations.LASERRED,
-    // getKey(curTime).get(EnumLaserInformations.LASERRED));
-    // set(EnumLaserInformations.LASERGREEN,
-    // getKey(curTime).get(EnumLaserInformations.LASERGREEN));
-    // set(EnumLaserInformations.LASERBLUE,
-    // getKey(curTime).get(EnumLaserInformations.LASERBLUE));
-    // set(EnumLaserInformations.LASERSECRED,
-    // getKey(curTime).get(EnumLaserInformations.LASERSECRED));
-    // set(EnumLaserInformations.LASERSECGREEN,
-    // getKey(curTime).get(EnumLaserInformations.LASERSECGREEN));
-    // set(EnumLaserInformations.LASERSECBLUE,
-    // getKey(curTime).get(EnumLaserInformations.LASERSECBLUE));
-    // set(EnumLaserInformations.LASERANGLE1,
-    // getKey(curTime).get(EnumLaserInformations.LASERANGLE1));
-    // set(EnumLaserInformations.LASERANGLE2,
-    // getKey(curTime).get(EnumLaserInformations.LASERANGLE2));
-    // set(EnumLaserInformations.LASERAUTOROTATE,
-    // getKey(curTime).get(EnumLaserInformations.LASERAUTOROTATE));
-    // set(EnumLaserInformations.LASERREVERSEROTATION,
-    // getKey(curTime).get(EnumLaserInformations.LASERREVERSEROTATION));
-    // set(EnumLaserInformations.LASERROTATIONSPEED,
-    // getKey(curTime).get(EnumLaserInformations.LASERROTATIONSPEED));
-    // set(EnumLaserInformations.LASERSECONDARY,
-    // getKey(curTime).get(EnumLaserInformations.LASERSECONDARY));
-    // set(EnumLaserInformations.LASERDISPLAYAXE,
-    // getKey(curTime).get(EnumLaserInformations.LASERDISPLAYAXE));
-    // set(EnumLaserInformations.LASERDOUBLE,
-    // getKey(curTime).get(EnumLaserInformations.LASERDOUBLE));
-    // set(EnumLaserInformations.LASERMAINSIZE,
-    // getKey(curTime).get(EnumLaserInformations.LASERMAINSIZE));
-    // set(EnumLaserInformations.LASERSECSIZE,
-    // getKey(curTime).get(EnumLaserInformations.LASERSECSIZE));
-    // set(EnumLaserInformations.LASERHEIGHT,
-    // getKey(curTime).get(EnumLaserInformations.LASERHEIGHT));
-    // set(EnumLaserInformations.LASERSIDESNUMBER,
-    // getKey(curTime).get(EnumLaserInformations.LASERSIDESNUMBER));
-    // set(EnumLaserInformations.TEXTENABLED,
-    // getKey(curTime).get(EnumLaserInformations.TEXTENABLED));
-    // set(EnumLaserInformations.TEXTRED,
-    // getKey(curTime).get(EnumLaserInformations.TEXTRED));
-    // set(EnumLaserInformations.TEXTGREEN,
-    // getKey(curTime).get(EnumLaserInformations.TEXTGREEN));
-    // set(EnumLaserInformations.TEXTBLUE,
-    // getKey(curTime).get(EnumLaserInformations.TEXTBLUE));
-    // set(EnumLaserInformations.TEXTANGLE1,
-    // getKey(curTime).get(EnumLaserInformations.TEXTANGLE1));
-    // set(EnumLaserInformations.TEXTAUTOROTATE,
-    // getKey(curTime).get(EnumLaserInformations.TEXTAUTOROTATE));
-    // set(EnumLaserInformations.TEXTREVERSEROTATION,
-    // getKey(curTime).get(EnumLaserInformations.TEXTREVERSEROTATION));
-    // set(EnumLaserInformations.TEXTROTATIONSPEED,
-    // getKey(curTime).get(EnumLaserInformations.TEXTROTATIONSPEED));
-    // set(EnumLaserInformations.TEXTSCALE,
-    // getKey(curTime).get(EnumLaserInformations.TEXTSCALE));
-    // set(EnumLaserInformations.TEXTHEIGHT,
-    // getKey(curTime).get(EnumLaserInformations.TEXTHEIGHT));
-    // this.worldObj.markBlockForUpdate(this.pos);
-    // }
-    // }
-    // }
-    // }
-    //
-    // @Deprecated
-    // private void keysProcess()
-    // {
-    // ArrayList<Integer> keys = new ArrayList();
-    // ArrayList<Integer> timeBetwinKeys = new ArrayList();
-    //
-    // for(int i = 0; i < this.keyList.length; i++)
-    // {
-    // SpotLightEntry entry = this.keyList[i];
-    // if(entry != null && entry.isActive())
-    // {
-    // keys.add(i * 10);
-    // }
-    // }
-    //
-    // if(!keys.isEmpty() && keys.size() > 1)
-    // {
-    // for(int j = 0; j < keys.size() - 1; j++)
-    // {
-    // timeBetwinKeys.add(keys.get(j + 1) - keys.get(j));
-    // }
-    // timeBetwinKeys.add(1200 - keys.get(keys.size() - 1) + keys.get(0));
-    //
-    // for(int k = 0; k < keys.size() - 1; k++)
-    // {
-    // for(EnumLaserInformations e : EnumLaserInformations.values())
-    // {
-    // if(e.shouldProcessKeys())
-    // {
-    // switch(e.getType())
-    // {
-    // case 0:
-    // int startB = (Byte)this.keyList[keys.get(k) / 10].get(e) & 0xFF;
-    // int endB = (Byte)this.keyList[keys.get(k + 1) / 10].get(e) & 0xFF;
-    // int deltaB = endB - startB;
-    // float tickB = (float)deltaB / (float)timeBetwinKeys.get(k);
-    // byte[] b = new byte[1200];
-    //
-    // for(int l = keys.get(k); l < keys.get(k + 1); l++)
-    // {
-    // b[l] = (byte)(startB + tickB * (l - keys.get(k)));
-    // }
-    //
-    // this.keysMap.put(e, b);
-    // break;
-    // case 1:
-    // int startI = (Integer)this.keyList[keys.get(k) / 10].get(e) & 0xFF;
-    // int endI = (Integer)this.keyList[keys.get(k + 1) / 10].get(e) & 0xFF;
-    // int deltaI = endI - startI;
-    // float tickI = (float)deltaI / (float)timeBetwinKeys.get(k);
-    // int[] in = new int[1200];
-    //
-    // for(int l = keys.get(k); l < keys.get(k + 1); l++)
-    // {
-    // in[l] = (byte)(startI + tickI * (l - keys.get(k)));
-    // }
-    //
-    // this.keysMap.put(e, in);
-    // break;
-    // }
-    // }
-    // }
-    // }
-    //
-    // for(EnumLaserInformations e : EnumLaserInformations.values())
-    // {
-    // if(e.shouldProcessKeys())
-    // {
-    // switch(e.getType())
-    // {
-    // case 0:
-    // int startB = (Byte)this.keyList[keys.get(keys.size() - 1) / 10].get(e) &
-    // 0xFF;
-    // int endB = (Byte)this.keyList[keys.get(0) / 10].get(e) & 0xFF;
-    // int deltaB = endB - startB;
-    // float tickB = (float)deltaB / (float)timeBetwinKeys.get(keys.size() - 1);
-    // byte[] b = new byte[1200];
-    //
-    // for(int m = keys.get(keys.size() - 1); m < 1200; m++)
-    // {
-    // b[m] = (byte)(startB + tickB * (m - keys.get(keys.size() - 1)));
-    // }
-    // for(int n = 0; n < keys.get(0); n++)
-    // {
-    // b[n] = (byte)(((byte[])this.keysMap.get(e))[1199] + tickB * n);
-    // }
-    // this.keysMap.put(e, b);
-    //
-    // break;
-    // case 1:
-    // int startI = (Integer)this.keyList[keys.get(keys.size() - 1) /
-    // 10].get(e);
-    // int endI = (Integer)this.keyList[keys.get(0) / 10].get(e);
-    // int deltaI = endI - startI;
-    // float tickI = (float)deltaI / (float)timeBetwinKeys.get(keys.size() - 1);
-    // int[] in = new int[1200];
-    //
-    // for(int m = keys.get(keys.size() - 1); m < 1200; m++)
-    // {
-    // in[m] = (int)(startI + tickI * (m - keys.get(keys.size() - 1)));
-    // }
-    // for(int n = 0; n < keys.get(0); n++)
-    // {
-    // in[n] = (int)(((int[])this.keysMap.get(e))[1199] + tickI * n);
-    // }
-    // this.keysMap.put(e, in);
-    // break;
-    // }
-    // }
-    // }
-    // }
-    // else if(keys.size() == 1)
-    // {
-    //
-    // for(EnumLaserInformations e : EnumLaserInformations.values())
-    // {
-    // if(e.shouldProcessKeys())
-    // {
-    // switch(e.getType())
-    // {
-    // case 0:
-    // byte[] b = new byte[1200];
-    //
-    // for(int i = 0; i < 1200; i++)
-    // {
-    // b[i] = (Byte)this.keyList[keys.get(0) / 10].get(e);
-    // }
-    // break;
-    // case 1:
-    // int[] in = new int[1200];
-    //
-    // for(int i = 0; i < 1200; i++)
-    // {
-    // in[i] = (Integer)this.keyList[keys.get(0) / 10].get(e);
-    // }
-    // break;
-    // }
-    //
-    // }
-    // }
-    // }
-    // }
+    private void runTimeLine()
+    {
+        if(this.time == 1199)
+        {
+            this.time = 0;
+        }
+        else
+        {
+            this.time++;
+        }
 
-    // TODO verify : not used ?!
-    // private void proc()
-    // {
-    // double a1 = Math.toRadians(this.laserAngle1);
-    // double a2 = this.laserAutoRotate ? getWorld().getTotalWorldTime() *
-    // 0.025D * (1.0D - ((byte)1 & 1) * 2.5D) * ((this.laserRotationSpeed &
-    // 0xFF) / 4.0D) * (this.laserReverseRotation ? -1.0D : 1.0D) :
-    // Math.toRadians(this.laserAngle2 & 0xFF);
-    // double laserlen = this.laserHeight;
-    //
-    // BeamVec[] vecs = new BeamVec[4];
-    //
-    // for(int j = 0; j < 4; j++)
-    // {
-    // TSMVec3 height = null;
-    // if(this.laserDisplayAxe == 0)
-    // {
-    // height = new TSMVec3(0, (j % 2 == 0 ? 1 : -1) * this.laserHeight, 0);
-    // height.rotateAroundZ((float)a1);
-    // height.rotateAroundY(-(float)a2);
-    // }
-    // else if(this.laserDisplayAxe == 1)
-    // {
-    // height = new TSMVec3((j % 2 == 0 ? 1 : -1) * this.laserHeight, 0, 0);
-    // height.rotateAroundZ(-(float)a1);
-    // height.rotateAroundX(-(float)a2);
-    // }
-    // else
-    // {
-    // height = new TSMVec3(0, 0, (j % 2 == 0 ? 1 : -1) * this.laserHeight);
-    // height.rotateAroundX((float)a1);
-    // height.rotateAroundZ((float)a2);
-    // }
-    // }
-    // }
+        if(this.worldObj.isRemote)
+        {
+            if(this.timelineSmooth)
+            {
+                this.beamRed = this.tlBRed[this.time];
+                this.beamGreen = this.tlBGreen[this.time];
+                this.beamBlue = this.tlBBlue[this.time];
+                // TODO fill
+            }
+            else
+            {
+                TSMKey k = this.tsmKeys[(this.time - this.time % 10) / 10];
+                if(k != null)
+                {
+                    this.beamRed = k.bRed;
+                    this.beamGreen = k.bGreen;
+                    this.beamBlue = k.bBlue;
+                    // TODO fill
+                }
+            }
+        }
+    }
+
+    // Server Side Only
+    private void processTimelineValues()
+    {
+        System.out.println("processing");
+        ArrayList<Integer> keysTime = new ArrayList();
+        ArrayList<Integer> timeBetwinKeys = new ArrayList();
+
+        for(int i = 0; i < this.tsmKeys.length; i++)
+        {
+            TSMKey entry = this.tsmKeys[i];
+            if(entry != null)
+            {
+                keysTime.add(i * 10);
+            }
+        }
+
+        if(!keysTime.isEmpty() && keysTime.size() > 1)
+        {
+            for(int j = 0; j < keysTime.size() - 1; j++)
+            {
+                timeBetwinKeys.add(keysTime.get(j + 1) - keysTime.get(j));
+            }
+            timeBetwinKeys.add(1200 - keysTime.get(keysTime.size() - 1) + keysTime.get(0));
+
+            for(int k = 0; k < keysTime.size() - 1; k++)
+            {
+                TSMKey start = this.tsmKeys[(keysTime.get(k) - keysTime.get(k) % 10) / 10];
+                TSMKey end = this.tsmKeys[(keysTime.get(k + 1) - keysTime.get(k + 1) % 10) / 10];
+                this.tlBRed = this.calculateValues(this.tlBRed, start.bRed, end.bRed, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBGreen = this.calculateValues(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBBlue = this.calculateValues(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
+                // TODO fill
+            }
+
+            TSMKey start = this.tsmKeys[(keysTime.get(keysTime.size() - 1) - keysTime.get(keysTime.size() - 1) % 10) / 10];
+            TSMKey end = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
+            this.tlBRed = this.calculateValues(this.tlBRed, start.bRed, end.bRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBGreen = this.calculateValues(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBBlue = this.calculateValues(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            // TODO fill
+        }
+        else if(keysTime.size() == 1)
+        {
+            TSMKey k = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
+            for(int i = 0; i < 1200; i++)
+            {
+                this.tlBRed[i] = k.bRed;
+                this.tlBGreen[i] = k.bGreen;
+                this.tlBBlue[i] = k.bBlue;
+                // TODO fill
+            }
+        }
+        String strData = TSMJsonManager.getDataFromTile(this).toString();
+        TSMJsonManager.updateJsonData(this.dimensionID, this.pos, strData);
+        TheSpotLightMod.network.sendToAll(new PacketData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
+    }
+
+    private short[] calculateValues(short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
+    {
+        System.out.println(last + " " + timeStart);
+        float perTick = (valEnd - valStart) / (float)timeLenght;
+
+        if(!last)
+        {
+            for(int l = timeStart; l < timeStart + timeLenght; l++)
+            {
+                tab[l] = (short)(valStart + perTick * (l - timeStart));
+            }
+        }
+        else
+        {
+            for(int m = timeStart; m < 1200; m++)
+            {
+                tab[m] = (short)(valStart + perTick * (m - timeStart));
+            }
+            int firstKeyTime = timeStart + timeLenght - 1200;
+            for(int n = 0; n < firstKeyTime; n++)
+            {
+                tab[n] = (short)(tab[1199] + perTick * n);
+            }
+        }
+        return tab;
+    }
 
     private BeamVec[] process()
     {
@@ -488,36 +314,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
         return vecs;
     }
 
-    @SideOnly(Side.CLIENT)
-    public float isActive()
-    {
-        if(!this.isActive)
-        {
-            return 0.0F;
-        }
-        int i = (int)(this.worldObj.getTotalWorldTime() - this.worldTimeClient);
-        this.worldTimeClient = this.worldObj.getTotalWorldTime();
-
-        if(i > 1)
-        {
-            this.activeBooleanFloat -= i / 40.0F;
-
-            if(this.activeBooleanFloat < 0.0F)
-            {
-                this.activeBooleanFloat = 0.0F;
-            }
-        }
-
-        this.activeBooleanFloat += 0.025F;
-
-        if(this.activeBooleanFloat > 1.0F)
-        {
-            this.activeBooleanFloat = 1.0F;
-        }
-
-        return this.activeBooleanFloat;
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public double getMaxRenderDistanceSquared()
@@ -530,85 +326,9 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     {
         super.writeToNBT(nbtTagCompound);
         nbtTagCompound.setInteger("DimID", this.dimensionID);
-        // if(this.laserMainTexture != null && !this.laserMainTexture.isEmpty())
-        // {
-        // nbtTagCompound.setString("TextureName", this.laserMainTexture);
-        // }
-        // if(this.laserSecTexture != null && !this.laserSecTexture.isEmpty())
-        // {
-        // nbtTagCompound.setString("SecTextureName", this.laserSecTexture);
-        // }
-        // nbtTagCompound.setByte("LastKeySelected",
-        // this.tilelineLastKeySelected);
-        // nbtTagCompound.setBoolean("TimeLineEnabled", this.timelineEnabled);
-        // nbtTagCompound.setInteger("Time", this.timelineTime);
-        // nbtTagCompound.setBoolean("SmoothMode", this.timelineSmooth);
-        // nbtTagCompound.setByte("CreateKeyTime", this.timelineCreateKeyTime);
-        // if(this.text != null && !this.text.isEmpty())
-        // {
-        // nbtTagCompound.setString("DisplayText", this.text);
-        // }
-        // nbtTagCompound.setBoolean("TextEnabled", this.textEnabled);
-        // nbtTagCompound.setByte("TxtRed", this.textRed);
-        // nbtTagCompound.setByte("TxtGreen", this.textGreen);
-        // nbtTagCompound.setByte("TxtBlue", this.textBlue);
-        // nbtTagCompound.setInteger("TxtAngle1", this.textAngle1);
-        // nbtTagCompound.setBoolean("TxtAutoRotate", this.textAutoRotate);
-        // nbtTagCompound.setBoolean("TxtReverseRotation",
-        // this.textReverseRotation);
-        // nbtTagCompound.setByte("TxtRotationSpeed", this.textRotationSpeed);
-        // nbtTagCompound.setByte("TxtScale", this.textScale);
-        // nbtTagCompound.setByte("TxtHeight", this.textHeight);
-        //
-        // nbtTagCompound.setByteArray("RedKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERRED));
-        // nbtTagCompound.setByteArray("GreenKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERGREEN));
-        // nbtTagCompound.setByteArray("BlueKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERBLUE));
-        // nbtTagCompound.setByteArray("SecRedKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERSECRED));
-        // nbtTagCompound.setByteArray("SecGreenKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERSECGREEN));
-        // nbtTagCompound.setByteArray("SecBlueKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERSECBLUE));
-        // nbtTagCompound.setIntArray("Angle1Key",
-        // (int[])this.keysMap.get(EnumLaserInformations.LASERANGLE1));
-        // nbtTagCompound.setByteArray("Angle2Key",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERANGLE2));
-        // nbtTagCompound.setByteArray("MainLazerSize",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERMAINSIZE));
-        // nbtTagCompound.setByteArray("SecLazerSize",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERSECSIZE));
-        // nbtTagCompound.setIntArray("LazerHeightKey",
-        // (int[])this.keysMap.get(EnumLaserInformations.LASERHEIGHT));
-        // nbtTagCompound.setByteArray("SidesKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.LASERSIDESNUMBER));
-        // nbtTagCompound.setByteArray("TxtRedKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.TEXTRED));
-        // nbtTagCompound.setByteArray("TxtGreenKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.TEXTGREEN));
-        // nbtTagCompound.setByteArray("TxtBlueKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.TEXTBLUE));
-        // nbtTagCompound.setIntArray("TxtAngle1Key",
-        // (int[])this.keysMap.get(EnumLaserInformations.TEXTANGLE1));
-        // nbtTagCompound.setByteArray("TxtScaleKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.TEXTSCALE));
-        // nbtTagCompound.setByteArray("TxtHeightKey",
-        // (byte[])this.keysMap.get(EnumLaserInformations.TEXTHEIGHT));
-        //
-        // NBTTagList nbttaglist = new NBTTagList();
-        // for(int i = 0; i < this.keyList.length; ++i)
-        // {
-        // if(this.keyList[i] != null)
-        // {
-        // NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-        // nbttagcompound1.setByte("Key", (byte)i);
-        // this.keyList[i].writeToNBT(nbttagcompound1);
-        // nbttaglist.appendTag(nbttagcompound1);
-        // }
-        // }
-        // nbtTagCompound.setTag("SpotLightKeys", nbttaglist);
+        nbtTagCompound.setShort("Time", this.time);
+        nbtTagCompound.setBoolean("TimelineEnabled", this.timelineEnabled);
+        nbtTagCompound.setBoolean("TimelineSmooth", this.timelineSmooth);
 
         NBTTagList taglist = new NBTTagList();
         for(int i = 0; i < this.slots.length; ++i)
@@ -629,79 +349,10 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     {
         super.readFromNBT(nbtTagCompound);
         this.dimensionID = nbtTagCompound.getInteger("DimID");
-        //
-        // this.laserMainTexture = nbtTagCompound.getString("TextureName");
-        // this.laserSecTexture = nbtTagCompound.getString("SecTextureName");
-        // this.tilelineLastKeySelected =
-        // nbtTagCompound.getByte("LastKeySelected");
-        // this.timelineEnabled = nbtTagCompound.getBoolean("TimeLineEnabled");
-        // this.timelineTime = nbtTagCompound.getInteger("Time");
-        // this.timelineSmooth = nbtTagCompound.getBoolean("SmoothMode");
-        // this.timelineCreateKeyTime = nbtTagCompound.getByte("CreateKeyTime");
-        // this.text = nbtTagCompound.getString("DisplayText");
-        // this.textEnabled = nbtTagCompound.getBoolean("TextEnabled");
-        // this.textRed = nbtTagCompound.getByte("TxtRed");
-        // this.textGreen = nbtTagCompound.getByte("TxtGreen");
-        // this.textBlue = nbtTagCompound.getByte("TxtBlue");
-        // this.textAngle1 = nbtTagCompound.getInteger("TxtAngle1");
-        // this.textAutoRotate = nbtTagCompound.getBoolean("TxtAutoRotate");
-        // this.textReverseRotation =
-        // nbtTagCompound.getBoolean("TxtReverseRotation");
-        // this.textRotationSpeed = nbtTagCompound.getByte("TxtRotationSpeed");
-        // this.textScale = nbtTagCompound.getByte("TxtScale");
-        // this.textHeight = nbtTagCompound.getByte("TxtHeight");
-        //
-        // this.keysMap.put(EnumLaserInformations.LASERRED,
-        // nbtTagCompound.getByteArray("RedKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERGREEN,
-        // nbtTagCompound.getByteArray("GreenKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERBLUE,
-        // nbtTagCompound.getByteArray("BlueKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERSECRED,
-        // nbtTagCompound.getByteArray("SecRedKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERSECGREEN,
-        // nbtTagCompound.getByteArray("SecGreenKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERSECBLUE,
-        // nbtTagCompound.getByteArray("SecBlueKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERANGLE1,
-        // nbtTagCompound.getIntArray("Angle1Key"));
-        // this.keysMap.put(EnumLaserInformations.LASERANGLE2,
-        // nbtTagCompound.getByteArray("Angle2Key"));
-        // this.keysMap.put(EnumLaserInformations.LASERMAINSIZE,
-        // nbtTagCompound.getByteArray("MainLazerSize"));
-        // this.keysMap.put(EnumLaserInformations.LASERSECSIZE,
-        // nbtTagCompound.getByteArray("SecLazerSize"));
-        // this.keysMap.put(EnumLaserInformations.LASERHEIGHT,
-        // nbtTagCompound.getIntArray("LazerHeightKey"));
-        // this.keysMap.put(EnumLaserInformations.LASERSIDESNUMBER,
-        // nbtTagCompound.getByteArray("SidesKey"));
-        // this.keysMap.put(EnumLaserInformations.TEXTRED,
-        // nbtTagCompound.getByteArray("TxtRedKey"));
-        // this.keysMap.put(EnumLaserInformations.TEXTGREEN,
-        // nbtTagCompound.getByteArray("TxtGreenKey"));
-        // this.keysMap.put(EnumLaserInformations.TEXTBLUE,
-        // nbtTagCompound.getByteArray("TxtBlueKey"));
-        // this.keysMap.put(EnumLaserInformations.TEXTANGLE1,
-        // nbtTagCompound.getIntArray("TxtAngle1Key"));
-        // this.keysMap.put(EnumLaserInformations.TEXTSCALE,
-        // nbtTagCompound.getByteArray("TxtScaleKey"));
-        // this.keysMap.put(EnumLaserInformations.TEXTHEIGHT,
-        // nbtTagCompound.getByteArray("TxtHeightKey"));
-        //
-        // NBTTagList nbttaglist = nbtTagCompound.getTagList("SpotLightKeys",
-        // Constants.NBT.TAG_COMPOUND);
-        // for(int i = 0; i < nbttaglist.tagCount(); ++i)
-        // {
-        // NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-        // int j = nbttagcompound1.getByte("Key") & 255;
-        //
-        // if(j >= 0 && j < this.keyList.length)
-        // {
-        // this.keyList[j] =
-        // SpotLightEntry.loadSpotLightEntryFromNBT(nbttagcompound1);
-        // }
-        // }
-        //
+        this.time = nbtTagCompound.getShort("Time");
+        this.timelineEnabled = nbtTagCompound.getBoolean("TimelineEnabled");
+        this.timelineSmooth = nbtTagCompound.getBoolean("TimelineSmooth");
+
         NBTTagList nbttaglistItems = nbtTagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i < nbttaglistItems.tagCount(); ++i)
         {

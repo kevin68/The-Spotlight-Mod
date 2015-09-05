@@ -52,9 +52,8 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         GlStateManager.scale(1.2F, 1.2F, 1.2F);
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
         GlStateManager.popMatrix();
-        float f1 = tile.isActive();
         GlStateManager.alphaFunc(516, 0.1F);
-        if(f1 > 0.0F)
+        if(tile.isActive)
         {
             if(tile.isBeam)
             {
@@ -79,8 +78,8 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                 GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0);
                 float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
                 double t2 = -1.0F - f3;
-                double t3 = tile.bVec[0].getLenVec().norm() * f1 * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
-                double t4 = tile.bVec[1].getLenVec().norm() * f1 * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
+                double t3 = tile.bVec[0].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
+                double t4 = tile.bVec[1].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
                 float r = tile.beamRed / 255.0F;
                 float g = tile.beamGreen / 255.0F;
                 float b = tile.beamBlue / 255.0F;
