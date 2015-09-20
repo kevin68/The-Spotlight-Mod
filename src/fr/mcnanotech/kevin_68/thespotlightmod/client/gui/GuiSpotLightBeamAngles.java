@@ -30,7 +30,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
 
     public GuiSpotLightBeamAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
+        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -46,14 +46,14 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         this.buttonList.add(this.buttonX = new GuiBooleanButton(0, x - 50, y + 110, 20, 20, "X", true));
         this.buttonList.add(this.buttonY = new GuiBooleanButton(1, x - 25, y + 110, 20, 20, "Y", false));
         this.buttonList.add(this.buttonZ = new GuiBooleanButton(2, x, y + 110, 20, 20, "Z", false));
-        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angle") + " X: " + this.tile.beamAngleX, this.tile.beamAngleX / 360.0F));
+        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "X", this.tile.beamAngleX), this.tile.beamAngleX / 360.0F));
         this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.beamAutoRotateX));
-        this.buttonAR.setTexts(I18n.format("container.spotlight.rotate") + " X: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " X: " + I18n.format("container.spotlight.off"));
+        this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
         this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.beamReverseRotateX));
-        this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.off"));
+        this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
         this.buttonRR.enabled = this.buttonAR.enabled;
-        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed") + " X: " + this.tile.beamRotationSpeedX, this.tile.beamRotationSpeedX / 200.0F));
+        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "X", this.tile.beamRotationSpeedX), this.tile.beamRotationSpeedX / 200.0F));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
@@ -95,13 +95,13 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                 }
                 this.sliderAngle.enabled = !this.buttonAR.isActive();
                 this.sliderSpeed.enabled = this.buttonAR.isActive();
-                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate") + " X: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " X: " + I18n.format("container.spotlight.off"));
+                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
                 if(this.buttonRR.isActive() != this.tile.beamReverseRotateX)
                 {
                     this.buttonRR.toggle();
                 }
                 this.buttonRR.enabled = this.buttonAR.isActive();
-                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " X: " + I18n.format("container.spotlight.off"));
+                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
                 TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
             }
             break;
@@ -129,13 +129,13 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                 }
                 this.sliderAngle.enabled = !this.buttonAR.isActive();
                 this.sliderSpeed.enabled = this.buttonAR.isActive();
-                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate") + " Y: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " Y: " + I18n.format("container.spotlight.off"));
+                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.off")));
                 if(this.buttonRR.isActive() != this.tile.beamReverseRotateY)
                 {
                     this.buttonRR.toggle();
                 }
                 this.buttonRR.enabled = this.buttonAR.isActive();
-                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse") + " Y: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " Y: " + I18n.format("container.spotlight.off"));
+                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
                 TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
             }
             break;
@@ -163,13 +163,13 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                 }
                 this.sliderAngle.enabled = !this.buttonAR.isActive();
                 this.sliderSpeed.enabled = this.buttonAR.isActive();
-                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate") + " Z: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " Z: " + I18n.format("container.spotlight.off"));
+                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Z", I18n.format("container.spotlight.off")));
                 if(this.buttonRR.isActive() != this.tile.beamReverseRotateZ)
                 {
                     this.buttonRR.toggle();
                 }
                 this.buttonRR.enabled = this.buttonAR.isActive();
-                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse") + " Z: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " Z: " + I18n.format("container.spotlight.off"));
+                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.off")));
                 TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
             }
             break;
@@ -274,15 +274,15 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         {
             if(this.buttonX.isActive())
             {
-                name = I18n.format("container.spotlight.angle") + " X: " + (short)(sliderValue * 360);
+                name = I18n.format("container.spotlight.angleval", "X", (short)(sliderValue * 360));
             }
             else if(this.buttonY.isActive())
             {
-                name = I18n.format("container.spotlight.angle") + " Y: " + (short)(sliderValue * 360);
+                name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
             }
             else if(this.buttonZ.isActive())
             {
-                name = I18n.format("container.spotlight.angle") + " Z: " + (short)(sliderValue * 360);
+                name = I18n.format("container.spotlight.angleval", "Z", (short)(sliderValue * 360));
             }
             break;
         }
@@ -290,15 +290,15 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         {
             if(this.buttonX.isActive())
             {
-                name = I18n.format("container.spotlight.rotationspeed") + " X: " + (short)(sliderValue * 200);
+                name = I18n.format("container.spotlight.rotationspeed", "X", (short)(sliderValue * 200));
             }
             else if(this.buttonY.isActive())
             {
-                name = I18n.format("container.spotlight.rotationspeed") + " Y: " + (short)(sliderValue * 200);
+                name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
             }
             else if(this.buttonZ.isActive())
             {
-                name = I18n.format("container.spotlight.rotationspeed") + " Z: " + (short)(sliderValue * 200);
+                name = I18n.format("container.spotlight.rotationspeed", "Z", (short)(sliderValue * 200));
             }
             break;
         }

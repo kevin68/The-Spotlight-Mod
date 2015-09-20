@@ -18,6 +18,8 @@ import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamTexture
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextAngles;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextColor;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextProperties;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimeline;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimelineAddKey;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 
 public class TSMUtils
@@ -148,6 +150,14 @@ public class TSMUtils
                 return;
             }
         }
+        else if(gui instanceof GuiSpotlightTimeline)
+        {
+            if(mouseX > 332 && mouseY > 162 && mouseX < 632 && mouseY < 182)
+            {
+                GuiHelper.drawHoveringText(formatedText(font, I18n.format("tutorial.spotlight.timeline.timeline"), mouseX, width, mouseX > width / 2), mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
+                return;
+            }
+        }
 
         for(int i = 0; i < buttons.size(); i++)
         {
@@ -183,6 +193,11 @@ public class TSMUtils
                     case 4:
                     {
                         list = formatedText(font, I18n.format("tutorial.spotlight.mode"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 5:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.timeline"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 18:
@@ -234,6 +249,16 @@ public class TSMUtils
                     case 5:
                     {
                         list = formatedText(font, I18n.format("tutorial.spotlight.colors.secblue"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 6:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.colors.alpha"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 7:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.colors.secalpha"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 19:
@@ -445,7 +470,7 @@ public class TSMUtils
                     }
                     }
                 }
-                else if (gui instanceof GuiSpotLightTextProperties)
+                else if(gui instanceof GuiSpotLightTextProperties)
                 {
                     switch(button.id)
                     {
@@ -459,10 +484,106 @@ public class TSMUtils
                         list = formatedText(font, I18n.format("tutorial.spotlight.textprops.scale"), mouseX, width, mouseX > width / 2);
                         break;
                     }
-                    
+                    case 2:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.bold"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 3:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.strike"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 4:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.underline"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 5:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.italic"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 6:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.obfuscated"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 7:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.textprops.shadow"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
                     case 19:
                     {
                         list = formatedText(font, I18n.format("tutorial.spotlight.back"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 20:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.help"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    }
+                }
+                else if(gui instanceof GuiSpotlightTimeline)
+                {
+                    switch(button.id)
+                    {
+                    case 2:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.back"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 3:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.timeline.addkey"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 4:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.timeline.toogle"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 5:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.timeline.delkey"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 6:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.timeline.set0"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 7:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.timeline.smooth"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 8:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.help"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    }
+                }
+                else if(gui instanceof GuiSpotlightTimelineAddKey)
+                {
+                    switch(button.id)
+                    {
+                    case 0:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.addkey.time"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 1:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.back"), mouseX, width, mouseX > width / 2);
+                        break;
+                    }
+                    case 2:
+                    {
+                        list = formatedText(font, I18n.format("tutorial.spotlight.addkey.create"), mouseX, width, mouseX > width / 2);
                         break;
                     }
                     case 20:
@@ -476,9 +597,9 @@ public class TSMUtils
             }
         }
     }
-    
+
     public static TSMKey createKey(short time, TileEntitySpotLight tile)
     {
-        return new TSMKey(time, tile.beamRed, tile.beamGreen, tile.beamBlue);//TODO fill
+        return new TSMKey(time, tile.beamRed, tile.beamGreen, tile.beamBlue, tile.secBeamRed, tile.secBeamGreen, tile.secBeamBlue, tile.beamAngleX, tile.beamAngleY, tile.beamAngleZ, tile.beamAutoRotateX, tile.beamAutoRotateY, tile.beamAutoRotateZ, tile.beamReverseRotateX, tile.beamReverseRotateY, tile.beamReverseRotateZ);// TODO fill
     }
 }

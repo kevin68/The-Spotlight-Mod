@@ -7,19 +7,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketRegenerateFile implements IMessage
+public class PacketRequestTLData implements IMessage
 {
-    public int x, y, z, dimID;
+    public int x, y, z;
 
-    public PacketRegenerateFile()
+    public PacketRequestTLData()
     {}
 
-    public PacketRegenerateFile(int x, int y, int z, int dimID)
+    public PacketRequestTLData(int x, int y, int z)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.dimID = dimID;
     }
 
     @Override
@@ -28,7 +27,6 @@ public class PacketRegenerateFile implements IMessage
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
-        this.dimID = buf.readInt();
     }
 
     @Override
@@ -37,17 +35,16 @@ public class PacketRegenerateFile implements IMessage
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.z);
-        buf.writeInt(this.dimID);
     }
 
-    public static class Handler implements IMessageHandler<PacketRegenerateFile, IMessage>
+    public static class Handler implements IMessageHandler<PacketRequestTLData, IMessage>
     {
         @Override
-        public IMessage onMessage(PacketRegenerateFile message, MessageContext ctx)
+        public IMessage onMessage(PacketRequestTLData message, MessageContext ctx)
         {
-            TSMJsonManager.deleteFile(message.dimID, new BlockPos(message.x, message.y, message.z));
-            TSMJsonManager.generateNewFiles(message.dimID, new BlockPos(message.x, message.y, message.z));
-            return null;
+            int dimId = ctx.getServerHandler().playerEntity.dimension;
+            String data = TSMJsonManager.getTlDataFromJson(dimId, new BlockPos(message.x, message.y, message.z));
+            return new PacketTLData(message.x, message.y, message.z, data == null ? "null" : data);
         }
     }
 }

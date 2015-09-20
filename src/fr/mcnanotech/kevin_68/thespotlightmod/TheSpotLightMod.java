@@ -7,6 +7,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -23,14 +25,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketLock;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestTLData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimeline;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineDeleteKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineReset;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 
 @Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.3.1446,)", acceptableRemoteVersions = "*")
 public class TheSpotLightMod
@@ -78,6 +84,9 @@ public class TheSpotLightMod
     @EventHandler
     public void initTheSpotlightMod(FMLInitializationEvent event)
     {
+        TSMEvents ev = new TSMEvents();
+        FMLCommonHandler.instance().bus().register(ev);
+        MinecraftForge.EVENT_BUS.register(ev);
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketOpenGui.Handler.class, PacketOpenGui.class, 0, Side.SERVER);
         network.registerMessage(PacketTimeline.Handler.class, PacketTimeline.class, 1, Side.SERVER);
@@ -88,6 +97,10 @@ public class TheSpotLightMod
         network.registerMessage(PacketRegenerateFile.Handler.class, PacketRegenerateFile.class, 6, Side.SERVER);
         network.registerMessage(PacketTimelineDeleteKey.Handler.class, PacketTimelineDeleteKey.class, 7, Side.SERVER);
         network.registerMessage(PacketTimelineSmooth.Handler.class, PacketTimelineSmooth.class, 8, Side.SERVER);
+        network.registerMessage(PacketTLData.Handler.class, PacketTLData.class, 9, Side.CLIENT);
+        network.registerMessage(PacketRequestTLData.Handler.class, PacketRequestTLData.class, 10, Side.SERVER);
+        network.registerMessage(PacketUpdateTLData.Handler.class, PacketUpdateTLData.class, 11, Side.SERVER);
+        network.registerMessage(PacketLock.Handler.class, PacketLock.class, 12, Side.SERVER);
         NetworkRegistry.INSTANCE.registerGuiHandler(modInstance, new GuiHandler());
         proxy.registerRender();
     }

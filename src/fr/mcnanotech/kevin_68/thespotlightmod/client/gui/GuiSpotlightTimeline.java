@@ -14,11 +14,12 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimeline;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineDeleteKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineReset;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
@@ -38,7 +39,7 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
 
     public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, world, 11));
+        super(new ContainerSpotLight(tileEntity, playerInventory, world, 11, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -55,13 +56,13 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
         this.buttonList.add(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")));
         this.buttonList.add(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled));
-        this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.timeline") + " " + I18n.format("container.spotlight.off"));
+        this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
         this.buttonList.add(this.buttonRemove = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")));
         this.buttonRemove.enabled = false;
         this.buttonList.add(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")));
         this.buttonList.add(this.buttonSmooth = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", false));
-
+        this.buttonTimelineEnabled.enabled = this.tile.hasKey();
         for(short i = 0; i < 120; i++)
         {
             if(this.tile.getKey(i) != null)
@@ -74,7 +75,7 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TheSpotLightMod.network.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -83,11 +84,11 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
     {
         if(guibutton.id == 2)
         {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
         }
         else if(guibutton.id == 3)
         {
-            this.mc.displayGuiScreen(new GuiSpotlightTimelineAddKey(this.invPlayer, this.tile, this.world));
+            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 5));
         }
         else if(guibutton.id == 4)
         {
@@ -127,11 +128,11 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
             {
                 this.tile.setKey(this.selectedKeyID, null);
                 TheSpotLightMod.network.sendToServer(new PacketTimelineDeleteKey(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.selectedKeyID));
-                this.mc.displayGuiScreen(this);
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
             else
             {
-                this.mc.displayGuiScreen(this);
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
         }
     }
@@ -161,16 +162,10 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
         this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
         this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
         this.drawTexturedModalRect(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);
-        //
-        // if(this.tile.getKey((Byte)this.tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED)
-        // & 0xFF) != null)
-        // {
-        // SpotLightEntry entry =
-        // this.tile.getKey((Byte)this.tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED)
-        // & 0xFF);
-        // this.drawTexturedModalRect(x - 22 +
-        // (int)(((Byte)this.tile.get(EnumLaserInformations.TIMELINELASTKEYSELECTED)
-        // & 0xFF) * 2.5), y + 62, 0, 115, 5, 6);
+        if(this.selectedKeyID != -1)
+        {
+            this.drawTexturedModalRect((int)(x - 22 + this.selectedKeyID * 2.5), y + 62, 0, 115, 5, 6);
+        }
         // drawString(this.fontRendererObj, EnumChatFormatting.RED +
         // I18n.format("container.spotlight.red") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERRED) & 0xFF), x + 100, y

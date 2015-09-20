@@ -34,35 +34,39 @@ public class ContainerSpotLightTextures extends Container
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
+    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player)
     {
-        ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(slotId);
-        if(slot != null && slot.getHasStack())
+        if(slotId < 2 && slotId >= 0)
         {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-            if(slotId < this.tileSpotLight.getSizeInventory())
+            Slot slot = (Slot)this.inventorySlots.get(slotId);
+            ItemStack stack = player.inventory.getItemStack();
+            if(clickedButton == 0)
             {
-                if(!this.mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
+                if(stack != null)
                 {
-                    return null;
+                    ItemStack stack2 = stack.copy();
+                    stack2.stackSize = 1;
+                    slot.decrStackSize(1);
+                    slot.putStack(stack2);
+                }
+                else
+                {
+                    slot.decrStackSize(1);
                 }
             }
-            else if(!this.mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
+            else if(clickedButton == 1)
             {
-                return null;
+                slot.decrStackSize(1);
             }
-            if(itemstack1.stackSize == 0)
-            {
-                slot.putStack((ItemStack)null);
-            }
-            else
-            {
-                slot.onSlotChanged();
-            }
+            return stack;
         }
-        return itemstack;
+        return super.slotClick(slotId, clickedButton, mode, player);
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
+    {
+        return null;
     }
 
     public TileEntitySpotLight getSpotLight()

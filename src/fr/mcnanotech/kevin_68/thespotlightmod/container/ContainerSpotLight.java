@@ -10,61 +10,65 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 
 public class ContainerSpotLight extends Container
 {
-	protected TileEntitySpotLight tileSpotLight;
-	public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world, int widthMove)
-	{
-		this.tileSpotLight = tileEntity;
-		bindPlayerInventory(inventoryPlayer, widthMove);
-	}
+    protected TileEntitySpotLight tileSpotLight;
 
-	@Override
-	public boolean canInteractWith(EntityPlayer player)
-	{
-		return this.tileSpotLight.isUseableByPlayer(player);
-	}
+    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world, int widthMove, boolean showPlayerInventory)
+    {
+        this.tileSpotLight = tileEntity;
+        if(showPlayerInventory)
+        {
+            bindPlayerInventory(inventoryPlayer, widthMove);
+        }
+    }
 
-	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int widthMove)
-	{
-		for(int i = 0; i < 9; i++)
-		{
-			addSlotToContainer(new Slot(inventoryPlayer, i, widthMove + i * 18, 142));
-		}
-	}
+    @Override
+    public boolean canInteractWith(EntityPlayer player)
+    {
+        return this.tileSpotLight.isUseableByPlayer(player);
+    }
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
-	{
-		ItemStack itemstack = null;
-		Slot slot = (Slot)this.inventorySlots.get(slotId);
-		if(slot != null && slot.getHasStack())
-		{
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
-			if(slotId < this.tileSpotLight.getSizeInventory())
-			{
-				if(!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
-				{
-					return null;
-				}
-			}
-			else if(!mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
-			{
-				return null;
-			}
-			if(itemstack1.stackSize == 0)
-			{
-				slot.putStack((ItemStack)null);
-			}
-			else
-			{
-				slot.onSlotChanged();
-			}
-		}
-		return itemstack;
-	}
+    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int widthMove)
+    {
+        for(int i = 0; i < 9; i++)
+        {
+            addSlotToContainer(new Slot(inventoryPlayer, i, widthMove + i * 18, 142));
+        }
+    }
 
-	public TileEntitySpotLight getSpotLight()
-	{
-		return this.tileSpotLight;
-	}
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
+    {
+        ItemStack itemstack = null;
+        Slot slot = (Slot)this.inventorySlots.get(slotId);
+        if(slot != null && slot.getHasStack())
+        {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+            if(slotId < this.tileSpotLight.getSizeInventory())
+            {
+                if(!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
+                {
+                    return null;
+                }
+            }
+            else if(!mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
+            {
+                return null;
+            }
+            if(itemstack1.stackSize == 0)
+            {
+                slot.putStack((ItemStack)null);
+            }
+            else
+            {
+                slot.onSlotChanged();
+            }
+        }
+        return itemstack;
+    }
+
+    public TileEntitySpotLight getSpotLight()
+    {
+        return this.tileSpotLight;
+    }
 }

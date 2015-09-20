@@ -3,11 +3,13 @@ package fr.mcnanotech.kevin_68.thespotlightmod;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,7 +35,7 @@ public class BlockSpotLight extends BlockContainer
     {
         if(!world.isRemote)
         {
-            TSMJsonManager.generateNewFile(placer.dimension, pos);
+            TSMJsonManager.generateNewFiles(placer.dimension, pos);
         }
         TileEntity te = world.getTileEntity(pos);
         if(te instanceof TileEntitySpotLight)
@@ -66,8 +68,18 @@ public class BlockSpotLight extends BlockContainer
         {
             return false;
         }
-        player.openGui(TheSpotLightMod.modInstance, 0, world, pos.getX(), pos.getY(), pos.getZ());
-        return true;
+        if(tileentity instanceof TileEntitySpotLight)
+        {
+            TileEntitySpotLight tile = (TileEntitySpotLight)tileentity;
+            if(tile.locked && !player.getGameProfile().getId().toString().equals(tile.lockerUUID))
+            {
+                player.addChatMessage(new ChatComponentText(I18n.format("message.spotlight.locked.open")));
+                return false;
+            }
+            player.openGui(TheSpotLightMod.modInstance, 0, world, pos.getX(), pos.getY(), pos.getZ());
+            return true;
+        }
+        return false;
     }
 
     @Override

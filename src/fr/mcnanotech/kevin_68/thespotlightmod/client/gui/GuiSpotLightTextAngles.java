@@ -30,7 +30,7 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
 
     public GuiSpotLightTextAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
+        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -43,14 +43,14 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angle") + " Y: " + this.tile.textAngleY, this.tile.textAngleY / 360.0F));
+        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "Y", this.tile.textAngleY), this.tile.textAngleY / 360.0F));
         this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.textAutoRotateY));
-        this.buttonAR.setTexts(I18n.format("container.spotlight.rotate") + " Y: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotate") + " Y: " + I18n.format("container.spotlight.off"));
+        this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
         this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.textReverseRotateY));
-        this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse") + " Y: " + I18n.format("container.spotlight.on"), I18n.format("container.spotlight.rotationreverse") + " Y: " + I18n.format("container.spotlight.off"));
+        this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
         this.buttonRR.enabled = this.buttonAR.enabled;
-        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed") + " Y: " + this.tile.textRotationSpeedY, this.tile.textRotationSpeedY / 200.0F));
+        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "Y", this.tile.textRotationSpeedY), this.tile.textRotationSpeedY / 200.0F));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
@@ -104,16 +104,12 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         {
         case 3:
         {
-
             this.tile.textAngleY = (short)(sliderValue * 360.0F);
-
             break;
         }
         case 6:
         {
-
             this.tile.textRotationSpeedY = (short)(sliderValue * 200);
-
             break;
         }
         }
@@ -127,12 +123,12 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         {
         case 3:
         {
-            name = I18n.format("container.spotlight.angle") + " Y: " + (short)(sliderValue * 360);
+            name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
             break;
         }
         case 6:
         {
-            name = I18n.format("container.spotlight.rotationspeed") + " Y: " + (short)(sliderValue * 200);
+            name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
             break;
         }
         }

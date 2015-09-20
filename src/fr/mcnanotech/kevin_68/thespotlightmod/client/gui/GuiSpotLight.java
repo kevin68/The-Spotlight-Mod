@@ -2,6 +2,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketLock;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
@@ -21,17 +23,17 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 public class GuiSpotLight extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation configsaver = new ResourceLocation(TheSpotLightMod.MODID + ":textures/items/configsaver.png");
+    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
     public World world;
     public GuiButton buttonTextures, buttonColors, buttonAngle, buttonBeamSpecs;
-    public GuiBooleanButton buttonMode, buttonHelp, buttonRedstone;
+    public GuiBooleanButton buttonMode, buttonHelp, buttonRedstone, buttonLock;
 
     public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8));
+        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -57,8 +59,10 @@ public class GuiSpotLight extends GuiContainer
         this.buttonMode.shouldNotChangeTextColor(true);
         this.buttonMode.shouldChangeTextureOnToggle(false);
         this.buttonList.add(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")));
-        this.buttonList.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "R", this.tile.redstone));
-        this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, "C"));
+        this.buttonList.add(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked));
+        this.buttonLock.setTexts("CADENA FERMé", "CADENA OUVERT");//TODO remove, change with texture
+        this.buttonList.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "", this.tile.redstone));
+        this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, ""));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
         this.buttonTextures.enabled = !this.tile.timelineEnabled && this.buttonMode.isActive();
     }
@@ -79,7 +83,7 @@ public class GuiSpotLight extends GuiContainer
         {
             if(this.buttonMode.isActive())
             {
-                this.mc.displayGuiScreen(new GuiSpotLightBeamColor(this.invPlayer, this.tile, this.world));
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 4));
             }
             else
             {
@@ -126,7 +130,13 @@ public class GuiSpotLight extends GuiContainer
         }
         case 5:
         {
-            this.mc.displayGuiScreen(new GuiSpotlightTimeline(this.invPlayer, this.tile, this.world));
+            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+            break;
+        }
+        case 17:
+        {
+            this.buttonLock.toggle();
+            TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.thePlayer.getGameProfile().getId().toString()));
             break;
         }
         case 18:
@@ -154,6 +164,14 @@ public class GuiSpotLight extends GuiContainer
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         super.drawScreen(mouseX, mouseY, partialRenderTick);
+        this.mc.renderEngine.bindTexture(icons);
+        if(!this.buttonRedstone.isActive())
+        {
+            GlStateManager.color(0.3F, 0.2F, 0.2F);
+        }
+        this.drawTexturedModalRect(x + 184, y + 94, 6, 104, 12, 11);
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
+        this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())
         {
             TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, x, y, this.buttonList, this);

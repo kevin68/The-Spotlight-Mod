@@ -14,7 +14,8 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
+import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
@@ -33,7 +34,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
 
     public GuiSpotlightTimelineAddKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, world, 8));
+        super(new ContainerSpotLight(tileEntity, playerInventory, world, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -45,7 +46,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time") + ": 0.0", 0));
+        this.buttonList.add(new GuiSliderButton(this, 0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time", "0.0"), 0));
         this.buttonList.add(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
@@ -54,7 +55,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TheSpotLightMod.network.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -63,9 +64,9 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
     {
         if(guibutton.id == 1)
         {
-            this.mc.displayGuiScreen(new GuiSpotlightTimeline(this.invPlayer, this.tile, this.world));
+            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
         }
-        if(guibutton.id == 2)
+        else if(guibutton.id == 2)
         {
             if(this.tile.getKey(this.time) != null)
             {
@@ -74,10 +75,10 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
             else
             {
                 this.tile.setKey(this.time, TSMUtils.createKey(this.time, this.tile));
-                this.mc.displayGuiScreen(new GuiSpotlightTimeline(this.invPlayer, this.tile, this.world));
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
         }
-        if(guibutton.id == 20)
+        else if(guibutton.id == 20)
         {
             this.buttonHelp.toggle();
         }
@@ -91,7 +92,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
             if(result)
             {
                 this.tile.setKey(this.time, TSMUtils.createKey(this.time, this.tile));
-                this.mc.displayGuiScreen(new GuiSpotlightTimeline(this.invPlayer, this.tile, this.world));
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
             else
             {
@@ -115,7 +116,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         String name = "";
         if(sliderId == 0)
         {
-            name = I18n.format("container.spotlight.time") + ": " + ((byte)(sliderValue * 119) & 0xFF) / 2.0F;
+            name = I18n.format("container.spotlight.time", (sliderValue * 119) / 2.0F);
         }
         return name;
     }

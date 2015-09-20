@@ -36,15 +36,20 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 
 public class TSMJsonManager
 {
-    public static void generateNewFile(int dimID, BlockPos pos)
+    public static void generateNewFiles(int dimID, BlockPos pos)
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+        File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
         {
             folder.mkdirs();
         }
         if(file.exists())
+        {
+            deleteFile(dimID, pos);
+        }
+        if(fileTL.exists())
         {
             deleteFile(dimID, pos);
         }
@@ -61,9 +66,11 @@ public class TSMJsonManager
         bColors.addProperty("R", 255);
         bColors.addProperty("G", 255);
         bColors.addProperty("B", 255);
+        bColors.addProperty("A", 1.0F);
         bColors.addProperty("SR", 255);
         bColors.addProperty("SG", 255);
         bColors.addProperty("SB", 255);
+        bColors.addProperty("SA", 0.125F);
         beam.add("Colors", bColors);
         JsonObject bAngles = new JsonObject();
         bAngles.addProperty("X", 0);
@@ -105,6 +112,15 @@ public class TSMJsonManager
         JsonObject tProperties = new JsonObject();
         tProperties.addProperty("H", 50);
         tProperties.addProperty("S", 0);
+        tProperties.addProperty("B", false);
+        tProperties.addProperty("ST", false);
+        tProperties.addProperty("U", false);
+        tProperties.addProperty("I", false);
+        tProperties.addProperty("O", false);
+        tProperties.addProperty("Sh", false);
+        tProperties.addProperty("T", false);
+        tProperties.addProperty("TS", 50);
+        tProperties.addProperty("RT", false);
         text.add("Properties", tProperties);
         json.add("Text", text);
 
@@ -113,12 +129,18 @@ public class TSMJsonManager
         getObjFromTab(calculated, "BR", new short[1200]);
         getObjFromTab(calculated, "BG", new short[1200]);
         getObjFromTab(calculated, "BB", new short[1200]);
+        getObjFromTab(calculated, "SBR", new short[1200]);
+        getObjFromTab(calculated, "SBG", new short[1200]);
+        getObjFromTab(calculated, "SBB", new short[1200]);
+        getObjFromTab(calculated, "AX", new short[1200]);
+        getObjFromTab(calculated, "AY", new short[1200]);
+        getObjFromTab(calculated, "AZ", new short[1200]);
         // TODO fill
         timeline.add("Calculated", calculated);
         timeline.add("Keys", getJsonFromTSMKeys(new TSMKey[120]));
-        json.add("Timeline", timeline);
 
         write(file, json);
+        write(fileTL, timeline);
     }
 
     public static void deleteFile(int dimID, BlockPos pos)
@@ -127,7 +149,9 @@ public class TSMJsonManager
         {
             File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
             File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+            File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
             file.delete();
+            fileTL.delete();
         }
         catch(Exception e)
         {
@@ -135,18 +159,20 @@ public class TSMJsonManager
         }
     }
 
+    /*
+     * Server Side
+     */
     public static boolean updateTileData(int dimID, BlockPos pos, TileEntitySpotLight tile)
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
-        if(!folder.exists())
-        {
-            folder.mkdirs();
-        }
         JsonObject json = read(file);
         return updateTileData(tile, json);
     }
 
+    /*
+     * Client side
+     */
     public static boolean updateTileData(TileEntitySpotLight tile, String data)
     {
         if(data.equals("null"))
@@ -169,9 +195,11 @@ public class TSMJsonManager
             tile.beamRed = bColors.get("R").getAsShort();
             tile.beamGreen = bColors.get("G").getAsShort();
             tile.beamBlue = bColors.get("B").getAsShort();
+            tile.beamAlpha = bColors.get("A").getAsFloat();
             tile.secBeamRed = bColors.get("SR").getAsShort();
             tile.secBeamGreen = bColors.get("SG").getAsShort();
             tile.secBeamBlue = bColors.get("SB").getAsShort();
+            tile.secBeamAlpha = bColors.get("SA").getAsFloat();
             JsonObject bAngles = (JsonObject)beam.get("Angles");
             tile.beamAngleX = bAngles.get("X").getAsShort();
             tile.beamAngleY = bAngles.get("Y").getAsShort();
@@ -207,16 +235,15 @@ public class TSMJsonManager
             JsonObject tProperties = (JsonObject)text.get("Properties");
             tile.textHeight = tProperties.get("H").getAsShort();
             tile.textScale = tProperties.get("S").getAsShort();
-
-            JsonObject timeline = (JsonObject)json.get("Timeline");
-            JsonArray keys = (JsonArray)timeline.get("Keys");
-            getKeysFromObj(tile, keys);
-            JsonObject calculated = (JsonObject)timeline.get("Calculated");
-            tile.tlBRed = getTabFromObj(calculated, "BR");
-            tile.tlBGreen = getTabFromObj(calculated, "BG");
-            tile.tlBBlue = getTabFromObj(calculated, "BB");
-            // TODO fill
-
+            tile.textBold = tProperties.get("B").getAsBoolean();
+            tile.textStrike = tProperties.get("ST").getAsBoolean();
+            tile.textUnderline = tProperties.get("U").getAsBoolean();
+            tile.textItalic = tProperties.get("I").getAsBoolean();
+            tile.textObfuscated = tProperties.get("O").getAsBoolean();
+            tile.textShadow = tProperties.get("Sh").getAsBoolean();
+            tile.textTranslating = tProperties.get("T").getAsBoolean();
+            tile.textTranslateSpeed = tProperties.get("TS").getAsShort();
+            tile.textReverseTranslating = tProperties.get("RT").getAsBoolean();
             tile.markForUpdate();
             return true;
         }
@@ -225,11 +252,10 @@ public class TSMJsonManager
             e.printStackTrace();
             try
             {
-                TheSpotLightMod.log.error("An entry is missing, regenerating file");
                 if(FMLCommonHandler.instance().getSide() == Side.SERVER)
                 {
                     deleteFile(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
-                    generateNewFile(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    generateNewFiles(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
                 }
                 else
                 {
@@ -238,7 +264,7 @@ public class TSMJsonManager
             }
             catch(NullPointerException fatal)
             {
-                TheSpotLightMod.log.fatal("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
+                TheSpotLightMod.log.error("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
             }
         }
         return false;
@@ -262,6 +288,7 @@ public class TSMJsonManager
         if(!folder.exists())
         {
             folder.mkdirs();
+            generateNewFiles(dimID, pos);
         }
         JsonObject json = read(file);
         if(json != null)
@@ -286,9 +313,11 @@ public class TSMJsonManager
         bColors.addProperty("R", tile.beamRed);
         bColors.addProperty("G", tile.beamGreen);
         bColors.addProperty("B", tile.beamBlue);
+        bColors.addProperty("A", tile.beamAlpha);
         bColors.addProperty("SR", tile.secBeamRed);
         bColors.addProperty("SG", tile.secBeamGreen);
         bColors.addProperty("SB", tile.secBeamBlue);
+        bColors.addProperty("SA", tile.secBeamAlpha);
         beam.add("Colors", bColors);
         JsonObject bAngles = new JsonObject();
         bAngles.addProperty("X", tile.beamAngleX);
@@ -330,19 +359,17 @@ public class TSMJsonManager
         JsonObject tProperties = new JsonObject();
         tProperties.addProperty("H", tile.textHeight);
         tProperties.addProperty("S", tile.textScale);
+        tProperties.addProperty("B", tile.textBold);
+        tProperties.addProperty("ST", tile.textStrike);
+        tProperties.addProperty("U", tile.textUnderline);
+        tProperties.addProperty("I", tile.textItalic);
+        tProperties.addProperty("O", tile.textObfuscated);
+        tProperties.addProperty("Sh", tile.textShadow);
+        tProperties.addProperty("T", tile.textTranslating);
+        tProperties.addProperty("TS", tile.textTranslateSpeed);
+        tProperties.addProperty("RT", tile.textReverseTranslating);
         text.add("Properties", tProperties);
         json.add("Text", text);
-
-        JsonObject timeline = new JsonObject();
-        JsonObject calculated = new JsonObject();
-        getObjFromTab(calculated, "BR", tile.tlBRed);
-        getObjFromTab(calculated, "BG", tile.tlBGreen);
-        getObjFromTab(calculated, "BB", tile.tlBBlue);
-        // TODO fill
-        timeline.add("Calculated", calculated);
-        timeline.add("Keys", getJsonFromTSMKeys(tile.getKeys()));
-        json.add("Timeline", timeline);
-
         return json;
     }
 
@@ -358,7 +385,9 @@ public class TSMJsonManager
         {
             folder.mkdirs();
         }
-        write(file, getDataFromTile(tile));
+        JsonObject obj = getDataFromTile(tile);
+        obj.add("Timeline", getTlDataFromTile(tile));
+        write(file, obj);
     }
 
     public static void loadConfig(ItemStack stack, TileEntitySpotLight tile)
@@ -368,7 +397,9 @@ public class TSMJsonManager
         File file = new File(folder, configName + ".json");
         JsonObject json = read(file);
         json.addProperty("DimID", tile.dimensionID);
+        JsonObject obj = json.get("Timeline").getAsJsonObject();
         updateTileData(tile, json);
+        updateTileTimeline(tile, obj);
         TheSpotLightMod.network.sendToAll(new PacketData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), getDataFromTile(tile).toString()));
     }
 
@@ -378,6 +409,120 @@ public class TSMJsonManager
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
         File file = new File(folder, configName + ".json");
         file.delete();
+    }
+
+    /*
+     * Server side
+     */
+    public static boolean updateTileTimeline(int dimID, BlockPos pos, TileEntitySpotLight tile)
+    {
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
+        JsonObject json = read(fileTL);
+        return updateTileTimeline(tile, json);
+    }
+
+    /*
+     * Client side
+     */
+    public static boolean updateTileTimeline(TileEntitySpotLight tile, String data)
+    {
+        if(data.equals("null"))
+        {
+            return false;
+        }
+        JsonParser parser = new JsonParser();
+        JsonObject json = (JsonObject)parser.parse(data);
+        return updateTileTimeline(tile, json);
+    }
+
+    private static boolean updateTileTimeline(TileEntitySpotLight tile, JsonObject json)
+    {
+        try
+        {
+            JsonArray keys = json.get("Keys").getAsJsonArray();
+            getKeysFromObj(tile, keys);
+            JsonObject calculated = (JsonObject)json.get("Calculated");
+            tile.tlBRed = getTabFromObj(calculated, "BR");
+            tile.tlBGreen = getTabFromObj(calculated, "BG");
+            tile.tlBBlue = getTabFromObj(calculated, "BB");
+            tile.tlSecBRed = getTabFromObj(calculated, "SBR");
+            tile.tlSecBGreen = getTabFromObj(calculated, "SBG");
+            tile.tlSecBBlue = getTabFromObj(calculated, "SBB");
+            tile.tlBAngleX = getTabFromObj(calculated, "AX");
+            tile.tlBAngleY = getTabFromObj(calculated, "AY");
+            tile.tlBAngleZ = getTabFromObj(calculated, "AZ");
+            // TODO fill
+            return true;
+        }
+        catch(NullPointerException e)
+        {
+            e.printStackTrace();
+            try
+            {
+                if(FMLCommonHandler.instance().getSide() == Side.SERVER)
+                {
+                    deleteFile(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    generateNewFiles(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                }
+                else
+                {
+                    TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), json.get("DimID").getAsInt()));
+                }
+            }
+            catch(NullPointerException fatal)
+            {
+                TheSpotLightMod.log.error("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
+            }
+        }
+        return false;
+    }
+
+    public static void updateTlJsonData(int dimID, BlockPos pos, String data)
+    {
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+        }
+        write(file, data);
+    }
+
+    public static String getTlDataFromJson(int dimID, BlockPos pos)
+    {
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+            generateNewFiles(dimID, pos);
+        }
+        JsonObject json = read(file);
+        if(json != null)
+        {
+            return read(file).toString();
+        }
+        return null;
+    }
+
+    public static JsonObject getTlDataFromTile(TileEntitySpotLight tile)
+    {
+        JsonObject json = new JsonObject();
+        JsonObject calculated = new JsonObject();
+        getObjFromTab(calculated, "BR", tile.tlBRed);
+        getObjFromTab(calculated, "BG", tile.tlBGreen);
+        getObjFromTab(calculated, "BB", tile.tlBBlue);
+        getObjFromTab(calculated, "SBR", tile.tlSecBRed);
+        getObjFromTab(calculated, "SBG", tile.tlSecBGreen);
+        getObjFromTab(calculated, "SBB", tile.tlSecBBlue);
+        getObjFromTab(calculated, "AX", tile.tlBAngleX);
+        getObjFromTab(calculated, "AY", tile.tlBAngleY);
+        getObjFromTab(calculated, "AZ", tile.tlBAngleZ);
+        // TODO fill
+        json.add("Calculated", calculated);
+        json.add("Keys", getJsonFromTSMKeys(tile.getKeys()));
+        return json;
     }
 
     private static JsonArray getJsonFromTSMKeys(TSMKey[] keys)
@@ -392,6 +537,19 @@ public class TSMJsonManager
                 o.addProperty("BR", key.bRed);
                 o.addProperty("BG", key.bGreen);
                 o.addProperty("BB", key.bBlue);
+                o.addProperty("SBR", key.secBRed);
+                o.addProperty("SBG", key.secBGreen);
+                o.addProperty("SBB", key.secBBlue);
+                o.addProperty("AX", key.bAngleX);
+                o.addProperty("AY", key.bAngleY);
+                o.addProperty("AZ", key.bAngleZ);
+                o.addProperty("ARX", key.bARX);
+                o.addProperty("ARY", key.bARY);
+                o.addProperty("ARZ", key.bARZ);
+                o.addProperty("RRX", key.bRRX);
+                o.addProperty("RRY", key.bRRY);
+                o.addProperty("RRZ", key.bRRZ);
+                // TODO fill
                 obj.add(o);
             }
         }
@@ -403,39 +561,61 @@ public class TSMJsonManager
         for(int i = 0; i < keys.size(); i++)
         {
             JsonObject obj = keys.get(i).getAsJsonObject();
-            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort());
+            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort(), obj.get("SBR").getAsShort(), obj.get("SBG").getAsShort(), obj.get("SBB").getAsShort(), obj.get("AX").getAsShort(), obj.get("AY").getAsShort(), obj.get("AZ").getAsShort(), obj.get("ARX").getAsBoolean(), obj.get("ARY").getAsBoolean(), obj.get("ARZ").getAsBoolean(), obj.get("RRX").getAsBoolean(), obj.get("RRY").getAsBoolean(), obj.get("RRZ").getAsBoolean());
             tile.setKey(obj.get("Time").getAsShort(), k);
-            // keyTab[obj.get("Time").getAsShort()] = k;
-            // System.out.println(k.toString());
+            // TODO fill
         }
     }
 
     private static void getObjFromTab(JsonObject obj, String name, short[] tab)
     {
         String str = "";
-        for(int i = 0; i < tab.length; i++)
+        boolean sames = true;
+        short prev = tab[0];
+        for(int i = 1; i < tab.length; i++)
         {
-            str += ":" + tab[i];
+            sames &= tab[i] == prev;
+            prev = tab[i];
         }
-        str = str.substring(1);
-        obj.addProperty(name, str);
+        if(sames)
+        {
+            str = "" + tab[0];
+            obj.addProperty(name, str);
+        }
+        else
+        {
+            for(int i = 0; i < tab.length; i++)
+            {
+                str += ":" + tab[i];
+            }
+            obj.addProperty(name, str);
+        }
     }
 
     private static short[] getTabFromObj(JsonObject calculated, String name)
     {
         String str = calculated.get(name).getAsString();
-        String[] strs = str.split(":");
         short[] tab = new short[1200];
-        for(int i = 0; i < strs.length; i++)
+        if(str.contains(":"))
         {
-            if(StringUtils.isNumeric(strs[i]))
+            String[] strs = str.split(":");
+            for(int i = 0; i < strs.length; i++)
             {
-                tab[i] = Short.valueOf(strs[i]);
+                if(StringUtils.isNumeric(strs[i]))
+                {
+                    tab[i] = Short.valueOf(strs[i]);
+                }
+                else
+                {
+                    tab[i] = 0;
+                }
             }
-            else
-            {
-                tab[i] = 0;
-            }
+            return tab;
+        }
+
+        for(int i = 0; i < tab.length; i++)
+        {
+            tab[i] = StringUtils.isNumeric(str) ? Short.valueOf(str) : 0;
         }
         return tab;
     }
@@ -473,19 +653,22 @@ public class TSMJsonManager
         JsonParser parser = new JsonParser();
         try
         {
-            JsonObject json = (JsonObject)parser.parse(new FileReader(dir));
-            return json;
+            JsonElement json = parser.parse(new FileReader(dir));
+            if(json.isJsonNull())
+            {
+                return null;
+            }
+            return json.getAsJsonObject();
         }
         catch(FileNotFoundException e)
         {
-            TheSpotLightMod.log.error("File missing, generating a new one");
-            generateNewFile(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            generateNewFiles(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         catch(JsonParseException e)
         {
             TheSpotLightMod.log.error("File is not a JSON, generating a new one");
             deleteFile(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
-            generateNewFile(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            generateNewFiles(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         return null;
     }
