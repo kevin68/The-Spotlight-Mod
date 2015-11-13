@@ -60,7 +60,6 @@ public class GuiSpotLight extends GuiContainer
         this.buttonMode.shouldChangeTextureOnToggle(false);
         this.buttonList.add(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")));
         this.buttonList.add(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked));
-        this.buttonLock.setTexts("CADENA FERMé", "CADENA OUVERT");//TODO remove, change with texture
         this.buttonList.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "", this.tile.redstone));
         this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, ""));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
@@ -170,6 +169,13 @@ public class GuiSpotLight extends GuiContainer
             GlStateManager.color(0.3F, 0.2F, 0.2F);
         }
         this.drawTexturedModalRect(x + 184, y + 94, 6, 104, 12, 11);
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
+        int i = 0;
+        if(!this.buttonLock.isActive())
+        {
+            i = 15;
+        }
+        this.drawTexturedModalRect(x + 183, y + 68, 36 + i, 104, 14, 13);
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())

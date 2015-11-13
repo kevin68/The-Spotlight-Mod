@@ -47,6 +47,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         this.buttonList.add(this.buttonY = new GuiBooleanButton(1, x - 25, y + 110, 20, 20, "Y", false));
         this.buttonList.add(this.buttonZ = new GuiBooleanButton(2, x, y + 110, 20, 20, "Z", false));
         this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "X", this.tile.beamAngleX), this.tile.beamAngleX / 360.0F));
+        this.sliderAngle.shouldResetOnEnd(true);
         this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.beamAutoRotateX));
         this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();

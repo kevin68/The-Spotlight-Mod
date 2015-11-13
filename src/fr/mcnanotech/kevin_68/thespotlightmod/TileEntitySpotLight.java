@@ -113,7 +113,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     @Override
     public void update()
     {
-//        System.out.println(this.locked);
         try
         {
             if(!this.updated)
@@ -170,6 +169,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
                         this.bVec = process();
                     }
                 }
+
                 if(this.timelineEnabled)
                 {
                     this.runTimeLine();
@@ -401,12 +401,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
         nbtTagCompound.setBoolean("TimelineEnabled", this.timelineEnabled);
         nbtTagCompound.setBoolean("TimelineSmooth", this.timelineSmooth);
         nbtTagCompound.setBoolean("Locked", this.locked);
-        
+
         if(this.lockerUUID != null && this.lockerUUID.length() > 1)
         {
             nbtTagCompound.setString("LockerUUID", this.lockerUUID);
         }
-        
+
         NBTTagList taglist = new NBTTagList();
         for(int i = 0; i < this.slots.length; ++i)
         {
@@ -430,12 +430,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
         this.timelineEnabled = nbtTagCompound.getBoolean("TimelineEnabled");
         this.timelineSmooth = nbtTagCompound.getBoolean("TimelineSmooth");
         this.locked = nbtTagCompound.getBoolean("Locked");
-        
+
         if(nbtTagCompound.hasKey("LockerUUID"))
         {
             this.lockerUUID = nbtTagCompound.getString("LockerUUID");
         }
-        
+
         NBTTagList nbttaglistItems = nbtTagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i < nbttaglistItems.tagCount(); ++i)
         {
