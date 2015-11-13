@@ -116,7 +116,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         String name = "";
         if(sliderId == 0)
         {
-            name = I18n.format("container.spotlight.time", (sliderValue * 119) / 2.0F);
+            name = I18n.format("container.spotlight.time", (((int)((sliderValue * 119) / 0.2F)))/10.0F);
         }
         return name;
     }

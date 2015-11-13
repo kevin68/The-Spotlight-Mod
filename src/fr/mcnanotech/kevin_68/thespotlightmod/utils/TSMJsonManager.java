@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -129,9 +130,11 @@ public class TSMJsonManager
         getObjFromTab(calculated, "BR", new short[1200]);
         getObjFromTab(calculated, "BG", new short[1200]);
         getObjFromTab(calculated, "BB", new short[1200]);
+        getObjFromTab(calculated, "BA", new float[1200]);
         getObjFromTab(calculated, "SBR", new short[1200]);
         getObjFromTab(calculated, "SBG", new short[1200]);
         getObjFromTab(calculated, "SBB", new short[1200]);
+        getObjFromTab(calculated, "SBA", new float[1200]);
         getObjFromTab(calculated, "AX", new short[1200]);
         getObjFromTab(calculated, "AY", new short[1200]);
         getObjFromTab(calculated, "AZ", new short[1200]);
@@ -443,15 +446,17 @@ public class TSMJsonManager
             JsonArray keys = json.get("Keys").getAsJsonArray();
             getKeysFromObj(tile, keys);
             JsonObject calculated = (JsonObject)json.get("Calculated");
-            tile.tlBRed = getTabFromObj(calculated, "BR");
-            tile.tlBGreen = getTabFromObj(calculated, "BG");
-            tile.tlBBlue = getTabFromObj(calculated, "BB");
-            tile.tlSecBRed = getTabFromObj(calculated, "SBR");
-            tile.tlSecBGreen = getTabFromObj(calculated, "SBG");
-            tile.tlSecBBlue = getTabFromObj(calculated, "SBB");
-            tile.tlBAngleX = getTabFromObj(calculated, "AX");
-            tile.tlBAngleY = getTabFromObj(calculated, "AY");
-            tile.tlBAngleZ = getTabFromObj(calculated, "AZ");
+            tile.tlBRed = getTabFromObjS(calculated, "BR");
+            tile.tlBGreen = getTabFromObjS(calculated, "BG");
+            tile.tlBBlue = getTabFromObjS(calculated, "BB");
+            tile.tlBAlpha = getTabFromObjF(calculated, "BA");
+            tile.tlSecBRed = getTabFromObjS(calculated, "SBR");
+            tile.tlSecBGreen = getTabFromObjS(calculated, "SBG");
+            tile.tlSecBBlue = getTabFromObjS(calculated, "SBB");
+            tile.tlSecBAlpha = getTabFromObjF(calculated, "SBA");
+            tile.tlBAngleX = getTabFromObjS(calculated, "AX");
+            tile.tlBAngleY = getTabFromObjS(calculated, "AY");
+            tile.tlBAngleZ = getTabFromObjS(calculated, "AZ");
             // TODO fill
             return true;
         }
@@ -513,9 +518,11 @@ public class TSMJsonManager
         getObjFromTab(calculated, "BR", tile.tlBRed);
         getObjFromTab(calculated, "BG", tile.tlBGreen);
         getObjFromTab(calculated, "BB", tile.tlBBlue);
+        getObjFromTab(calculated, "BA", tile.tlBAlpha);
         getObjFromTab(calculated, "SBR", tile.tlSecBRed);
         getObjFromTab(calculated, "SBG", tile.tlSecBGreen);
         getObjFromTab(calculated, "SBB", tile.tlSecBBlue);
+        getObjFromTab(calculated, "SBA", tile.tlSecBAlpha);
         getObjFromTab(calculated, "AX", tile.tlBAngleX);
         getObjFromTab(calculated, "AY", tile.tlBAngleY);
         getObjFromTab(calculated, "AZ", tile.tlBAngleZ);
@@ -537,9 +544,11 @@ public class TSMJsonManager
                 o.addProperty("BR", key.bRed);
                 o.addProperty("BG", key.bGreen);
                 o.addProperty("BB", key.bBlue);
+                o.addProperty("BA", key.bAlpha);
                 o.addProperty("SBR", key.secBRed);
                 o.addProperty("SBG", key.secBGreen);
                 o.addProperty("SBB", key.secBBlue);
+                o.addProperty("SBA", key.secBAlpha);
                 o.addProperty("AX", key.bAngleX);
                 o.addProperty("AY", key.bAngleY);
                 o.addProperty("AZ", key.bAngleZ);
@@ -561,7 +570,7 @@ public class TSMJsonManager
         for(int i = 0; i < keys.size(); i++)
         {
             JsonObject obj = keys.get(i).getAsJsonObject();
-            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort(), obj.get("SBR").getAsShort(), obj.get("SBG").getAsShort(), obj.get("SBB").getAsShort(), obj.get("AX").getAsShort(), obj.get("AY").getAsShort(), obj.get("AZ").getAsShort(), obj.get("ARX").getAsBoolean(), obj.get("ARY").getAsBoolean(), obj.get("ARZ").getAsBoolean(), obj.get("RRX").getAsBoolean(), obj.get("RRY").getAsBoolean(), obj.get("RRZ").getAsBoolean());
+            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort(), obj.get("BA").getAsShort(), obj.get("SBR").getAsShort(), obj.get("SBG").getAsShort(), obj.get("SBB").getAsShort(), obj.get("SBA").getAsShort(), obj.get("AX").getAsShort(), obj.get("AY").getAsShort(), obj.get("AZ").getAsShort(), obj.get("ARX").getAsBoolean(), obj.get("ARY").getAsBoolean(), obj.get("ARZ").getAsBoolean(), obj.get("RRX").getAsBoolean(), obj.get("RRY").getAsBoolean(), obj.get("RRZ").getAsBoolean());
             tile.setKey(obj.get("Time").getAsShort(), k);
             // TODO fill
         }
@@ -588,11 +597,38 @@ public class TSMJsonManager
             {
                 str += ":" + tab[i];
             }
+            str = str.substring(1);
             obj.addProperty(name, str);
         }
     }
 
-    private static short[] getTabFromObj(JsonObject calculated, String name)
+    private static void getObjFromTab(JsonObject obj, String name, float[] tab)
+    {
+        String str = "";
+        boolean sames = true;
+        float prev = tab[0];
+        for(int i = 1; i < tab.length; i++)
+        {
+            sames &= tab[i] == prev;
+            prev = tab[i];
+        }
+        if(sames)
+        {
+            str = "" + tab[0];
+            obj.addProperty(name, str);
+        }
+        else
+        {
+            for(int i = 0; i < tab.length; i++)
+            {
+                str += ":" + tab[i];
+            }
+            str = str.substring(1);
+            obj.addProperty(name, str);
+        }
+    }
+
+    private static short[] getTabFromObjS(JsonObject calculated, String name)
     {
         String str = calculated.get(name).getAsString();
         short[] tab = new short[1200];
@@ -616,6 +652,36 @@ public class TSMJsonManager
         for(int i = 0; i < tab.length; i++)
         {
             tab[i] = StringUtils.isNumeric(str) ? Short.valueOf(str) : 0;
+        }
+        return tab;
+    }
+
+    private static float[] getTabFromObjF(JsonObject calculated, String name)
+    {
+        String decimalPattern = "([0-9]*)\\.([0-9]*)";  
+        String str = calculated.get(name).getAsString();
+        float[] tab = new float[1200];
+        if(str.contains(":"))
+        {
+            String[] strs = str.split(":");
+            for(int i = 0; i < strs.length; i++)
+            {
+                if(Pattern.matches(decimalPattern, strs[i]))
+                {
+                    tab[i] = Float.valueOf(strs[i]);
+                }
+                else
+                {
+                    tab[i] = 0;
+                }
+                System.out.println(tab[i]);
+            }
+            return tab;
+        }
+
+        for(int i = 0; i < tab.length; i++)
+        {
+            tab[i] = Pattern.matches(decimalPattern, str) ? Float.valueOf(str) : 0;
         }
         return tab;
     }

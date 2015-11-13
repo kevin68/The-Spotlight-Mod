@@ -4,16 +4,19 @@ public class TSMKey
 {
     public final short time, bRed, bGreen, bBlue, secBRed, secBGreen, secBBlue, bAngleX, bAngleY, bAngleZ;
     public final boolean bARX, bARY, bARZ, bRRX, bRRY, bRRZ;
+    public final float bAlpha, secBAlpha;
 
-    public TSMKey(short time, short bRed, short bGreen, short bBlue, short secBRed, short secBGreen, short secBBlue, short bAngleX, short bAngleY, short bAngleZ, boolean bARX, boolean bARY, boolean bARZ, boolean bRRX, boolean bRRY, boolean bRRZ)// TODO fill
+    public TSMKey(short time, short bRed, short bGreen, short bBlue, float bAlpha, short secBRed, short secBGreen, short secBBlue, float secBAlpha, short bAngleX, short bAngleY, short bAngleZ, boolean bARX, boolean bARY, boolean bARZ, boolean bRRX, boolean bRRY, boolean bRRZ)// TODO fill
     {
         this.time = time;
         this.bRed = bRed;
         this.bGreen = bGreen;
         this.bBlue = bBlue;
+        this.bAlpha = bAlpha;
         this.secBRed = secBRed;
         this.secBGreen = secBGreen;
         this.secBBlue = secBBlue;
+        this.secBAlpha = secBAlpha;
         this.bAngleX = bAngleX;
         this.bAngleY = bAngleY;
         this.bAngleZ = bAngleZ;

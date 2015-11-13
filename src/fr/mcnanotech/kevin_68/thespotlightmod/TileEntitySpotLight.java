@@ -69,6 +69,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     private TSMKey[] tsmKeys = new TSMKey[120];
     // ------------------------------------- TimeLine calculated values
     public short[] tlBRed = new short[1200], tlBGreen = new short[1200], tlBBlue = new short[1200], tlSecBRed = new short[1200], tlSecBGreen = new short[1200], tlSecBBlue = new short[1200], tlBAngleX = new short[1200], tlBAngleY = new short[1200], tlBAngleZ = new short[1200];// TODO fill
+    public float[] tlBAlpha = new float[1200], tlSecBAlpha = new float[1200];
 
     // -------------------------------------Previous values for determining processing
     private short prevBeamHeight = -1, prevBeamSides = -1, prevBeamAngleX = -1, prevBeamAngleY = -1, prevBeamAngleZ = -1, prevBeamSize = -1, prevSecBeamSize = -1;
@@ -209,9 +210,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
                 this.beamRed = this.tlBRed[this.time];
                 this.beamGreen = this.tlBGreen[this.time];
                 this.beamBlue = this.tlBBlue[this.time];
+                this.beamAlpha = this.tlBAlpha[this.time];
                 this.secBeamRed = this.tlSecBRed[this.time];
                 this.secBeamGreen = this.tlSecBGreen[this.time];
                 this.secBeamBlue = this.tlSecBBlue[this.time];
+//                System.out.println(this.tlSecBAlpha[this.time]);
+                this.secBeamAlpha = this.tlSecBAlpha[this.time];
                 this.beamAngleX = this.tlBAngleX[this.time];
                 this.beamAngleY = this.tlBAngleY[this.time];
                 this.beamAngleZ = this.tlBAngleZ[this.time];
@@ -235,9 +239,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
                     this.beamRed = k.bRed;
                     this.beamGreen = k.bGreen;
                     this.beamBlue = k.bBlue;
+                    this.beamAlpha = k.bAlpha;
                     this.secBeamRed = k.secBRed;
                     this.secBeamGreen = k.secBGreen;
                     this.secBeamBlue = k.secBBlue;
+                    this.secBeamAlpha = k.secBAlpha;
                     this.beamAngleX = k.bAngleX;
                     this.beamAngleY = k.bAngleY;
                     this.beamAngleZ = k.bAngleZ;
@@ -281,29 +287,33 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
             {
                 TSMKey start = this.tsmKeys[(keysTime.get(k) - keysTime.get(k) % 10) / 10];
                 TSMKey end = this.tsmKeys[(keysTime.get(k + 1) - keysTime.get(k + 1) % 10) / 10];
-                this.tlBRed = this.calculateValues(this.tlBRed, start.bRed, end.bRed, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBGreen = this.calculateValues(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBBlue = this.calculateValues(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBRed = this.calculateValues(this.tlSecBRed, start.secBRed, end.secBRed, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBGreen = this.calculateValues(this.tlSecBGreen, start.secBGreen, end.secBGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBBlue = this.calculateValues(this.tlSecBBlue, start.secBBlue, end.secBBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAngleX = this.calculateValues(this.tlBAngleX, start.bAngleX, end.bAngleX, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAngleY = this.calculateValues(this.tlBAngleY, start.bAngleY, end.bAngleY, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAngleZ = this.calculateValues(this.tlBAngleZ, start.bAngleZ, end.bAngleZ, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBRed = this.calculateValuesS(this.tlBRed, start.bRed, end.bRed, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBGreen = this.calculateValuesS(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBBlue = this.calculateValuesS(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBAlpha = this.calculateValuesF(this.tlBAlpha, start.bAlpha, end.bAlpha, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlSecBRed = this.calculateValuesS(this.tlSecBRed, start.secBRed, end.secBRed, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlSecBGreen = this.calculateValuesS(this.tlSecBGreen, start.secBGreen, end.secBGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlSecBBlue = this.calculateValuesS(this.tlSecBBlue, start.secBBlue, end.secBBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlSecBAlpha = this.calculateValuesF(this.tlSecBAlpha, start.secBAlpha, end.secBAlpha, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBAngleX = this.calculateValuesS(this.tlBAngleX, start.bAngleX, end.bAngleX, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBAngleY = this.calculateValuesS(this.tlBAngleY, start.bAngleY, end.bAngleY, keysTime.get(k), timeBetwinKeys.get(k), false);
+                this.tlBAngleZ = this.calculateValuesS(this.tlBAngleZ, start.bAngleZ, end.bAngleZ, keysTime.get(k), timeBetwinKeys.get(k), false);
                 // TODO fill
             }
 
             TSMKey start = this.tsmKeys[(keysTime.get(keysTime.size() - 1) - keysTime.get(keysTime.size() - 1) % 10) / 10];
             TSMKey end = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
-            this.tlBRed = this.calculateValues(this.tlBRed, start.bRed, end.bRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBGreen = this.calculateValues(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBBlue = this.calculateValues(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBRed = this.calculateValues(this.tlSecBRed, start.secBRed, end.secBRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBGreen = this.calculateValues(this.tlSecBGreen, start.secBGreen, end.secBGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBBlue = this.calculateValues(this.tlSecBBlue, start.secBBlue, end.secBBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAngleX = this.calculateValues(this.tlBAngleX, start.bAngleX, end.bAngleX, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAngleY = this.calculateValues(this.tlBAngleY, start.bAngleY, end.bAngleY, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAngleZ = this.calculateValues(this.tlBAngleZ, start.bAngleZ, end.bAngleZ, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBRed = this.calculateValuesS(this.tlBRed, start.bRed, end.bRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBGreen = this.calculateValuesS(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBBlue = this.calculateValuesS(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBAlpha = this.calculateValuesF(this.tlBAlpha, start.bAlpha, end.bAlpha, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlSecBRed = this.calculateValuesS(this.tlSecBRed, start.secBRed, end.secBRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlSecBGreen = this.calculateValuesS(this.tlSecBGreen, start.secBGreen, end.secBGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlSecBBlue = this.calculateValuesS(this.tlSecBBlue, start.secBBlue, end.secBBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlSecBAlpha = this.calculateValuesF(this.tlSecBAlpha, start.secBAlpha, end.secBAlpha, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBAngleX = this.calculateValuesS(this.tlBAngleX, start.bAngleX, end.bAngleX, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBAngleY = this.calculateValuesS(this.tlBAngleY, start.bAngleY, end.bAngleY, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+            this.tlBAngleZ = this.calculateValuesS(this.tlBAngleZ, start.bAngleZ, end.bAngleZ, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
             // TODO fill
         }
         else if(keysTime.size() == 1)
@@ -314,9 +324,11 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
                 this.tlBRed[i] = k.bRed;
                 this.tlBGreen[i] = k.bGreen;
                 this.tlBBlue[i] = k.bBlue;
+                this.tlBAlpha[i] = k.bAlpha;
                 this.tlSecBRed[i] = k.secBRed;
                 this.tlSecBGreen[i] = k.secBGreen;
                 this.tlSecBBlue[i] = k.secBBlue;
+                this.tlSecBAlpha[i] = k.secBAlpha;
                 this.tlBAngleX[i] = k.bAngleX;
                 this.tlBAngleY[i] = k.bAngleY;
                 this.tlBAngleZ[i] = k.bAngleZ;
@@ -328,7 +340,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
         TheSpotLightMod.network.sendToAll(new PacketTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
     }
 
-    private short[] calculateValues(short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
+    private short[] calculateValuesS(short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
     {
         float perTick = (valEnd - valStart) / (float)timeLenght;
 
@@ -349,6 +361,32 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
             for(int n = 0; n < firstKeyTime; n++)
             {
                 tab[n] = (short)(tab[1199] + perTick * n);
+            }
+        }
+        return tab;
+    }
+
+    private float[] calculateValuesF(float[] tab, float valStart, float valEnd, int timeStart, int timeLenght, boolean last)
+    {
+        float perTick = (valEnd - valStart) / timeLenght;
+
+        if(!last)
+        {
+            for(int l = timeStart; l < timeStart + timeLenght; l++)
+            {
+                tab[l] = ((int)((valStart + perTick * (l - timeStart)) * 1000.0F)) / 1000.0F;
+            }
+        }
+        else
+        {
+            for(int m = timeStart; m < 1200; m++)
+            {
+                tab[m] = ((int)((valStart + perTick * (m - timeStart)) * 1000.0F)) / 1000.0F;
+            }
+            int firstKeyTime = timeStart + timeLenght - 1200;
+            for(int n = 0; n < firstKeyTime; n++)
+            {
+                tab[n] = ((int)((tab[1199] + perTick * n) * 1000.0F)) / 1000.0F;
             }
         }
         return tab;

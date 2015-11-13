@@ -171,7 +171,7 @@ public class GuiSpotLight extends GuiContainer
         this.drawTexturedModalRect(x + 184, y + 94, 6, 104, 12, 11);
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         int i = 0;
-        if(!this.buttonLock.isActive())
+        if(this.buttonLock.isActive())
         {
             i = 15;
         }

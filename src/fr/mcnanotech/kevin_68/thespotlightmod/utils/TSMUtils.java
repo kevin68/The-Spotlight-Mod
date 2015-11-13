@@ -600,6 +600,6 @@ public class TSMUtils
 
     public static TSMKey createKey(short time, TileEntitySpotLight tile)
     {
-        return new TSMKey(time, tile.beamRed, tile.beamGreen, tile.beamBlue, tile.secBeamRed, tile.secBeamGreen, tile.secBeamBlue, tile.beamAngleX, tile.beamAngleY, tile.beamAngleZ, tile.beamAutoRotateX, tile.beamAutoRotateY, tile.beamAutoRotateZ, tile.beamReverseRotateX, tile.beamReverseRotateY, tile.beamReverseRotateZ);// TODO fill
+        return new TSMKey(time, tile.beamRed, tile.beamGreen, tile.beamBlue, tile.beamAlpha, tile.secBeamRed, tile.secBeamGreen, tile.secBeamBlue, tile.secBeamAlpha, tile.beamAngleX, tile.beamAngleY, tile.beamAngleZ, tile.beamAutoRotateX, tile.beamAutoRotateY, tile.beamAutoRotateZ, tile.beamReverseRotateX, tile.beamReverseRotateY, tile.beamReverseRotateZ);// TODO fill
     }
 }
