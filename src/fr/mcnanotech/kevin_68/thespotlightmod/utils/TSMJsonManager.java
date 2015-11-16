@@ -127,17 +127,17 @@ public class TSMJsonManager
 
         JsonObject timeline = new JsonObject();
         JsonObject calculated = new JsonObject();
-        getObjFromTab(calculated, "BR", new short[1200]);
-        getObjFromTab(calculated, "BG", new short[1200]);
-        getObjFromTab(calculated, "BB", new short[1200]);
-        getObjFromTab(calculated, "BA", new float[1200]);
-        getObjFromTab(calculated, "SBR", new short[1200]);
-        getObjFromTab(calculated, "SBG", new short[1200]);
-        getObjFromTab(calculated, "SBB", new short[1200]);
-        getObjFromTab(calculated, "SBA", new float[1200]);
-        getObjFromTab(calculated, "AX", new short[1200]);
-        getObjFromTab(calculated, "AY", new short[1200]);
-        getObjFromTab(calculated, "AZ", new short[1200]);
+        getObjFromTabS(calculated, "BR", new short[1200]);
+        getObjFromTabS(calculated, "BG", new short[1200]);
+        getObjFromTabS(calculated, "BB", new short[1200]);
+        getObjFromTabF(calculated, "BA", new float[1200]);
+        getObjFromTabS(calculated, "SBR", new short[1200]);
+        getObjFromTabS(calculated, "SBG", new short[1200]);
+        getObjFromTabS(calculated, "SBB", new short[1200]);
+        getObjFromTabF(calculated, "SBA", new float[1200]);
+        getObjFromTabS(calculated, "AX", new short[1200]);
+        getObjFromTabS(calculated, "AY", new short[1200]);
+        getObjFromTabS(calculated, "AZ", new short[1200]);
         // TODO fill
         timeline.add("Calculated", calculated);
         timeline.add("Keys", getJsonFromTSMKeys(new TSMKey[120]));
@@ -515,17 +515,17 @@ public class TSMJsonManager
     {
         JsonObject json = new JsonObject();
         JsonObject calculated = new JsonObject();
-        getObjFromTab(calculated, "BR", tile.tlBRed);
-        getObjFromTab(calculated, "BG", tile.tlBGreen);
-        getObjFromTab(calculated, "BB", tile.tlBBlue);
-        getObjFromTab(calculated, "BA", tile.tlBAlpha);
-        getObjFromTab(calculated, "SBR", tile.tlSecBRed);
-        getObjFromTab(calculated, "SBG", tile.tlSecBGreen);
-        getObjFromTab(calculated, "SBB", tile.tlSecBBlue);
-        getObjFromTab(calculated, "SBA", tile.tlSecBAlpha);
-        getObjFromTab(calculated, "AX", tile.tlBAngleX);
-        getObjFromTab(calculated, "AY", tile.tlBAngleY);
-        getObjFromTab(calculated, "AZ", tile.tlBAngleZ);
+        getObjFromTabS(calculated, "BR", tile.tlBRed);
+        getObjFromTabS(calculated, "BG", tile.tlBGreen);
+        getObjFromTabS(calculated, "BB", tile.tlBBlue);
+        getObjFromTabF(calculated, "BA", tile.tlBAlpha);
+        getObjFromTabS(calculated, "SBR", tile.tlSecBRed);
+        getObjFromTabS(calculated, "SBG", tile.tlSecBGreen);
+        getObjFromTabS(calculated, "SBB", tile.tlSecBBlue);
+        getObjFromTabF(calculated, "SBA", tile.tlSecBAlpha);
+        getObjFromTabS(calculated, "AX", tile.tlBAngleX);
+        getObjFromTabS(calculated, "AY", tile.tlBAngleY);
+        getObjFromTabS(calculated, "AZ", tile.tlBAngleZ);
         // TODO fill
         json.add("Calculated", calculated);
         json.add("Keys", getJsonFromTSMKeys(tile.getKeys()));
@@ -570,13 +570,13 @@ public class TSMJsonManager
         for(int i = 0; i < keys.size(); i++)
         {
             JsonObject obj = keys.get(i).getAsJsonObject();
-            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort(), obj.get("BA").getAsShort(), obj.get("SBR").getAsShort(), obj.get("SBG").getAsShort(), obj.get("SBB").getAsShort(), obj.get("SBA").getAsShort(), obj.get("AX").getAsShort(), obj.get("AY").getAsShort(), obj.get("AZ").getAsShort(), obj.get("ARX").getAsBoolean(), obj.get("ARY").getAsBoolean(), obj.get("ARZ").getAsBoolean(), obj.get("RRX").getAsBoolean(), obj.get("RRY").getAsBoolean(), obj.get("RRZ").getAsBoolean());
+            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort(), obj.get("BA").getAsShort(), obj.get("SBR").getAsShort(), obj.get("SBG").getAsShort(), obj.get("SBB").getAsShort(), obj.get("SBA").getAsFloat(), obj.get("AX").getAsShort(), obj.get("AY").getAsShort(), obj.get("AZ").getAsShort(), obj.get("ARX").getAsBoolean(), obj.get("ARY").getAsBoolean(), obj.get("ARZ").getAsBoolean(), obj.get("RRX").getAsBoolean(), obj.get("RRY").getAsBoolean(), obj.get("RRZ").getAsBoolean());
             tile.setKey(obj.get("Time").getAsShort(), k);
             // TODO fill
         }
     }
 
-    private static void getObjFromTab(JsonObject obj, String name, short[] tab)
+    private static void getObjFromTabS(JsonObject obj, String name, short[] tab)
     {
         String str = "";
         boolean sames = true;
@@ -602,7 +602,7 @@ public class TSMJsonManager
         }
     }
 
-    private static void getObjFromTab(JsonObject obj, String name, float[] tab)
+    private static void getObjFromTabF(JsonObject obj, String name, float[] tab)
     {
         String str = "";
         boolean sames = true;
@@ -621,7 +621,7 @@ public class TSMJsonManager
         {
             for(int i = 0; i < tab.length; i++)
             {
-                str += ":" + tab[i];
+                str += ":" + (tab[i] < 1.0F ? String.valueOf(tab[i]).replace("0.", "") : 1.0F);//TODO test
             }
             str = str.substring(1);
             obj.addProperty(name, str);
@@ -658,7 +658,7 @@ public class TSMJsonManager
 
     private static float[] getTabFromObjF(JsonObject calculated, String name)
     {
-        String decimalPattern = "([0-9]*)\\.([0-9]*)";  
+        String decimalPattern = "([0-9]*)\\.([0-9]*)";
         String str = calculated.get(name).getAsString();
         float[] tab = new float[1200];
         if(str.contains(":"))
@@ -670,11 +670,14 @@ public class TSMJsonManager
                 {
                     tab[i] = Float.valueOf(strs[i]);
                 }
+                else if(StringUtils.isNumeric(strs[i]))
+                {
+                    tab[i] = Float.valueOf("0." + strs[i]);
+                }
                 else
                 {
                     tab[i] = 0;
                 }
-                System.out.println(tab[i]);
             }
             return tab;
         }

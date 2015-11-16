@@ -214,7 +214,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
                 this.secBeamRed = this.tlSecBRed[this.time];
                 this.secBeamGreen = this.tlSecBGreen[this.time];
                 this.secBeamBlue = this.tlSecBBlue[this.time];
-//                System.out.println(this.tlSecBAlpha[this.time]);
                 this.secBeamAlpha = this.tlSecBAlpha[this.time];
                 this.beamAngleX = this.tlBAngleX[this.time];
                 this.beamAngleY = this.tlBAngleY[this.time];
@@ -262,7 +261,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     // Server Side Only
     private void processTimelineValues()
     {
-        System.out.println("processing");
+//        System.out.println("processing");
         ArrayList<Integer> keysTime = new ArrayList();
         ArrayList<Integer> timeBetwinKeys = new ArrayList();
 
