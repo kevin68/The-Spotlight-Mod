@@ -11,11 +11,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,7 +27,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 
-public class TileEntitySpotLight extends TileEntity implements IInventory, IUpdatePlayerListBox
+public class TileEntitySpotLight extends TileEntity implements IInventory, ITickable
 {
     /*
      * Inventory
@@ -68,10 +68,12 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     public boolean timelineEnabled, timelineSmooth;
     private TSMKey[] tsmKeys = new TSMKey[120];
     // ------------------------------------- TimeLine calculated values
-    public short[] tlBRed = new short[1200], tlBGreen = new short[1200], tlBBlue = new short[1200], tlSecBRed = new short[1200], tlSecBGreen = new short[1200], tlSecBBlue = new short[1200], tlBAngleX = new short[1200], tlBAngleY = new short[1200], tlBAngleZ = new short[1200];// TODO fill
+    public short[] tlBRed = new short[1200], tlBGreen = new short[1200], tlBBlue = new short[1200], tlSecBRed = new short[1200], tlSecBGreen = new short[1200], tlSecBBlue = new short[1200], tlBAngleX = new short[1200], tlBAngleY = new short[1200], tlBAngleZ = new short[1200];// TODO
+                                                                                                                                                                                                                                                                                    // fill
     public float[] tlBAlpha = new float[1200], tlSecBAlpha = new float[1200];
 
-    // -------------------------------------Previous values for determining processing
+    // -------------------------------------Previous values for determining
+    // processing
     private short prevBeamHeight = -1, prevBeamSides = -1, prevBeamAngleX = -1, prevBeamAngleY = -1, prevBeamAngleZ = -1, prevBeamSize = -1, prevSecBeamSize = -1;
     private boolean prevBeamAutoRotateX, prevBeamAutoRotateY, prevBeamAutoRotateZ, prevWasBeam;
 
@@ -261,7 +263,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, IUpda
     // Server Side Only
     private void processTimelineValues()
     {
-//        System.out.println("processing");
+        // System.out.println("processing");
         ArrayList<Integer> keysTime = new ArrayList();
         ArrayList<Integer> timeBetwinKeys = new ArrayList();
 

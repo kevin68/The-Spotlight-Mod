@@ -716,7 +716,6 @@ public class TSMJsonManager
         }
     }
 
-    @SuppressWarnings("resource")
     private static JsonObject read(File dir)
     {
         JsonParser parser = new JsonParser();

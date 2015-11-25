@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -61,7 +62,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                 if(tile.isBeam)
                 {
                     Tessellator tess = Tessellator.getInstance();
-                    WorldRenderer worldrenderer = tess.getWorldRenderer();
 
                     ItemStack s = tile.getStackInSlot(6);
                     if(s != null && s.getItem() != null)
@@ -76,28 +76,23 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
                     GlStateManager.disableLighting();
                     GlStateManager.disableCull();
-                    // GlStateManager.disableBlend();
                     GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
                     GlStateManager.enableBlend();
 
                     float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
                     double t2 = -1.0F - f3;
-                    double t3 = tile.bVec[0].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
-                    double t4 = tile.bVec[1].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)/* d4 */) + t2;
-                    float r = tile.beamRed / 255.0F;
-                    float g = tile.beamGreen / 255.0F;
-                    float b = tile.beamBlue / 255.0F;
-                    worldrenderer.startDrawingQuads();
-                    worldrenderer.setColorRGBA_F(r, g, b, tile.beamAlpha);
-                    drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[0]);
-                    tess.draw();
+                    double t3 = tile.bVec[0].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
+                    double t4 = tile.bVec[1].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
+                    float r = tile.beamRed/255.0F;
+                    float g = tile.beamGreen/255.0F;
+                    float b = tile.beamBlue/255.0F;
+                    float a = tile.beamAlpha;
+                    drawBeam(tess, x, y, z, t2, t3, tile.bVec[0], r, g, b, a);
                     if(tile.beamDouble)
                     {
-                        worldrenderer.startDrawingQuads();
-                        worldrenderer.setColorRGBA_F(r, g, b, tile.beamAlpha);
-                        drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[1]);
-                        tess.draw();
+                        drawBeam(tess, x, y, z, t2, t4, tile.bVec[1], r, g, b, a);
                     }
+//                    GlStateManager.depthMask(false);
                     ItemStack s2 = tile.getStackInSlot(7);
                     if(s2 != null && s2.getItem() != null)
                     {
@@ -107,22 +102,16 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     {
                         bindTexture(defaultBeam);
                     }
-                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
                     if(tile.secBeamEnabled)
                     {
-                        float sR = tile.secBeamRed / 255.0F;
-                        float sG = tile.secBeamGreen / 255.0F;
-                        float sB = tile.secBeamBlue / 255.0F;
-                        worldrenderer.startDrawingQuads();
-                        worldrenderer.setColorRGBA_F(sR, sG, sB, tile.secBeamAlpha);
-                        drawBeam(worldrenderer, x, y, z, t2, t3, tile.bVec[2]);
-                        tess.draw();
+                        float sR = tile.secBeamRed/255.0F;
+                        float sG = tile.secBeamGreen/255.0F;
+                        float sB = tile.secBeamBlue/255.0F;
+                        float sA = tile.secBeamAlpha;
+                        drawBeam(tess, x, y, z, t2, t3, tile.bVec[2], sR, sG, sB, sA);
                         if(tile.beamDouble)
                         {
-                            worldrenderer.startDrawingQuads();
-                            worldrenderer.setColorRGBA_F(sR, sG, sB, tile.secBeamAlpha);
-                            drawBeam(worldrenderer, x, y, z, t2, t4, tile.bVec[3]);
-                            tess.draw();
+                            drawBeam(tess, x, y, z, t2, t4, tile.bVec[3], sR, sG, sB, sA);
                         }
                     }
                     GlStateManager.enableLighting();
@@ -171,16 +160,19 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
     }
 
-    public void drawBeam(WorldRenderer worldrenderer, double x, double y, double z, double t2, double t3, BeamVec vec)
+    public void drawBeam(Tessellator tess, double x, double y, double z, double t2, double t3, BeamVec vec, float red, float green, float blue, float alpha)
     {
+        WorldRenderer worldrenderer = tess.getWorldRenderer();
         TSMVec3[] v = vec.getVecs();
         TSMVec3 e = vec.getLenVec();
         for(int i = 0; i < v.length; i++)
         {
-            worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord, 1.0F, t3);
-            worldrenderer.addVertexWithUV(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord, 1.0F, t2);
-            worldrenderer.addVertexWithUV(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord, 0.0F, t2);
-            worldrenderer.addVertexWithUV(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord, 0.0F, t3);
+            worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181709_i);
+            worldrenderer.func_181662_b(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).func_181673_a(1.0F, t3).func_181666_a(red, green, blue, alpha).func_181675_d();
+            worldrenderer.func_181662_b(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).func_181673_a( 1.0F, t2).func_181666_a(red, green, blue, alpha).func_181675_d();
+            worldrenderer.func_181662_b(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).func_181673_a( 0.0F, t2).func_181666_a(red, green, blue, alpha).func_181675_d();
+            worldrenderer.func_181662_b(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).func_181673_a( 0.0F, t3).func_181666_a(red, green, blue, alpha).func_181675_d();
+            tess.draw();
         }
     }
 

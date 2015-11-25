@@ -84,7 +84,7 @@ public class TSMVec3
 	public void rotateAround(TSMVec3 ar, float angle)
 	{
 		float f1 = MathHelper.cos(angle);
-		float f2 = MathHelper.sin(angle);// TODO check
+		float f2 = MathHelper.sin(angle);
 		double d0 = this.xCoord * f1 + (1 - f1) * (this.xCoord * ar.xCoord) * ar.xCoord + f2 * (this.zCoord * ar.yCoord - ar.yCoord * this.zCoord);
 		double d1 = this.yCoord * f1 + (1 - f1) * (this.yCoord * ar.yCoord) * ar.yCoord + f2 * (this.yCoord * ar.xCoord - ar.xCoord * this.yCoord);
 		double d2 = this.zCoord * f1 + (1 - f1) * (this.zCoord * ar.zCoord) * ar.zCoord + f2 * (this.xCoord * ar.zCoord - ar.zCoord * this.xCoord);
