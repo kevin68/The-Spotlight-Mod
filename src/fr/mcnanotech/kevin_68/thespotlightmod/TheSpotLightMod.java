@@ -38,7 +38,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.3.1446,)", acceptableRemoteVersions = "*")
+@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.4.1589,)", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.8.8")
 public class TheSpotLightMod
 {
     public static final String MODID = "thespotlightmod";
