@@ -78,7 +78,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     GlStateManager.disableCull();
                     GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
                     GlStateManager.enableBlend();
-
                     float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
                     double t2 = -1.0F - f3;
                     double t3 = tile.bVec[0].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
@@ -92,7 +91,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     {
                         drawBeam(tess, x, y, z, t2, t4, tile.bVec[1], r, g, b, a);
                     }
-//                    GlStateManager.depthMask(false);
                     ItemStack s2 = tile.getStackInSlot(7);
                     if(s2 != null && s2.getItem() != null)
                     {

@@ -58,6 +58,8 @@ container.spotlight.underline=Souligné
 message.spotlight.locked.open=Ce projecteur est vérouillé vous ne pouvez pas l'ouvrir!
 message.spotlight.locked.break=Ce projecteur est vérouillé vous ne pouvez pas le détruire!
 
+turorial.spotlight.addkey.create=Créer la clée au temps indiqué.
+turorial.spotlight.addkey.time=Définit le temps au quel la clée doit être créée.
 tutorial.spotlight.back=This button returns you to the previous menu.
 tutorial.spotlight.beamangle=Here you can change various angles of the beams.
 tutorial.spotlight.beamprops=Here there are somes other options for the beams.
@@ -70,6 +72,7 @@ tutorial.spotlight.colors.secblue=This slide bar adjusts the blue component of t
 tutorial.spotlight.colors.secgreen=This slide bar adjusts the green component of the second beam between 0 and 255.
 tutorial.spotlight.colors.secred=This slide bar adjusts the red component of the second beam between 0 and 255.
 tutorial.spotlight.colors=This button takes you to the configuration interface of the beam's colors, the colors of the two beams are independent and uses the principle of three colors: red, green and blue. The same principle is used to display all the colors of your screen. 
+tutorial.spotlight.config=Open the configs saving screen.
 tutorial.spotlight.help=You just click on this button, this displays/hides the help.
 tutorial.spotlight.mode=Toogle the current spotlight's mode between beam and text modes.
 tutorial.spotlight.angles.angle=This slide bar adjusts an angle of beams.
