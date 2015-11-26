@@ -3,7 +3,8 @@
     	"lamp":"thespotlightmod:blocks/spotlight_lamp",
     	"border":"thespotlightmod:blocks/spotlight_border",
     	"top":"thespotlightmod:blocks/spotlight_top",
-    	"side":"thespotlightmod:blocks/spotlight_side"
+    	"side":"thespotlightmod:blocks/spotlight_side",
+    	"particle":"thespotlightmod:blocks/spotlight_side"
     },
     "elements": [
         {
