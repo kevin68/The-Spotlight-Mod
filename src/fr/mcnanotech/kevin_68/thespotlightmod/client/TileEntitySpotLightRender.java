@@ -57,6 +57,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
             GlStateManager.popMatrix();
             GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.disableFog();
             if(tile.isActive)
             {
                 if(tile.isBeam)
@@ -76,17 +77,27 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
                     GlStateManager.disableLighting();
                     GlStateManager.disableCull();
-                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
                     GlStateManager.enableBlend();
+                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+
                     float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
                     double t2 = -1.0F - f3;
                     double t3 = tile.bVec[0].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
                     double t4 = tile.bVec[1].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
-                    float r = tile.beamRed/255.0F;
-                    float g = tile.beamGreen/255.0F;
-                    float b = tile.beamBlue/255.0F;
+                    float r = tile.beamRed / 255.0F;
+                    float g = tile.beamGreen / 255.0F;
+                    float b = tile.beamBlue / 255.0F;
                     float a = tile.beamAlpha;
+                    if(a < 0.8F)
+                    {
+                        GlStateManager.depthMask(false);
+                    }
+                    else
+                    {
+                        GlStateManager.depthMask(true);
+                    }
                     drawBeam(tess, x, y, z, t2, t3, tile.bVec[0], r, g, b, a);
+
                     if(tile.beamDouble)
                     {
                         drawBeam(tess, x, y, z, t2, t4, tile.bVec[1], r, g, b, a);
@@ -102,10 +113,18 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     }
                     if(tile.secBeamEnabled)
                     {
-                        float sR = tile.secBeamRed/255.0F;
-                        float sG = tile.secBeamGreen/255.0F;
-                        float sB = tile.secBeamBlue/255.0F;
+                        float sR = tile.secBeamRed / 255.0F;
+                        float sG = tile.secBeamGreen / 255.0F;
+                        float sB = tile.secBeamBlue / 255.0F;
                         float sA = tile.secBeamAlpha;
+                        if(sA < 0.8F)
+                        {
+                            GlStateManager.depthMask(false);
+                        }
+                        else
+                        {
+                            GlStateManager.depthMask(true);
+                        }
                         drawBeam(tess, x, y, z, t2, t3, tile.bVec[2], sR, sG, sB, sA);
                         if(tile.beamDouble)
                         {
@@ -114,6 +133,8 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     }
                     GlStateManager.enableLighting();
                     GlStateManager.enableTexture2D();
+                    GlStateManager.disableBlend();
+                    GlStateManager.depthMask(true);
                 }
                 else
                 {
@@ -144,6 +165,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                     GlStateManager.popMatrix();
                 }
             }
+            GlStateManager.enableFog();
             GlStateManager.alphaFunc(516, 0.5F);
         }
         catch(Exception e)
@@ -165,11 +187,11 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
         TSMVec3 e = vec.getLenVec();
         for(int i = 0; i < v.length; i++)
         {
-            worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181709_i);
-            worldrenderer.func_181662_b(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).func_181673_a(1.0F, t3).func_181666_a(red, green, blue, alpha).func_181675_d();
-            worldrenderer.func_181662_b(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).func_181673_a( 1.0F, t2).func_181666_a(red, green, blue, alpha).func_181675_d();
-            worldrenderer.func_181662_b(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).func_181673_a( 0.0F, t2).func_181666_a(red, green, blue, alpha).func_181675_d();
-            worldrenderer.func_181662_b(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).func_181673_a( 0.0F, t3).func_181666_a(red, green, blue, alpha).func_181675_d();
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).tex(1.0F, t3).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).tex(1.0F, t2).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).tex(0.0F, t2).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).tex(0.0F, t3).color(red, green, blue, alpha).endVertex();
             tess.draw();
         }
     }

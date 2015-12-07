@@ -549,7 +549,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
+    public ItemStack removeStackFromSlot(int slot)
     {
         if(this.slots[slot] != null)
         {
@@ -571,7 +571,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return "container.spotlight";
     }
@@ -639,7 +639,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
             if(this.getStackInSlot(0) != null && this.getStackInSlot(1) == null)
             {
                 this.decrStackSize(0, 1);
-                ItemStack stack = new ItemStack(TheSpotLightMod.configSaver_full);
+                ItemStack stack = new ItemStack(TheSpotLightMod.configSaverFull);
                 TSMJsonManager.saveConfig(stack, this);
                 this.setInventorySlotContents(1, stack);
             }

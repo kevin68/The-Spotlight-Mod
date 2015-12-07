@@ -34,7 +34,7 @@ public class ContainerSpotLightConfig extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaver_full;
+                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaverFull;
             }
         });
         addSlotToContainer(new Slot(tileEntity, 3, 80, 80){
@@ -48,7 +48,7 @@ public class ContainerSpotLightConfig extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaver_full;
+                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaverFull;
             }
         });
         addSlotToContainer(new Slot(tileEntity, 5, 120, 80){
