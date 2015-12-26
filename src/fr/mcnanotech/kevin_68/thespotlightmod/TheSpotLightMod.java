@@ -38,7 +38,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.4.1589,)", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.8.8")
+@Mod(modid = TheSpotLightMod.MODID, name = "TheSpotLightMod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.14.4.1589,)", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.8.8", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
 public class TheSpotLightMod
 {
     public static final String MODID = "thespotlightmod";
@@ -77,7 +77,7 @@ public class TheSpotLightMod
         configSaverFull = new Item().setUnlocalizedName("configsaver_full").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
         GameRegistry.registerItem(configSaverFull, "tsm_configsaver_full", TheSpotLightMod.MODID);
         adminTool = new Item().setUnlocalizedName("admintool").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
-        
+
         GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
 
         proxy.registerModel();
