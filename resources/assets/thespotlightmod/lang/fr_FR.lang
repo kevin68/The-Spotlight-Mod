@@ -118,5 +118,5 @@ tutorial.spotlight.timeline.smooth=Ce boutton active le mode lisse. (En mode nor
 tutorial.spotlight.timeline.timeline=Cela représente l'axe du temps avec la barre verte correspondante au temps actuel, les croix rouges aux clées sauvegardées et les barres blanches à une graduation indicative. 
 tutorial.spotlight.timeline=Voici une grande partie du bloc, l'axe temporel. Vous pouvez y configurer des clées qui représentent des points de passage par lequels le laser va passer à un temps donné. Avec cela vous pouvez créer un dégradé par exemple.
 tutorial.spotlight.timeline.toogle=Ce boutton active/desative l'écoulement du temps.
-tutorial.spotlight.timmeline.addkey.createCréer une clée au temps donné.
+tutorial.spotlight.timmeline.addkey.create=Créer une clée au temps donné.
 tutorial.spotlight.timmeline.addkey.time=Définis le temps au quel sera créée la clée.
