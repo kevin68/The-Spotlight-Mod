@@ -173,9 +173,15 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             e.printStackTrace();
         }
     }
+    
+    @Override
+    public boolean forceTileEntityRender()
+    {
+        return true;
+    }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tick, int p_180535_9_)
+    public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tick, int destroyStage)
     {
         renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
     }

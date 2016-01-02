@@ -32,10 +32,10 @@ else {
 }
 
 minecraft {
-    version = "1.8.8-11.15.0.1609-1.8.8"
+    version = "1.8.9-11.15.0.1669"
     runDir = "run"
 	
-	mappings = "snapshot_20151207"
+	mappings = "snapshot_20160102"
 	
     replace '@VERSION@', project.version
 }
@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.2.152-mc1.8.8:dev'
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.2.155-mc1.8.9:dev'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
