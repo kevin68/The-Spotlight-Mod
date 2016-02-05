@@ -59,7 +59,7 @@ public class TheSpotLightMod
 
     @SidedProxy(clientSide = "fr.mcnanotech.kevin_68.thespotlightmod.ClientProxy", serverSide = "fr.mcnanotech.kevin_68.thespotlightmod.CommonProxy")
     public static CommonProxy proxy;
-
+ 
     public static SimpleNetworkWrapper network;
     public static Logger log;
 
@@ -84,9 +84,9 @@ public class TheSpotLightMod
         spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab).setStepSound(Block.soundTypeMetal);
         GameRegistry.registerBlock(spotlight, ItemBlock.class, "tsm_spotlight");
         configSaver = new Item().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64);
-        GameRegistry.registerItem(configSaver, "tsm_configsaver", TheSpotLightMod.MODID);
+        GameRegistry.registerItem(configSaver, "tsm_configsaver");
         configSaverFull = new Item().setUnlocalizedName("configsaver_full").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
-        GameRegistry.registerItem(configSaverFull, "tsm_configsaver_full", TheSpotLightMod.MODID);
+        GameRegistry.registerItem(configSaverFull, "tsm_configsaver_full");
         adminTool = new Item().setUnlocalizedName("admintool").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
 
         GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
@@ -98,7 +98,6 @@ public class TheSpotLightMod
     public void initTheSpotlightMod(FMLInitializationEvent event)
     {
         TSMEvents ev = new TSMEvents();
-        FMLCommonHandler.instance().bus().register(ev);
         MinecraftForge.EVENT_BUS.register(ev);
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketOpenGui.Handler.class, PacketOpenGui.class, 0, Side.SERVER);

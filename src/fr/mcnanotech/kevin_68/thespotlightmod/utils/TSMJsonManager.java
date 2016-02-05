@@ -124,6 +124,7 @@ public class TSMJsonManager
         tProperties.addProperty("T", false);
         tProperties.addProperty("TS", 50);
         tProperties.addProperty("RT", false);
+        tProperties.addProperty("3D", false);
         text.add("Properties", tProperties);
         json.add("Text", text);
 
@@ -249,6 +250,7 @@ public class TSMJsonManager
             tile.textTranslating = tProperties.get("T").getAsBoolean();
             tile.textTranslateSpeed = tProperties.get("TS").getAsShort();
             tile.textReverseTranslating = tProperties.get("RT").getAsBoolean();
+            tile.text3D = tProperties.get("3D").getAsBoolean();
             tile.markForUpdate();
             return true;
         }
@@ -373,6 +375,7 @@ public class TSMJsonManager
         tProperties.addProperty("T", tile.textTranslating);
         tProperties.addProperty("TS", tile.textTranslateSpeed);
         tProperties.addProperty("RT", tile.textReverseTranslating);
+        tProperties.addProperty("3D", tile.text3D);
         text.add("Properties", tProperties);
         json.add("Text", text);
         return json;

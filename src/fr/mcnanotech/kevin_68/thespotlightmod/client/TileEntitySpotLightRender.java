@@ -25,6 +25,8 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
+import fr.minecraftforgefrance.ffmtlibs.text3d.Model3DTextDefault;
+import fr.minecraftforgefrance.ffmtlibs.text3d.Text3D;
 
 @SideOnly(Side.CLIENT)
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
@@ -32,6 +34,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
     private ModelSpotLight model = new ModelSpotLight();
     private static final ResourceLocation tex = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
     private static final ResourceLocation defaultBeam = new ResourceLocation("textures/entity/beacon_beam.png");
+    private static final Text3D txt3d = new Text3D(new Model3DTextDefault());
 
     public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
     {
@@ -140,27 +143,44 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                 {
                     GL11.glPushMatrix();
                     GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * 0.6666667F, (float)z + 0.5F);
-                    GlStateManager.translate(0.0F, -0.4F, 0.0F);
-                    GlStateManager.scale(0.9D, 0.9D, 0.9D);
-                    GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
-                    FontRenderer fontrenderer = getFontRenderer();
-                    float f21 = 0.016666668F * 0.6666667F;
-                    GlStateManager.translate(0.0F, 0.5F * 0.6666667F, 0.07F * 0.6666667F);
-                    GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
-                    GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-                    GlStateManager.depthMask(false);
-                    GlStateManager.translate(0.0F, 100.0F - tile.textHeight * 2.0F, 0.0F);
-                    GlStateManager.translate(0.0F, tile.textScale * 0.8F + 1.0F, 0.0F);
-                    if(tile.textHeight < 50)
+                    if(tile.text3D)
                     {
-                        GlStateManager.translate(0.0F, 25.0F + 1.0F + tile.textScale * 0.45F, 0.0F);
+                        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                        GlStateManager.translate(0.0F, -0.2F, 0.0F);
+                        GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
+                        float f21 = 0.016666668F * 0.6666667F;
+                        GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
+                        GlStateManager.translate(0.0F, (-100.0F + tile.textHeight * 2.0F)/20.0F, 0.0F);
+                        GlStateManager.translate(0.0F, (tile.textScale * 0.8F + 1.0F)/30.0F, 0.0F);
+                        if(tile.textHeight < 50)
+                        {
+                            GlStateManager.translate(0.0F,-(25.0F + 1.0F + tile.textScale * 0.45F)/20.0F, 0.0F);
+                        }
+                        GlStateManager.scale(1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F);
+                        txt3d.renderTextAlignedCenter(tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text, tile.textRed / 255.0F, tile.textGreen / 255.0F, tile.textBlue / 255.0F);
                     }
-                    GlStateManager.scale(1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F);
-                    String text = (tile.textBold ? EnumChatFormatting.BOLD : "") + "" + (tile.textStrike ? EnumChatFormatting.STRIKETHROUGH : "") + "" + (tile.textUnderline ? EnumChatFormatting.UNDERLINE : "") + "" + (tile.textItalic ? EnumChatFormatting.ITALIC : "") + "" + (tile.textObfuscated ? EnumChatFormatting.OBFUSCATED : "") + "" + (tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text);
-                    fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
-                    GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-                    fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
-                    GlStateManager.depthMask(true);
+                    else
+                    {
+                        GlStateManager.scale(0.9D, 0.9D, 0.9D);
+                        GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
+                        FontRenderer fontrenderer = getFontRenderer();
+                        float f21 = 0.016666668F * 0.6666667F;
+                        GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
+                        GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
+                        GlStateManager.depthMask(false);
+                        GlStateManager.translate(0.0F, 100.0F - tile.textHeight * 2.0F, 0.0F);
+                        GlStateManager.translate(0.0F, tile.textScale * 0.8F + 1.0F, 0.0F);
+                        if(tile.textHeight < 50)
+                        {
+                            GlStateManager.translate(0.0F, 25.0F + 1.0F + tile.textScale * 0.45F, 0.0F);
+                        }
+                        GlStateManager.scale(1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F);
+                        String text = (tile.textBold ? EnumChatFormatting.BOLD : "") + "" + (tile.textStrike ? EnumChatFormatting.STRIKETHROUGH : "") + "" + (tile.textUnderline ? EnumChatFormatting.UNDERLINE : "") + "" + (tile.textItalic ? EnumChatFormatting.ITALIC : "") + "" + (tile.textObfuscated ? EnumChatFormatting.OBFUSCATED : "") + "" + (tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text);
+                        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
+                        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
+                        GlStateManager.depthMask(true);
+                    }
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     GlStateManager.popMatrix();
                 }
@@ -173,7 +193,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public boolean forceTileEntityRender()
     {

@@ -76,7 +76,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     public boolean textAutoRotateY, textReverseRotateY;
     // -------------------------------------Text Properties
     public short textHeight, textScale, textTranslateSpeed;
-    public boolean textBold, textStrike, textUnderline, textItalic, textObfuscated, textShadow, textTranslating, textReverseTranslating;
+    public boolean textBold, textStrike, textUnderline, textItalic, textObfuscated, textShadow, textTranslating, textReverseTranslating, text3D;
     // -------------------------------------TimeLine
     public short time;
     public boolean timelineEnabled, timelineSmooth;
