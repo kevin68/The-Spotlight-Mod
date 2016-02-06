@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.2.157-mc1.8.9:dev'
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.2.158-mc1.8.9:dev'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 

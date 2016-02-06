@@ -34,7 +34,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
     private ModelSpotLight model = new ModelSpotLight();
     private static final ResourceLocation tex = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
     private static final ResourceLocation defaultBeam = new ResourceLocation("textures/entity/beacon_beam.png");
-    private static final Text3D txt3d = new Text3D(new Model3DTextDefault());
+    private static final Text3D txt3d = new Text3D(Model3DTextDefault.instance);
 
     public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
     {
