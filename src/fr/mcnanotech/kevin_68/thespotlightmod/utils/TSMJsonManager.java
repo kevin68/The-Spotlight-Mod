@@ -194,63 +194,138 @@ public class TSMJsonManager
     {
         try
         {
-            tile.isBeam = json.get("ModeBeam").getAsBoolean();
-            tile.redstone = json.get("Redstone").getAsBoolean();
-            JsonObject beam = (JsonObject)json.get("Beam");
-            JsonObject bColors = (JsonObject)beam.get("Colors");
-            tile.beamRed = bColors.get("R").getAsShort();
-            tile.beamGreen = bColors.get("G").getAsShort();
-            tile.beamBlue = bColors.get("B").getAsShort();
-            tile.beamAlpha = bColors.get("A").getAsFloat();
-            tile.secBeamRed = bColors.get("SR").getAsShort();
-            tile.secBeamGreen = bColors.get("SG").getAsShort();
-            tile.secBeamBlue = bColors.get("SB").getAsShort();
-            tile.secBeamAlpha = bColors.get("SA").getAsFloat();
-            JsonObject bAngles = (JsonObject)beam.get("Angles");
-            tile.beamAngleX = bAngles.get("X").getAsShort();
-            tile.beamAngleY = bAngles.get("Y").getAsShort();
-            tile.beamAngleZ = bAngles.get("Z").getAsShort();
-            tile.beamAutoRotateX = bAngles.get("ARX").getAsBoolean();
-            tile.beamAutoRotateY = bAngles.get("ARY").getAsBoolean();
-            tile.beamAutoRotateZ = bAngles.get("ARZ").getAsBoolean();
-            tile.beamReverseRotateX = bAngles.get("RRX").getAsBoolean();
-            tile.beamReverseRotateY = bAngles.get("RRY").getAsBoolean();
-            tile.beamReverseRotateZ = bAngles.get("RRZ").getAsBoolean();
-            tile.beamRotationSpeedX = bAngles.get("RSX").getAsShort();
-            tile.beamRotationSpeedY = bAngles.get("RSY").getAsShort();
-            tile.beamRotationSpeedZ = bAngles.get("RSZ").getAsShort();
-            JsonObject bProperties = (JsonObject)beam.get("Properties");
-            tile.beamSize = bProperties.get("Size").getAsShort();
-            tile.secBeamSize = bProperties.get("SSize").getAsShort();
-            tile.secBeamEnabled = bProperties.get("SBeam").getAsBoolean();
-            tile.beamDouble = bProperties.get("Dbl").getAsBoolean();
-            tile.beamHeight = bProperties.get("H").getAsShort();
-            tile.beamSides = bProperties.get("Sides").getAsShort();
-
-            JsonObject text = (JsonObject)json.get("Text");
-            tile.text = text.get("Text").getAsString();
-            JsonObject tColors = (JsonObject)text.get("Colors");
-            tile.textRed = tColors.get("R").getAsShort();
-            tile.textGreen = tColors.get("G").getAsShort();
-            tile.textBlue = tColors.get("B").getAsShort();
-            JsonObject tAngles = (JsonObject)text.get("Angles");
-            tile.textAngleY = tAngles.get("Y").getAsShort();
-            tile.textAutoRotateY = tAngles.get("ARY").getAsBoolean();
-            tile.textReverseRotateY = tAngles.get("RRY").getAsBoolean();
-            tile.textRotationSpeedY = tAngles.get("RSY").getAsShort();
-            JsonObject tProperties = (JsonObject)text.get("Properties");
-            tile.textHeight = tProperties.get("H").getAsShort();
-            tile.textScale = tProperties.get("S").getAsShort();
-            tile.textBold = tProperties.get("B").getAsBoolean();
-            tile.textStrike = tProperties.get("ST").getAsBoolean();
-            tile.textUnderline = tProperties.get("U").getAsBoolean();
-            tile.textItalic = tProperties.get("I").getAsBoolean();
-            tile.textObfuscated = tProperties.get("O").getAsBoolean();
-            tile.textShadow = tProperties.get("Sh").getAsBoolean();
-            tile.textTranslating = tProperties.get("T").getAsBoolean();
-            tile.textTranslateSpeed = tProperties.get("TS").getAsShort();
-            tile.textReverseTranslating = tProperties.get("RT").getAsBoolean();
-            tile.text3D = tProperties.get("3D").getAsBoolean();
+            if(json.has("ModeBeam"))
+            {
+                tile.isBeam = json.get("ModeBeam").getAsBoolean();
+            }
+            if(json.has("Redstone"))
+            {
+                tile.redstone = json.get("Redstone").getAsBoolean();
+            }
+            if(json.has("Beam"))
+            {
+                JsonObject beam = (JsonObject)json.get("Beam");
+                if(beam.has("Colors"))
+                {
+                    JsonObject bColors = (JsonObject)beam.get("Colors");
+                    if(bColors.has("R"))
+                        tile.beamRed = bColors.get("R").getAsShort();
+                    if(bColors.has("G"))
+                        tile.beamGreen = bColors.get("G").getAsShort();
+                    if(bColors.has("B"))
+                        tile.beamBlue = bColors.get("B").getAsShort();
+                    if(bColors.has("A"))
+                        tile.beamAlpha = bColors.get("A").getAsFloat();
+                    if(bColors.has("SR"))
+                        tile.secBeamRed = bColors.get("SR").getAsShort();
+                    if(bColors.has("SG"))
+                        tile.secBeamGreen = bColors.get("SG").getAsShort();
+                    if(bColors.has("SB"))
+                        tile.secBeamBlue = bColors.get("SB").getAsShort();
+                    if(bColors.has("SA"))
+                        tile.secBeamAlpha = bColors.get("SA").getAsFloat();
+                }
+                if(beam.has("Angles"))
+                {
+                    JsonObject bAngles = (JsonObject)beam.get("Angles");
+                    if(bAngles.has("X"))
+                        tile.beamAngleX = bAngles.get("X").getAsShort();
+                    if(bAngles.has("Y"))
+                        tile.beamAngleY = bAngles.get("Y").getAsShort();
+                    if(bAngles.has("Z"))
+                        tile.beamAngleZ = bAngles.get("Z").getAsShort();
+                    if(bAngles.has("ARX"))
+                        tile.beamAutoRotateX = bAngles.get("ARX").getAsBoolean();
+                    if(bAngles.has("ARY"))
+                        tile.beamAutoRotateY = bAngles.get("ARY").getAsBoolean();
+                    if(bAngles.has("ARZ"))
+                        tile.beamAutoRotateZ = bAngles.get("ARZ").getAsBoolean();
+                    if(bAngles.has("RRX"))
+                        tile.beamReverseRotateX = bAngles.get("RRX").getAsBoolean();
+                    if(bAngles.has("RRY"))
+                        tile.beamReverseRotateY = bAngles.get("RRY").getAsBoolean();
+                    if(bAngles.has("RRZ"))
+                        tile.beamReverseRotateZ = bAngles.get("RRZ").getAsBoolean();
+                    if(bAngles.has("RSX"))
+                        tile.beamRotationSpeedX = bAngles.get("RSX").getAsShort();
+                    if(bAngles.has("RSY"))
+                        tile.beamRotationSpeedY = bAngles.get("RSY").getAsShort();
+                    if(bAngles.has("RSZ"))
+                        tile.beamRotationSpeedZ = bAngles.get("RSZ").getAsShort();
+                }
+                if(beam.has("Properties"))
+                {
+                    JsonObject bProperties = (JsonObject)beam.get("Properties");
+                    if(bProperties.has("Size"))
+                        tile.beamSize = bProperties.get("Size").getAsShort();
+                    if(bProperties.has("SSize"))
+                        tile.secBeamSize = bProperties.get("SSize").getAsShort();
+                    if(bProperties.has("SBeam"))
+                        tile.secBeamEnabled = bProperties.get("SBeam").getAsBoolean();
+                    if(bProperties.has("Dbl"))
+                        tile.beamDouble = bProperties.get("Dbl").getAsBoolean();
+                    if(bProperties.has("H"))
+                        tile.beamHeight = bProperties.get("H").getAsShort();
+                    if(bProperties.has("Sides"))
+                        tile.beamSides = bProperties.get("Sides").getAsShort();
+                }
+            }
+            if(json.has("Text"))
+            {
+                JsonObject text = (JsonObject)json.get("Text");
+                if(text.has("Text"))
+                    tile.text = text.get("Text").getAsString();
+                if(text.has("tColors"))
+                {
+                    JsonObject tColors = (JsonObject)text.get("Colors");
+                    if(tColors.has("R"))
+                        tile.textRed = tColors.get("R").getAsShort();
+                    if(tColors.has("G"))
+                        tile.textGreen = tColors.get("G").getAsShort();
+                    if(tColors.has("B"))
+                        tile.textBlue = tColors.get("B").getAsShort();
+                }
+                if(text.has("Angles"))
+                {
+                    JsonObject tAngles = (JsonObject)text.get("Angles");
+                    if(tAngles.has("Y"))
+                        tile.textAngleY = tAngles.get("Y").getAsShort();
+                    if(tAngles.has("ARY"))
+                        tile.textAutoRotateY = tAngles.get("ARY").getAsBoolean();
+                    if(tAngles.has("RRY"))
+                        tile.textReverseRotateY = tAngles.get("RRY").getAsBoolean();
+                    if(tAngles.has("RSY"))
+                        tile.textRotationSpeedY = tAngles.get("RSY").getAsShort();
+                }
+                if(text.has("Properties"))
+                {
+                    JsonObject tProperties = (JsonObject)text.get("Properties");
+                    if(tProperties.has("H"))
+                        tile.textHeight = tProperties.get("H").getAsShort();
+                    if(tProperties.has("S"))
+                        tile.textScale = tProperties.get("S").getAsShort();
+                    if(tProperties.has("B"))
+                        tile.textBold = tProperties.get("B").getAsBoolean();
+                    if(tProperties.has("ST"))
+                        tile.textStrike = tProperties.get("ST").getAsBoolean();
+                    if(tProperties.has("U"))
+                        tile.textUnderline = tProperties.get("U").getAsBoolean();
+                    if(tProperties.has("I"))
+                        tile.textItalic = tProperties.get("I").getAsBoolean();
+                    if(tProperties.has("O"))
+                        tile.textObfuscated = tProperties.get("O").getAsBoolean();
+                    if(tProperties.has("Sh"))
+                        tile.textShadow = tProperties.get("Sh").getAsBoolean();
+                    if(tProperties.has("T"))
+                        tile.textTranslating = tProperties.get("T").getAsBoolean();
+                    if(tProperties.has("TS"))
+                        tile.textTranslateSpeed = tProperties.get("TS").getAsShort();
+                    if(tProperties.has("RT"))
+                        tile.textReverseTranslating = tProperties.get("RT").getAsBoolean();
+                    if(tProperties.has("3D"))
+                        tile.text3D = tProperties.get("3D").getAsBoolean();
+                }
+            }
             tile.markForUpdate();
             return true;
         }
@@ -626,7 +701,8 @@ public class TSMJsonManager
         {
             for(int i = 0; i < tab.length; i++)
             {
-                str += ":" + (tab[i] < 1.0F ? String.valueOf(tab[i]).replace("0.", "") : 1.0F);//TODO test
+                str += ":" + (tab[i] < 1.0F ? String.valueOf(tab[i]).replace("0.", "") : 1.0F);// TODO
+                                                                                               // test
             }
             str = str.substring(1);
             obj.addProperty(name, str);
@@ -780,9 +856,9 @@ public class TSMJsonManager
         // System.out.println("Output String lenght : " + outStr.length());
         return outStr;
     }
-    
+
     public static HashMap<Integer, List<JsonObject>> getAll()
     {
-    	return null;
+        return null;
     }
 }
