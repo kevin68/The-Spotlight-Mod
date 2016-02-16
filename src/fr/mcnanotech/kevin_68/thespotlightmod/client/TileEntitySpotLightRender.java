@@ -29,14 +29,14 @@ import fr.minecraftforgefrance.ffmtlibs.text3d.Model3DTextDefault;
 import fr.minecraftforgefrance.ffmtlibs.text3d.Text3D;
 
 @SideOnly(Side.CLIENT)
-public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
+public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEntitySpotLight>
 {
     private ModelSpotLight model = new ModelSpotLight();
     private static final ResourceLocation tex = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
     private static final ResourceLocation defaultBeam = new ResourceLocation("textures/entity/beacon_beam.png");
     private static final Text3D txt3d = new Text3D(Model3DTextDefault.instance);
-
-    public void renderTileEntitySpotLightAt(TileEntitySpotLight tile, double x, double y, double z, float tick)
+    @Override
+    public void renderTileEntityAt(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage)
     {
         try
         {
@@ -150,7 +150,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                         GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
                         float f21 = 0.016666668F * 0.6666667F;
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-                        GlStateManager.translate(0.0F, (-100.0F + tile.textHeight * 2.0F)/20.0F, 0.0F);
+                        GlStateManager.translate(0.0F, (-200.0F + tile.textHeight * 2.0F)/20.0F, 0.0F);
                         GlStateManager.translate(0.0F, (tile.textScale * 0.8F + 1.0F)/30.0F, 0.0F);
                         if(tile.textHeight < 50)
                         {
@@ -168,7 +168,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
                         GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
                         GlStateManager.depthMask(false);
-                        GlStateManager.translate(0.0F, 100.0F - tile.textHeight * 2.0F, 0.0F);
+                        GlStateManager.translate(0.0F, 200.0F - tile.textHeight * 2.0F, 0.0F);
                         GlStateManager.translate(0.0F, tile.textScale * 0.8F + 1.0F, 0.0F);
                         if(tile.textHeight < 50)
                         {
@@ -198,12 +198,6 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer
     public boolean forceTileEntityRender()
     {
         return true;
-    }
-
-    @Override
-    public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float tick, int destroyStage)
-    {
-        renderTileEntitySpotLightAt((TileEntitySpotLight)tileentity, x, y, z, tick);
     }
 
     public void drawBeam(Tessellator tess, double x, double y, double z, double t2, double t3, BeamVec vec, float red, float green, float blue, float alpha)

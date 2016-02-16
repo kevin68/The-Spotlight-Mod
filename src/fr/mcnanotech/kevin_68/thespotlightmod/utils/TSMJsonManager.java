@@ -113,7 +113,7 @@ public class TSMJsonManager
         tAngles.addProperty("RSY", 0);
         text.add("Angles", tAngles);
         JsonObject tProperties = new JsonObject();
-        tProperties.addProperty("H", 50);
+        tProperties.addProperty("H", 100);
         tProperties.addProperty("S", 0);
         tProperties.addProperty("B", false);
         tProperties.addProperty("ST", false);
@@ -275,9 +275,11 @@ public class TSMJsonManager
                 JsonObject text = (JsonObject)json.get("Text");
                 if(text.has("Text"))
                     tile.text = text.get("Text").getAsString();
-                if(text.has("tColors"))
+                System.out.println(text.has("tColors"));
+                if(text.has("Colors"))
                 {
                     JsonObject tColors = (JsonObject)text.get("Colors");
+                    System.out.println(tColors.has("R"));
                     if(tColors.has("R"))
                         tile.textRed = tColors.get("R").getAsShort();
                     if(tColors.has("G"))
@@ -828,13 +830,11 @@ public class TSMJsonManager
         {
             return str;
         }
-        // System.out.println("String length : " + str.length());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(out);
         gzip.write(str.getBytes());
         gzip.close();
         String outStr = out.toString("ISO-8859-1");
-        // System.out.println("Output String lenght : " + outStr.length());
         return outStr;
     }
 
@@ -844,7 +844,6 @@ public class TSMJsonManager
         {
             return str;
         }
-        // System.out.println("Input String length : " + str.length());
         GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(str.getBytes("ISO-8859-1")));
         BufferedReader bf = new BufferedReader(new InputStreamReader(gis, "ISO-8859-1"));
         String outStr = "";
@@ -853,7 +852,6 @@ public class TSMJsonManager
         {
             outStr += line;
         }
-        // System.out.println("Output String lenght : " + outStr.length());
         return outStr;
     }
 

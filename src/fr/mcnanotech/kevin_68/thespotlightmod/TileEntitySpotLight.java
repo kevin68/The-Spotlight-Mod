@@ -277,7 +277,6 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     // Server Side Only
     private void processTimelineValues()
     {
-        // System.out.println("processing");
         ArrayList<Integer> keysTime = new ArrayList();
         ArrayList<Integer> timeBetwinKeys = new ArrayList();
 

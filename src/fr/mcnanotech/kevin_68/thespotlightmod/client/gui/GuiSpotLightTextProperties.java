@@ -43,7 +43,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.textHeight-50), this.tile.textHeight / 100.0F));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.textHeight-100), this.tile.textHeight / 200.0F));
         this.buttonList.add(new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.textscale", this.tile.textScale), this.tile.textScale / 100.0F));
         this.buttonList.add(this.buttonBold = new GuiBooleanButton(2, x - 50, y + 3, 130, 20, I18n.format("container.spotlight.bold"), this.tile.textBold));
         this.buttonList.add(this.buttonStrike = new GuiBooleanButton(3, x + 90, y + 3, 130, 20, I18n.format("container.spotlight.strike"), this.tile.textStrike));
@@ -164,7 +164,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         {
         case 0:
         {
-            this.tile.textHeight = (short)(sliderValue * 100);
+            this.tile.textHeight = (short)(sliderValue * 200);
             break;
         }
         case 1:
@@ -188,7 +188,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         {
         case 0:
         {
-            name = I18n.format("container.spotlight.textheight", (short)(sliderValue * 100)-50);
+            name = I18n.format("container.spotlight.textheight", (short)(sliderValue * 200)-100);
             break;
         }
         case 1:
@@ -199,6 +199,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         case 9:
         {
             name = I18n.format("container.spotlight.translatespeed", (short)(sliderValue * 100));
+            break;
         }
         }
         return name;
