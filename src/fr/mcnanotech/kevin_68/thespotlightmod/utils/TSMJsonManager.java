@@ -275,7 +275,6 @@ public class TSMJsonManager
                 JsonObject text = (JsonObject)json.get("Text");
                 if(text.has("Text"))
                     tile.text = text.get("Text").getAsString();
-                System.out.println(text.has("tColors"));
                 if(text.has("Colors"))
                 {
                     JsonObject tColors = (JsonObject)text.get("Colors");
