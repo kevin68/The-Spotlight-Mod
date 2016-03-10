@@ -3,7 +3,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;

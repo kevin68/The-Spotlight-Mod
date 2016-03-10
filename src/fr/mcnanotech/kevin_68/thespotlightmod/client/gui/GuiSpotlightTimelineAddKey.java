@@ -1,14 +1,5 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.GuiYesNoCallback;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
@@ -21,6 +12,14 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiYesNo;
+import net.minecraft.client.gui.GuiYesNoCallback;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderButton, GuiYesNoCallback
 {

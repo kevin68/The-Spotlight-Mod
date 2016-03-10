@@ -1,10 +1,10 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.TileEntitySpotLightRender;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.TileEntitySpotLightRender;
 
 public class ClientProxy extends CommonProxy
 {

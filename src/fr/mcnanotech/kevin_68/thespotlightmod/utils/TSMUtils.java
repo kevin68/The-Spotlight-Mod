@@ -3,24 +3,24 @@ package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.Slot;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamAngles;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamProperties;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamColor;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightConfig;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamProperties;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamTextures;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightConfig;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextAngles;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextColor;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextProperties;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimeline;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimelineAddKey;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.inventory.Slot;
 
 public class TSMUtils
 {

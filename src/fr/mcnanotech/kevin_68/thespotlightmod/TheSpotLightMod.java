@@ -1,39 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.OrderedLoadingCallback;
-import net.minecraftforge.common.ForgeChunkManager.PlayerOrderedLoadingCallback;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketLock;
@@ -48,6 +15,26 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineReset;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.15.0.1669,)", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.8.9", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
 public class TheSpotLightMod
@@ -59,7 +46,7 @@ public class TheSpotLightMod
 
     @SidedProxy(clientSide = "fr.mcnanotech.kevin_68.thespotlightmod.ClientProxy", serverSide = "fr.mcnanotech.kevin_68.thespotlightmod.CommonProxy")
     public static CommonProxy proxy;
- 
+
     public static SimpleNetworkWrapper network;
     public static Logger log;
 
@@ -81,7 +68,7 @@ public class TheSpotLightMod
     {
         log = event.getModLog();
 
-        spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab).setStepSound(Block.soundTypeMetal);
+        spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab);
         GameRegistry.registerBlock(spotlight, ItemBlock.class, "tsm_spotlight");
         configSaver = new Item().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64);
         GameRegistry.registerItem(configSaver, "tsm_configsaver");

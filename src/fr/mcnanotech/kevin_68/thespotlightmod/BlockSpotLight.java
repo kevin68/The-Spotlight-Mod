@@ -1,6 +1,8 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -8,18 +10,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 
 public class BlockSpotLight extends BlockContainer
 {
@@ -27,6 +23,8 @@ public class BlockSpotLight extends BlockContainer
     {
         super(Material.iron);
         this.setLightLevel(1.0F);
+        // old : soundTypeMetal
+        this.stepSound = SoundType.field_185848_a;// TODO check and test
     }
 
     @Override
@@ -48,7 +46,8 @@ public class BlockSpotLight extends BlockContainer
             TileEntitySpotLight tile = (TileEntitySpotLight)te;
             tile.dimensionID = placer.dimension;
         }
-        world.markBlockForUpdate(pos);
+        IBlockState nState = world.getBlockState(pos);
+        world.func_184138_a(pos, nState, nState, 3);// markBlockForUpdate
     }
 
     @Override
@@ -65,7 +64,7 @@ public class BlockSpotLight extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         TileEntity tileentity = world.getTileEntity(pos);
 
@@ -78,7 +77,7 @@ public class BlockSpotLight extends BlockContainer
             TileEntitySpotLight tile = (TileEntitySpotLight)tileentity;
             if(tile.locked && !player.getGameProfile().getId().toString().equals(tile.lockerUUID))
             {
-                player.addChatMessage(new ChatComponentText(I18n.format("message.spotlight.locked.open")));
+                player.addChatMessage(new TextComponentString(I18n.format("message.spotlight.locked.open")));
                 return false;
             }
             player.openGui(TheSpotLightMod.modInstance, 0, world, pos.getX(), pos.getY(), pos.getZ());
@@ -88,20 +87,19 @@ public class BlockSpotLight extends BlockContainer
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public int getRenderType()
+    public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return 2;
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;// TODO check
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }

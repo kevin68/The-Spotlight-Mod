@@ -3,36 +3,6 @@ package fr.mcnanotech.kevin_68.thespotlightmod;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.ViewFrustum;
-import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.culling.ICamera;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
-import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTLData;
@@ -40,6 +10,23 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySpotLight extends TileEntity implements IInventory, ITickable
 {
@@ -205,7 +192,8 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
 
     public void markForUpdate()
     {
-        this.worldObj.markBlockForUpdate(getPos());
+        IBlockState state = this.worldObj.getBlockState(getPos());
+        this.worldObj.func_184138_a(getPos(), state, state, 3);
     }
 
     private void runTimeLine()
@@ -277,8 +265,8 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     // Server Side Only
     private void processTimelineValues()
     {
-        ArrayList<Integer> keysTime = new ArrayList();
-        ArrayList<Integer> timeBetwinKeys = new ArrayList();
+        ArrayList<Integer> keysTime = new ArrayList<Integer>();
+        ArrayList<Integer> timeBetwinKeys = new ArrayList<Integer>();
 
         for(int i = 0; i < this.tsmKeys.length; i++)
         {
@@ -514,17 +502,17 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         readFromNBT(pkt.getNbtCompound());
     }
 
     @Override
-    public Packet getDescriptionPacket()
+    public Packet<?> getDescriptionPacket()
     {
         NBTTagCompound nbt = new NBTTagCompound();
         writeToNBT(nbt);
-        return new S35PacketUpdateTileEntity(this.pos, 3, nbt);
+        return new SPacketUpdateTileEntity(this.pos, 3, nbt);
     }
 
     @Override
@@ -640,9 +628,9 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
-        return new ChatComponentText("Test");
+        return new TextComponentString("Spotlight");
     }
 
     public void craftConfig()

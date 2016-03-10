@@ -1,12 +1,11 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiSpotlightTimelineKeyButton extends GuiButton
 {

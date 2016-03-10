@@ -1,12 +1,12 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.container;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 
 public class ContainerSpotLightConfig extends Container
 {

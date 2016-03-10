@@ -1,25 +1,8 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
@@ -27,6 +10,22 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 import fr.minecraftforgefrance.ffmtlibs.text3d.Model3DTextDefault;
 import fr.minecraftforgefrance.ffmtlibs.text3d.Text3D;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEntitySpotLight>
@@ -35,6 +34,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     private static final ResourceLocation tex = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
     private static final ResourceLocation defaultBeam = new ResourceLocation("textures/entity/beacon_beam.png");
     private static final Text3D txt3d = new Text3D(Model3DTextDefault.instance);
+
     @Override
     public void renderTileEntityAt(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage)
     {
@@ -150,11 +150,11 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                         GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
                         float f21 = 0.016666668F * 0.6666667F;
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-                        GlStateManager.translate(0.0F, (-200.0F + tile.textHeight * 2.0F)/20.0F, 0.0F);
-                        GlStateManager.translate(0.0F, (tile.textScale * 0.8F + 1.0F)/30.0F, 0.0F);
+                        GlStateManager.translate(0.0F, (-200.0F + tile.textHeight * 2.0F) / 20.0F, 0.0F);
+                        GlStateManager.translate(0.0F, (tile.textScale * 0.8F + 1.0F) / 30.0F, 0.0F);
                         if(tile.textHeight < 50)
                         {
-                            GlStateManager.translate(0.0F,-(25.0F + 1.0F + tile.textScale * 0.45F)/20.0F, 0.0F);
+                            GlStateManager.translate(0.0F, -(25.0F + 1.0F + tile.textScale * 0.45F) / 20.0F, 0.0F);
                         }
                         GlStateManager.scale(1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F);
                         txt3d.renderTextAlignedCenter(tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text, tile.textRed / 255.0F, tile.textGreen / 255.0F, tile.textBlue / 255.0F);
@@ -175,7 +175,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                             GlStateManager.translate(0.0F, 25.0F + 1.0F + tile.textScale * 0.45F, 0.0F);
                         }
                         GlStateManager.scale(1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F);
-                        String text = (tile.textBold ? EnumChatFormatting.BOLD : "") + "" + (tile.textStrike ? EnumChatFormatting.STRIKETHROUGH : "") + "" + (tile.textUnderline ? EnumChatFormatting.UNDERLINE : "") + "" + (tile.textItalic ? EnumChatFormatting.ITALIC : "") + "" + (tile.textObfuscated ? EnumChatFormatting.OBFUSCATED : "") + "" + (tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text);
+                        String text = (tile.textBold ? ChatFormatting.BOLD : "") + "" + (tile.textStrike ? ChatFormatting.STRIKETHROUGH : "") + "" + (tile.textUnderline ? ChatFormatting.UNDERLINE : "") + "" + (tile.textItalic ? ChatFormatting.ITALIC : "") + "" + (tile.textObfuscated ? ChatFormatting.OBFUSCATED : "") + "" + (tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text);
                         fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
                         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                         fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
@@ -195,23 +195,23 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     }
 
     @Override
-    public boolean forceTileEntityRender()
+    public boolean func_188185_a(TileEntitySpotLight tile)//func_188185_a -> forceTileEntityRender
     {
         return true;
     }
 
     public void drawBeam(Tessellator tess, double x, double y, double z, double t2, double t3, BeamVec vec, float red, float green, float blue, float alpha)
     {
-        WorldRenderer worldrenderer = tess.getWorldRenderer();
+        VertexBuffer worldrenderer = tess.getWorldRenderer();
         TSMVec3[] v = vec.getVecs();
         TSMVec3 e = vec.getLenVec();
         for(int i = 0; i < v.length; i++)
         {
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).tex(1.0F, t3).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).tex(1.0F, t2).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).tex(0.0F, t2).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).tex(0.0F, t3).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).func_187315_a(1.0F, t3).color(red, green, blue, alpha).endVertex();//TODO func_187315_a -> tex
+            worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).func_187315_a(1.0F, t2).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).func_187315_a(0.0F, t2).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).func_187315_a(0.0F, t3).color(red, green, blue, alpha).endVertex();
             tess.draw();
         }
     }

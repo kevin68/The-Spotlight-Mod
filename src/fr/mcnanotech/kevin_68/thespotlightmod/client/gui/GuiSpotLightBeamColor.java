@@ -1,14 +1,8 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
@@ -20,6 +14,12 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
 {
@@ -45,16 +45,16 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, EnumChatFormatting.RED + I18n.format("container.spotlight.red", this.tile.beamRed), this.tile.beamRed / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, EnumChatFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.beamGreen), this.tile.beamGreen / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 24, 256, 20, EnumChatFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.beamBlue), this.tile.beamBlue / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, ChatFormatting.RED + I18n.format("container.spotlight.red", this.tile.beamRed), this.tile.beamRed / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, ChatFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.beamGreen), this.tile.beamGreen / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 24, 256, 20, ChatFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.beamBlue), this.tile.beamBlue / 255.0F));
 
-        this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 68, 256, 20, EnumChatFormatting.DARK_RED + I18n.format("container.spotlight.red", this.tile.secBeamRed), this.tile.secBeamRed / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 90, 256, 20, EnumChatFormatting.DARK_GREEN + I18n.format("container.spotlight.green", this.tile.secBeamGreen), this.tile.secBeamGreen / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 112, 256, 20, EnumChatFormatting.DARK_BLUE + I18n.format("container.spotlight.blue", this.tile.secBeamBlue), this.tile.secBeamBlue / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 68, 256, 20, ChatFormatting.DARK_RED + I18n.format("container.spotlight.red", this.tile.secBeamRed), this.tile.secBeamRed / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 90, 256, 20, ChatFormatting.DARK_GREEN + I18n.format("container.spotlight.green", this.tile.secBeamGreen), this.tile.secBeamGreen / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 112, 256, 20, ChatFormatting.DARK_BLUE + I18n.format("container.spotlight.blue", this.tile.secBeamBlue), this.tile.secBeamBlue / 255.0F));
 
-        this.buttonList.add(new GuiSliderButton(this, 6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha",this.tile.beamAlpha), this.tile.beamAlpha));
-        this.buttonList.add(new GuiSliderButton(this, 7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha",this.tile.secBeamAlpha), this.tile.secBeamAlpha));
+        this.buttonList.add(new GuiSliderButton(this, 6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha", this.tile.beamAlpha), this.tile.beamAlpha));
+        this.buttonList.add(new GuiSliderButton(this, 7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha", this.tile.secBeamAlpha), this.tile.secBeamAlpha));
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", false));
@@ -127,42 +127,42 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         {
         case 0:
         {
-            name = EnumChatFormatting.RED + I18n.format("container.spotlight.red",((short)(sliderValue * 255)));
+            name = ChatFormatting.RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
             break;
         }
         case 1:
         {
-            name = EnumChatFormatting.GREEN + I18n.format("container.spotlight.green",((short)(sliderValue * 255)));
+            name = ChatFormatting.GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
             break;
         }
         case 2:
         {
-            name = EnumChatFormatting.BLUE + I18n.format("container.spotlight.blue",((short)(sliderValue * 255)));
+            name = ChatFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
             break;
         }
         case 3:
         {
-            name = EnumChatFormatting.DARK_RED + I18n.format("container.spotlight.red",((short)(sliderValue * 255)));
+            name = ChatFormatting.DARK_RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
             break;
         }
         case 4:
         {
-            name = EnumChatFormatting.DARK_GREEN + I18n.format("container.spotlight.green",((short)(sliderValue * 255)));
+            name = ChatFormatting.DARK_GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
             break;
         }
         case 5:
         {
-            name = EnumChatFormatting.BLUE + I18n.format("container.spotlight.blue",((short)(sliderValue * 255)));
+            name = ChatFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
             break;
         }
         case 6:
         {
-            name = I18n.format("container.spotlight.alpha",((short)(sliderValue * 1000)) / 1000.0F);
+            name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
             break;
         }
         case 7:
         {
-            name = I18n.format("container.spotlight.alpha",((short)(sliderValue * 1000)) / 1000.0F);
+            name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
             break;
         }
         }
