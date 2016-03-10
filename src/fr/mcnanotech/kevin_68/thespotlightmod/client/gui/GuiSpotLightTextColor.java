@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
@@ -22,6 +20,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
@@ -48,9 +47,9 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y + 24, 256, 20, ChatFormatting.RED + I18n.format("container.spotlight.red", this.tile.textRed), this.tile.textRed / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 46, 256, 20, ChatFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.textGreen), this.tile.textGreen / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 68, 256, 20, ChatFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.textBlue), this.tile.textBlue / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red", this.tile.textRed), this.tile.textRed / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 46, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.textGreen), this.tile.textGreen / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.textBlue), this.tile.textBlue / 255.0F));
 
         Keyboard.enableRepeatEvents(true);
         this.textField = new GuiTextField(3, this.fontRendererObj, x - 40, y, 256, 12);
@@ -116,17 +115,17 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         {
         case 0:
         {
-            name = ChatFormatting.RED + I18n.format("container.spotlight.red", (short)(sliderValue * 255));
+            name = TextFormatting.RED + I18n.format("container.spotlight.red", (short)(sliderValue * 255));
             break;
         }
         case 1:
         {
-            name = ChatFormatting.GREEN + I18n.format("container.spotlight.green", (short)(sliderValue * 255));
+            name = TextFormatting.GREEN + I18n.format("container.spotlight.green", (short)(sliderValue * 255));
             break;
         }
         case 2:
         {
-            name = ChatFormatting.BLUE + I18n.format("container.spotlight.blue", (short)(sliderValue * 255));
+            name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", (short)(sliderValue * 255));
             break;
         }
         }

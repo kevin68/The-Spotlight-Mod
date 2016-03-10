@@ -165,72 +165,72 @@ public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallba
         {
             this.drawTexturedModalRect((int)(x - 22 + this.selectedKeyID * 2.5), y + 62, 0, 115, 5, 6);
         }
-        // drawString(this.fontRendererObj, EnumChatFormatting.RED +
+        // drawString(this.fontRendererObj, EnumTextFormatting.RED +
         // I18n.format("container.spotlight.red") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERRED) & 0xFF), x + 100, y
         // + 70, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.GREEN +
+        // drawString(this.fontRendererObj, EnumTextFormatting.GREEN +
         // I18n.format("container.spotlight.green") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERGREEN) & 0xFF), x + 100,
         // y + 80, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.BLUE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.BLUE +
         // I18n.format("container.spotlight.blue") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERBLUE) & 0xFF), x + 100, y
         // + 90, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.DARK_RED +
+        // drawString(this.fontRendererObj, EnumTextFormatting.DARK_RED +
         // I18n.format("container.spotlight.red") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERSECRED) & 0xFF), x + 185,
         // y + 70, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.DARK_GREEN +
+        // drawString(this.fontRendererObj, EnumTextFormatting.DARK_GREEN +
         // I18n.format("container.spotlight.green") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERSECGREEN) & 0xFF), x +
         // 185, y + 80, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.DARK_BLUE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.DARK_BLUE +
         // I18n.format("container.spotlight.blue") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERSECBLUE) & 0xFF), x +
         // 185, y + 90, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.angle") + " 1 : " +
         // entry.get(EnumLaserInformations.LASERANGLE1), x + 100, y + 100,
         // 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.angle") + " 2 : " +
         // entry.get(EnumLaserInformations.LASERANGLE2), x + 185, y + 100,
         // 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.rotate") + " : " +
         // ((Boolean)entry.get(EnumLaserInformations.LASERAUTOROTATE) ?
         // I18n.format("container.spotlight.true") :
         // I18n.format("container.spotlight.false")), x + 100, y + 110,
         // 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.rotationspeed") + " : " +
         // entry.get(EnumLaserInformations.LASERROTATIONSPEED), x + 100, y +
         // 120, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.rotationreverse") + " : " +
         // ((Boolean)entry.get(EnumLaserInformations.LASERREVERSEROTATION) ?
         // I18n.format("container.spotlight.true") :
         // I18n.format("container.spotlight.false")), x + 100, y + 130,
         // 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.secondlazer") + " : " +
         // ((Boolean)entry.get(EnumLaserInformations.LASERSECONDARY) ?
         // I18n.format("container.spotlight.true") :
         // I18n.format("container.spotlight.false")), x + 100, y + 140,
         // 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.axis") + " : " +
         // ((Byte)entry.get(EnumLaserInformations.LASERDISPLAYAXE) == 0 ? "y" :
         // (Byte)entry.get(EnumLaserInformations.LASERDISPLAYAXE) == 1 ? "x" :
         // "z"), x + 100, y + 150, 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.laserMode") + " : " +
         // ((Boolean)entry.get(EnumLaserInformations.LASERDOUBLE) ?
         // I18n.format("container.spotlight.double") :
         // I18n.format("container.spotlight.simple")), x + 100, y + 160,
         // 0xffffff);
-        // drawString(this.fontRendererObj, EnumChatFormatting.WHITE +
+        // drawString(this.fontRendererObj, EnumTextFormatting.WHITE +
         // I18n.format("container.spotlight.size") + " " +
         // I18n.format("container.spotlight.main") + " : " +
         // entry.get(EnumLaserInformations.LASERMAINSIZE) + " " +

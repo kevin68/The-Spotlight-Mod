@@ -2,8 +2,6 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
@@ -24,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -175,7 +174,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                             GlStateManager.translate(0.0F, 25.0F + 1.0F + tile.textScale * 0.45F, 0.0F);
                         }
                         GlStateManager.scale(1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F, 1.0 + tile.textScale / 16.0F);
-                        String text = (tile.textBold ? ChatFormatting.BOLD : "") + "" + (tile.textStrike ? ChatFormatting.STRIKETHROUGH : "") + "" + (tile.textUnderline ? ChatFormatting.UNDERLINE : "") + "" + (tile.textItalic ? ChatFormatting.ITALIC : "") + "" + (tile.textObfuscated ? ChatFormatting.OBFUSCATED : "") + "" + (tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text);
+                        String text = (tile.textBold ? TextFormatting.BOLD : "") + "" + (tile.textStrike ? TextFormatting.STRIKETHROUGH : "") + "" + (tile.textUnderline ? TextFormatting.UNDERLINE : "") + "" + (tile.textItalic ? TextFormatting.ITALIC : "") + "" + (tile.textObfuscated ? TextFormatting.OBFUSCATED : "") + "" + (tile.textTranslating ? getTranslatingText(tile.text, tile) : tile.text);
                         fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
                         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                         fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.textRed * 65536 + tile.textGreen * 256 + tile.textBlue, tile.textShadow);
@@ -195,7 +194,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     }
 
     @Override
-    public boolean func_188185_a(TileEntitySpotLight tile)//func_188185_a -> forceTileEntityRender
+    public boolean func_188185_a(TileEntitySpotLight tile)// func_188185_a -> forceTileEntityRender
     {
         return true;
     }
@@ -208,7 +207,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
         for(int i = 0; i < v.length; i++)
         {
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).func_187315_a(1.0F, t3).color(red, green, blue, alpha).endVertex();//TODO func_187315_a -> tex
+            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).func_187315_a(1.0F, t3).color(red, green, blue, alpha).endVertex();// TODO func_187315_a -> tex
             worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).func_187315_a(1.0F, t2).color(red, green, blue, alpha).endVertex();
             worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).func_187315_a(0.0F, t2).color(red, green, blue, alpha).endVertex();
             worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).func_187315_a(0.0F, t3).color(red, green, blue, alpha).endVertex();
