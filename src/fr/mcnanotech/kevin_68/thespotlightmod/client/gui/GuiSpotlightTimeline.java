@@ -16,14 +16,13 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class GuiSpotlightTimeline extends GuiContainer implements GuiYesNoCallback
+public class GuiSpotlightTimeline extends GuiContainer
 {
     protected InventoryPlayer invPlayer;
     protected TileEntitySpotLight tile;

@@ -39,7 +39,7 @@ public class ContainerSpotLight extends Container
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(slotId);
+        Slot slot = this.inventorySlots.get(slotId);
         if(slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();

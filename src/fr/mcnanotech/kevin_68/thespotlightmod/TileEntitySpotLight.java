@@ -193,7 +193,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     public void markForUpdate()
     {
         IBlockState state = this.worldObj.getBlockState(getPos());
-        this.worldObj.func_184138_a(getPos(), state, state, 3);
+        this.worldObj.notifyBlockUpdate(getPos(), state, state, 3);
     }
 
     private void runTimeLine()

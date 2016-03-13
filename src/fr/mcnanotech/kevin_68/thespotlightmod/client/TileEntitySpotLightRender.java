@@ -194,23 +194,23 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     }
 
     @Override
-    public boolean func_188185_a(TileEntitySpotLight tile)// func_188185_a -> forceTileEntityRender
+    public boolean isGlobalRenderer(TileEntitySpotLight tile)
     {
         return true;
     }
 
     public void drawBeam(Tessellator tess, double x, double y, double z, double t2, double t3, BeamVec vec, float red, float green, float blue, float alpha)
     {
-        VertexBuffer worldrenderer = tess.getWorldRenderer();
+        VertexBuffer worldrenderer = tess.getBuffer();
         TSMVec3[] v = vec.getVecs();
         TSMVec3 e = vec.getLenVec();
         for(int i = 0; i < v.length; i++)
         {
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).func_187315_a(1.0F, t3).color(red, green, blue, alpha).endVertex();// TODO func_187315_a -> tex
-            worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).func_187315_a(1.0F, t2).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).func_187315_a(0.0F, t2).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).func_187315_a(0.0F, t3).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).tex(1.0F, t3).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).tex(1.0F, t2).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).tex(0.0F, t2).color(red, green, blue, alpha).endVertex();
+            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).tex(0.0F, t3).color(red, green, blue, alpha).endVertex();
             tess.draw();
         }
     }

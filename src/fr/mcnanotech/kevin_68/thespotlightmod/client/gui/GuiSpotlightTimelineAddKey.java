@@ -14,14 +14,13 @@ import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
 import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderButton, GuiYesNoCallback
+public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderButton
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
 
@@ -115,7 +114,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         String name = "";
         if(sliderId == 0)
         {
-            name = I18n.format("container.spotlight.time", (((int)((sliderValue * 119) / 0.2F)))/10.0F);
+            name = I18n.format("container.spotlight.time", (((int)((sliderValue * 119) / 0.2F))) / 10.0F);
         }
         return name;
     }

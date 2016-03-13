@@ -24,10 +24,10 @@ import net.minecraft.inventory.Slot;
 
 public class TSMUtils
 {
-    public static ArrayList formatedText(FontRenderer font, String str, int mouseX, int width, boolean reversed)
+    public static ArrayList<String> formatedText(FontRenderer font, String str, int mouseX, int width, boolean reversed)
     {
         int maxSize = reversed ? mouseX - 70 : width - mouseX - 70;
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<String>();
         if(font.getStringWidth(str) >= maxSize)
         {
             String[] words = str.split(" ");
@@ -68,11 +68,11 @@ public class TSMUtils
         return list;
     }
 
-    public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, int height, List buttons, GuiScreen gui)
+    public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, int height, List<?> buttons, GuiScreen gui)
     {
         if(gui instanceof GuiSpotLightTextColor)
         {
-            ArrayList list = new ArrayList();
+            ArrayList<String> list = new ArrayList<String>();
             boolean flag = mouseX >= ((GuiSpotLightTextColor)gui).textField.xPosition && mouseX < ((GuiSpotLightTextColor)gui).textField.xPosition + ((GuiSpotLightTextColor)gui).textField.width && mouseY >= ((GuiSpotLightTextColor)gui).textField.yPosition && mouseY < ((GuiSpotLightTextColor)gui).textField.yPosition + ((GuiSpotLightTextColor)gui).textField.height;
 
             if(flag)
@@ -88,7 +88,7 @@ public class TSMUtils
             Slot s = g.getSlotUnderMouse();
             if(s != null)
             {
-                ArrayList list = new ArrayList();
+                ArrayList<String> list = new ArrayList<String>();
                 switch(s.slotNumber)
                 {
                 case 0:
@@ -112,7 +112,7 @@ public class TSMUtils
             Slot s = g.getSlotUnderMouse();
             if(s != null)
             {
-                ArrayList list = new ArrayList();
+                ArrayList<String> list = new ArrayList<String>();
                 switch(s.slotNumber)
                 {
                 case 0:
@@ -164,7 +164,7 @@ public class TSMUtils
             GuiButton button = (GuiButton)buttons.get(i);
             if(button.isMouseOver())
             {
-                ArrayList list = new ArrayList();
+                ArrayList<String> list = new ArrayList<String>();
                 if(gui instanceof GuiSpotLight)
                 {
                     boolean isBeam = ((GuiSpotLight)gui).tile.isBeam;

@@ -39,7 +39,7 @@ public class ContainerSpotLightTextures extends Container
     {
         if(slotId < 2 && slotId >= 0)
         {
-            Slot slot = (Slot)this.inventorySlots.get(slotId);
+            Slot slot = this.inventorySlots.get(slotId);
             ItemStack stack = player.inventory.getItemStack();
             if(clickedButton == 0)
             {

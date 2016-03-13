@@ -23,8 +23,7 @@ public class BlockSpotLight extends BlockContainer
     {
         super(Material.iron);
         this.setLightLevel(1.0F);
-        // old : soundTypeMetal
-        this.stepSound = SoundType.field_185848_a;// TODO check and test
+        this.stepSound = SoundType.METAL;
     }
 
     @Override
@@ -47,7 +46,7 @@ public class BlockSpotLight extends BlockContainer
             tile.dimensionID = placer.dimension;
         }
         IBlockState nState = world.getBlockState(pos);
-        world.func_184138_a(pos, nState, nState, 3);// markBlockForUpdate
+        world.notifyBlockUpdate(pos, nState, nState, 3);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class BlockSpotLight extends BlockContainer
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;// TODO check
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
