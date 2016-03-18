@@ -23,7 +23,7 @@ public class BlockSpotLight extends BlockContainer
     {
         super(Material.iron);
         this.setLightLevel(1.0F);
-        this.stepSound = SoundType.METAL;
+        this.setSoundType(SoundType.METAL);
     }
 
     @Override
