@@ -35,7 +35,7 @@ public class ContainerSpotLightTextures extends Container
     }
 
     @Override
-    public ItemStack func_184996_a(int slotId, int clickedButton, ClickType clickType, EntityPlayer player)//TODO func_184996_a -> slotclick
+    public ItemStack slotClick(int slotId, int clickedButton, ClickType clickType, EntityPlayer player)
     {
         if(slotId < 2 && slotId >= 0)
         {
@@ -61,7 +61,7 @@ public class ContainerSpotLightTextures extends Container
             }
             return stack;
         }
-        return super.func_184996_a(slotId, clickedButton, clickType, player);
+        return super.slotClick(slotId, clickedButton, clickType, player);
     }
 
     @Override
