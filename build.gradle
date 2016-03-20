@@ -32,10 +32,10 @@ else {
 }
 
 minecraft {
-    version = "1.9-12.16.0.1770-1.9"
+    version = "1.9-12.16.0.17761.9"
     runDir = "run"
 	
-	mappings = "snapshot_20160319"
+	mappings = "snapshot_20160320"
 	
     replace '@VERSION@', project.version
 }
@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.2.158-mc1.9:dev'
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.3.160-mc1.9:dev'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
