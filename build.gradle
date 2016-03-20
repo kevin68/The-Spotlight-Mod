@@ -32,7 +32,7 @@ else {
 }
 
 minecraft {
-    version = "1.9-12.16.0.17761.9"
+    version = "1.9-12.16.0.1776-1.9"
     runDir = "run"
 	
 	mappings = "snapshot_20160320"
