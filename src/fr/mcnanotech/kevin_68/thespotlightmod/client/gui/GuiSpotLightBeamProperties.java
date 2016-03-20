@@ -31,7 +31,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
 
     public GuiSpotLightBeamProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -161,7 +161,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 

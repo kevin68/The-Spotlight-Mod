@@ -6,13 +6,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public class ContainerSpotLight extends Container
 {
     protected TileEntitySpotLight tileSpotLight;
 
-    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, World world, int widthMove, boolean showPlayerInventory)
+    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, int widthMove, boolean showPlayerInventory)
     {
         this.tileSpotLight = tileEntity;
         if(showPlayerInventory)

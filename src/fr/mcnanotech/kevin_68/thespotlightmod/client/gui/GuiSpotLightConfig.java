@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 public class GuiSpotLightConfig extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
@@ -74,7 +74,7 @@ public class GuiSpotLightConfig extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -86,7 +86,7 @@ public class GuiSpotLightConfig extends GuiContainer
         int y = (this.height - this.ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-        this.mc.renderEngine.bindTexture(icons);
+        this.mc.renderEngine.bindTexture(tsmIcons);
         this.drawTexturedModalRect(x + 39, y + 79, 220, 0, 18, 18);
         this.drawTexturedModalRect(x + 79, y + 79, 220, 0, 18, 18);
         this.drawTexturedModalRect(x + 39, y + 29, 238, 0, 18, 18);

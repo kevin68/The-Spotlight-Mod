@@ -33,11 +33,11 @@ public class GuiSpotlightTimeline extends GuiContainer
     private GuiButton buttonRemove;
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
-    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, world, 11, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 11, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -142,7 +142,7 @@ public class GuiSpotlightTimeline extends GuiContainer
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -156,7 +156,7 @@ public class GuiSpotlightTimeline extends GuiContainer
         this.drawTexturedModalRect(x - 35, y + 19, 0, 0, this.xSize, this.ySize);
         this.mc.renderEngine.bindTexture(texture2);
         this.drawTexturedModalRect(x + 135, y + 19, 0, 0, this.xSize, this.ySize);
-        this.mc.renderEngine.bindTexture(icons);
+        this.mc.renderEngine.bindTexture(tsmIcons);
         this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
         this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
         this.drawTexturedModalRect(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);

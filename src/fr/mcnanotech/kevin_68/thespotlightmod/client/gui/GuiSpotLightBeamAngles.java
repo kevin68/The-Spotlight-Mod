@@ -30,7 +30,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
 
     public GuiSpotLightBeamAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -315,7 +315,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
             // boolean reversed = mouseX > this.width / 2;
             // ArrayList<String> list = new ArrayList<String>();
             //

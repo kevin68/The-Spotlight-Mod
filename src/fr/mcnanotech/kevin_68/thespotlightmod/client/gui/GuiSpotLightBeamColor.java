@@ -31,7 +31,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
 
     public GuiSpotLightBeamColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, false));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, false));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -175,7 +175,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width,  this.buttonList, this);
         }
     }
 

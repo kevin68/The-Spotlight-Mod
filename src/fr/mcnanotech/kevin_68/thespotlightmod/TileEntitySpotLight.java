@@ -82,9 +82,9 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     public BeamVec[] bVec = null;
     public List<BeamVec[]> beams = new ArrayList<BeamVec[]>();
 
-    public void setKey(short time, TSMKey key)
+    public void setKey(short keyTime, TSMKey key)
     {
-        this.tsmKeys[time] = key;
+        this.tsmKeys[keyTime] = key;
         if(!this.worldObj.isRemote)
         {
             processTimelineValues();
@@ -92,9 +92,9 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
         this.markForUpdate();
     }
 
-    public TSMKey getKey(short time)
+    public TSMKey getKey(short keyTime)
     {
-        return this.tsmKeys[time];
+        return this.tsmKeys[keyTime];
     }
 
     public TSMKey[] getKeys()

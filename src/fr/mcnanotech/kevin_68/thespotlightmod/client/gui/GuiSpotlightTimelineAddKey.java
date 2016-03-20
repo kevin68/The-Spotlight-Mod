@@ -32,7 +32,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
 
     public GuiSpotlightTimelineAddKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, world, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -126,7 +126,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 

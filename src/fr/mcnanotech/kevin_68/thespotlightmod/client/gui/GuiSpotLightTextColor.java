@@ -35,7 +35,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
 
     public GuiSpotLightTextColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -140,7 +140,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.textField.drawTextBox();
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 

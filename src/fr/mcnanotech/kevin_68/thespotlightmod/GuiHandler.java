@@ -35,15 +35,15 @@ public class GuiHandler implements IGuiHandler
             }
             case 3:
             {
-                return new ContainerSpotLight((TileEntitySpotLight)tileentity, player.inventory, world, 11, true);
+                return new ContainerSpotLight((TileEntitySpotLight)tileentity, player.inventory, 11, true);
             }
             case 4:
             {
-                return new ContainerSpotLight((TileEntitySpotLight)tileentity, player.inventory, world, 8, false);
+                return new ContainerSpotLight((TileEntitySpotLight)tileentity, player.inventory, 8, false);
             }
             default:
             {
-                return new ContainerSpotLight((TileEntitySpotLight)tileentity, player.inventory, world, 8, true);
+                return new ContainerSpotLight((TileEntitySpotLight)tileentity, player.inventory, 8, true);
             }
             }
         }

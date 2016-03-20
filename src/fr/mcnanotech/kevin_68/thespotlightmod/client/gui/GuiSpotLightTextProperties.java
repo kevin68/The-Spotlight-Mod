@@ -30,7 +30,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
 
     public GuiSpotLightTextProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -54,17 +54,17 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         this.buttonList.add(this.sliderTranslateSpeed = new GuiSliderButton(this, 9, x + 90, y + 72, 130, 20, I18n.format("container.spotlight.translatespeed", this.tile.textTranslateSpeed), this.tile.textTranslateSpeed / 100.0F));
         this.buttonList.add(this.buttonReverseTranslating = new GuiBooleanButton(10, x - 50, y + 95, 130, 20, I18n.format("container.spotlight.reversetranslate"), this.tile.textReverseTranslating));
         this.buttonList.add(this.button3D = new GuiBooleanButton(11, x + 90, y + 95, 130, 20, I18n.format("container.spotlight.text3d"), this.tile.text3D));
-        
+
         this.sliderTranslateSpeed.enabled = this.buttonTranslating.isActive();
         this.buttonReverseTranslating.enabled = this.buttonTranslating.isActive();
-        
+
         this.buttonBold.enabled = !this.button3D.isActive();
         this.buttonStrike.enabled = !this.button3D.isActive();
         this.buttonUnderline.enabled = !this.button3D.isActive();
         this.buttonItalic.enabled = !this.button3D.isActive();
         this.buttonObfuscated.enabled = !this.button3D.isActive();
         this.buttonShadow.enabled = !this.button3D.isActive();
-        
+
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
     }
@@ -211,7 +211,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.height, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 

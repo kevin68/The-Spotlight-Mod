@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class GuiSpotLight extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation icons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
@@ -32,7 +32,7 @@ public class GuiSpotLight extends GuiContainer
 
     public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, wrld, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -162,7 +162,7 @@ public class GuiSpotLight extends GuiContainer
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         super.drawScreen(mouseX, mouseY, partialRenderTick);
-        this.mc.renderEngine.bindTexture(icons);
+        this.mc.renderEngine.bindTexture(tsmIcons);
         if(!this.buttonRedstone.isActive())
         {
             GlStateManager.color(0.3F, 0.2F, 0.2F);
@@ -179,7 +179,7 @@ public class GuiSpotLight extends GuiContainer
         this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, x, y, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, x, this.buttonList, this);
         }
     }
 

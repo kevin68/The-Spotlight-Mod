@@ -68,7 +68,7 @@ public class TSMUtils
         return list;
     }
 
-    public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, int height, List<?> buttons, GuiScreen gui)
+    public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, List<?> buttons, GuiScreen gui)
     {
         if(gui instanceof GuiSpotLightTextColor)
         {
