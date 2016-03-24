@@ -10,9 +10,9 @@ public class TSMEvents
     @SubscribeEvent
     public void onBreakEvent(BlockEvent.BreakEvent event)
     {
-        if(event.world.getTileEntity(event.pos) instanceof TileEntitySpotLight)
+        if(event.getWorld().getTileEntity(event.getPos()) instanceof TileEntitySpotLight)
         {
-            TileEntitySpotLight te = (TileEntitySpotLight)event.world.getTileEntity(event.pos);
+            TileEntitySpotLight te = (TileEntitySpotLight)event.getWorld().getTileEntity(event.getPos());
             if(te.locked)
             {
                 if(!event.getPlayer().getGameProfile().getId().equals(te.lockerUUID))
