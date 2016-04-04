@@ -51,7 +51,7 @@ public class TheSpotLightMod
     public static Logger log;
 
     public static Block spotlight;
-    public static Item configSaver, configSaverFull, adminTool;
+    public static Item configSaver, configSaverFull;
 
     public static CreativeTabs tab = new CreativeTabs("thespotlightmod.tab")
     {
@@ -68,13 +68,19 @@ public class TheSpotLightMod
     {
         log = event.getModLog();
 
-        spotlight = new BlockSpotLight().setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setCreativeTab(TheSpotLightMod.tab);
-        GameRegistry.registerBlock(spotlight, ItemBlock.class, "tsm_spotlight");
-        configSaver = new Item().setUnlocalizedName("configsaver").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64);
-        GameRegistry.registerItem(configSaver, "tsm_configsaver");
-        configSaverFull = new Item().setUnlocalizedName("configsaver_full").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
-        GameRegistry.registerItem(configSaverFull, "tsm_configsaver_full");
-        adminTool = new Item().setUnlocalizedName("admintool").setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
+        spotlight = new BlockSpotLight().setCreativeTab(TheSpotLightMod.tab);
+        spotlight.setHardness(1.0F).setResistance(10.0F);
+        spotlight.setUnlocalizedName("thespotlightmod.spotlight").setRegistryName("tsm_spotlight");
+        GameRegistry.<Block>register(spotlight);
+        GameRegistry.<Item>register(new ItemBlock(spotlight), spotlight.getRegistryName());
+
+        configSaver = new Item().setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64);
+        configSaver.setUnlocalizedName("configsaver").setRegistryName("tsm_configsaver");
+        GameRegistry.<Item>register(configSaver);
+
+        configSaverFull = new Item().setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1);
+        configSaverFull.setUnlocalizedName("configsaver_full").setRegistryName("tsm_configsaver_full");
+        GameRegistry.<Item>register(configSaverFull);
 
         GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
 
