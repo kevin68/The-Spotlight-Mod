@@ -2,13 +2,13 @@
 {
   "modid": "thespotlightmod",
   "name": "The SpotLight Mod",
-  "description": "The hungergames mod for the Nanotech and MinecraftForgeFrance server",
+  "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "minecraftforgefrance.fr",
   "updateUrl": "",
-  "authorList": ["letherman255", "kevin_68", "robin4002", "Superloup10", "jglrxavpok", "Pchom", "elias54"],
-  "credits": "",
+  "authorList": [kevin_68"],
+  "credits": "With the contribution of robin4002,
   "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": []

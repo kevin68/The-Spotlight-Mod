@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", dependencies = "required-after:ffmtlibs;required-after:Forge@[11.15.0.1669,)", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.8.9", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
+@Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", dependencies = "required-after:ffmtlibs", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.9]", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
 public class TheSpotLightMod
 {
     public static final String MODID = "thespotlightmod";
@@ -113,7 +113,7 @@ public class TheSpotLightMod
     @EventHandler
     public void postInitTheSpotlightMod(FMLPostInitializationEvent event)
     {
-        GameRegistry.addRecipe(new ItemStack(spotlight, 1, 0), new Object[] {"OGO", "RDR", "OGO", 'O', Blocks.obsidian, 'G', Blocks.glass, 'R', Items.redstone, 'D', Items.diamond});
-        GameRegistry.addShapelessRecipe(new ItemStack(configSaver, 1, 0), new Object[] {Items.redstone, Blocks.obsidian});
+        GameRegistry.addRecipe(new ItemStack(spotlight, 1, 0), new Object[] {"OGO", "RDR", "OGO", 'O', Blocks.OBSIDIAN, 'G', Blocks.GLASS, 'R', Items.REDSTONE, 'D', Items.DIAMOND});
+        GameRegistry.addShapelessRecipe(new ItemStack(configSaver, 1, 0), new Object[] {Items.REDSTONE, Blocks.OBSIDIAN});
     }
 }
