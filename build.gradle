@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 ext.buildnumber = 0
-version = "1.0.1"
+version = "1.0.2"
 group= "fr.mcnanotech.kevin_68"
 archivesBaseName = "TheSpotlightMod"
 
@@ -32,10 +32,10 @@ else {
 }
 
 minecraft {
-    version = "1.9-12.16.0.1865-1.9"
+    version = "1.9.4-12.17.0.1963"
     runDir = "run"
 	
-	mappings = "snapshot_20160416"
+	mappings = "snapshot_20160613"
 	
     replace '@VERSION@', project.version
 }
@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.3.167-mc1.9:dev'
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.6.4.175-mc1.9.4:dev'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 

@@ -3,6 +3,8 @@ package fr.mcnanotech.kevin_68.thespotlightmod;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTLData;
@@ -433,7 +435,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
     {
         super.writeToNBT(nbtTagCompound);
         nbtTagCompound.setInteger("DimID", this.dimensionID);
@@ -459,6 +461,7 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
             }
         }
         nbtTagCompound.setTag("Items", taglist);
+        return nbtTagCompound;
     }
 
     @Override
@@ -508,11 +511,10 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
     }
 
     @Override
-    public Packet<?> getDescriptionPacket()
+    @Nullable
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
-        NBTTagCompound nbt = new NBTTagCompound();
-        writeToNBT(nbt);
-        return new SPacketUpdateTileEntity(this.pos, 3, nbt);
+        return new SPacketUpdateTileEntity(this.pos, 0, writeToNBT(new NBTTagCompound()));
     }
 
     @Override
