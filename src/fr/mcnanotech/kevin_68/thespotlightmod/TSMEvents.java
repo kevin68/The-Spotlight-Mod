@@ -1,7 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -17,7 +16,7 @@ public class TSMEvents
             {
                 if(!event.getPlayer().getGameProfile().getId().equals(te.lockerUUID))
                 {
-                    event.getPlayer().addChatMessage(new TextComponentString(I18n.format("message.spotlight.locked.break")));
+                    event.getPlayer().addChatMessage(new TextComponentTranslation("message.spotlight.locked.break"));
                     event.setCanceled(true);
                 }
             }
