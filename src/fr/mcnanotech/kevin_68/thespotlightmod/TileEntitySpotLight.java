@@ -14,14 +14,14 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
@@ -30,7 +30,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySpotLight extends TileEntity implements IInventory, ITickable
+public class TileEntitySpotLight extends TileEntity implements ISidedInventory, ITickable
 {
     /*
      * Inventory
@@ -662,5 +662,23 @@ public class TileEntitySpotLight extends TileEntity implements IInventory, ITick
             }
         }
         this.markForUpdate();
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        return new int[] {0};
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return false;
     }
 }
