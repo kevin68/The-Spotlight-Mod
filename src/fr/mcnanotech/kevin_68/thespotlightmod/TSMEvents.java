@@ -16,7 +16,7 @@ public class TSMEvents
             {
                 if(!event.getPlayer().getGameProfile().getId().equals(te.lockerUUID))
                 {
-                    event.getPlayer().addChatMessage(new TextComponentTranslation("message.spotlight.locked.break"));
+                    event.getPlayer().sendMessage(new TextComponentTranslation("message.spotlight.locked.break"));
                     event.setCanceled(true);
                 }
             }

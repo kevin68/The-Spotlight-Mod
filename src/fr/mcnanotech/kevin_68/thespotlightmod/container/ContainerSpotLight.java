@@ -23,7 +23,7 @@ public class ContainerSpotLight extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return this.tileSpotLight.isUseableByPlayer(player);
+        return this.tileSpotLight.isUsableByPlayer(player);
     }
 
     protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int widthMove)
@@ -37,8 +37,9 @@ public class ContainerSpotLight extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotId);
+
         if(slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
@@ -47,16 +48,17 @@ public class ContainerSpotLight extends Container
             {
                 if(!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if(!mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
             {
-                return null;
+                return ItemStack.EMPTY;
             }
-            if(itemstack1.stackSize == 0)
+
+            if(itemstack1.isEmpty())
             {
-                slot.putStack((ItemStack)null);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {

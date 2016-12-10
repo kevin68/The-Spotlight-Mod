@@ -57,9 +57,9 @@ public class TheSpotLightMod
     {
         @Override
         @SideOnly(Side.CLIENT)
-        public Item getTabIconItem()
+        public ItemStack getTabIconItem()
         {
-            return Item.getItemFromBlock(spotlight);
+            return new ItemStack(spotlight);
         }
     };
 

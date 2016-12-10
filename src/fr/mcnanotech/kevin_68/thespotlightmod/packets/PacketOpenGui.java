@@ -44,7 +44,7 @@ public class PacketOpenGui implements IMessage
         @Override
         public IMessage onMessage(PacketOpenGui message, MessageContext ctx)
         {
-            ctx.getServerHandler().playerEntity.openGui(TheSpotLightMod.MODID, message.id, ctx.getServerHandler().playerEntity.worldObj, message.x, message.y, message.z);
+            ctx.getServerHandler().playerEntity.openGui(TheSpotLightMod.MODID, message.id, ctx.getServerHandler().playerEntity.world, message.x, message.y, message.z);
             return null;
         }
     }

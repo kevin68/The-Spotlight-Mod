@@ -59,7 +59,7 @@ public class PacketTLData implements IMessage
         @Override
         public IMessage onMessage(PacketTLData message, MessageContext ctx)
         {
-            TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntity te = Minecraft.getMinecraft().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
             if(te instanceof TileEntitySpotLight)
             {
                 TileEntitySpotLight tile = (TileEntitySpotLight)te;

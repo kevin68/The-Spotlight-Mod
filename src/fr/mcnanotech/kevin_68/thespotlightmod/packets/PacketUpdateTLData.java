@@ -63,7 +63,7 @@ public class PacketUpdateTLData implements IMessage
         {
             try
             {
-                TileEntitySpotLight te = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+                TileEntitySpotLight te = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
                 te.timelineUpdated = false;
                 TSMJsonManager.updateTlJsonData(message.dimID, new BlockPos(message.x, message.y, message.z), TSMJsonManager.decompress(message.newData));
                 TheSpotLightMod.network.sendToAll(new PacketTLData(message.x, message.y, message.z, TSMJsonManager.decompress(message.newData)));

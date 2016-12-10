@@ -46,7 +46,7 @@ public class PacketTimelineDeleteKey implements IMessage
         @Override
         public IMessage onMessage(PacketTimelineDeleteKey message, MessageContext ctx)
         {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
             tile.setKey(message.time, null);
             tile.markForUpdate();
             return null;

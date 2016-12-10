@@ -23,7 +23,7 @@ public class ContainerSpotLightTextures extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return this.tileSpotLight.isUseableByPlayer(player);
+        return this.tileSpotLight.isUsableByPlayer(player);
     }
 
     protected void bindPlayerInventory(InventoryPlayer inventoryPlayer)
@@ -46,7 +46,7 @@ public class ContainerSpotLightTextures extends Container
                 if(stack != null)
                 {
                     ItemStack stack2 = stack.copy();
-                    stack2.stackSize = 1;
+                    stack2.setCount(1);
                     slot.decrStackSize(1);
                     slot.putStack(stack2);
                 }

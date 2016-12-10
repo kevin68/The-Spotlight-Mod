@@ -134,7 +134,7 @@ public class GuiSpotLight extends GuiContainer
         case 17:
         {
             this.buttonLock.toggle();
-            TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.thePlayer.getGameProfile().getId().toString()));
+            TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId().toString()));
             break;
         }
         case 18:

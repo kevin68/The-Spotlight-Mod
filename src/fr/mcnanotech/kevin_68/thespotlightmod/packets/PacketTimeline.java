@@ -46,7 +46,7 @@ public class PacketTimeline implements IMessage
         @Override
         public IMessage onMessage(PacketTimeline message, MessageContext ctx)
         {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
             tile.timelineEnabled = message.enabled;
             tile.markForUpdate();
             return null;

@@ -63,7 +63,7 @@ public class BlockSpotLight extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         TileEntity tileentity = world.getTileEntity(pos);
 
@@ -76,7 +76,7 @@ public class BlockSpotLight extends BlockContainer
             TileEntitySpotLight tile = (TileEntitySpotLight)tileentity;
             if(tile.locked && !player.getGameProfile().getId().toString().equals(tile.lockerUUID))
             {
-                player.addChatMessage(new TextComponentString(I18n.format("message.spotlight.locked.open")));
+                player.sendMessage(new TextComponentString(I18n.format("message.spotlight.locked.open")));
                 return false;
             }
             player.openGui(TheSpotLightMod.modInstance, 0, world, pos.getX(), pos.getY(), pos.getZ());

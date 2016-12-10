@@ -82,7 +82,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                     GlStateManager.enableBlend();
                     GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 
-                    float f3 = -f2 * 0.2F - MathHelper.floor_float(-f2 * 0.1F);
+                    float f3 = -f2 * 0.2F - MathHelper.floor(-f2 * 0.1F);
                     double t2 = -1.0F - f3;
                     double t3 = tile.bVec[0].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
                     double t4 = tile.bVec[1].getLenVec().norm() * (0.5D / Math.sqrt(Math.pow(b0 * ((tile.beamSize) / 200.0D), 2) / 2)) + t2;
