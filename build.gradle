@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -32,11 +32,11 @@ else {
 }
 
 minecraft {
-    version = "1.10.2-12.18.1.2011"
+    version = "1.11-13.19.1.2188"
     runDir = "run"
-	
-	mappings = "snapshot_20160713"
-	
+
+	mappings = "snapshot_20161211"
+
     replace '@VERSION@', project.version
 }
 
@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.7.0.176-mc1.10.2:dev'
+    compile 'fr.minecraftforgefrance:FFMT-libs:1.8.0.179-mc1.11:dev'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
@@ -72,7 +72,7 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
@@ -117,7 +117,7 @@ uploadArchives {
                 logger.info("Publishing to files server")
         	repository(url: url) {
             	    authentication(userName: user, password: password)
-                    addFilter('dev') { 
+                    addFilter('dev') {
                         artifact, file ->
                         file == devJar.archivePath
             	}
