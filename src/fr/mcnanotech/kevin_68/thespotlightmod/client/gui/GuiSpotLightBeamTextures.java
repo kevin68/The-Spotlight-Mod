@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 public class GuiSpotLightBeamTextures extends GuiContainer
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/tsmIcons.png");
+    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;

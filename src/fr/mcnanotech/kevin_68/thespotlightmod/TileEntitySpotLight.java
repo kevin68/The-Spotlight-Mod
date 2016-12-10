@@ -446,7 +446,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         nbtTagCompound.setBoolean("TimelineSmooth", this.timelineSmooth);
         nbtTagCompound.setBoolean("Locked", this.locked);
 
-        if(this.lockerUUID != null && this.lockerUUID.length() > 1)
+        if(this.lockerUUID != null && !this.lockerUUID.isEmpty())
         {
             nbtTagCompound.setString("LockerUUID", this.lockerUUID);
         }
@@ -489,7 +489,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        readFromNBT(pkt.getNbtCompound());
+        this.readFromNBT(pkt.getNbtCompound());
     }
 
     @Override

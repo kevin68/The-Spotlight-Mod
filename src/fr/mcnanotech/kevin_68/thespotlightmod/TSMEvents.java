@@ -14,7 +14,7 @@ public class TSMEvents
             TileEntitySpotLight te = (TileEntitySpotLight)event.getWorld().getTileEntity(event.getPos());
             if(te.locked)
             {
-                if(!event.getPlayer().getGameProfile().getId().equals(te.lockerUUID))
+                if(!event.getPlayer().getGameProfile().getId().toString().equals(te.lockerUUID))
                 {
                     event.getPlayer().sendMessage(new TextComponentTranslation("message.spotlight.locked.break"));
                     event.setCanceled(true);
