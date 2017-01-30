@@ -142,7 +142,7 @@ public class GuiSpotlightTimeline extends GuiContainer
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -238,6 +238,6 @@ public class GuiSpotlightTimeline extends GuiContainer
         // 0xffffff);
         // }
 
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
     }
 }

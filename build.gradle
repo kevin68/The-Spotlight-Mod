@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 ext.buildnumber = 0
-version = "1.0.3"
+version = "1.0.4"
 group= "fr.mcnanotech.kevin_68"
 archivesBaseName = "TheSpotlightMod"
 
@@ -32,12 +32,13 @@ else {
 }
 
 minecraft {
-    version = "1.11-13.19.1.2188"
+    version = "1.11.2-13.20.0.2226"
     runDir = "run"
-
-	mappings = "snapshot_20161210"
+    mappings = "snapshot_20170130"
 
     replace '@VERSION@', project.version
+
+    makeObfSourceJar = true
 }
 
 sourceSets {
@@ -63,12 +64,11 @@ configurations {
 }
 
 dependencies {
-    compile 'fr.minecraftforgefrance:FFMT-libs:1.8.0.179-mc1.11:dev'
+    deobfCompile 'fr.minecraftforgefrance:FFMT-libs:1.8.0.180-mc1.11.2:universal'
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
-processResources
-{
+processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
@@ -88,44 +88,23 @@ jar {
 	    include "fr/mcnanotech/kevin_68/thespotlightmod/**"
         include "assets/thespotlightmod/**"
 		include "mcmod.info"
-    appendix = 'universal'
+    classifier = 'universal'
     version = "${project.version}-mc${project.minecraft.version}"
 }
 
-task devJar(type: Jar) {
-    from(sourceSets.main.allSource) {
-        include 'fr/**/**'
-    }
-    from(sourceSets.main.output) {
-        include '**'
-    }
-    classifier = 'dev'
+sourceJar {
     version = "${project.version}-mc${project.minecraft.version}"
-}
-
-build.dependsOn devJar
-
-artifacts {
-    archives devJar
 }
 
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-            if (project.hasProperty('url')) {
-                version = "${project.version}-mc${project.minecraft.version}"
-                logger.info("Publishing to files server")
+        if (project.hasProperty('url')) {
+            version = "${project.version}-mc${project.minecraft.version}"
+            logger.info("Publishing to files server")
         	repository(url: url) {
-            	    authentication(userName: user, password: password)
-                    addFilter('dev') {
-                        artifact, file ->
-                        file == devJar.archivePath
-            	}
+            	authentication(userName: user, password: password)
             }
-        }
-        else {
-            logger.info('Publishing to repo folder')
-            repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
         }
     }
 }

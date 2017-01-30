@@ -42,7 +42,7 @@ public class PacketRequestTLData implements IMessage
         @Override
         public IMessage onMessage(PacketRequestTLData message, MessageContext ctx)
         {
-            int dimId = ctx.getServerHandler().playerEntity.dimension;
+            int dimId = ctx.getServerHandler().player.dimension;
             String data = TSMJsonManager.getTlDataFromJson(dimId, new BlockPos(message.x, message.y, message.z));
             return new PacketTLData(message.x, message.y, message.z, data == null ? "null" : data);
         }

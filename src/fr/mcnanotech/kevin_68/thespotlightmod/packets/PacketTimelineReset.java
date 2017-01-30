@@ -42,7 +42,7 @@ public class PacketTimelineReset implements IMessage
         @Override
         public IMessage onMessage(PacketTimelineReset message, MessageContext ctx)
         {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
             tile.time = 0;
             tile.markForUpdate();
             return null;

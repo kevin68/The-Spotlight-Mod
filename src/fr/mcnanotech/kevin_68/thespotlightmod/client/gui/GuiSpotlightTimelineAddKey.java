@@ -126,7 +126,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -138,6 +138,6 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         int y = (this.height - this.ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.addKey")), x + 5, y + 8, 4210752);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.addKey")), x + 5, y + 8, 4210752);
     }
 }

@@ -74,7 +74,7 @@ public class GuiSpotLightConfig extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -96,6 +96,6 @@ public class GuiSpotLightConfig extends GuiContainer
         this.drawTexturedModalRect(x + 122, y + 49, 213, 21, 13, 26);
         this.drawTexturedModalRect(x + 82, y + 49, 213, 21, 13, 26);
         this.drawTexturedModalRect(x + 42, y + 49, 213, 21, 13, 26);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.config")), x - 30, y - 35, 0xffffff);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.config")), x - 30, y - 35, 0xffffff);
     }
 }

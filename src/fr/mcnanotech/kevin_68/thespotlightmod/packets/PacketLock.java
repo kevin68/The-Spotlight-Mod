@@ -52,7 +52,7 @@ public class PacketLock implements IMessage
         @Override
         public IMessage onMessage(PacketLock message, MessageContext ctx)
         {
-            TileEntity te = ctx.getServerHandler().playerEntity.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntity te = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
             if(te instanceof TileEntitySpotLight)
             {
                 TileEntitySpotLight tile = (TileEntitySpotLight)te;

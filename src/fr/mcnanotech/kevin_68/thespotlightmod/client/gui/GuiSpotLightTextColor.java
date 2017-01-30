@@ -52,7 +52,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.textBlue), this.tile.textBlue / 255.0F));
 
         Keyboard.enableRepeatEvents(true);
-        this.textField = new GuiTextField(3, this.fontRendererObj, x - 40, y, 256, 12);
+        this.textField = new GuiTextField(3, this.fontRenderer, x - 40, y, 256, 12);
         this.textField.setTextColor((this.tile.textRed * 65536) + (this.tile.textGreen * 256) + (this.tile.textBlue & 0xFF));
         this.textField.setEnableBackgroundDrawing(true);
         this.textField.setMaxStringLength(40);
@@ -140,7 +140,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.textField.drawTextBox();
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -152,7 +152,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         int y = (this.height - this.ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.color")), x - 30, y - 35, 0xffffff);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.color")), x - 30, y - 35, 0xffffff);
     }
 
     @Override

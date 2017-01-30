@@ -46,7 +46,7 @@ public class PacketTimelineSmooth implements IMessage
         @Override
         public IMessage onMessage(PacketTimelineSmooth message, MessageContext ctx)
         {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().playerEntity.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
             tile.timelineSmooth = message.smooth;
             tile.markForUpdate();
             return null;

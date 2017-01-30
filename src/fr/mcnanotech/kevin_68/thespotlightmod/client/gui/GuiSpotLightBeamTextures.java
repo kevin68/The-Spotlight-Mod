@@ -74,7 +74,7 @@ public class GuiSpotLightBeamTextures extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
         }
     }
 
@@ -89,6 +89,6 @@ public class GuiSpotLightBeamTextures extends GuiContainer
         this.mc.renderEngine.bindTexture(tsmIcons);
         this.drawTexturedModalRect(x + 39, y + 79, 238, 18, 18, 18);
         this.drawTexturedModalRect(x + 119, y + 79, 238,36, 18, 18);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x - 30, y - 35, 0xffffff);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x - 30, y - 35, 0xffffff);
     }
 }

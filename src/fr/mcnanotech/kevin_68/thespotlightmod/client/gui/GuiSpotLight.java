@@ -179,7 +179,7 @@ public class GuiSpotLight extends GuiContainer
         this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, x, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, x, this.buttonList, this);
         }
     }
 
@@ -191,6 +191,6 @@ public class GuiSpotLight extends GuiContainer
         int y = (this.height - this.ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", "").replace("-", ""), x + 6, y + 7, 4210752);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", "").replace("-", ""), x + 6, y + 7, 4210752);
     }
 }

@@ -315,7 +315,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRendererObj, mouseX, mouseY, this.width, this.buttonList, this);
+            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
             // boolean reversed = mouseX > this.width / 2;
             // ArrayList<String> list = new ArrayList<String>();
             //
@@ -440,6 +440,6 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         int y = (this.height - this.ySize) / 2;
         this.mc.renderEngine.bindTexture(texture);
         this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
-        this.fontRendererObj.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.angle")), x - 30, y - 35, 0xffffff);
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.angle")), x - 30, y - 35, 0xffffff);
     }
 }
