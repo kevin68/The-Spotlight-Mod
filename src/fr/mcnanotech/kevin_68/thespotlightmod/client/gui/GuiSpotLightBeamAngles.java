@@ -6,9 +6,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -58,7 +55,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -220,6 +217,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         case 20:
         {
             this.buttonHelp.toggle();
+            this.tile.helpMode = this.buttonHelp.isActive();
             break;
         }
         }

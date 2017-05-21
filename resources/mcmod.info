@@ -5,11 +5,11 @@
   "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "minecraftforgefrance.fr",
+  "url": "https://minecraft.curseforge.com/projects/the-spotlight-mod",
   "updateUrl": "",
   "authorList": ["kevin_68"],
   "credits": "With the contribution of robin4002",
-  "logoFile": "logo.png",
+  "logoFile": "/assets/thespotlightmod/banner.png",
   "screenshots": [],
   "dependencies": []
 }

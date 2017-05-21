@@ -13,13 +13,13 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotlightTimeline extends GuiContainer
@@ -41,14 +41,15 @@ public class GuiSpotlightTimeline extends GuiContainer
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
+        this.xSize = 256;
+        this.ySize = 256;
     }
 
     @Override
     public void initGui()
     {
         super.initGui();
-        this.xSize = 256;
-        this.ySize = 256;
+
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.buttonList.add(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")));
@@ -59,7 +60,7 @@ public class GuiSpotlightTimeline extends GuiContainer
         this.buttonRemove.enabled = false;
         this.buttonList.add(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")));
         this.buttonList.add(this.buttonSmooth = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", this.tile.helpMode));
         this.buttonTimelineEnabled.enabled = this.tile.hasKey();
         for(short i = 0; i < 120; i++)
         {
@@ -109,6 +110,7 @@ public class GuiSpotlightTimeline extends GuiContainer
         else if(guibutton.id == 8)
         {
             this.buttonHelp.toggle();
+            this.tile.helpMode = this.buttonHelp.isActive();
         }
         else if(guibutton.id >= 10)
         {
@@ -142,7 +144,11 @@ public class GuiSpotlightTimeline extends GuiContainer
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            System.out.println(mouseX);
+            if(mouseX > 60 && mouseY > 30 && mouseX < 363 && mouseY < 53)
+            {
+                this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+            }
         }
     }
 

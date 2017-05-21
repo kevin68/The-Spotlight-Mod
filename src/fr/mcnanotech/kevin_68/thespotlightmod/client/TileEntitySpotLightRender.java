@@ -1,24 +1,29 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.text3d.Model3DTextDefault;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.text3d.Text3D;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
-import fr.minecraftforgefrance.ffmtlibs.text3d.Model3DTextDefault;
-import fr.minecraftforgefrance.ffmtlibs.text3d.Text3D;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -219,13 +224,13 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     {
         TextureAtlasSprite sprite = null;
         Block b = Block.getBlockFromItem(stack.getItem());
-        if(b != null)
+        if(b != Blocks.AIR)
         {
             sprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getStateFromMeta(stack.getMetadata()));
         }
         else
         {
-            sprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(stack.getItem());
+            sprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack).getParticleTexture();
         }
 
         if(sprite == null)

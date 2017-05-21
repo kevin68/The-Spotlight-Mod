@@ -11,14 +11,13 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiSliderButton;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.ISliderButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -60,7 +59,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.textField.setText(this.tile.text);
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -76,16 +75,13 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
     {
         switch(guibutton.id)
         {
-        case 19:
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 19:
+                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                this.tile.helpMode = this.buttonHelp.isActive();
+                break;
         }
     }
 
@@ -94,42 +90,32 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
     {
         switch(sliderId)
         {
-        case 0:
-            this.tile.textRed = (short)(sliderValue * 255.0F);
-            break;
-        case 1:
-            this.tile.textGreen = (short)(sliderValue * 255.0F);
-            break;
-        case 2:
-            this.tile.textBlue = (short)(sliderValue * 255.0F);
-            break;
+            case 0:
+                this.tile.textRed = (short)(sliderValue * 255.0F);
+                break;
+            case 1:
+                this.tile.textGreen = (short)(sliderValue * 255.0F);
+                break;
+            case 2:
+                this.tile.textBlue = (short)(sliderValue * 255.0F);
+                break;
         }
-
     }
 
     @Override
     public String getSliderName(int sliderId, float sliderValue)
     {
-        String name = "";
         switch(sliderId)
         {
-        case 0:
-        {
-            name = TextFormatting.RED + I18n.format("container.spotlight.red", (short)(sliderValue * 255));
-            break;
+            case 0:
+                return TextFormatting.RED + I18n.format("container.spotlight.red", (short)(sliderValue * 255));
+            case 1:
+                return TextFormatting.GREEN + I18n.format("container.spotlight.green", (short)(sliderValue * 255));
+            case 2:
+                return TextFormatting.BLUE + I18n.format("container.spotlight.blue", (short)(sliderValue * 255));
+            default:
+                return "";
         }
-        case 1:
-        {
-            name = TextFormatting.GREEN + I18n.format("container.spotlight.green", (short)(sliderValue * 255));
-            break;
-        }
-        case 2:
-        {
-            name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", (short)(sliderValue * 255));
-            break;
-        }
-        }
-        return name;
     }
 
     @Override
@@ -138,9 +124,9 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         GL11.glDisable(GL11.GL_LIGHTING);
         this.textField.drawTextBox();
-        if(this.buttonHelp.isActive())
+        if(this.buttonHelp.isActive() && mouseX >= this.textField.xPosition && mouseX < this.textField.xPosition + this.textField.width && mouseY >= this.textField.yPosition && mouseY < this.textField.yPosition + this.textField.height)
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
         }
     }
 
@@ -156,11 +142,19 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
     }
 
     @Override
-    protected void keyTyped(char chr, int chrValue)
+    protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        if(this.textField.textboxKeyTyped(chr, chrValue))
+        if(this.textField.textboxKeyTyped(typedChar, keyCode))
         {
             this.tile.text = this.textField.getText();
+        }
+        else if(this.mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode))
+        {
+            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+        }
+        else
+        {
+            super.keyTyped(typedChar, keyCode);
         }
     }
 

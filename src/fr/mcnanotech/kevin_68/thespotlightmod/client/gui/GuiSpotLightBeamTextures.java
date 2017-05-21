@@ -1,18 +1,21 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightTextures;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiBooleanButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotLightBeamTextures extends GuiContainer
@@ -40,7 +43,7 @@ public class GuiSpotLightBeamTextures extends GuiContainer
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -55,16 +58,13 @@ public class GuiSpotLightBeamTextures extends GuiContainer
     {
         switch(guibutton.id)
         {
-        case 19:
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 19:
+                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                this.tile.helpMode = this.buttonHelp.isActive();
+                break;
         }
     }
 
@@ -74,7 +74,12 @@ public class GuiSpotLightBeamTextures extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            Slot s = this.getSlotUnderMouse();
+            if(s != null)
+            {
+                String text = s.slotNumber == 0 ? I18n.format("tutorial.spotlight.textures.main") : I18n.format("tutorial.spotlight.textures.sec");
+                this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+            }
         }
     }
 
@@ -88,7 +93,7 @@ public class GuiSpotLightBeamTextures extends GuiContainer
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
         this.mc.renderEngine.bindTexture(tsmIcons);
         this.drawTexturedModalRect(x + 39, y + 79, 238, 18, 18, 18);
-        this.drawTexturedModalRect(x + 119, y + 79, 238,36, 18, 18);
+        this.drawTexturedModalRect(x + 119, y + 79, 238, 36, 18, 18);
         this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x - 30, y - 35, 0xffffff);
     }
 }

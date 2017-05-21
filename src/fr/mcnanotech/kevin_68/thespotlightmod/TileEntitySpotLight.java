@@ -46,6 +46,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     public boolean isActive;
     public int dimensionID;
     public boolean isBeam; // false = text mode
+    public boolean helpMode; // false = disabled
     public boolean redstone; // Require redstone signal
     public boolean locked; // Locked by a user
     public String lockerUUID;// UUID of locker

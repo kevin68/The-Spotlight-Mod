@@ -15,7 +15,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextColor;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextProperties;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimeline;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimelineAddKey;
-import fr.minecraftforgefrance.ffmtlibs.client.gui.GuiHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -69,43 +68,7 @@ public class TSMUtils
     }
 
     public static void drawTextHelper(FontRenderer font, int mouseX, int mouseY, int width, List<?> buttons, GuiScreen gui)
-    {
-        if(gui instanceof GuiSpotLightTextColor)
-        {
-            ArrayList<String> list = new ArrayList<String>();
-            boolean flag = mouseX >= ((GuiSpotLightTextColor)gui).textField.xPosition && mouseX < ((GuiSpotLightTextColor)gui).textField.xPosition + ((GuiSpotLightTextColor)gui).textField.width && mouseY >= ((GuiSpotLightTextColor)gui).textField.yPosition && mouseY < ((GuiSpotLightTextColor)gui).textField.yPosition + ((GuiSpotLightTextColor)gui).textField.height;
-
-            if(flag)
-            {
-                list = formatedText(font, I18n.format("tutorial.spotlight.textcolors.text"), mouseX, width, mouseX > width / 2);
-            }
-            GuiHelper.drawHoveringText(list, mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
-        }
-
-        if(gui instanceof GuiSpotLightBeamTextures)
-        {
-            GuiSpotLightBeamTextures g = (GuiSpotLightBeamTextures)gui;
-            Slot s = g.getSlotUnderMouse();
-            if(s != null)
-            {
-                ArrayList<String> list = new ArrayList<String>();
-                switch(s.slotNumber)
-                {
-                case 0:
-                {
-                    list = formatedText(font, I18n.format("tutorial.spotlight.textures.main"), mouseX, width, mouseX > width / 2);
-                    break;
-                }
-                case 1:
-                {
-                    list = formatedText(font, I18n.format("tutorial.spotlight.textures.sec"), mouseX, width, mouseX > width / 2);
-                    break;
-                }
-                }
-                GuiHelper.drawHoveringText(list, mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
-                return;
-            }
-        }
+    {/*
         else if(gui instanceof GuiSpotLightConfig)
         {
             GuiSpotLightConfig g = (GuiSpotLightConfig)gui;
@@ -147,14 +110,6 @@ public class TSMUtils
                 }
                 }
                 GuiHelper.drawHoveringText(list, mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
-                return;
-            }
-        }
-        else if(gui instanceof GuiSpotlightTimeline)
-        {
-            if(mouseX > 332 && mouseY > 162 && mouseX < 632 && mouseY < 182)
-            {
-                GuiHelper.drawHoveringText(formatedText(font, I18n.format("tutorial.spotlight.timeline.timeline"), mouseX, width, mouseX > width / 2), mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
                 return;
             }
         }
@@ -595,7 +550,7 @@ public class TSMUtils
                 }
                 GuiHelper.drawHoveringText(list, mouseX, mouseY, font, mouseX > width / 2 ? 0 : 200000, mouseY, 0x00ff00);
             }
-        }
+        }*/
     }
 
     public static TSMKey createKey(short time, TileEntitySpotLight tile)
