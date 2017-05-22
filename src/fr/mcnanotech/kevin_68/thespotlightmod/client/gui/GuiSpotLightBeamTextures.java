@@ -80,6 +80,26 @@ public class GuiSpotLightBeamTextures extends GuiContainer
                 String text = s.slotNumber == 0 ? I18n.format("tutorial.spotlight.textures.main") : I18n.format("tutorial.spotlight.textures.sec");
                 this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
             }
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    switch(button.id)
+                    {
+                    case 19:
+                        text = I18n.format("tutorial.spotlight.back");
+                        break;
+                    case 20:
+                        text = I18n.format("tutorial.spotlight.help");
+                        break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

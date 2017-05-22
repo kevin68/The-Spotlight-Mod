@@ -6,6 +6,7 @@ item.configsaver.name=Config saver
 item.configsaver_full.name=Config saver
 
 container.spotlight.addKey=Add Key
+container.spotlight.askerasekey=Are you sure you want to remove this key ?
 container.spotlight.alpha=Alpha : %d
 container.spotlight.angle=Angles
 container.spotlight.angleval=Angle %s: %d
@@ -47,6 +48,7 @@ container.spotlight.textcolor=Text & colors
 container.spotlight.textheight=Text height: %d
 container.spotlight.textscale=Text scale: %d
 container.spotlight.textures=Textures
+container.spotlight.text3d=3D Text
 container.spotlight.time=Time: %s
 container.spotlight.timeline=Timeline
 container.spotlight.timelineval=Timeline %s

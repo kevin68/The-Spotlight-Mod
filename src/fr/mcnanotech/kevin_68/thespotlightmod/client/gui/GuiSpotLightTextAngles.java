@@ -5,13 +5,13 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButton
@@ -27,7 +27,7 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
 
     public GuiSpotLightTextAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -51,7 +51,7 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -66,31 +66,23 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
     {
         switch(guibutton.id)
         {
-        case 4:
-        {
-            this.buttonAR.toggle();
-            this.tile.textAutoRotateY = this.buttonAR.isActive();
-            this.sliderAngle.enabled = !this.buttonAR.isActive();
-            this.sliderSpeed.enabled = this.buttonAR.isActive();
-            this.buttonRR.enabled = this.buttonAR.isActive();
-            break;
-        }
-        case 5:
-        {
-            this.buttonRR.toggle();
-            this.tile.textReverseRotateY = this.buttonRR.isActive();
-            break;
-        }
-        case 19:
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 4:
+                this.buttonAR.toggle();
+                this.tile.textAutoRotateY = this.buttonAR.isActive();
+                this.sliderAngle.enabled = !this.buttonAR.isActive();
+                this.sliderSpeed.enabled = this.buttonAR.isActive();
+                this.buttonRR.enabled = this.buttonAR.isActive();
+                break;
+            case 5:
+                this.buttonRR.toggle();
+                this.tile.textReverseRotateY = this.buttonRR.isActive();
+                break;
+            case 19:
+                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                break;
         }
     }
 
@@ -99,16 +91,12 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
     {
         switch(sliderId)
         {
-        case 3:
-        {
-            this.tile.textAngleY = (short)(sliderValue * 360.0F);
-            break;
-        }
-        case 6:
-        {
-            this.tile.textRotationSpeedY = (short)(sliderValue * 200);
-            break;
-        }
+            case 3:
+                this.tile.textAngleY = (short)(sliderValue * 360.0F);
+                break;
+            case 6:
+                this.tile.textRotationSpeedY = (short)(sliderValue * 200);
+                break;
         }
     }
 
@@ -118,16 +106,12 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         String name = "";
         switch(sliderId)
         {
-        case 3:
-        {
-            name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
-            break;
-        }
-        case 6:
-        {
-            name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
-            break;
-        }
+            case 3:
+                name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
+                break;
+            case 6:
+                name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
+                break;
         }
         return name;
     }
@@ -139,7 +123,38 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    switch(button.id)
+                    {
+                        case 3:
+                            text = I18n.format("tutorial.spotlight.textangles.angle");
+                            break;
+                        case 4:
+                            text = I18n.format("tutorial.spotlight.textangles.autorotate");
+                            break;
+                        case 5:
+                            text = I18n.format("tutorial.spotlight.textangles.reverserotation");
+                            break;
+                        case 6:
+                            text = I18n.format("tutorial.spotlight.textangles.rotationspeed");
+                            break;
+                        case 19:
+                            text = I18n.format("tutorial.spotlight.back");
+                            break;
+                        case 20:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

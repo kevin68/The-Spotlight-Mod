@@ -11,13 +11,18 @@ public class ContainerSpotLight extends Container
 {
     protected TileEntitySpotLight tileSpotLight;
 
-    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, int widthMove, boolean showPlayerInventory)
+    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, int invX, int invY, boolean showPlayerInventory)
     {
         this.tileSpotLight = tileEntity;
         if(showPlayerInventory)
         {
-            bindPlayerInventory(inventoryPlayer, widthMove);
+            bindPlayerInventory(inventoryPlayer, invX, invY);
         }
+    }
+    
+    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, boolean showPlayerInventory)
+    {
+        this(tileEntity, inventoryPlayer, 8, 142, showPlayerInventory);
     }
 
     @Override
@@ -26,11 +31,11 @@ public class ContainerSpotLight extends Container
         return this.tileSpotLight.isUsableByPlayer(player);
     }
 
-    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int widthMove)
+    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int x, int y)
     {
         for(int i = 0; i < 9; i++)
         {
-            addSlotToContainer(new Slot(inventoryPlayer, i, widthMove + i * 18, 142));
+            addSlotToContainer(new Slot(inventoryPlayer, i, x + i * 18, y));
         }
     }
 

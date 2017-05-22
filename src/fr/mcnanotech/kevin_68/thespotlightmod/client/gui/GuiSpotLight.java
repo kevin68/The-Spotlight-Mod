@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotLight extends GuiContainer
@@ -31,7 +32,7 @@ public class GuiSpotLight extends GuiContainer
 
     public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -60,7 +61,7 @@ public class GuiSpotLight extends GuiContainer
         this.buttonList.add(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked));
         this.buttonList.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "", this.tile.redstone));
         this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, ""));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
         this.buttonTextures.enabled = !this.tile.timelineEnabled && this.buttonMode.isActive();
     }
 
@@ -76,82 +77,63 @@ public class GuiSpotLight extends GuiContainer
     {
         switch(guibutton.id)
         {
-        case 0:
-        {
-            if(this.buttonMode.isActive())
-            {
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 4));
-            }
-            else
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightTextColor(this.invPlayer, this.tile, this.world));
-            }
-            break;
-        }
-        case 1:
-        {
-            if(this.buttonMode.isActive())
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightBeamAngles(this.invPlayer, this.tile, this.world));
-            }
-            else
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightTextAngles(this.invPlayer, this.tile, this.world));
-            }
-            break;
-        }
-        case 2:
-        {
-            if(this.buttonMode.isActive())
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightBeamProperties(this.invPlayer, this.tile, this.world));
-            }
-            else
-            {
-                this.mc.displayGuiScreen(new GuiSpotLightTextProperties(this.invPlayer, this.tile, this.world));
-            }
-            break;
-        }
-        case 3:
-        {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 1));
-            break;
-        }
-        case 4:
-        {
-            this.buttonMode.toggle();
-            this.tile.isBeam = this.buttonMode.isActive();
-            this.buttonTextures.enabled = this.buttonMode.isActive();
-            this.buttonColors.displayString = this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor");
-            break;
-        }
-        case 5:
-        {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
-            break;
-        }
-        case 17:
-        {
-            this.buttonLock.toggle();
-            TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId().toString()));
-            break;
-        }
-        case 18:
-        {
-            this.buttonRedstone.toggle();
-            this.tile.redstone = this.buttonRedstone.isActive();
-            break;
-        }
-        case 19:
-        {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 2));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 0:
+                if(this.buttonMode.isActive())
+                {
+                    TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 4));
+                }
+                else
+                {
+                    this.mc.displayGuiScreen(new GuiSpotLightTextColor(this.invPlayer, this.tile, this.world));
+                }
+                break;
+            case 1:
+                if(this.buttonMode.isActive())
+                {
+                    this.mc.displayGuiScreen(new GuiSpotLightBeamAngles(this.invPlayer, this.tile, this.world));
+                }
+                else
+                {
+                    this.mc.displayGuiScreen(new GuiSpotLightTextAngles(this.invPlayer, this.tile, this.world));
+                }
+                break;
+            case 2:
+                if(this.buttonMode.isActive())
+                {
+                    this.mc.displayGuiScreen(new GuiSpotLightBeamProperties(this.invPlayer, this.tile, this.world));
+                }
+                else
+                {
+                    this.mc.displayGuiScreen(new GuiSpotLightTextProperties(this.invPlayer, this.tile, this.world));
+                }
+                break;
+            case 3:
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 1));
+                break;
+            case 4:
+                this.buttonMode.toggle();
+                this.tile.isBeam = this.buttonMode.isActive();
+                this.buttonTextures.enabled = this.buttonMode.isActive();
+                this.buttonColors.displayString = this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor");
+                break;
+            case 5:
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+                break;
+            case 17:
+                this.buttonLock.toggle();
+                TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId().toString()));
+                break;
+            case 18:
+                this.buttonRedstone.toggle();
+                this.tile.redstone = this.buttonRedstone.isActive();
+                break;
+            case 19:
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 2));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                this.tile.helpMode = this.buttonHelp.isActive();
+                break;
         }
     }
 
@@ -178,7 +160,48 @@ public class GuiSpotLight extends GuiContainer
         this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, x, this.buttonList, this);
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    boolean isBeam = this.tile.isBeam;
+                    switch(button.id)
+                    {
+                        case 0:
+                            text = isBeam ? I18n.format("tutorial.spotlight.colors") : I18n.format("tutorial.spotlight.textcolors");
+                            break;
+                        case 1:
+                            text = isBeam ? I18n.format("tutorial.spotlight.beamangle") : I18n.format("tutorial.spotlight.textangle");
+                            break;
+                        case 2:
+                            text = isBeam ? I18n.format("tutorial.spotlight.beamprops") : I18n.format("tutorial.spotlight.textprops");
+                            break;
+                        case 3:
+                            text = I18n.format("tutorial.spotlight.texture");
+                            break;
+                        case 4:
+                            text = I18n.format("tutorial.spotlight.mode");
+                            break;
+                        case 5:
+                            text = I18n.format("tutorial.spotlight.timeline");
+                            break;
+                        case 18:
+                            text = I18n.format("tutorial.spotlight.redstone");
+                            break;
+                        case 19:
+                            text = I18n.format("tutorial.spotlight.config");
+                            break;
+                        case 20:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

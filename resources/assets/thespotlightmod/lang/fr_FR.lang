@@ -6,6 +6,7 @@ item.configsaver.name=Disque de sauvegarde
 item.configsaver_full.name=Disque de sauvegarde
 
 container.spotlight.addKey=Ajouter une clé
+container.spotlight.askerasekey=êtes-vous sûr de vouloir retirer cette clé ?
 container.spotlight.alpha=Alpha : %d
 container.spotlight.angle=Angles
 container.spotlight.angleval=Angle %s: %d
@@ -47,6 +48,7 @@ container.spotlight.textcolor=Texte & couleurs
 container.spotlight.textheight=Hauteur du texte: %d
 container.spotlight.textscale=Taille du texte: %d
 container.spotlight.textures=Textures
+container.spotlight.text3d=Texte 3D
 container.spotlight.time=Temps: %s
 container.spotlight.timeline=Axe temporel
 container.spotlight.timelineval=Écoulement du temps: %s

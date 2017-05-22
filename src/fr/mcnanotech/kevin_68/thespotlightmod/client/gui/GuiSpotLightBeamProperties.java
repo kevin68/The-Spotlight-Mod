@@ -13,6 +13,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderButton
@@ -28,7 +29,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
 
     public GuiSpotLightBeamProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -52,7 +53,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -67,29 +68,21 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     {
         switch(guibutton.id)
         {
-        case 2:
-        {
-            this.buttonSecBeamEnabled.toggle();
-            this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
-            this.tile.secBeamEnabled = this.buttonSecBeamEnabled.isActive();
-            break;
-        }
-        case 3:
-        {
-            this.buttonDoubleBeam.toggle();
-            this.tile.beamDouble = this.buttonDoubleBeam.isActive();
-            break;
-        }
-        case 19:
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 2:
+                this.buttonSecBeamEnabled.toggle();
+                this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
+                this.tile.secBeamEnabled = this.buttonSecBeamEnabled.isActive();
+                break;
+            case 3:
+                this.buttonDoubleBeam.toggle();
+                this.tile.beamDouble = this.buttonDoubleBeam.isActive();
+                break;
+            case 19:
+                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                break;
         }
     }
 
@@ -98,26 +91,26 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     {
         switch(sliderId)
         {
-        case 0:
-        {
-            this.tile.beamSize = (short)(sliderValue * 100);
-            break;
-        }
-        case 1:
-        {
-            this.tile.secBeamSize = (short)(sliderValue * 100);
-            break;
-        }
-        case 4:
-        {
-            this.tile.beamHeight = (short)(sliderValue * 512);
-            break;
-        }
-        case 5:
-        {
-            this.tile.beamSides = (short)(sliderValue * 48);
-            break;
-        }
+            case 0:
+            {
+                this.tile.beamSize = (short)(sliderValue * 100);
+                break;
+            }
+            case 1:
+            {
+                this.tile.secBeamSize = (short)(sliderValue * 100);
+                break;
+            }
+            case 4:
+            {
+                this.tile.beamHeight = (short)(sliderValue * 512);
+                break;
+            }
+            case 5:
+            {
+                this.tile.beamSides = (short)(sliderValue * 48);
+                break;
+            }
         }
     }
 
@@ -127,26 +120,18 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         String name = "";
         switch(sliderId)
         {
-        case 0:
-        {
-            name = I18n.format("container.spotlight.sizeMain", (short)(sliderValue * 100));
-            break;
-        }
-        case 1:
-        {
-            name = I18n.format("container.spotlight.sizeSec", (short)(sliderValue * 100));
-            break;
-        }
-        case 4:
-        {
-            name = I18n.format("container.spotlight.laserHeight", (short)(sliderValue * 512));
-            break;
-        }
-        case 5:
-        {
-            name = I18n.format("container.spotlight.sides", (short)(sliderValue * 48 + 2));
-            break;
-        }
+            case 0:
+                name = I18n.format("container.spotlight.sizeMain", (short)(sliderValue * 100));
+                break;
+            case 1:
+                name = I18n.format("container.spotlight.sizeSec", (short)(sliderValue * 100));
+                break;
+            case 4:
+                name = I18n.format("container.spotlight.laserHeight", (short)(sliderValue * 512));
+                break;
+            case 5:
+                name = I18n.format("container.spotlight.sides", (short)(sliderValue * 48 + 2));
+                break;
         }
         return name;
     }
@@ -158,7 +143,45 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    boolean isBeam = this.tile.isBeam;
+                    switch(button.id)
+                    {
+                        case 0:
+                            text = I18n.format("tutorial.spotlight.beamprops.mainsize");
+                            break;
+                        case 1:
+                            text = I18n.format("tutorial.spotlight.beamprops.secsize");
+                            break;
+                        case 2:
+                            text = I18n.format("tutorial.spotlight.beamprops.secbeam");
+                            break;
+                        case 3:
+                            text = I18n.format("tutorial.spotlight.beamprops.double");
+                            break;
+                        case 4:
+                            text = I18n.format("tutorial.spotlight.beamprops.height");
+                            break;
+                        case 5:
+                            text = I18n.format("tutorial.spotlight.beamprops.sides");
+                            break;
+                        case 19:
+                            text = I18n.format("tutorial.spotlight.back");
+                            break;
+                        case 20:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

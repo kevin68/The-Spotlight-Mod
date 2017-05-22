@@ -13,6 +13,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotLightTextProperties extends GuiContainer implements ISliderButton
@@ -27,7 +28,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
 
     public GuiSpotLightTextProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -39,7 +40,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.textHeight-100), this.tile.textHeight / 200.0F));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.textHeight - 100), this.tile.textHeight / 200.0F));
         this.buttonList.add(new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.textscale", this.tile.textScale), this.tile.textScale / 100.0F));
         this.buttonList.add(this.buttonBold = new GuiBooleanButton(2, x - 50, y + 3, 130, 20, I18n.format("container.spotlight.bold"), this.tile.textBold));
         this.buttonList.add(this.buttonStrike = new GuiBooleanButton(3, x + 90, y + 3, 130, 20, I18n.format("container.spotlight.strike"), this.tile.textStrike));
@@ -63,7 +64,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         this.buttonShadow.enabled = !this.button3D.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -78,78 +79,57 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
     {
         switch(guibutton.id)
         {
-        case 2:
-        {
-            this.buttonBold.toggle();
-            this.tile.textBold = this.buttonBold.isActive();
-            break;
-        }
-        case 3:
-        {
-            this.buttonStrike.toggle();
-            this.tile.textStrike = this.buttonStrike.isActive();
-            break;
-        }
-        case 4:
-        {
-            this.buttonUnderline.toggle();
-            this.tile.textUnderline = this.buttonUnderline.isActive();
-            break;
-        }
-        case 5:
-        {
-            this.buttonItalic.toggle();
-            this.tile.textItalic = this.buttonItalic.isActive();
-            break;
-        }
-        case 6:
-        {
-            this.buttonObfuscated.toggle();
-            this.tile.textObfuscated = this.buttonObfuscated.isActive();
-            break;
-        }
-        case 7:
-        {
-            this.buttonShadow.toggle();
-            this.tile.textShadow = this.buttonShadow.isActive();
-            break;
-        }
-        case 8:
-        {
-            this.buttonTranslating.toggle();
-            this.tile.textTranslating = this.buttonTranslating.isActive();
-            this.sliderTranslateSpeed.enabled = this.buttonTranslating.isActive();
-            this.buttonReverseTranslating.enabled = this.buttonTranslating.isActive();
-            break;
-        }
-        case 10:
-        {
-            this.buttonReverseTranslating.toggle();
-            this.tile.textReverseTranslating = this.buttonReverseTranslating.isActive();
-            break;
-        }
-        case 11:
-        {
-            this.button3D.toggle();
-            this.tile.text3D = this.button3D.isActive();
-            this.buttonBold.enabled = !this.button3D.isActive();
-            this.buttonStrike.enabled = !this.button3D.isActive();
-            this.buttonUnderline.enabled = !this.button3D.isActive();
-            this.buttonItalic.enabled = !this.button3D.isActive();
-            this.buttonObfuscated.enabled = !this.button3D.isActive();
-            this.buttonShadow.enabled = !this.button3D.isActive();
-            break;
-        }
-        case 19:
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 2:
+                this.buttonBold.toggle();
+                this.tile.textBold = this.buttonBold.isActive();
+                break;
+            case 3:
+                this.buttonStrike.toggle();
+                this.tile.textStrike = this.buttonStrike.isActive();
+                break;
+            case 4:
+                this.buttonUnderline.toggle();
+                this.tile.textUnderline = this.buttonUnderline.isActive();
+                break;
+            case 5:
+                this.buttonItalic.toggle();
+                this.tile.textItalic = this.buttonItalic.isActive();
+                break;
+            case 6:
+                this.buttonObfuscated.toggle();
+                this.tile.textObfuscated = this.buttonObfuscated.isActive();
+                break;
+            case 7:
+                this.buttonShadow.toggle();
+                this.tile.textShadow = this.buttonShadow.isActive();
+                break;
+            case 8:
+                this.buttonTranslating.toggle();
+                this.tile.textTranslating = this.buttonTranslating.isActive();
+                this.sliderTranslateSpeed.enabled = this.buttonTranslating.isActive();
+                this.buttonReverseTranslating.enabled = this.buttonTranslating.isActive();
+                break;
+            case 10:
+                this.buttonReverseTranslating.toggle();
+                this.tile.textReverseTranslating = this.buttonReverseTranslating.isActive();
+                break;
+            case 11:
+                this.button3D.toggle();
+                this.tile.text3D = this.button3D.isActive();
+                this.buttonBold.enabled = !this.button3D.isActive();
+                this.buttonStrike.enabled = !this.button3D.isActive();
+                this.buttonUnderline.enabled = !this.button3D.isActive();
+                this.buttonItalic.enabled = !this.button3D.isActive();
+                this.buttonObfuscated.enabled = !this.button3D.isActive();
+                this.buttonShadow.enabled = !this.button3D.isActive();
+                break;
+            case 19:
+                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                this.tile.helpMode = this.buttonHelp.isActive();
+                break;
         }
     }
 
@@ -158,21 +138,15 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
     {
         switch(sliderId)
         {
-        case 0:
-        {
-            this.tile.textHeight = (short)(sliderValue * 200);
-            break;
-        }
-        case 1:
-        {
-            this.tile.textScale = (short)(sliderValue * 100);
-            break;
-        }
-        case 9:
-        {
-            this.tile.textTranslateSpeed = (short)(sliderValue * 100);
-            break;
-        }
+            case 0:
+                this.tile.textHeight = (short)(sliderValue * 200);
+                break;
+            case 1:
+                this.tile.textScale = (short)(sliderValue * 100);
+                break;
+            case 9:
+                this.tile.textTranslateSpeed = (short)(sliderValue * 100);
+                break;
         }
     }
 
@@ -182,21 +156,21 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         String name = "";
         switch(sliderId)
         {
-        case 0:
-        {
-            name = I18n.format("container.spotlight.textheight", (short)(sliderValue * 200)-100);
-            break;
-        }
-        case 1:
-        {
-            name = I18n.format("container.spotlight.textscale", (short)(sliderValue * 100));
-            break;
-        }
-        case 9:
-        {
-            name = I18n.format("container.spotlight.translatespeed", (short)(sliderValue * 100));
-            break;
-        }
+            case 0:
+            {
+                name = I18n.format("container.spotlight.textheight", (short)(sliderValue * 200) - 100);
+                break;
+            }
+            case 1:
+            {
+                name = I18n.format("container.spotlight.textscale", (short)(sliderValue * 100));
+                break;
+            }
+            case 9:
+            {
+                name = I18n.format("container.spotlight.translatespeed", (short)(sliderValue * 100));
+                break;
+            }
         }
         return name;
     }
@@ -208,7 +182,50 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    switch(button.id)
+                    {
+                        case 0:
+                            text = I18n.format("tutorial.spotlight.textprops.height");
+                            break;
+                        case 1:
+                            text = I18n.format("tutorial.spotlight.textprops.scale");
+                            break;
+                        case 2:
+                            text = I18n.format("tutorial.spotlight.textprops.bold");
+                            break;
+                        case 3:
+                            text = I18n.format("tutorial.spotlight.textprops.strike");
+                            break;
+                        case 4:
+                            text = I18n.format("tutorial.spotlight.textprops.underline");
+                            break;
+                        case 5:
+                            text = I18n.format("tutorial.spotlight.textprops.italic");
+                            break;
+                        case 6:
+                            text = I18n.format("tutorial.spotlight.textprops.obfuscated");
+                            break;
+                        case 7:
+                            text = I18n.format("tutorial.spotlight.textprops.shadow");
+                            break;
+                        case 19:
+                            text = I18n.format("tutorial.spotlight.back");
+                            break;
+                        case 20:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

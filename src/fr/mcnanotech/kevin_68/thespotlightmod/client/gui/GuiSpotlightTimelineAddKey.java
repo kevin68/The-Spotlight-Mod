@@ -15,6 +15,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderButton
@@ -29,7 +30,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
 
     public GuiSpotlightTimelineAddKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -44,7 +45,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         this.buttonList.add(new GuiSliderButton(this, 0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time", "0.0"), 0));
         this.buttonList.add(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -76,6 +77,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         else if(guibutton.id == 20)
         {
             this.buttonHelp.toggle();
+            this.tile.helpMode = this.buttonHelp.isActive();
         }
     }
 
@@ -123,7 +125,32 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width, this.buttonList, this);
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    switch(button.id)
+                    {
+                        case 0:
+                            text = I18n.format("tutorial.spotlight.addkey.time");
+                            break;
+                        case 1:
+                            text = I18n.format("tutorial.spotlight.back");
+                            break;
+                        case 2:
+                            text = I18n.format("tutorial.spotlight.addkey.create");
+                            break;
+                        case 20:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

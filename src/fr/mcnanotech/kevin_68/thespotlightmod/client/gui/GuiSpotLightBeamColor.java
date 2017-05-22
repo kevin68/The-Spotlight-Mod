@@ -28,7 +28,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
 
     public GuiSpotLightBeamColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, false));
+        super(new ContainerSpotLight(tileEntity, playerInventory, false));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -53,7 +53,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         this.buttonList.add(new GuiSliderButton(this, 7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha", this.tile.secBeamAlpha), this.tile.secBeamAlpha));
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", false));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -68,16 +68,13 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
     {
         switch(guibutton.id)
         {
-        case 19:
-        {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            break;
-        }
+            case 19:
+                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
+                break;
+            case 20:
+                this.buttonHelp.toggle();
+                this.tile.helpMode = this.buttonHelp.isActive();
+                break;
         }
     }
 
@@ -86,33 +83,31 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
     {
         switch(sliderId)
         {
-        case 0:
-            this.tile.beamRed = (short)(sliderValue * 255.0F);
-            break;
-        case 1:
-            this.tile.beamGreen = (short)(sliderValue * 255.0F);
-            break;
-        case 2:
-            this.tile.beamBlue = (short)(sliderValue * 255.0F);
-            break;
-        case 3:
-            this.tile.secBeamRed = (short)(sliderValue * 255.0F);
-            break;
-        case 4:
-            this.tile.secBeamGreen = (short)(sliderValue * 255.0F);
-            break;
-        case 5:
-            this.tile.secBeamBlue = (short)(sliderValue * 255.0F);
-            break;
-        case 6:
-            this.tile.beamAlpha = ((short)(sliderValue * 1000)) / 1000.0F;
-            break;
-        case 7:
-            this.tile.secBeamAlpha = ((short)(sliderValue * 1000)) / 1000.0F;
-            break;
-
+            case 0:
+                this.tile.beamRed = (short)(sliderValue * 255.0F);
+                break;
+            case 1:
+                this.tile.beamGreen = (short)(sliderValue * 255.0F);
+                break;
+            case 2:
+                this.tile.beamBlue = (short)(sliderValue * 255.0F);
+                break;
+            case 3:
+                this.tile.secBeamRed = (short)(sliderValue * 255.0F);
+                break;
+            case 4:
+                this.tile.secBeamGreen = (short)(sliderValue * 255.0F);
+                break;
+            case 5:
+                this.tile.secBeamBlue = (short)(sliderValue * 255.0F);
+                break;
+            case 6:
+                this.tile.beamAlpha = ((short)(sliderValue * 1000)) / 1000.0F;
+                break;
+            case 7:
+                this.tile.secBeamAlpha = ((short)(sliderValue * 1000)) / 1000.0F;
+                break;
         }
-
     }
 
     @Override
@@ -121,46 +116,46 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         String name = "";
         switch(sliderId)
         {
-        case 0:
-        {
-            name = TextFormatting.RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
-            break;
-        }
-        case 1:
-        {
-            name = TextFormatting.GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
-            break;
-        }
-        case 2:
-        {
-            name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
-            break;
-        }
-        case 3:
-        {
-            name = TextFormatting.DARK_RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
-            break;
-        }
-        case 4:
-        {
-            name = TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
-            break;
-        }
-        case 5:
-        {
-            name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
-            break;
-        }
-        case 6:
-        {
-            name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
-            break;
-        }
-        case 7:
-        {
-            name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
-            break;
-        }
+            case 0:
+            {
+                name = TextFormatting.RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
+                break;
+            }
+            case 1:
+            {
+                name = TextFormatting.GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
+                break;
+            }
+            case 2:
+            {
+                name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
+                break;
+            }
+            case 3:
+            {
+                name = TextFormatting.DARK_RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
+                break;
+            }
+            case 4:
+            {
+                name = TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
+                break;
+            }
+            case 5:
+            {
+                name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
+                break;
+            }
+            case 6:
+            {
+                name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
+                break;
+            }
+            case 7:
+            {
+                name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
+                break;
+            }
         }
         return name;
     }
@@ -172,7 +167,51 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
 
         if(this.buttonHelp.isActive())
         {
-            TSMUtils.drawTextHelper(this.fontRenderer, mouseX, mouseY, this.width,  this.buttonList, this);
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    boolean isBeam = this.tile.isBeam;
+                    switch(button.id)
+                    {
+                        case 0:
+                            text = I18n.format("tutorial.spotlight.colors.red");
+                            break;
+                        case 1:
+                            text = I18n.format("tutorial.spotlight.colors.green");
+                            break;
+                        case 2:
+                            text = I18n.format("tutorial.spotlight.colors.blue");
+                            break;
+                        case 3:
+                            text = I18n.format("tutorial.spotlight.colors.secred");
+                            break;
+                        case 4:
+                            text = I18n.format("tutorial.spotlight.colors.secgreen");
+                            break;
+                        case 5:
+                            text = I18n.format("tutorial.spotlight.colors.secblue");
+                            break;
+                        case 6:
+                            text = I18n.format("tutorial.spotlight.colors.alpha");
+                            break;
+                        case 7:
+                            text = I18n.format("tutorial.spotlight.colors.secalpha");
+                            break;
+                        case 19:
+                            text = I18n.format("tutorial.spotlight.back");
+                            break;
+                        case 20:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

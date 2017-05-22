@@ -34,7 +34,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
 
     public GuiSpotLightTextColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 8, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -124,9 +124,41 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         super.drawScreen(mouseX, mouseY, partialRenderTick);
         GL11.glDisable(GL11.GL_LIGHTING);
         this.textField.drawTextBox();
-        if(this.buttonHelp.isActive() && mouseX >= this.textField.xPosition && mouseX < this.textField.xPosition + this.textField.width && mouseY >= this.textField.yPosition && mouseY < this.textField.yPosition + this.textField.height)
+        if(this.buttonHelp.isActive())
         {
-            this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+            if(mouseX >= this.textField.xPosition && mouseX < this.textField.xPosition + this.textField.width && mouseY >= this.textField.yPosition && mouseY < this.textField.yPosition + this.textField.height)
+            {
+                this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+            }
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    switch(button.id)
+                    {
+                    case 0:
+                        text = I18n.format("tutorial.spotlight.textcolors.red");
+                        break;
+                    case 1:
+                        text = I18n.format("tutorial.spotlight.textcolors.green");
+                        break;
+                    case 2:
+                        text = I18n.format("tutorial.spotlight.textcolors.blue");
+                        break;
+                    case 19:
+                        text = I18n.format("tutorial.spotlight.back");
+                        break;
+                    case 20:
+                        text = I18n.format("tutorial.spotlight.help");
+                        break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
         }
     }
 

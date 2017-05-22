@@ -37,7 +37,7 @@ public class GuiSpotlightTimeline extends GuiContainer
 
     public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 11, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 51, 186, true));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -60,7 +60,7 @@ public class GuiSpotlightTimeline extends GuiContainer
         this.buttonRemove.enabled = false;
         this.buttonList.add(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")));
         this.buttonList.add(this.buttonSmooth = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(8, x + 220, y + 185, 20, 20, "?", this.tile.helpMode));
+        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(8, x + 220, y + 184, 20, 20, "?", this.tile.helpMode));
         this.buttonTimelineEnabled.enabled = this.tile.hasKey();
         for(short i = 0; i < 120; i++)
         {
@@ -144,10 +144,44 @@ public class GuiSpotlightTimeline extends GuiContainer
 
         if(this.buttonHelp.isActive())
         {
-            System.out.println(mouseX);
-            if(mouseX > 60 && mouseY > 30 && mouseX < 363 && mouseY < 53)
+            if(mouseX > 64 && mouseY > 30 && mouseX < 367 && mouseY < 53)
             {
                 this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+            }
+            for(GuiButton button : this.buttonList)
+            {
+                if(button.isMouseOver())
+                {
+                    String text = "";
+                    switch(button.id)
+                    {
+                        case 2:
+                            text = I18n.format("tutorial.spotlight.back");
+                            break;
+                        case 3:
+                            text = I18n.format("tutorial.spotlight.timeline.addkey");
+                            break;
+                        case 4:
+                            text = I18n.format("tutorial.spotlight.timeline.toogle");
+                            break;
+                        case 5:
+                            text = I18n.format("tutorial.spotlight.timeline.delkey");
+                            break;
+                        case 6:
+                            text = I18n.format("tutorial.spotlight.timeline.set0");
+                            break;
+                        case 7:
+                            text = I18n.format("tutorial.spotlight.timeline.smooth");
+                            break;
+                        case 8:
+                            text = I18n.format("tutorial.spotlight.help");
+                            break;
+                    }
+                    if(!text.isEmpty())
+                    {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
             }
         }
     }
