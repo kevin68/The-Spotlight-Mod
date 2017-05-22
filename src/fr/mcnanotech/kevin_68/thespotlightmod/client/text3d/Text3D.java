@@ -1,12 +1,13 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.text3d;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class Text3D
 {
-    private final ResourceLocation texture = new ResourceLocation("ffmtlibs", "textures/white.png");
+    private final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID, "textures/white.png");
     private Model3DTextBase font;
     private final Minecraft mc = Minecraft.getMinecraft();
 

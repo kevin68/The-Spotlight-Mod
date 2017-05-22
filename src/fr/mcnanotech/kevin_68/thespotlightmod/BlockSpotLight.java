@@ -71,7 +71,7 @@ public class BlockSpotLight extends BlockContainer
         }
         TileEntity tileentity = world.getTileEntity(pos);
 
-        if(tileentity == null || player.isSneaking())
+        if(player.isSneaking())
         {
             return false;
         }

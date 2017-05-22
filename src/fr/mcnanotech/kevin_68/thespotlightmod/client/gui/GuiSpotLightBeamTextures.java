@@ -75,7 +75,7 @@ public class GuiSpotLightBeamTextures extends GuiContainer
         if(this.buttonHelp.isActive())
         {
             Slot s = this.getSlotUnderMouse();
-            if(s != null)
+            if(s != null && s.slotNumber < 2)
             {
                 String text = s.slotNumber == 0 ? I18n.format("tutorial.spotlight.textures.main") : I18n.format("tutorial.spotlight.textures.sec");
                 this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);

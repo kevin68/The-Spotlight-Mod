@@ -100,7 +100,10 @@ public class GuiSpotLightConfig extends GuiContainer
                         text = I18n.format("tutorial.spotlight.config.fromclean");
                         break;
                 }
-                this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                if(!text.isEmpty())
+                {
+                    this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
+                }
             }
             for(GuiButton button : this.buttonList)
             {

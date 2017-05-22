@@ -610,21 +610,21 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     {
         if(!this.world.isRemote)
         {
-            if(this.getStackInSlot(0) != null && this.getStackInSlot(1) == null)
+            if(!this.getStackInSlot(0).isEmpty() && this.getStackInSlot(1).isEmpty())
             {
                 this.decrStackSize(0, 1);
                 ItemStack stack = new ItemStack(TheSpotLightMod.configSaverFull);
                 TSMJsonManager.saveConfig(stack, this);
                 this.setInventorySlotContents(1, stack);
             }
-            if(this.getStackInSlot(2) != null && this.getStackInSlot(3) == null)
+            if(!this.getStackInSlot(2).isEmpty() && this.getStackInSlot(3).isEmpty())
             {
                 ItemStack stack = this.getStackInSlot(2).copy();
                 this.decrStackSize(2, 1);
                 TSMJsonManager.loadConfig(stack, this);
                 this.setInventorySlotContents(3, stack);
             }
-            if(this.getStackInSlot(4) != null && this.getStackInSlot(5) == null)
+            if(!this.getStackInSlot(4).isEmpty() && this.getStackInSlot(5).isEmpty())
             {
                 TSMJsonManager.deleteConfig(getStackInSlot(4));
                 this.decrStackSize(4, 1);
