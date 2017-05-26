@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.11.2]", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
+@Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.10.2]", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
 public class TheSpotLightMod
 {
     public static final String MODID = "thespotlightmod";
@@ -57,9 +57,9 @@ public class TheSpotLightMod
     {
         @Override
         @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem()
+        public Item getTabIconItem()
         {
-            return new ItemStack(spotlight);
+            return Item.getItemFromBlock(spotlight);
         }
     };
 

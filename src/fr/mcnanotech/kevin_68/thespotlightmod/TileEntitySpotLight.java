@@ -24,7 +24,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -37,7 +36,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     /*
      * Inventory
      */
-    private NonNullList<ItemStack> slots = NonNullList.<ItemStack>withSize(8, ItemStack.EMPTY);
+	private ItemStack[] slots = new ItemStack[8];
 
     /*
      * updated = common, data are loaded; updating = client waiting for packet
@@ -452,7 +451,18 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             nbtTagCompound.setString("LockerUUID", this.lockerUUID);
         }
 
-        ItemStackHelper.saveAllItems(nbtTagCompound, this.slots);
+        NBTTagList taglist = new NBTTagList();
+        for(int i = 0; i < this.slots.length; ++i)
+        {
+           if(this.slots[i] != null)
+           {
+               NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+               nbttagcompound1.setByte("Slot", (byte)i);
+               this.slots[i].writeToNBT(nbttagcompound1);
+               taglist.appendTag(nbttagcompound1);
+           }
+        }
+        nbtTagCompound.setTag("Items", taglist);
         return nbtTagCompound;
     }
 
@@ -471,7 +481,16 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             this.lockerUUID = nbtTagCompound.getString("LockerUUID");
         }
 
-        ItemStackHelper.loadAllItems(nbtTagCompound, this.slots);
+        NBTTagList nbttaglistItems = nbtTagCompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i < nbttaglistItems.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound1 = nbttaglistItems.getCompoundTagAt(i);
+            int j = nbttagcompound1.getByte("Slot") & 255;
+            if(j >= 0 && j < this.slots.length)
+            {
+                this.slots[j] = ItemStack.func_77949_a(nbttagcompound1);
+            }
+        }
     }
 
     @Override
@@ -503,13 +522,13 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     @Override
     public int getSizeInventory()
     {
-        return this.slots.size();
+        return this.slots.length;
     }
 
     @Override
     public ItemStack getStackInSlot(int index)
     {
-        return this.slots.get(index);
+        return this.slots[index];
     }
 
     @Override
@@ -517,7 +536,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     {
         ItemStack stack = ItemStackHelper.getAndSplit(this.slots, index, amount);
 
-        if(!stack.isEmpty())
+        if(stack != null)
         {
             this.markDirty();
         }
@@ -534,11 +553,11 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        this.slots.set(index, stack);
+        this.slots[index] = stack;
 
-        if(stack.getCount() > this.getInventoryStackLimit())
+        if(stack.stackSize > this.getInventoryStackLimit())
         {
-            stack.setCount(this.getInventoryStackLimit());
+            stack.stackSize = this.getInventoryStackLimit();
         }
 
         this.markDirty();
@@ -597,7 +616,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     @Override
     public void clear()
     {
-        this.slots.clear();
+        this.slots[0] = null;
     }
 
     @Override
@@ -610,21 +629,21 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     {
         if(!this.world.isRemote)
         {
-            if(!this.getStackInSlot(0).isEmpty() && this.getStackInSlot(1).isEmpty())
+            if(this.getStackInSlot(0) != null && this.getStackInSlot(1) == null)
             {
                 this.decrStackSize(0, 1);
                 ItemStack stack = new ItemStack(TheSpotLightMod.configSaverFull);
                 TSMJsonManager.saveConfig(stack, this);
                 this.setInventorySlotContents(1, stack);
             }
-            if(!this.getStackInSlot(2).isEmpty() && this.getStackInSlot(3).isEmpty())
+            if(this.getStackInSlot(2) != null && this.getStackInSlot(3) == null)
             {
                 ItemStack stack = this.getStackInSlot(2).copy();
                 this.decrStackSize(2, 1);
                 TSMJsonManager.loadConfig(stack, this);
                 this.setInventorySlotContents(3, stack);
             }
-            if(!this.getStackInSlot(4).isEmpty() && this.getStackInSlot(5).isEmpty())
+            if(this.getStackInSlot(4) != null && this.getStackInSlot(5) == null)
             {
                 TSMJsonManager.deleteConfig(getStackInSlot(4));
                 this.decrStackSize(4, 1);
@@ -651,19 +670,5 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
     {
         return false;
-    }
-
-    @Override
-    public boolean isEmpty()
-    {
-        for(ItemStack itemstack : this.slots)
-        {
-            if(!itemstack.isEmpty())
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

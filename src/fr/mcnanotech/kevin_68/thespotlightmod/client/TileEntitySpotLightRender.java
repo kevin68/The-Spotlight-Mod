@@ -72,7 +72,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                     Tessellator tess = Tessellator.getInstance();
 
                     ItemStack s = tile.getStackInSlot(6);
-                    if(!s.isEmpty())
+                    if(s != null)
                     {
                         bindTexture(getResourceLocationStack(s) != null ? getResourceLocationStack(s) : TextureMap.LOCATION_MISSING_TEXTURE);
                     }
@@ -110,7 +110,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                         drawBeam(tess, x, y, z, t2, t4, tile.bVec[1], r, g, b, a);
                     }
                     ItemStack s2 = tile.getStackInSlot(7);
-                    if(!s2.isEmpty())
+                    if(s2 != null)
                     {
                         bindTexture(getResourceLocationStack(s2) != null ? getResourceLocationStack(s2) : TextureMap.LOCATION_MISSING_TEXTURE);
                     }

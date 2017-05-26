@@ -21,17 +21,17 @@ public class GuiMultipleOptionButton extends GuiButton
         this.currentState = currentState;
         this.stateCount = stateCount;
     }
-    
+
     public void shouldUseHoverState(boolean should)
     {
         this.useHoverState = should;
     }
-    
+
     public void setTexts(String[] texts)
     {
         this.changTxt = texts;
     }
-    
+
     public void setCutomTexture(ResourceLocation loc, int textureY)
     {
         this.buttonTex = loc;

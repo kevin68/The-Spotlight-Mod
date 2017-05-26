@@ -17,20 +17,20 @@ public class GuiBooleanButton extends GuiButton
     private String textNotActive, textActive;
     private int yTex = 46;
     private boolean useHoverState = true, otherTextureWhenActive = true, doNotChangeTextColor = false;
-    
+
     public GuiBooleanButton(int id , int x, int y,int width, int height, String text, boolean active)
     {
         super(id, x, y, width, height, text);
         this.active = active;
         this.textActive = this.textNotActive = text;
     }
-    
+
     public void setTexts(String active, String notActive)
     {
         this.textActive = active;
         this.textNotActive = notActive;
     }
-    
+
     /**
      * Follow the default texture model!
      * @param loc the resource location of the texture
@@ -46,12 +46,12 @@ public class GuiBooleanButton extends GuiButton
     {
         this.useHoverState = should;
     }
-    
+
     public void shouldChangeTextureOnToggle(boolean should)
     {
         this.otherTextureWhenActive = should;
     }
-    
+
     public void changeTextColorWhenNotActive(boolean change)
     {
         this.doNotChangeTextColor = change;

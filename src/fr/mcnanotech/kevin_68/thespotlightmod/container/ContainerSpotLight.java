@@ -19,7 +19,7 @@ public class ContainerSpotLight extends Container
             bindPlayerInventory(inventoryPlayer, invX, invY);
         }
     }
-    
+
     public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, boolean showPlayerInventory)
     {
         this(tileEntity, inventoryPlayer, 8, 142, showPlayerInventory);
@@ -42,7 +42,7 @@ public class ContainerSpotLight extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
     {
-        ItemStack itemstack = ItemStack.EMPTY;
+        ItemStack itemstack = null;
         Slot slot = this.inventorySlots.get(slotId);
 
         if(slot != null && slot.getHasStack())
@@ -53,17 +53,17 @@ public class ContainerSpotLight extends Container
             {
                 if(!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
                 {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
             }
             else if(!mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
             {
-                return ItemStack.EMPTY;
+                return null;
             }
 
-            if(itemstack1.isEmpty())
+            if(itemstack1 == null)
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.putStack(itemstack1);
             }
             else
             {

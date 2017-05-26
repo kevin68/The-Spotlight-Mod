@@ -90,7 +90,7 @@ public class ContainerSpotLightConfig extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
     {
-        ItemStack itemstack = ItemStack.EMPTY;
+        ItemStack itemstack = null;
         Slot slot = this.inventorySlots.get(slotId);
         if(slot != null && slot.getHasStack())
         {
@@ -100,17 +100,17 @@ public class ContainerSpotLightConfig extends Container
             {
                 if(!this.mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory(), this.inventorySlots.size(), true))
                 {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
             }
             else if(!this.mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory(), false))
             {
-                return ItemStack.EMPTY;
+                return null;
             }
 
-            if(itemstack1.isEmpty())
+            if(itemstack1 == null)
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.putStack(itemstack1);
             }
             else
             {

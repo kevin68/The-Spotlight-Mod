@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 ext.buildnumber = 0
-version = "1.1.0"
+version = "1.1.0-legacy"
 group= "fr.mcnanotech.kevin_68"
 archivesBaseName = "TheSpotlightMod"
 
@@ -32,7 +32,7 @@ else {
 }
 
 minecraft {
-    version = "1.11.2-13.20.0.2303"
+    version = "1.10.2-12.18.3.2297"
     runDir = "run"
     mappings = "snapshot_20170522"
 
