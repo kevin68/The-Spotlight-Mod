@@ -224,7 +224,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     {
         TextureAtlasSprite sprite = null;
         Block b = Block.getBlockFromItem(stack.getItem());
-        if(b != Blocks.AIR)
+        if(b != null)
         {
             sprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getStateFromMeta(stack.getMetadata()));
         }

@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 ext.buildnumber = 0
-version = "1.1.0-legacy"
+version = "1.1.0"
 group= "fr.mcnanotech.kevin_68"
 archivesBaseName = "TheSpotlightMod"
 
@@ -88,7 +88,7 @@ jar {
         include "assets/thespotlightmod/**"
 		include "mcmod.info"
     classifier = 'universal'
-    version = "${project.version}-mc${project.minecraft.version}"
+    version = "${project.version}-legacy-mc${project.minecraft.version}"
 }
 
 sourceJar {

@@ -555,7 +555,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     {
         this.slots[index] = stack;
 
-        if(stack.stackSize > this.getInventoryStackLimit())
+        if(stack != null && stack.stackSize > this.getInventoryStackLimit())
         {
             stack.stackSize = this.getInventoryStackLimit();
         }
