@@ -335,17 +335,18 @@ public class TSMJsonManager
             {
                 if(FMLCommonHandler.instance().getSide() == Side.SERVER)
                 {
-                    deleteFile(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
-                    generateNewFiles(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    deleteFile(tile.dimensionID, tile.getPos());
+                    generateNewFiles(tile.dimensionID, tile.getPos());
                 }
                 else
                 {
-                    TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), json.get("DimID").getAsInt()));
+                    TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimensionID));
                 }
             }
             catch(NullPointerException fatal)
             {
-                TheSpotLightMod.log.error("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
+            	fatal.printStackTrace();
+                TheSpotLightMod.log.error("This should not happen");
             }
         }
         return false;
