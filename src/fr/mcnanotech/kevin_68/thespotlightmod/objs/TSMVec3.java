@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.utils;
+package fr.mcnanotech.kevin_68.thespotlightmod.objs;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;

@@ -3,9 +3,9 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -44,15 +44,15 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         this.buttonList.add(this.buttonX = new GuiBooleanButton(0, x - 50, y + 110, 20, 20, "X", true));
         this.buttonList.add(this.buttonY = new GuiBooleanButton(1, x - 25, y + 110, 20, 20, "Y", false));
         this.buttonList.add(this.buttonZ = new GuiBooleanButton(2, x, y + 110, 20, 20, "Z", false));
-        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "X", this.tile.beamAngleX), this.tile.beamAngleX / 360.0F));
+        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "X", this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X)), this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X) / 360.0F));
         this.sliderAngle.shouldResetOnEnd(true);
-        this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.beamAutoRotateX));
+        this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X)));
         this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
-        this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.beamReverseRotateX));
+        this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X)));
         this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
         this.buttonRR.enabled = this.buttonAR.enabled;
-        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "X", this.tile.beamRotationSpeedX), this.tile.beamRotationSpeedX / 200.0F));
+        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "X", this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X)), this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) / 200.0F));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
@@ -71,156 +71,156 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
     {
         switch(guibutton.id)
         {
-        case 0:
-        {
-            if(!this.buttonX.isActive())
+            case 0:
             {
-                this.buttonX.toggle();
-                if(this.buttonY.isActive())
-                {
-                    this.buttonY.toggle();
-                }
-                if(this.buttonZ.isActive())
-                {
-                    this.buttonZ.toggle();
-                }
-                this.sliderAngle.sliderValue = this.tile.beamAngleX / 360.0F;
-                this.sliderAngle.displayString = getSliderName(3, this.tile.beamAngleX / 360.0F);
-                this.sliderSpeed.sliderValue = this.tile.beamRotationSpeedX / 200.0F;
-                this.sliderSpeed.displayString = getSliderName(6, this.tile.beamRotationSpeedX / 200.0F);
-                if(this.buttonAR.isActive() != this.tile.beamAutoRotateX)
-                {
-                    this.buttonAR.toggle();
-                }
-                this.sliderAngle.enabled = !this.buttonAR.isActive();
-                this.sliderSpeed.enabled = this.buttonAR.isActive();
-                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
-                if(this.buttonRR.isActive() != this.tile.beamReverseRotateX)
-                {
-                    this.buttonRR.toggle();
-                }
-                this.buttonRR.enabled = this.buttonAR.isActive();
-                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
-                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
-            }
-            break;
-        }
-        case 1:
-        {
-            if(!this.buttonY.isActive())
-            {
-                this.buttonY.toggle();
-                if(this.buttonX.isActive())
+                if(!this.buttonX.isActive())
                 {
                     this.buttonX.toggle();
+                    if(this.buttonY.isActive())
+                    {
+                        this.buttonY.toggle();
+                    }
+                    if(this.buttonZ.isActive())
+                    {
+                        this.buttonZ.toggle();
+                    }
+                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X) / 360.0F;
+                    this.sliderAngle.displayString = getSliderName(3, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X) / 360.0F);
+                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) / 200.0F;
+                    this.sliderSpeed.displayString = getSliderName(6, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) / 200.0F);
+                    if(this.buttonAR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X))
+                    {
+                        this.buttonAR.toggle();
+                    }
+                    this.sliderAngle.enabled = !this.buttonAR.isActive();
+                    this.sliderSpeed.enabled = this.buttonAR.isActive();
+                    this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
+                    if(this.buttonRR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X))
+                    {
+                        this.buttonRR.toggle();
+                    }
+                    this.buttonRR.enabled = this.buttonAR.isActive();
+                    this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
+                    TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
                 }
-                if(this.buttonZ.isActive())
-                {
-                    this.buttonZ.toggle();
-                }
-                this.sliderAngle.sliderValue = this.tile.beamAngleY / 360.0F;
-                this.sliderAngle.displayString = getSliderName(3, this.tile.beamAngleY / 360.0F);
-                this.sliderSpeed.sliderValue = this.tile.beamRotationSpeedY / 200.0F;
-                this.sliderSpeed.displayString = getSliderName(6, this.tile.beamRotationSpeedY / 200.0F);
-                if(this.buttonAR.isActive() != this.tile.beamAutoRotateY)
-                {
-                    this.buttonAR.toggle();
-                }
-                this.sliderAngle.enabled = !this.buttonAR.isActive();
-                this.sliderSpeed.enabled = this.buttonAR.isActive();
-                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.off")));
-                if(this.buttonRR.isActive() != this.tile.beamReverseRotateY)
-                {
-                    this.buttonRR.toggle();
-                }
-                this.buttonRR.enabled = this.buttonAR.isActive();
-                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
-                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
+                break;
             }
-            break;
-        }
-        case 2:
-        {
-            if(!this.buttonZ.isActive())
+            case 1:
             {
-                this.buttonZ.toggle();
-                if(this.buttonX.isActive())
-                {
-                    this.buttonX.toggle();
-                }
-                if(this.buttonY.isActive())
+                if(!this.buttonY.isActive())
                 {
                     this.buttonY.toggle();
+                    if(this.buttonX.isActive())
+                    {
+                        this.buttonX.toggle();
+                    }
+                    if(this.buttonZ.isActive())
+                    {
+                        this.buttonZ.toggle();
+                    }
+                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y) / 360.0F;
+                    this.sliderAngle.displayString = getSliderName(3, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y) / 360.0F);
+                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y) / 200.0F;
+                    this.sliderSpeed.displayString = getSliderName(6, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y) / 200.0F);
+                    if(this.buttonAR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y))
+                    {
+                        this.buttonAR.toggle();
+                    }
+                    this.sliderAngle.enabled = !this.buttonAR.isActive();
+                    this.sliderSpeed.enabled = this.buttonAR.isActive();
+                    this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.off")));
+                    if(this.buttonRR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Y))
+                    {
+                        this.buttonRR.toggle();
+                    }
+                    this.buttonRR.enabled = this.buttonAR.isActive();
+                    this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
+                    TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
                 }
-                this.sliderAngle.sliderValue = this.tile.beamAngleZ / 360.0F;
-                this.sliderAngle.displayString = getSliderName(3, this.tile.beamAngleZ / 360.0F);
-                this.sliderSpeed.sliderValue = this.tile.beamRotationSpeedZ / 200.0F;
-                this.sliderSpeed.displayString = getSliderName(6, this.tile.beamRotationSpeedZ / 200.0F);
-                if(this.buttonAR.isActive() != this.tile.beamAutoRotateZ)
+                break;
+            }
+            case 2:
+            {
+                if(!this.buttonZ.isActive())
                 {
-                    this.buttonAR.toggle();
+                    this.buttonZ.toggle();
+                    if(this.buttonX.isActive())
+                    {
+                        this.buttonX.toggle();
+                    }
+                    if(this.buttonY.isActive())
+                    {
+                        this.buttonY.toggle();
+                    }
+                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Z) / 360.0F;
+                    this.sliderAngle.displayString = getSliderName(3, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Z) / 360.0F);
+                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z) / 200.0F;
+                    this.sliderSpeed.displayString = getSliderName(6, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z) / 200.0F);
+                    if(this.buttonAR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Z))
+                    {
+                        this.buttonAR.toggle();
+                    }
+                    this.sliderAngle.enabled = !this.buttonAR.isActive();
+                    this.sliderSpeed.enabled = this.buttonAR.isActive();
+                    this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Z", I18n.format("container.spotlight.off")));
+                    if(this.buttonRR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Z))
+                    {
+                        this.buttonRR.toggle();
+                    }
+                    this.buttonRR.enabled = this.buttonAR.isActive();
+                    this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.off")));
+                    TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
+                }
+                break;
+            }
+            case 4:
+            {
+                this.buttonAR.toggle();
+                if(this.buttonX.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_AUTO_X, this.buttonAR.isActive());
+                }
+                else if(this.buttonY.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_AUTO_Y, this.buttonAR.isActive());
+                }
+                else if(this.buttonZ.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_AUTO_Z, this.buttonAR.isActive());
                 }
                 this.sliderAngle.enabled = !this.buttonAR.isActive();
                 this.sliderSpeed.enabled = this.buttonAR.isActive();
-                this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Z", I18n.format("container.spotlight.off")));
-                if(this.buttonRR.isActive() != this.tile.beamReverseRotateZ)
-                {
-                    this.buttonRR.toggle();
-                }
                 this.buttonRR.enabled = this.buttonAR.isActive();
-                this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.off")));
-                TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
+                break;
             }
-            break;
-        }
-        case 4:
-        {
-            this.buttonAR.toggle();
-            if(this.buttonX.isActive())
+            case 5:
             {
-                this.tile.beamAutoRotateX = this.buttonAR.isActive();
+                this.buttonRR.toggle();
+                if(this.buttonX.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_REVERSE_X, this.buttonRR.isActive());
+                }
+                else if(this.buttonY.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_REVERSE_Y, this.buttonRR.isActive());
+                }
+                else if(this.buttonZ.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_REVERSE_Z, this.buttonRR.isActive());
+                }
+                break;
             }
-            else if(this.buttonY.isActive())
+            case 19:
             {
-                this.tile.beamAutoRotateY = this.buttonAR.isActive();
+                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
+                break;
             }
-            else if(this.buttonZ.isActive())
+            case 20:
             {
-                this.tile.beamAutoRotateZ = this.buttonAR.isActive();
+                this.buttonHelp.toggle();
+                this.tile.helpMode = this.buttonHelp.isActive();
+                break;
             }
-            this.sliderAngle.enabled = !this.buttonAR.isActive();
-            this.sliderSpeed.enabled = this.buttonAR.isActive();
-            this.buttonRR.enabled = this.buttonAR.isActive();
-            break;
-        }
-        case 5:
-        {
-            this.buttonRR.toggle();
-            if(this.buttonX.isActive())
-            {
-                this.tile.beamReverseRotateX = this.buttonRR.isActive();
-            }
-            else if(this.buttonY.isActive())
-            {
-                this.tile.beamReverseRotateY = this.buttonRR.isActive();
-            }
-            else if(this.buttonZ.isActive())
-            {
-                this.tile.beamReverseRotateZ = this.buttonRR.isActive();
-            }
-            break;
-        }
-        case 19:
-        {
-            this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-            break;
-        }
-        case 20:
-        {
-            this.buttonHelp.toggle();
-            this.tile.helpMode = this.buttonHelp.isActive();
-            break;
-        }
         }
     }
 
@@ -229,38 +229,38 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
     {
         switch(sliderId)
         {
-        case 3:
-        {
-            if(this.buttonX.isActive())
+            case 3:
             {
-                this.tile.beamAngleX = (short)(sliderValue * 360.0F);
+                if(this.buttonX.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_X, (short)(sliderValue * 360.0F));
+                }
+                else if(this.buttonY.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_Y, (short)(sliderValue * 360.0F));
+                }
+                else if(this.buttonZ.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_Z, (short)(sliderValue * 360.0F));
+                }
+                break;
             }
-            else if(this.buttonY.isActive())
+            case 6:
             {
-                this.tile.beamAngleY = (short)(sliderValue * 360.0F);
+                if(this.buttonX.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_X, (short)(sliderValue * 200));
+                }
+                else if(this.buttonY.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_Y, (short)(sliderValue * 200));
+                }
+                else if(this.buttonZ.isActive())
+                {
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_Z, (short)(sliderValue * 200));
+                }
+                break;
             }
-            else if(this.buttonZ.isActive())
-            {
-                this.tile.beamAngleZ = (short)(sliderValue * 360.0F);
-            }
-            break;
-        }
-        case 6:
-        {
-            if(this.buttonX.isActive())
-            {
-                this.tile.beamRotationSpeedX = (short)(sliderValue * 200);
-            }
-            else if(this.buttonY.isActive())
-            {
-                this.tile.beamRotationSpeedY = (short)(sliderValue * 200);
-            }
-            else if(this.buttonZ.isActive())
-            {
-                this.tile.beamRotationSpeedZ = (short)(sliderValue * 200);
-            }
-            break;
-        }
         }
     }
 
@@ -270,38 +270,38 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         String name = "";
         switch(sliderId)
         {
-        case 3:
-        {
-            if(this.buttonX.isActive())
+            case 3:
             {
-                name = I18n.format("container.spotlight.angleval", "X", (short)(sliderValue * 360));
+                if(this.buttonX.isActive())
+                {
+                    name = I18n.format("container.spotlight.angleval", "X", (short)(sliderValue * 360));
+                }
+                else if(this.buttonY.isActive())
+                {
+                    name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
+                }
+                else if(this.buttonZ.isActive())
+                {
+                    name = I18n.format("container.spotlight.angleval", "Z", (short)(sliderValue * 360));
+                }
+                break;
             }
-            else if(this.buttonY.isActive())
+            case 6:
             {
-                name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
+                if(this.buttonX.isActive())
+                {
+                    name = I18n.format("container.spotlight.rotationspeed", "X", (short)(sliderValue * 200));
+                }
+                else if(this.buttonY.isActive())
+                {
+                    name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
+                }
+                else if(this.buttonZ.isActive())
+                {
+                    name = I18n.format("container.spotlight.rotationspeed", "Z", (short)(sliderValue * 200));
+                }
+                break;
             }
-            else if(this.buttonZ.isActive())
-            {
-                name = I18n.format("container.spotlight.angleval", "Z", (short)(sliderValue * 360));
-            }
-            break;
-        }
-        case 6:
-        {
-            if(this.buttonX.isActive())
-            {
-                name = I18n.format("container.spotlight.rotationspeed", "X", (short)(sliderValue * 200));
-            }
-            else if(this.buttonY.isActive())
-            {
-                name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
-            }
-            else if(this.buttonZ.isActive())
-            {
-                name = I18n.format("container.spotlight.rotationspeed", "Z", (short)(sliderValue * 200));
-            }
-            break;
-        }
         }
         return name;
     }

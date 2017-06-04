@@ -1,24 +1,29 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumPropVecBehaviour;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMType;
+import fr.mcnanotech.kevin_68.thespotlightmod.objs.BeamVec;
+import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMKey;
+import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMVec3;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTLData;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMKey;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMVec3;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +33,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -51,37 +55,14 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     public boolean locked; // Locked by a user
     public String lockerUUID;// UUID of locker
 
-    // -------------------------------------Beam Colors
-    public short beamRed, beamGreen, beamBlue, secBeamRed, secBeamGreen, secBeamBlue;
-    public float beamAlpha, secBeamAlpha;
-    // -------------------------------------Beam Angles
-    public short beamAngleX, beamAngleY, beamAngleZ, beamRotationSpeedX, beamRotationSpeedY, beamRotationSpeedZ;
-    public boolean beamAutoRotateX, beamAutoRotateY, beamAutoRotateZ, beamReverseRotateX, beamReverseRotateY, beamReverseRotateZ;
-    // -------------------------------------Beam Properties
-    public short beamSize, secBeamSize, beamHeight, beamSides;
-    public boolean secBeamEnabled, beamDouble;
-    // -------------------------------------Text Colors
-    public String text;
-    public short textRed, textGreen, textBlue;
-    // -------------------------------------Text Angles
-    public short textAngleY, textRotationSpeedY;
-    public boolean textAutoRotateY, textReverseRotateY;
-    // -------------------------------------Text Properties
-    public short textHeight, textScale, textTranslateSpeed;
-    public boolean textBold, textStrike, textUnderline, textItalic, textObfuscated, textShadow, textTranslating, textReverseTranslating, text3D;
+    private Map<EnumTSMProperty, Object> properties = initProperties();
+    private Map<EnumTSMProperty, Object[]> timelineProperties = initTimeLineProperties();
+    private Map<EnumTSMProperty, Object> previousProperties = initPrevProperties();
+
     // -------------------------------------TimeLine
     public short time;
     public boolean timelineEnabled, timelineSmooth;
     private TSMKey[] tsmKeys = new TSMKey[120];
-    // ------------------------------------- TimeLine calculated values
-    public short[] tlBRed = new short[1200], tlBGreen = new short[1200], tlBBlue = new short[1200], tlSecBRed = new short[1200], tlSecBGreen = new short[1200], tlSecBBlue = new short[1200], tlBAngleX = new short[1200], tlBAngleY = new short[1200], tlBAngleZ = new short[1200];// TODO
-                                                                                                                                                                                                                                                                                    // fill
-    public float[] tlBAlpha = new float[1200], tlSecBAlpha = new float[1200];
-
-    // -------------------------------------Previous values for determining
-    // processing
-    private short prevBeamHeight = -1, prevBeamSides = -1, prevBeamAngleX = -1, prevBeamAngleY = -1, prevBeamAngleZ = -1, prevBeamSize = -1, prevSecBeamSize = -1;
-    private boolean prevBeamAutoRotateX, prevBeamAutoRotateY, prevBeamAutoRotateZ, prevWasBeam;
 
     // -------------------------------------Vecs for renders
     public BeamVec[] bVec = null;
@@ -157,19 +138,57 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
                     this.isActive = true;
                     if(this.bVec != null)
                     {
-                        if(this.beamAutoRotateX || this.beamAutoRotateY || this.beamAutoRotateZ || this.prevBeamAngleX != this.beamAngleX || this.prevBeamAngleY != this.beamAngleY || this.prevBeamAngleZ != this.beamAngleZ || this.prevBeamHeight != this.beamHeight || this.prevBeamSides != this.beamSides || this.prevBeamSize != this.beamSize || this.prevSecBeamSize != this.secBeamSize || this.prevBeamAutoRotateX != this.beamAutoRotateX || this.prevBeamAutoRotateY != this.beamAutoRotateY || this.prevBeamAutoRotateZ != this.beamAutoRotateZ || this.prevWasBeam != this.isBeam)
+                        //Detect when we need to update the beam's vetors
+                        boolean flag = false;
+                        forloop: for(Entry<EnumTSMProperty, Object> ent : properties.entrySet())
                         {
-                            this.prevBeamAngleX = this.beamAngleX;
-                            this.prevBeamAngleY = this.beamAngleY;
-                            this.prevBeamAngleZ = this.beamAngleZ;
-                            this.prevBeamHeight = this.beamHeight;
-                            this.prevBeamSides = this.beamSides;
-                            this.prevBeamSize = this.beamSize;
-                            this.prevSecBeamSize = this.secBeamSize;
-                            this.prevBeamAutoRotateX = this.beamAutoRotateX;
-                            this.prevBeamAutoRotateY = this.beamAutoRotateY;
-                            this.prevBeamAutoRotateZ = this.beamAutoRotateZ;
-                            this.prevWasBeam = this.isBeam;
+                            switch(ent.getKey().vecBehaviour)
+                            {
+                                case NONE:
+                                    continue;
+                                case WHEN_ACTIVE:
+                                    if(getBoolean(ent.getKey()))
+                                    {
+                                        flag = true;
+                                        break forloop;
+                                    }
+                                    break;
+                                case VALUE_CHANGED:
+                                    if(!previousProperties.get(ent.getKey()).equals(ent.getValue()))
+                                    {
+                                        flag = true;
+                                        break forloop;
+                                    }
+                                    break;
+                                default:
+                                    System.out.println("???? someone added an enum, this is not good");
+                                    break;
+                            }
+                        }
+
+                        if(flag)
+                        {
+                            for(Entry<EnumTSMProperty, Object> ent : properties.entrySet())
+                            {
+                                if(ent.getKey().vecBehaviour != EnumPropVecBehaviour.NONE)
+                                {
+                                    switch(ent.getKey().type)
+                                    {
+                                        case FLOAT:
+                                            previousProperties.put(ent.getKey(), ((Float)properties.get(ent.getKey())).floatValue());
+                                            break;
+                                        case SHORT:
+                                            previousProperties.put(ent.getKey(), ((Number)properties.get(ent.getKey())).shortValue());
+                                            break;
+                                        case BOOLEAN:
+                                            previousProperties.put(ent.getKey(), ((Boolean)properties.get(ent.getKey())).booleanValue());
+                                            break;
+                                        default:
+                                            System.out.println("Invalid type");
+                                            break;
+                                    }
+                                }
+                            }
                             this.bVec = process();
                         }
                     }
@@ -216,52 +235,76 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         {
             if(this.timelineSmooth)
             {
-                this.beamRed = this.tlBRed[this.time];
-                this.beamGreen = this.tlBGreen[this.time];
-                this.beamBlue = this.tlBBlue[this.time];
-                this.beamAlpha = this.tlBAlpha[this.time];
-                this.secBeamRed = this.tlSecBRed[this.time];
-                this.secBeamGreen = this.tlSecBGreen[this.time];
-                this.secBeamBlue = this.tlSecBBlue[this.time];
-                this.secBeamAlpha = this.tlSecBAlpha[this.time];
-                this.beamAngleX = this.tlBAngleX[this.time];
-                this.beamAngleY = this.tlBAngleY[this.time];
-                this.beamAngleZ = this.tlBAngleZ[this.time];
-                // TODO fill
                 TSMKey k = this.tsmKeys[(this.time - this.time % 10) / 10];
-                if(k != null)
+
+                for(Entry<EnumTSMProperty, Object> ent : properties.entrySet())
                 {
-                    this.beamAutoRotateX = k.bARX;
-                    this.beamAutoRotateY = k.bARY;
-                    this.beamAutoRotateZ = k.bARZ;
-                    this.beamReverseRotateX = k.bRRX;
-                    this.beamReverseRotateY = k.bRRY;
-                    this.beamReverseRotateZ = k.bRRZ;
+                    if(ent.getKey().timelinable)
+                    {
+                        if(ent.getKey().type.smoothable)
+                        {
+                            switch(ent.getKey().type)
+                            {
+                                case FLOAT:
+                                    properties.put(ent.getKey(), ((Float)timelineProperties.get(ent.getKey())[this.time]).floatValue());
+                                    break;
+                                case SHORT:
+                                    properties.put(ent.getKey(), ((Number)timelineProperties.get(ent.getKey())[this.time]).shortValue());
+                                    break;
+                                default:
+                                    System.out.println("Invalid type");
+                                    break;
+                            }
+                        }
+                        else if(k != null)
+                        {
+                            switch(ent.getKey().type)
+                            {
+                                case FLOAT:
+                                    properties.put(ent.getKey(), k.getF(ent.getKey()));
+                                    break;
+                                case SHORT:
+                                    properties.put(ent.getKey(), k.getS(ent.getKey()));
+                                    break;
+                                case BOOLEAN:
+                                    properties.put(ent.getKey(), k.getB(ent.getKey()));
+                                    break;
+                                case STRING:
+                                    properties.put(ent.getKey(), k.getStr(ent.getKey()));
+                                    break;
+                            }
+
+                        }
+                    }
                 }
+
             }
             else
             {
                 TSMKey k = this.tsmKeys[(this.time - this.time % 10) / 10];
                 if(k != null)
                 {
-                    this.beamRed = k.bRed;
-                    this.beamGreen = k.bGreen;
-                    this.beamBlue = k.bBlue;
-                    this.beamAlpha = k.bAlpha;
-                    this.secBeamRed = k.secBRed;
-                    this.secBeamGreen = k.secBGreen;
-                    this.secBeamBlue = k.secBBlue;
-                    this.secBeamAlpha = k.secBAlpha;
-                    this.beamAngleX = k.bAngleX;
-                    this.beamAngleY = k.bAngleY;
-                    this.beamAngleZ = k.bAngleZ;
-                    this.beamAutoRotateX = k.bARX;
-                    this.beamAutoRotateY = k.bARY;
-                    this.beamAutoRotateZ = k.bARZ;
-                    this.beamReverseRotateX = k.bRRX;
-                    this.beamReverseRotateY = k.bRRY;
-                    this.beamReverseRotateZ = k.bRRZ;
-                    // TODO fill
+                    for(Entry<EnumTSMProperty, Object> ent : properties.entrySet())
+                    {
+                        if(ent.getKey().timelinable)
+                        {
+                            switch(ent.getKey().type)
+                            {
+                                case FLOAT:
+                                    properties.put(ent.getKey(), k.getF(ent.getKey()));
+                                    break;
+                                case SHORT:
+                                    properties.put(ent.getKey(), k.getS(ent.getKey()));
+                                    break;
+                                case BOOLEAN:
+                                    properties.put(ent.getKey(), k.getB(ent.getKey()));
+                                    break;
+                                case STRING:
+                                    properties.put(ent.getKey(), k.getStr(ent.getKey()));
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -294,52 +337,92 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 TSMKey start = this.tsmKeys[(keysTime.get(k) - keysTime.get(k) % 10) / 10];
                 TSMKey end = this.tsmKeys[(keysTime.get(k + 1) - keysTime.get(k + 1) % 10) / 10];
-                this.tlBRed = this.calculateValuesS(this.tlBRed, start.bRed, end.bRed, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBGreen = this.calculateValuesS(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBBlue = this.calculateValuesS(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAlpha = this.calculateValuesF(this.tlBAlpha, start.bAlpha, end.bAlpha, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBRed = this.calculateValuesS(this.tlSecBRed, start.secBRed, end.secBRed, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBGreen = this.calculateValuesS(this.tlSecBGreen, start.secBGreen, end.secBGreen, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBBlue = this.calculateValuesS(this.tlSecBBlue, start.secBBlue, end.secBBlue, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlSecBAlpha = this.calculateValuesF(this.tlSecBAlpha, start.secBAlpha, end.secBAlpha, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAngleX = this.calculateValuesS(this.tlBAngleX, start.bAngleX, end.bAngleX, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAngleY = this.calculateValuesS(this.tlBAngleY, start.bAngleY, end.bAngleY, keysTime.get(k), timeBetwinKeys.get(k), false);
-                this.tlBAngleZ = this.calculateValuesS(this.tlBAngleZ, start.bAngleZ, end.bAngleZ, keysTime.get(k), timeBetwinKeys.get(k), false);
-                // TODO fill
+                for(Entry<EnumTSMProperty, Object[]> ent : timelineProperties.entrySet())
+                {
+                    if(ent.getKey().timelinable)
+                    {
+                        if(ent.getKey().type.smoothable)
+                        {
+                            Object[] values = null;
+                            switch(ent.getKey().type)
+                            {
+                                case SHORT:
+                                    values = this.calculateValuesS((Short[])ent.getValue(), start.getS(ent.getKey()), end.getS(ent.getKey()), keysTime.get(k), timeBetwinKeys.get(k), false);
+                                    break;
+                                case FLOAT:
+                                    values = this.calculateValuesF((Float[])ent.getValue(), start.getF(ent.getKey()), end.getF(ent.getKey()), keysTime.get(k), timeBetwinKeys.get(k), false);
+                                    break;
+                                default:
+                                    System.out.println("Someone forgot a type, please contact the author and copy/paste this line: " + ent.getKey().type.name());
+                                    break;
+                            }
+                            timelineProperties.put(ent.getKey(), values);
+                        }
+                    }
+                }
             }
 
             TSMKey start = this.tsmKeys[(keysTime.get(keysTime.size() - 1) - keysTime.get(keysTime.size() - 1) % 10) / 10];
             TSMKey end = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
-            this.tlBRed = this.calculateValuesS(this.tlBRed, start.bRed, end.bRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBGreen = this.calculateValuesS(this.tlBGreen, start.bGreen, end.bGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBBlue = this.calculateValuesS(this.tlBBlue, start.bBlue, end.bBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAlpha = this.calculateValuesF(this.tlBAlpha, start.bAlpha, end.bAlpha, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBRed = this.calculateValuesS(this.tlSecBRed, start.secBRed, end.secBRed, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBGreen = this.calculateValuesS(this.tlSecBGreen, start.secBGreen, end.secBGreen, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBBlue = this.calculateValuesS(this.tlSecBBlue, start.secBBlue, end.secBBlue, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlSecBAlpha = this.calculateValuesF(this.tlSecBAlpha, start.secBAlpha, end.secBAlpha, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAngleX = this.calculateValuesS(this.tlBAngleX, start.bAngleX, end.bAngleX, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAngleY = this.calculateValuesS(this.tlBAngleY, start.bAngleY, end.bAngleY, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            this.tlBAngleZ = this.calculateValuesS(this.tlBAngleZ, start.bAngleZ, end.bAngleZ, keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
-            // TODO fill
+            for(Entry<EnumTSMProperty, Object[]> ent : timelineProperties.entrySet())
+            {
+                if(ent.getKey().timelinable)
+                {
+                    if(ent.getKey().type.smoothable)
+                    {
+                        Object[] values = null;
+                        switch(ent.getKey().type)
+                        {
+                            case SHORT:
+                                values = this.calculateValuesS((Short[])ent.getValue(), start.getS(ent.getKey()), end.getS(ent.getKey()), keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+                                break;
+                            case FLOAT:
+                                values = this.calculateValuesF((Float[])ent.getValue(), start.getF(ent.getKey()), end.getF(ent.getKey()), keysTime.get(keysTime.size() - 1), timeBetwinKeys.get(keysTime.size() - 1), true);
+                                break;
+                            default:
+                                System.out.println("(1) Someone forgot a type, please contact the author and copy/paste this line: " + ent.getKey().type.name());
+                                break;
+                        }
+                        timelineProperties.put(ent.getKey(), values);
+                    }
+                }
+            }
         }
         else if(keysTime.size() == 1)
         {
             TSMKey k = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
-            for(int i = 0; i < 1200; i++)
+
+            for(Entry<EnumTSMProperty, Object[]> ent : timelineProperties.entrySet())
             {
-                this.tlBRed[i] = k.bRed;
-                this.tlBGreen[i] = k.bGreen;
-                this.tlBBlue[i] = k.bBlue;
-                this.tlBAlpha[i] = k.bAlpha;
-                this.tlSecBRed[i] = k.secBRed;
-                this.tlSecBGreen[i] = k.secBGreen;
-                this.tlSecBBlue[i] = k.secBBlue;
-                this.tlSecBAlpha[i] = k.secBAlpha;
-                this.tlBAngleX[i] = k.bAngleX;
-                this.tlBAngleY[i] = k.bAngleY;
-                this.tlBAngleZ[i] = k.bAngleZ;
-                // TODO fill
+                if(ent.getKey().timelinable)
+                {
+                    if(ent.getKey().type.smoothable)
+                    {
+                        switch(ent.getKey().type)
+                        {
+                            case SHORT:
+                                Short[] valS = new Short[1200];
+                                for(int i = 0; i < 1200; i++)
+                                {
+                                    valS[i] = getShort(ent.getKey());
+                                }
+                                timelineProperties.put(ent.getKey(), valS);
+                                break;
+                            case FLOAT:
+                                Float[] valF = new Float[1200];
+                                for(int i = 0; i < 1200; i++)
+                                {
+                                    valF[i] = getFloat(ent.getKey());
+                                }
+                                timelineProperties.put(ent.getKey(), valF);
+                                break;
+                            default:
+                                System.out.println("(2) Someone forgot a type, please contact the author and copy/paste this line: " + ent.getKey().type.name());
+                                break;
+                        }
+
+                    }
+                }
             }
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
@@ -347,7 +430,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         TheSpotLightMod.network.sendToAll(new PacketTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
     }
 
-    private short[] calculateValuesS(short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
+    private Short[] calculateValuesS(Short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
     {
         float perTick = (valEnd - valStart) / (float)timeLenght;
 
@@ -373,7 +456,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         return tab;
     }
 
-    private float[] calculateValuesF(float[] tab, float valStart, float valEnd, int timeStart, int timeLenght, boolean last)
+    private Float[] calculateValuesF(Float[] tab, float valStart, float valEnd, int timeStart, int timeLenght, boolean last)
     {
         float perTick = (valEnd - valStart) / timeLenght;
 
@@ -401,27 +484,27 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
 
     private BeamVec[] process()
     {
-        double[] sizes = new double[] {Math.sqrt(Math.pow(this.beamSize / 200.0D, 2) / 2), Math.sqrt(Math.pow(this.secBeamSize / 200.0D, 2) / 2)};
+        double[] sizes = new double[] {Math.sqrt(Math.pow(getShort(EnumTSMProperty.BEAM_SIZE) / 200.0D, 2) / 2), Math.sqrt(Math.pow(this.getShort(EnumTSMProperty.BEAM_SEC_SIZE) / 200.0D, 2) / 2)};
         float timer = getWorld().getTotalWorldTime() * 0.00125F;
-        float angleX = this.beamAutoRotateX ? timer * this.beamRotationSpeedX * (this.beamReverseRotateX ? -1.0F : 1.0F) : (float)Math.toRadians(this.beamAngleX);
-        float angleY = this.beamAutoRotateY ? timer * this.beamRotationSpeedY * (this.beamReverseRotateY ? -1.0F : 1.0F) : (float)Math.toRadians(this.beamAngleY);
-        float angleZ = this.beamAutoRotateZ ? timer * this.beamRotationSpeedZ * (this.beamReverseRotateZ ? -1.0F : 1.0F) : (float)Math.toRadians(this.beamAngleZ);
+        float angleX = getBoolean(EnumTSMProperty.BEAM_R_AUTO_X) ? timer * getShort(EnumTSMProperty.BEAM_R_SPEED_X) * (getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X) ? -1.0F : 1.0F) : (float)Math.toRadians(getShort(EnumTSMProperty.BEAM_ANGLE_X));
+        float angleY = getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y) ? timer * getShort(EnumTSMProperty.BEAM_R_SPEED_Y) * (getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Y) ? -1.0F : 1.0F) : (float)Math.toRadians(getShort(EnumTSMProperty.BEAM_ANGLE_Y));
+        float angleZ = getBoolean(EnumTSMProperty.BEAM_R_AUTO_Z) ? timer * getShort(EnumTSMProperty.BEAM_R_SPEED_Z) * (getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Z) ? -1.0F : 1.0F) : (float)Math.toRadians(getShort(EnumTSMProperty.BEAM_ANGLE_Z));
 
         BeamVec[] vecs = new BeamVec[4];
 
         for(int j = 0; j < 4; j++)
         {
-            TSMVec3[] v = new TSMVec3[this.beamSides + 2];
+            TSMVec3[] v = new TSMVec3[getShort(EnumTSMProperty.BEAM_SIDE) + 2];
             TSMVec3 e = null;
-            double angle = Math.PI * 2 / (this.beamSides + 2);
-            for(int i = 0; i < this.beamSides + 2; i++)
+            double angle = Math.PI * 2 / (getShort(EnumTSMProperty.BEAM_SIDE) + 2);
+            for(int i = 0; i < getShort(EnumTSMProperty.BEAM_SIDE) + 2; i++)
             {
-                v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (this.beamSides + 2)), 0.0D, Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (this.beamSides + 2)));
+                v[i] = new TSMVec3(Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.cos(angle * i + Math.PI / (getShort(EnumTSMProperty.BEAM_SIDE) + 2)), 0.0D, Math.sqrt(2 * Math.pow(sizes[j / 2], 2)) * Math.sin(angle * i + Math.PI / (getShort(EnumTSMProperty.BEAM_SIDE) + 2)));
                 v[i].rotateAroundX(angleX);
                 v[i].rotateAroundY(angleY);
                 v[i].rotateAroundZ(angleZ);
             }
-            e = new TSMVec3(0, (j % 2 == 0 ? 1 : -1) * this.beamHeight, 0);
+            e = new TSMVec3(0, (j % 2 == 0 ? 1 : -1) * getShort(EnumTSMProperty.BEAM_HEIGHT), 0);
             e.rotateAroundX(angleX);
             e.rotateAroundY(angleY);
             e.rotateAroundZ(angleZ);
@@ -665,5 +748,161 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         }
 
         return true;
+    }
+
+    /*
+     * Properties initializers
+     */
+
+    private Map<EnumTSMProperty, Object> initProperties()
+    {
+        Map<EnumTSMProperty, Object> map = new HashMap<EnumTSMProperty, Object>();
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            map.put(prop, prop.def);
+        }
+        return map;
+    }
+
+    private Map<EnumTSMProperty, Object[]> initTimeLineProperties()
+    {
+        Map<EnumTSMProperty, Object[]> map = new HashMap<EnumTSMProperty, Object[]>();
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            if(prop.timelinable && prop.type.smoothable)
+            {
+                switch(prop.type)
+                {
+                    case SHORT:
+                        Short[] emptyTabS = new Short[1200];
+                        for(int i = 0; i < 1200; i++)
+                        {
+                            emptyTabS[i] = 0;
+                        }
+                        map.put(prop, emptyTabS);
+                        break;
+                    case FLOAT:
+                        Float[] emptyTabF = new Float[1200];
+                        for(int i = 0; i < 1200; i++)
+                        {
+                            emptyTabF[i] = 0.0F;
+                        }
+                        map.put(prop, emptyTabF);
+                        break;
+                    default:
+                        System.out.println("Invalid type");
+                        break;
+                }
+            }
+        }
+        return map;
+    }
+
+    private Map<EnumTSMProperty, Object> initPrevProperties()
+    {
+        Map<EnumTSMProperty, Object> map = new HashMap<EnumTSMProperty, Object>();
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            if(prop.vecBehaviour != EnumPropVecBehaviour.NONE)
+            {
+                map.put(prop, prop.def);
+            }
+        }
+        return map;
+    }
+
+    /*
+     * Properties setters
+     */
+
+    public void setProperty(EnumTSMProperty prop, Object obj)
+    {
+        this.properties.put(prop, obj);
+    }
+
+    public void setTimelineProperty(EnumTSMProperty prop, Object[] objs)
+    {
+        if(objs.length == 1200)
+        {
+            this.timelineProperties.put(prop, objs);
+        }
+        else
+        {
+            System.out.println("Invalid timeline array size: " + objs.length + "/1200");
+        }
+    }
+
+    /*
+     * Properties getters
+     */
+
+    public Map<EnumTSMProperty, Object> cloneProperties()
+    {
+        Map<EnumTSMProperty, Object> copy = new HashMap<EnumTSMProperty, Object>();
+        for(Entry<EnumTSMProperty, Object> ent : this.properties.entrySet())
+        {
+            copy.put(ent.getKey(), ent.getValue());
+        }
+        return copy;
+    }
+
+    public short getShort(EnumTSMProperty prop)
+    {
+        if(prop.type == EnumTSMType.SHORT)
+        {
+            return ((Number)this.properties.get(prop)).shortValue();
+        }
+        System.out.println("Invalid use for property: " + prop.name());
+        return 0;
+    }
+
+    public float getFloat(EnumTSMProperty prop)
+    {
+        if(prop.type == EnumTSMType.FLOAT)
+        {
+            return ((Float)this.properties.get(prop)).floatValue();
+        }
+        System.out.println("Invalid use for property: " + prop.name());
+        return 0;
+    }
+
+    public boolean getBoolean(EnumTSMProperty prop)
+    {
+        if(prop.type == EnumTSMType.BOOLEAN)
+        {
+            return ((Boolean)this.properties.get(prop)).booleanValue();
+        }
+        System.out.println("Invalid use for property: " + prop.name());
+        return false;
+    }
+
+    public String getString(EnumTSMProperty prop)
+    {
+        if(prop.type == EnumTSMType.STRING)
+        {
+            return ((String)this.properties.get(prop)).substring(0);// Substring to copy
+        }
+        System.out.println("Invalid use for property: " + prop.name());
+        return null;
+    }
+
+    public Short[] getTimelineShort(EnumTSMProperty prop)
+    {
+        if(prop.type == EnumTSMType.SHORT && prop.timelinable && prop.type.smoothable)
+        {
+            return (Short[])this.timelineProperties.get(prop);
+        }
+        System.out.println("Invalid use for timeline property: " + prop.name());
+        return null;
+    }
+
+    public Float[] getTimelineFloat(EnumTSMProperty prop)
+    {
+        if(prop.type == EnumTSMType.FLOAT && prop.timelinable && prop.type.smoothable)
+        {
+            return (Float[])this.timelineProperties.get(prop);
+        }
+        System.out.println("Invalid use for timeline property: " + prop.name());
+        return null;
     }
 }

@@ -5,10 +5,10 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -41,16 +41,16 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red", this.tile.beamRed), this.tile.beamRed / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.beamGreen), this.tile.beamGreen / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.beamBlue), this.tile.beamBlue / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red", this.tile.getShort(EnumTSMProperty.BEAM_RED)), this.tile.getShort(EnumTSMProperty.BEAM_RED) / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.getShort(EnumTSMProperty.BEAM_GREEN)), this.tile.getShort(EnumTSMProperty.BEAM_GREEN) / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.getShort(EnumTSMProperty.BEAM_BLUE)), this.tile.getShort(EnumTSMProperty.BEAM_BLUE) / 255.0F));
 
-        this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red", this.tile.secBeamRed), this.tile.secBeamRed / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green", this.tile.secBeamGreen), this.tile.secBeamGreen / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue", this.tile.secBeamBlue), this.tile.secBeamBlue / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red", this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED) / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green", this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN) / 255.0F));
+        this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue", this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE) / 255.0F));
 
-        this.buttonList.add(new GuiSliderButton(this, 6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha", this.tile.beamAlpha), this.tile.beamAlpha));
-        this.buttonList.add(new GuiSliderButton(this, 7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha", this.tile.secBeamAlpha), this.tile.secBeamAlpha));
+        this.buttonList.add(new GuiSliderButton(this, 6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha", this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA)), this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA)));
+        this.buttonList.add(new GuiSliderButton(this, 7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha", this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA)), this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA)));
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode));
@@ -84,28 +84,28 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         switch(sliderId)
         {
             case 0:
-                this.tile.beamRed = (short)(sliderValue * 255.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_RED, (short)(sliderValue * 255.0F));
                 break;
             case 1:
-                this.tile.beamGreen = (short)(sliderValue * 255.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_GREEN, (short)(sliderValue * 255.0F));
                 break;
             case 2:
-                this.tile.beamBlue = (short)(sliderValue * 255.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_BLUE, (short)(sliderValue * 255.0F));
                 break;
             case 3:
-                this.tile.secBeamRed = (short)(sliderValue * 255.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_RED, (short)(sliderValue * 255.0F));
                 break;
             case 4:
-                this.tile.secBeamGreen = (short)(sliderValue * 255.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_GREEN, (short)(sliderValue * 255.0F));
                 break;
             case 5:
-                this.tile.secBeamBlue = (short)(sliderValue * 255.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_BLUE, (short)(sliderValue * 255.0F));
                 break;
             case 6:
-                this.tile.beamAlpha = ((short)(sliderValue * 1000)) / 1000.0F;
+                this.tile.setProperty(EnumTSMProperty.BEAM_ALPHA, ((short)(sliderValue * 1000)) / 1000.0F);
                 break;
             case 7:
-                this.tile.secBeamAlpha = ((short)(sliderValue * 1000)) / 1000.0F;
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_ALPHA, ((short)(sliderValue * 1000)) / 1000.0F);
                 break;
         }
     }

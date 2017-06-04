@@ -3,6 +3,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.gui.GuiButton;
@@ -40,14 +41,14 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "Y", this.tile.textAngleY), this.tile.textAngleY / 360.0F));
-        this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.textAutoRotateY));
+        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "Y", this.tile.getShort(EnumTSMProperty.TEXT_ANGLE_Y)), this.tile.getShort(EnumTSMProperty.TEXT_ANGLE_Y) / 360.0F));
+        this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.TEXT_R_AUTO_Y)));
         this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
-        this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.textReverseRotateY));
+        this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.TEXT_R_REVERSE_Y)));
         this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
         this.buttonRR.enabled = this.buttonAR.enabled;
-        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "Y", this.tile.textRotationSpeedY), this.tile.textRotationSpeedY / 200.0F));
+        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "Y", this.tile.getShort(EnumTSMProperty.TEXT_R_SPEED_Y)), this.tile.getShort(EnumTSMProperty.TEXT_R_SPEED_Y) / 200.0F));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
@@ -68,14 +69,14 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         {
             case 4:
                 this.buttonAR.toggle();
-                this.tile.textAutoRotateY = this.buttonAR.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_R_AUTO_Y, this.buttonAR.isActive());
                 this.sliderAngle.enabled = !this.buttonAR.isActive();
                 this.sliderSpeed.enabled = this.buttonAR.isActive();
                 this.buttonRR.enabled = this.buttonAR.isActive();
                 break;
             case 5:
                 this.buttonRR.toggle();
-                this.tile.textReverseRotateY = this.buttonRR.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_R_REVERSE_Y, this.buttonRR.isActive());
                 break;
             case 19:
                 this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
@@ -92,10 +93,10 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         switch(sliderId)
         {
             case 3:
-                this.tile.textAngleY = (short)(sliderValue * 360.0F);
+                this.tile.setProperty(EnumTSMProperty.TEXT_ANGLE_Y, (short)(sliderValue * 360.0F));
                 break;
             case 6:
-                this.tile.textRotationSpeedY = (short)(sliderValue * 200);
+                this.tile.setProperty(EnumTSMProperty.TEXT_R_SPEED_Y, (short)(sliderValue * 200));
                 break;
         }
     }
