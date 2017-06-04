@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.utils;
+package fr.mcnanotech.kevin_68.thespotlightmod.objs;
 
 public class BeamVec
 {

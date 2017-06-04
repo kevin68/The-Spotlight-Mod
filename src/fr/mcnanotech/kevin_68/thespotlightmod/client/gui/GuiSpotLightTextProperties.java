@@ -5,9 +5,9 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -40,18 +40,18 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.textHeight - 100), this.tile.textHeight / 200.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.textscale", this.tile.textScale), this.tile.textScale / 100.0F));
-        this.buttonList.add(this.buttonBold = new GuiBooleanButton(2, x - 50, y + 3, 130, 20, I18n.format("container.spotlight.bold"), this.tile.textBold));
-        this.buttonList.add(this.buttonStrike = new GuiBooleanButton(3, x + 90, y + 3, 130, 20, I18n.format("container.spotlight.strike"), this.tile.textStrike));
-        this.buttonList.add(this.buttonUnderline = new GuiBooleanButton(4, x - 50, y + 26, 130, 20, I18n.format("container.spotlight.underline"), this.tile.textUnderline));
-        this.buttonList.add(this.buttonItalic = new GuiBooleanButton(5, x + 90, y + 26, 130, 20, I18n.format("container.spotlight.italic"), this.tile.textItalic));
-        this.buttonList.add(this.buttonObfuscated = new GuiBooleanButton(6, x - 50, y + 49, 130, 20, I18n.format("container.spotlight.obfuscated"), this.tile.textObfuscated));
-        this.buttonList.add(this.buttonShadow = new GuiBooleanButton(7, x + 90, y + 49, 130, 20, I18n.format("container.spotlight.shadow"), this.tile.textShadow));
-        this.buttonList.add(this.buttonTranslating = new GuiBooleanButton(8, x - 50, y + 72, 130, 20, I18n.format("container.spotlight.translate"), this.tile.textTranslating));
-        this.buttonList.add(this.sliderTranslateSpeed = new GuiSliderButton(this, 9, x + 90, y + 72, 130, 20, I18n.format("container.spotlight.translatespeed", this.tile.textTranslateSpeed), this.tile.textTranslateSpeed / 100.0F));
-        this.buttonList.add(this.buttonReverseTranslating = new GuiBooleanButton(10, x - 50, y + 95, 130, 20, I18n.format("container.spotlight.reversetranslate"), this.tile.textReverseTranslating));
-        this.buttonList.add(this.button3D = new GuiBooleanButton(11, x + 90, y + 95, 130, 20, I18n.format("container.spotlight.text3d"), this.tile.text3D));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.getShort(EnumTSMProperty.TEXT_HEIGHT) - 100), this.tile.getShort(EnumTSMProperty.TEXT_HEIGHT) / 200.0F));
+        this.buttonList.add(new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.textscale", this.tile.getShort(EnumTSMProperty.TEXT_SCALE)), this.tile.getShort(EnumTSMProperty.TEXT_SCALE) / 100.0F));
+        this.buttonList.add(this.buttonBold = new GuiBooleanButton(2, x - 50, y + 3, 130, 20, I18n.format("container.spotlight.bold"), this.tile.getBoolean(EnumTSMProperty.TEXT_BOLD)));
+        this.buttonList.add(this.buttonStrike = new GuiBooleanButton(3, x + 90, y + 3, 130, 20, I18n.format("container.spotlight.strike"), this.tile.getBoolean(EnumTSMProperty.TEXT_STRIKE)));
+        this.buttonList.add(this.buttonUnderline = new GuiBooleanButton(4, x - 50, y + 26, 130, 20, I18n.format("container.spotlight.underline"), this.tile.getBoolean(EnumTSMProperty.TEXT_UNDERLINE)));
+        this.buttonList.add(this.buttonItalic = new GuiBooleanButton(5, x + 90, y + 26, 130, 20, I18n.format("container.spotlight.italic"), this.tile.getBoolean(EnumTSMProperty.TEXT_ITALIC)));
+        this.buttonList.add(this.buttonObfuscated = new GuiBooleanButton(6, x - 50, y + 49, 130, 20, I18n.format("container.spotlight.obfuscated"), this.tile.getBoolean(EnumTSMProperty.TEXT_OBFUSCATED)));
+        this.buttonList.add(this.buttonShadow = new GuiBooleanButton(7, x + 90, y + 49, 130, 20, I18n.format("container.spotlight.shadow"), this.tile.getBoolean(EnumTSMProperty.TEXT_SHADOW)));
+        this.buttonList.add(this.buttonTranslating = new GuiBooleanButton(8, x - 50, y + 72, 130, 20, I18n.format("container.spotlight.translate"), this.tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING)));
+        this.buttonList.add(this.sliderTranslateSpeed = new GuiSliderButton(this, 9, x + 90, y + 72, 130, 20, I18n.format("container.spotlight.translatespeed", this.tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED)), this.tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED) / 100.0F));
+        this.buttonList.add(this.buttonReverseTranslating = new GuiBooleanButton(10, x - 50, y + 95, 130, 20, I18n.format("container.spotlight.reversetranslate"), this.tile.getBoolean(EnumTSMProperty.TEXT_T_REVERSE)));
+        this.buttonList.add(this.button3D = new GuiBooleanButton(11, x + 90, y + 95, 130, 20, I18n.format("container.spotlight.text3d"), this.tile.getBoolean(EnumTSMProperty.TEXT_3D)));
 
         this.sliderTranslateSpeed.enabled = this.buttonTranslating.isActive();
         this.buttonReverseTranslating.enabled = this.buttonTranslating.isActive();
@@ -81,41 +81,41 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         {
             case 2:
                 this.buttonBold.toggle();
-                this.tile.textBold = this.buttonBold.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_BOLD, this.buttonBold.isActive());
                 break;
             case 3:
                 this.buttonStrike.toggle();
-                this.tile.textStrike = this.buttonStrike.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_STRIKE, this.buttonStrike.isActive());
                 break;
             case 4:
                 this.buttonUnderline.toggle();
-                this.tile.textUnderline = this.buttonUnderline.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_UNDERLINE, this.buttonUnderline.isActive());
                 break;
             case 5:
                 this.buttonItalic.toggle();
-                this.tile.textItalic = this.buttonItalic.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_ITALIC, this.buttonItalic.isActive());
                 break;
             case 6:
                 this.buttonObfuscated.toggle();
-                this.tile.textObfuscated = this.buttonObfuscated.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_OBFUSCATED, this.buttonObfuscated.isActive());
                 break;
             case 7:
                 this.buttonShadow.toggle();
-                this.tile.textShadow = this.buttonShadow.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_SHADOW, this.buttonShadow.isActive());
                 break;
             case 8:
                 this.buttonTranslating.toggle();
-                this.tile.textTranslating = this.buttonTranslating.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_TRANSLATING, this.buttonTranslating.isActive());
                 this.sliderTranslateSpeed.enabled = this.buttonTranslating.isActive();
                 this.buttonReverseTranslating.enabled = this.buttonTranslating.isActive();
                 break;
             case 10:
                 this.buttonReverseTranslating.toggle();
-                this.tile.textReverseTranslating = this.buttonReverseTranslating.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_T_REVERSE, this.buttonReverseTranslating.isActive());
                 break;
             case 11:
                 this.button3D.toggle();
-                this.tile.text3D = this.button3D.isActive();
+                this.tile.setProperty(EnumTSMProperty.TEXT_3D, this.button3D.isActive());
                 this.buttonBold.enabled = !this.button3D.isActive();
                 this.buttonStrike.enabled = !this.button3D.isActive();
                 this.buttonUnderline.enabled = !this.button3D.isActive();
@@ -139,13 +139,13 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         switch(sliderId)
         {
             case 0:
-                this.tile.textHeight = (short)(sliderValue * 200);
+                this.tile.setProperty(EnumTSMProperty.TEXT_HEIGHT, (short)(sliderValue * 200));
                 break;
             case 1:
-                this.tile.textScale = (short)(sliderValue * 100);
+                this.tile.setProperty(EnumTSMProperty.TEXT_SCALE, (short)(sliderValue * 100));
                 break;
             case 9:
-                this.tile.textTranslateSpeed = (short)(sliderValue * 100);
+                this.tile.setProperty(EnumTSMProperty.TEXT_TRANSLATE_SPEED, (short)(sliderValue * 100));
                 break;
         }
     }

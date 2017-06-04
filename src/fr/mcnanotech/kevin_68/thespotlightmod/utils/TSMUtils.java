@@ -1,25 +1,11 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamAngles;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamColor;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamProperties;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightBeamTextures;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightConfig;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextAngles;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextColor;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotLightTextProperties;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimeline;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.GuiSpotlightTimelineAddKey;
+import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMKey;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.Slot;
 
 public class TSMUtils
 {
@@ -69,6 +55,13 @@ public class TSMUtils
 
     public static TSMKey createKey(short time, TileEntitySpotLight tile)
     {
-        return new TSMKey(time, tile.beamRed, tile.beamGreen, tile.beamBlue, tile.beamAlpha, tile.secBeamRed, tile.secBeamGreen, tile.secBeamBlue, tile.secBeamAlpha, tile.beamAngleX, tile.beamAngleY, tile.beamAngleZ, tile.beamAutoRotateX, tile.beamAutoRotateY, tile.beamAutoRotateZ, tile.beamReverseRotateX, tile.beamReverseRotateY, tile.beamReverseRotateZ);// TODO fill
+        return new TSMKey(time, tile.cloneProperties());
+    }
+
+    public static float round(float d, int decimalPlace)
+    {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_DOWN);
+        return bd.floatValue();
     }
 }

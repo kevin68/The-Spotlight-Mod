@@ -9,14 +9,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -27,6 +30,9 @@ import com.google.gson.JsonParser;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumSaveCategory;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
+import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import net.minecraft.item.ItemStack;
@@ -63,84 +69,75 @@ public class TSMJsonManager
         json.addProperty("ModeBeam", true);
         json.addProperty("Redstone", true);
 
-        JsonObject beam = new JsonObject();
-        JsonObject bColors = new JsonObject();
-        bColors.addProperty("R", 255);
-        bColors.addProperty("G", 255);
-        bColors.addProperty("B", 255);
-        bColors.addProperty("A", 1.0F);
-        bColors.addProperty("SR", 255);
-        bColors.addProperty("SG", 255);
-        bColors.addProperty("SB", 255);
-        bColors.addProperty("SA", 0.125F);
-        beam.add("Colors", bColors);
-        JsonObject bAngles = new JsonObject();
-        bAngles.addProperty("X", 0);
-        bAngles.addProperty("Y", 0);
-        bAngles.addProperty("Z", 0);
-        bAngles.addProperty("ARX", false);
-        bAngles.addProperty("ARY", false);
-        bAngles.addProperty("ARZ", false);
-        bAngles.addProperty("RRX", false);
-        bAngles.addProperty("RRY", false);
-        bAngles.addProperty("RRZ", false);
-        bAngles.addProperty("RSX", 0);
-        bAngles.addProperty("RSY", 0);
-        bAngles.addProperty("RSZ", 0);
-        beam.add("Angles", bAngles);
-        JsonObject bProperties = new JsonObject();
-        bProperties.addProperty("Size", 40);
-        bProperties.addProperty("SSize", 75);
-        bProperties.addProperty("SBeam", true);
-        bProperties.addProperty("Dbl", false);
-        bProperties.addProperty("H", 256);
-        bProperties.addProperty("Sides", 2);
-        beam.add("Properties", bProperties);
-        json.add("Beam", beam);
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            List<String> catPath = new ArrayList<String>();
+            EnumSaveCategory cat = prop.saveCat;
+            while(cat != null)
+            {
+                catPath.add(cat.saveName);
+                cat = cat.parent;
+            }
+            catPath = Lists.reverse(catPath);
+            JsonObject obj = json;
+            for(String s : catPath)
+            {
+                if(!obj.has(s))
+                {
+                    obj.add(s, new JsonObject());
+                }
+                obj = obj.get(s).getAsJsonObject();
+            }
 
-        JsonObject text = new JsonObject();
-        text.addProperty("Text", "");
-        JsonObject tColors = new JsonObject();
-        tColors.addProperty("R", 255);
-        tColors.addProperty("G", 255);
-        tColors.addProperty("B", 255);
-        text.add("Colors", tColors);
-        JsonObject tAngles = new JsonObject();
-        tAngles.addProperty("Y", 0);
-        tAngles.addProperty("ARY", false);
-        tAngles.addProperty("RRY", false);
-        tAngles.addProperty("RSY", 0);
-        text.add("Angles", tAngles);
-        JsonObject tProperties = new JsonObject();
-        tProperties.addProperty("H", 100);
-        tProperties.addProperty("S", 0);
-        tProperties.addProperty("B", false);
-        tProperties.addProperty("ST", false);
-        tProperties.addProperty("U", false);
-        tProperties.addProperty("I", false);
-        tProperties.addProperty("O", false);
-        tProperties.addProperty("Sh", false);
-        tProperties.addProperty("T", false);
-        tProperties.addProperty("TS", 50);
-        tProperties.addProperty("RT", false);
-        tProperties.addProperty("3D", false);
-        text.add("Properties", tProperties);
-        json.add("Text", text);
+            switch(prop.type)
+            {
+                case BOOLEAN:
+                    obj.addProperty(prop.saveName, (Boolean)prop.def);
+                    break;
+                case FLOAT:
+                case SHORT:
+                    obj.addProperty(prop.saveName, (Number)prop.def);
+                    break;
+                case STRING:
+                    obj.addProperty(prop.saveName, (String)prop.def);
+                    break;
+                default:
+                    System.out.println("Invalid or Missing type should not happen");
+                    break;
+            }
+        }
 
         JsonObject timeline = new JsonObject();
         JsonObject calculated = new JsonObject();
-        getObjFromTabS(calculated, "BR", new short[1200]);
-        getObjFromTabS(calculated, "BG", new short[1200]);
-        getObjFromTabS(calculated, "BB", new short[1200]);
-        getObjFromTabF(calculated, "BA", new float[1200]);
-        getObjFromTabS(calculated, "SBR", new short[1200]);
-        getObjFromTabS(calculated, "SBG", new short[1200]);
-        getObjFromTabS(calculated, "SBB", new short[1200]);
-        getObjFromTabF(calculated, "SBA", new float[1200]);
-        getObjFromTabS(calculated, "AX", new short[1200]);
-        getObjFromTabS(calculated, "AY", new short[1200]);
-        getObjFromTabS(calculated, "AZ", new short[1200]);
-        // TODO fill
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            if(prop.timelinable && prop.type.smoothable)
+            {
+                switch(prop.type)
+                {
+                    case SHORT:
+                        Short[] emptyTabS = new Short[1200];
+                        for(int i = 0; i < 1200; i++)
+                        {
+                            emptyTabS[i] = 0;
+                        }
+                        getObjFromTabS(calculated, prop.saveNameTL, emptyTabS);
+                        break;
+                    case FLOAT:
+                        Float[] emptyTabF = new Float[1200];
+                        for(int i = 0; i < 1200; i++)
+                        {
+                            emptyTabF[i] = 0.0F;
+                        }
+                        getObjFromTabF(calculated, prop.saveNameTL, emptyTabF);
+                        break;
+                    default:
+                        System.out.println("Again, missing or invalid type");
+                        break;
+                }
+            }
+        }
+
         timeline.add("Calculated", calculated);
         timeline.add("Keys", getJsonFromTSMKeys(new TSMKey[120]));
 
@@ -201,130 +198,63 @@ public class TSMJsonManager
             {
                 tile.redstone = json.get("Redstone").getAsBoolean();
             }
-            if(json.has("Beam"))
+            for(EnumTSMProperty prop : EnumTSMProperty.values())
             {
-                JsonObject beam = (JsonObject)json.get("Beam");
-                if(beam.has("Colors"))
+                List<EnumSaveCategory> parents = new ArrayList<EnumSaveCategory>();
+                EnumSaveCategory current = prop.saveCat;
+                while(current != null)
                 {
-                    JsonObject bColors = (JsonObject)beam.get("Colors");
-                    if(bColors.has("R"))
-                        tile.beamRed = bColors.get("R").getAsShort();
-                    if(bColors.has("G"))
-                        tile.beamGreen = bColors.get("G").getAsShort();
-                    if(bColors.has("B"))
-                        tile.beamBlue = bColors.get("B").getAsShort();
-                    if(bColors.has("A"))
-                        tile.beamAlpha = bColors.get("A").getAsFloat();
-                    if(bColors.has("SR"))
-                        tile.secBeamRed = bColors.get("SR").getAsShort();
-                    if(bColors.has("SG"))
-                        tile.secBeamGreen = bColors.get("SG").getAsShort();
-                    if(bColors.has("SB"))
-                        tile.secBeamBlue = bColors.get("SB").getAsShort();
-                    if(bColors.has("SA"))
-                        tile.secBeamAlpha = bColors.get("SA").getAsFloat();
+                    parents.add(current);
+                    current = current.parent;
                 }
-                if(beam.has("Angles"))
+                parents = Lists.reverse(parents);
+                JsonObject curJobj = json;
+                for(EnumSaveCategory cat : parents)
                 {
-                    JsonObject bAngles = (JsonObject)beam.get("Angles");
-                    if(bAngles.has("X"))
-                        tile.beamAngleX = bAngles.get("X").getAsShort();
-                    if(bAngles.has("Y"))
-                        tile.beamAngleY = bAngles.get("Y").getAsShort();
-                    if(bAngles.has("Z"))
-                        tile.beamAngleZ = bAngles.get("Z").getAsShort();
-                    if(bAngles.has("ARX"))
-                        tile.beamAutoRotateX = bAngles.get("ARX").getAsBoolean();
-                    if(bAngles.has("ARY"))
-                        tile.beamAutoRotateY = bAngles.get("ARY").getAsBoolean();
-                    if(bAngles.has("ARZ"))
-                        tile.beamAutoRotateZ = bAngles.get("ARZ").getAsBoolean();
-                    if(bAngles.has("RRX"))
-                        tile.beamReverseRotateX = bAngles.get("RRX").getAsBoolean();
-                    if(bAngles.has("RRY"))
-                        tile.beamReverseRotateY = bAngles.get("RRY").getAsBoolean();
-                    if(bAngles.has("RRZ"))
-                        tile.beamReverseRotateZ = bAngles.get("RRZ").getAsBoolean();
-                    if(bAngles.has("RSX"))
-                        tile.beamRotationSpeedX = bAngles.get("RSX").getAsShort();
-                    if(bAngles.has("RSY"))
-                        tile.beamRotationSpeedY = bAngles.get("RSY").getAsShort();
-                    if(bAngles.has("RSZ"))
-                        tile.beamRotationSpeedZ = bAngles.get("RSZ").getAsShort();
+                    if(curJobj.has(cat.saveName))
+                    {
+                        curJobj = curJobj.get(cat.saveName).getAsJsonObject();
+                    }
+                    else
+                    {
+                        tile.setProperty(prop, prop.def);
+                    }
                 }
-                if(beam.has("Properties"))
+                if(curJobj.has(prop.saveName))
                 {
-                    JsonObject bProperties = (JsonObject)beam.get("Properties");
-                    if(bProperties.has("Size"))
-                        tile.beamSize = bProperties.get("Size").getAsShort();
-                    if(bProperties.has("SSize"))
-                        tile.secBeamSize = bProperties.get("SSize").getAsShort();
-                    if(bProperties.has("SBeam"))
-                        tile.secBeamEnabled = bProperties.get("SBeam").getAsBoolean();
-                    if(bProperties.has("Dbl"))
-                        tile.beamDouble = bProperties.get("Dbl").getAsBoolean();
-                    if(bProperties.has("H"))
-                        tile.beamHeight = bProperties.get("H").getAsShort();
-                    if(bProperties.has("Sides"))
-                        tile.beamSides = bProperties.get("Sides").getAsShort();
+                    try
+                    {
+                        switch(prop.type)
+                        {
+                            case BOOLEAN:
+                                tile.setProperty(prop, curJobj.get(prop.saveName).getAsBoolean());
+                                break;
+                            case FLOAT:
+                                tile.setProperty(prop, curJobj.get(prop.saveName).getAsFloat());
+                                break;
+                            case SHORT:
+                                tile.setProperty(prop, curJobj.get(prop.saveName).getAsShort());
+                                break;
+                            case STRING:
+                                tile.setProperty(prop, curJobj.get(prop.saveName).getAsString());
+                                break;
+                            default:
+                                System.out.println("And again another missing type");
+                                break;
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println("Invalid value in json for: " + prop.name() + " using default");
+                        tile.setProperty(prop, prop.def);
+                    }
+                }
+                else
+                {
+                    tile.setProperty(prop, prop.def);
                 }
             }
-            if(json.has("Text"))
-            {
-                JsonObject text = (JsonObject)json.get("Text");
-                if(text.has("Text"))
-                    tile.text = text.get("Text").getAsString();
-                if(text.has("Colors"))
-                {
-                    JsonObject tColors = (JsonObject)text.get("Colors");
-                    if(tColors.has("R"))
-                        tile.textRed = tColors.get("R").getAsShort();
-                    if(tColors.has("G"))
-                        tile.textGreen = tColors.get("G").getAsShort();
-                    if(tColors.has("B"))
-                        tile.textBlue = tColors.get("B").getAsShort();
-                }
-                if(text.has("Angles"))
-                {
-                    JsonObject tAngles = (JsonObject)text.get("Angles");
-                    if(tAngles.has("Y"))
-                        tile.textAngleY = tAngles.get("Y").getAsShort();
-                    if(tAngles.has("ARY"))
-                        tile.textAutoRotateY = tAngles.get("ARY").getAsBoolean();
-                    if(tAngles.has("RRY"))
-                        tile.textReverseRotateY = tAngles.get("RRY").getAsBoolean();
-                    if(tAngles.has("RSY"))
-                        tile.textRotationSpeedY = tAngles.get("RSY").getAsShort();
-                }
-                if(text.has("Properties"))
-                {
-                    JsonObject tProperties = (JsonObject)text.get("Properties");
-                    if(tProperties.has("H"))
-                        tile.textHeight = tProperties.get("H").getAsShort();
-                    if(tProperties.has("S"))
-                        tile.textScale = tProperties.get("S").getAsShort();
-                    if(tProperties.has("B"))
-                        tile.textBold = tProperties.get("B").getAsBoolean();
-                    if(tProperties.has("ST"))
-                        tile.textStrike = tProperties.get("ST").getAsBoolean();
-                    if(tProperties.has("U"))
-                        tile.textUnderline = tProperties.get("U").getAsBoolean();
-                    if(tProperties.has("I"))
-                        tile.textItalic = tProperties.get("I").getAsBoolean();
-                    if(tProperties.has("O"))
-                        tile.textObfuscated = tProperties.get("O").getAsBoolean();
-                    if(tProperties.has("Sh"))
-                        tile.textShadow = tProperties.get("Sh").getAsBoolean();
-                    if(tProperties.has("T"))
-                        tile.textTranslating = tProperties.get("T").getAsBoolean();
-                    if(tProperties.has("TS"))
-                        tile.textTranslateSpeed = tProperties.get("TS").getAsShort();
-                    if(tProperties.has("RT"))
-                        tile.textReverseTranslating = tProperties.get("RT").getAsBoolean();
-                    if(tProperties.has("3D"))
-                        tile.text3D = tProperties.get("3D").getAsBoolean();
-                }
-            }
+
             tile.markForUpdate();
             return true;
         }
@@ -345,7 +275,7 @@ public class TSMJsonManager
             }
             catch(NullPointerException fatal)
             {
-            	fatal.printStackTrace();
+                fatal.printStackTrace();
                 TheSpotLightMod.log.error("This should not happen");
             }
         }
@@ -390,69 +320,45 @@ public class TSMJsonManager
         json.addProperty("ModeBeam", tile.isBeam);
         json.addProperty("Redstone", tile.redstone);
 
-        JsonObject beam = new JsonObject();
-        JsonObject bColors = new JsonObject();
-        bColors.addProperty("R", tile.beamRed);
-        bColors.addProperty("G", tile.beamGreen);
-        bColors.addProperty("B", tile.beamBlue);
-        bColors.addProperty("A", tile.beamAlpha);
-        bColors.addProperty("SR", tile.secBeamRed);
-        bColors.addProperty("SG", tile.secBeamGreen);
-        bColors.addProperty("SB", tile.secBeamBlue);
-        bColors.addProperty("SA", tile.secBeamAlpha);
-        beam.add("Colors", bColors);
-        JsonObject bAngles = new JsonObject();
-        bAngles.addProperty("X", tile.beamAngleX);
-        bAngles.addProperty("Y", tile.beamAngleY);
-        bAngles.addProperty("Z", tile.beamAngleZ);
-        bAngles.addProperty("ARX", tile.beamAutoRotateX);
-        bAngles.addProperty("ARY", tile.beamAutoRotateY);
-        bAngles.addProperty("ARZ", tile.beamAutoRotateZ);
-        bAngles.addProperty("RRX", tile.beamReverseRotateX);
-        bAngles.addProperty("RRY", tile.beamReverseRotateY);
-        bAngles.addProperty("RRZ", tile.beamReverseRotateZ);
-        bAngles.addProperty("RSX", tile.beamRotationSpeedX);
-        bAngles.addProperty("RSY", tile.beamRotationSpeedY);
-        bAngles.addProperty("RSZ", tile.beamRotationSpeedZ);
-        beam.add("Angles", bAngles);
-        JsonObject bProperties = new JsonObject();
-        bProperties.addProperty("Size", tile.beamSize);
-        bProperties.addProperty("SSize", tile.secBeamSize);
-        bProperties.addProperty("SBeam", tile.secBeamEnabled);
-        bProperties.addProperty("Dbl", tile.beamDouble);
-        bProperties.addProperty("H", tile.beamHeight);
-        bProperties.addProperty("Sides", tile.beamSides);
-        beam.add("Properties", bProperties);
-        json.add("Beam", beam);
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            List<String> catPath = new ArrayList<String>();
+            EnumSaveCategory cat = prop.saveCat;
+            while(cat != null)
+            {
+                catPath.add(cat.saveName);
+                cat = cat.parent;
+            }
+            catPath = Lists.reverse(catPath);
+            JsonObject obj = json;
+            for(String s : catPath)
+            {
+                if(!obj.has(s))
+                {
+                    obj.add(s, new JsonObject());
+                }
+                obj = obj.get(s).getAsJsonObject();
+            }
 
-        JsonObject text = new JsonObject();
-        text.addProperty("Text", tile.text);
-        JsonObject tColors = new JsonObject();
-        tColors.addProperty("R", tile.textRed);
-        tColors.addProperty("G", tile.textGreen);
-        tColors.addProperty("B", tile.textBlue);
-        text.add("Colors", tColors);
-        JsonObject tAngles = new JsonObject();
-        tAngles.addProperty("Y", tile.textAngleY);
-        tAngles.addProperty("ARY", tile.textAutoRotateY);
-        tAngles.addProperty("RRY", tile.textReverseRotateY);
-        tAngles.addProperty("RSY", tile.textRotationSpeedY);
-        text.add("Angles", tAngles);
-        JsonObject tProperties = new JsonObject();
-        tProperties.addProperty("H", tile.textHeight);
-        tProperties.addProperty("S", tile.textScale);
-        tProperties.addProperty("B", tile.textBold);
-        tProperties.addProperty("ST", tile.textStrike);
-        tProperties.addProperty("U", tile.textUnderline);
-        tProperties.addProperty("I", tile.textItalic);
-        tProperties.addProperty("O", tile.textObfuscated);
-        tProperties.addProperty("Sh", tile.textShadow);
-        tProperties.addProperty("T", tile.textTranslating);
-        tProperties.addProperty("TS", tile.textTranslateSpeed);
-        tProperties.addProperty("RT", tile.textReverseTranslating);
-        tProperties.addProperty("3D", tile.text3D);
-        text.add("Properties", tProperties);
-        json.add("Text", text);
+            switch(prop.type)
+            {
+                case BOOLEAN:
+                    obj.addProperty(prop.saveName, tile.getBoolean(prop));
+                    break;
+                case FLOAT:
+                    obj.addProperty(prop.saveName, tile.getFloat(prop));
+                    break;
+                case SHORT:
+                    obj.addProperty(prop.saveName, tile.getShort(prop));
+                    break;
+                case STRING:
+                    obj.addProperty(prop.saveName, tile.getString(prop));
+                    break;
+                default:
+                    System.out.println("Invalid or Missing type should not happen");
+                    break;
+            }
+        }
         return json;
     }
 
@@ -526,18 +432,26 @@ public class TSMJsonManager
             JsonArray keys = json.get("Keys").getAsJsonArray();
             getKeysFromObj(tile, keys);
             JsonObject calculated = (JsonObject)json.get("Calculated");
-            tile.tlBRed = getTabFromObjS(calculated, "BR");
-            tile.tlBGreen = getTabFromObjS(calculated, "BG");
-            tile.tlBBlue = getTabFromObjS(calculated, "BB");
-            tile.tlBAlpha = getTabFromObjF(calculated, "BA");
-            tile.tlSecBRed = getTabFromObjS(calculated, "SBR");
-            tile.tlSecBGreen = getTabFromObjS(calculated, "SBG");
-            tile.tlSecBBlue = getTabFromObjS(calculated, "SBB");
-            tile.tlSecBAlpha = getTabFromObjF(calculated, "SBA");
-            tile.tlBAngleX = getTabFromObjS(calculated, "AX");
-            tile.tlBAngleY = getTabFromObjS(calculated, "AY");
-            tile.tlBAngleZ = getTabFromObjS(calculated, "AZ");
-            // TODO fill
+
+            for(EnumTSMProperty prop : EnumTSMProperty.values())
+            {
+                if(prop.timelinable && prop.type.smoothable)
+                {
+                    switch(prop.type)
+                    {
+                        case SHORT:
+                            tile.setTimelineProperty(prop, getTabFromObjS(calculated, prop.saveNameTL));
+                            break;
+                        case FLOAT:
+                            tile.setTimelineProperty(prop, getTabFromObjF(calculated, prop.saveNameTL));
+                            break;
+                        default:
+                            System.out.println("Again, missing or invalid type");
+                            break;
+                    }
+                }
+            }
+
             return true;
         }
         catch(NullPointerException e)
@@ -595,18 +509,26 @@ public class TSMJsonManager
     {
         JsonObject json = new JsonObject();
         JsonObject calculated = new JsonObject();
-        getObjFromTabS(calculated, "BR", tile.tlBRed);
-        getObjFromTabS(calculated, "BG", tile.tlBGreen);
-        getObjFromTabS(calculated, "BB", tile.tlBBlue);
-        getObjFromTabF(calculated, "BA", tile.tlBAlpha);
-        getObjFromTabS(calculated, "SBR", tile.tlSecBRed);
-        getObjFromTabS(calculated, "SBG", tile.tlSecBGreen);
-        getObjFromTabS(calculated, "SBB", tile.tlSecBBlue);
-        getObjFromTabF(calculated, "SBA", tile.tlSecBAlpha);
-        getObjFromTabS(calculated, "AX", tile.tlBAngleX);
-        getObjFromTabS(calculated, "AY", tile.tlBAngleY);
-        getObjFromTabS(calculated, "AZ", tile.tlBAngleZ);
-        // TODO fill
+
+        for(EnumTSMProperty prop : EnumTSMProperty.values())
+        {
+            if(prop.timelinable && prop.type.smoothable)
+            {
+                switch(prop.type)
+                {
+                    case SHORT:
+                        getObjFromTabS(calculated, prop.saveNameTL, tile.getTimelineShort(prop));
+                        break;
+                    case FLOAT:
+                        getObjFromTabF(calculated, prop.saveNameTL, tile.getTimelineFloat(prop));
+                        break;
+                    default:
+                        System.out.println("Again, missing or invalid type");
+                        break;
+                }
+            }
+        }
+
         json.add("Calculated", calculated);
         json.add("Keys", getJsonFromTSMKeys(tile.getKeys()));
         return json;
@@ -621,24 +543,32 @@ public class TSMJsonManager
             {
                 JsonObject o = new JsonObject();
                 o.addProperty("Time", key.time);
-                o.addProperty("BR", key.bRed);
-                o.addProperty("BG", key.bGreen);
-                o.addProperty("BB", key.bBlue);
-                o.addProperty("BA", key.bAlpha);
-                o.addProperty("SBR", key.secBRed);
-                o.addProperty("SBG", key.secBGreen);
-                o.addProperty("SBB", key.secBBlue);
-                o.addProperty("SBA", key.secBAlpha);
-                o.addProperty("AX", key.bAngleX);
-                o.addProperty("AY", key.bAngleY);
-                o.addProperty("AZ", key.bAngleZ);
-                o.addProperty("ARX", key.bARX);
-                o.addProperty("ARY", key.bARY);
-                o.addProperty("ARZ", key.bARZ);
-                o.addProperty("RRX", key.bRRX);
-                o.addProperty("RRY", key.bRRY);
-                o.addProperty("RRZ", key.bRRZ);
-                // TODO fill
+                for(EnumTSMProperty prop : EnumTSMProperty.values())
+                {
+                    if(prop.timelinable)
+                    {
+                        switch(prop.type)
+                        {
+                            case BOOLEAN:
+                                o.addProperty(prop.saveNameTL, key.getB(prop));
+                                break;
+                            case FLOAT:
+                                o.addProperty(prop.saveNameTL, key.getF(prop));
+                                break;
+                            case SHORT:
+                                o.addProperty(prop.saveNameTL, key.getS(prop));
+                                break;
+                            case STRING:
+                                o.addProperty(prop.saveNameTL, key.getStr(prop));
+                                break;
+                            default:
+                                System.out.println("Yet another missing type");
+                                break;
+
+                        }
+                    }
+                }
+
                 obj.add(o);
             }
         }
@@ -650,13 +580,53 @@ public class TSMJsonManager
         for(int i = 0; i < keys.size(); i++)
         {
             JsonObject obj = keys.get(i).getAsJsonObject();
-            TSMKey k = new TSMKey(obj.get("Time").getAsShort(), obj.get("BR").getAsShort(), obj.get("BG").getAsShort(), obj.get("BB").getAsShort(), obj.get("BA").getAsShort(), obj.get("SBR").getAsShort(), obj.get("SBG").getAsShort(), obj.get("SBB").getAsShort(), obj.get("SBA").getAsFloat(), obj.get("AX").getAsShort(), obj.get("AY").getAsShort(), obj.get("AZ").getAsShort(), obj.get("ARX").getAsBoolean(), obj.get("ARY").getAsBoolean(), obj.get("ARZ").getAsBoolean(), obj.get("RRX").getAsBoolean(), obj.get("RRY").getAsBoolean(), obj.get("RRZ").getAsBoolean());
-            tile.setKey(obj.get("Time").getAsShort(), k);
-            // TODO fill
+            Map<EnumTSMProperty, Object> properties = new HashMap<EnumTSMProperty, Object>();
+            for(EnumTSMProperty prop : EnumTSMProperty.values())
+            {
+                if(prop.timelinable)
+                {
+                    if(obj.has(prop.saveNameTL))
+                    {
+                        try
+                        {
+                            switch(prop.type)
+                            {
+                                case BOOLEAN:
+                                    properties.put(prop, obj.get(prop.saveNameTL).getAsBoolean());
+                                    break;
+                                case FLOAT:
+                                    properties.put(prop, obj.get(prop.saveNameTL).getAsFloat());
+                                    break;
+                                case SHORT:
+                                    properties.put(prop, obj.get(prop.saveNameTL).getAsShort());
+                                    break;
+                                case STRING:
+                                    properties.put(prop, obj.get(prop.saveNameTL).getAsString());
+                                    break;
+                                default:
+                                    System.out.println("Yet another missing type again");
+                                    break;
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            System.out.println("Invalid value in timeline json for: " + prop.name() + " using default");
+                            properties.put(prop, prop.def);
+                        }
+                    }
+                    else
+                    {
+                        properties.put(prop, prop.def);
+                    }
+                }
+            }
+
+            TSMKey key = new TSMKey(obj.get("Time").getAsShort(), properties);
+            tile.setKey(obj.get("Time").getAsShort(), key);
         }
     }
 
-    private static void getObjFromTabS(JsonObject obj, String name, short[] tab)
+    private static void getObjFromTabS(JsonObject obj, String name, Short[] tab)
     {
         String str = "";
         boolean sames = true;
@@ -682,7 +652,7 @@ public class TSMJsonManager
         }
     }
 
-    private static void getObjFromTabF(JsonObject obj, String name, float[] tab)
+    private static void getObjFromTabF(JsonObject obj, String name, Float[] tab)
     {
         String str = "";
         boolean sames = true;
@@ -701,18 +671,17 @@ public class TSMJsonManager
         {
             for(int i = 0; i < tab.length; i++)
             {
-                str += ":" + (tab[i] < 1.0F ? String.valueOf(tab[i]).replace("0.", "") : 1.0F);// TODO
-                                                                                               // test
+                str += ":" + (tab[i] < 1.0F ? String.valueOf(tab[i]).replace("0.", "") : 1.0F);
             }
             str = str.substring(1);
             obj.addProperty(name, str);
         }
     }
 
-    private static short[] getTabFromObjS(JsonObject calculated, String name)
+    private static Short[] getTabFromObjS(JsonObject calculated, String name)
     {
         String str = calculated.get(name).getAsString();
-        short[] tab = new short[1200];
+        Short[] tab = new Short[1200];
         if(str.contains(":"))
         {
             String[] strs = str.split(":");
@@ -737,11 +706,11 @@ public class TSMJsonManager
         return tab;
     }
 
-    private static float[] getTabFromObjF(JsonObject calculated, String name)
+    private static Float[] getTabFromObjF(JsonObject calculated, String name)
     {
         String decimalPattern = "([0-9]*)\\.([0-9]*)";
         String str = calculated.get(name).getAsString();
-        float[] tab = new float[1200];
+        Float[] tab = new Float[1200];
         if(str.contains(":"))
         {
             String[] strs = str.split(":");
@@ -757,7 +726,7 @@ public class TSMJsonManager
                 }
                 else
                 {
-                    tab[i] = 0;
+                    tab[i] = 0.0F;
                 }
             }
             return tab;

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
@@ -41,14 +42,15 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain", this.tile.beamSize), this.tile.beamSize / 100.0F));
-        this.buttonList.add(this.sliderSecBeamSize = new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec", this.tile.secBeamSize), this.tile.secBeamSize / 100.0F));
-        this.buttonList.add(this.buttonSecBeamEnabled = new GuiBooleanButton(2, x - 50, y + 5, 130, 20, "", this.tile.secBeamEnabled));
+        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain", this.tile.getShort(EnumTSMProperty.BEAM_SIZE)), this.tile.getShort(EnumTSMProperty.BEAM_SIZE) / 100.0F));
+        this.buttonList.add(this.sliderSecBeamSize = new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec", this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE) / 100.0F));
+        this.buttonList.add(this.buttonSecBeamEnabled = new GuiBooleanButton(2, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_SEC_ENABLED)));
         this.buttonSecBeamEnabled.setTexts(I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.off")));
-        this.buttonList.add(this.buttonDoubleBeam = new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.beamDouble));
+        this.buttonList.add(this.buttonDoubleBeam = new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE)));
         this.buttonDoubleBeam.setTexts(I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"));
-        this.buttonList.add(new GuiSliderButton(this, 4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight", this.tile.beamHeight), this.tile.beamHeight / 512.0F));
-        this.buttonList.add(new GuiSliderButton(this, 5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides", this.tile.beamSides + 2), this.tile.beamSides / 48.0F));
+        this.buttonList.add(new GuiSliderButton(this, 4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight", this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT)), this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT) / 512.0F));
+        this.buttonList.add(new GuiSliderButton(this, 5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides", this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2), this.tile.getShort(EnumTSMProperty.BEAM_SIDE) / 48.0F));
+        this.buttonList.add(new GuiSliderButton(this, 6, x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed", this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0F), this.tile.getFloat(EnumTSMProperty.BEAM_SPEED)/4.0F));
         this.buttonDoubleBeam.shouldNotChangeTextColor(true);
         this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
 
@@ -71,11 +73,11 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
             case 2:
                 this.buttonSecBeamEnabled.toggle();
                 this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
-                this.tile.secBeamEnabled = this.buttonSecBeamEnabled.isActive();
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_ENABLED, this.buttonSecBeamEnabled.isActive());
                 break;
             case 3:
                 this.buttonDoubleBeam.toggle();
-                this.tile.beamDouble = this.buttonDoubleBeam.isActive();
+                this.tile.setProperty(EnumTSMProperty.BEAM_DOUBLE, this.buttonDoubleBeam.isActive());
                 break;
             case 19:
                 this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
@@ -93,23 +95,27 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         {
             case 0:
             {
-                this.tile.beamSize = (short)(sliderValue * 100);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SIZE, (short)(sliderValue * 100));
                 break;
             }
             case 1:
             {
-                this.tile.secBeamSize = (short)(sliderValue * 100);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_SIZE, (short)(sliderValue * 100));
                 break;
             }
             case 4:
             {
-                this.tile.beamHeight = (short)(sliderValue * 512);
+                this.tile.setProperty(EnumTSMProperty.BEAM_HEIGHT, (short)(sliderValue * 512));
                 break;
             }
             case 5:
             {
-                this.tile.beamSides = (short)(sliderValue * 48);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SIDE, (short)(sliderValue * 48));
                 break;
+            }
+            case 6:
+            {
+                this.tile.setProperty(EnumTSMProperty.BEAM_SPEED, TSMUtils.round((float)(sliderValue * 4.0F), 2));
             }
         }
     }
@@ -131,6 +137,10 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
                 break;
             case 5:
                 name = I18n.format("container.spotlight.sides", (short)(sliderValue * 48 + 2));
+                break;
+            case 6:
+                String temp =
+                name = I18n.format("container.spotlight.beamspeed", TSMUtils.round((float)(sliderValue * 4.0F - 2.0F), 2));
                 break;
         }
         return name;
