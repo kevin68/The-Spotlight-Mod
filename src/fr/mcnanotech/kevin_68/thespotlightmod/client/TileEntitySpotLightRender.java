@@ -12,13 +12,14 @@ import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMVec3;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -37,7 +38,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     private static final Text3D txt3d = new Text3D(Model3DTextDefault.instance);
 
     @Override
-    public void renderTileEntityAt(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage)
+    public void render(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage, float alpha)
     {
         try
         {
@@ -204,7 +205,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
 
     public void drawBeam(Tessellator tess, double x, double y, double z, double t2, double t3, BeamVec vec, float red, float green, float blue, float alpha)
     {
-        VertexBuffer worldrenderer = tess.getBuffer();
+        BufferBuilder worldrenderer = tess.getBuffer();
         TSMVec3[] v = vec.getVecs();
         TSMVec3 e = vec.getLenVec();
         for(int i = 0; i < v.length; i++)

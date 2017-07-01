@@ -11,9 +11,9 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerModel()
     {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(TheSpotLightMod.spotlight), 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_spotlight", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.configSaver, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.configSaverFull, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver_full", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(TheSpotLightMod.SPOTLIGHT), 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_spotlight", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.CONFIG_SAVER, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.CONFIG_SAVER_FULL, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver_full", "inventory"));
     }
 
     @Override

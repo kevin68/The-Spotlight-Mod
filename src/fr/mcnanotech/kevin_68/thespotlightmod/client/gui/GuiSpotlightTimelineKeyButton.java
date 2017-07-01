@@ -17,14 +17,14 @@ public class GuiSpotlightTimelineKeyButton extends GuiButton
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
     {
         if(this.visible)
         {
             mc.getTextureManager().bindTexture(textures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 102, 3, 3);
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            this.drawTexturedModalRect(this.x, this.y, 0, 102, 3, 3);
             this.mouseDragged(mc, mouseX, mouseY);
         }
     }
@@ -32,7 +32,7 @@ public class GuiSpotlightTimelineKeyButton extends GuiButton
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
     {
-        return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
     }
 
     @Override

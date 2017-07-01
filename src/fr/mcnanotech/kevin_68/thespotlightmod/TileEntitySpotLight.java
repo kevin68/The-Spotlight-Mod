@@ -696,7 +696,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             if(!this.getStackInSlot(0).isEmpty() && this.getStackInSlot(1).isEmpty())
             {
                 this.decrStackSize(0, 1);
-                ItemStack stack = new ItemStack(TheSpotLightMod.configSaverFull);
+                ItemStack stack = new ItemStack(TheSpotLightMod.CONFIG_SAVER_FULL);
                 TSMJsonManager.saveConfig(stack, this);
                 this.setInventorySlotContents(1, stack);
             }
@@ -711,7 +711,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 TSMJsonManager.deleteConfig(getStackInSlot(4));
                 this.decrStackSize(4, 1);
-                ItemStack stack = new ItemStack(TheSpotLightMod.configSaver);
+                ItemStack stack = new ItemStack(TheSpotLightMod.CONFIG_SAVER);
                 this.setInventorySlotContents(5, stack);
             }
         }

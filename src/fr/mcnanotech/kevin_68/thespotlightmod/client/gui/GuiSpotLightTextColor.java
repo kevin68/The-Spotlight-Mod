@@ -127,7 +127,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         this.textField.drawTextBox();
         if(this.buttonHelp.isActive())
         {
-            if(mouseX >= this.textField.xPosition && mouseX < this.textField.xPosition + this.textField.width && mouseY >= this.textField.yPosition && mouseY < this.textField.yPosition + this.textField.height)
+            if(mouseX >= this.textField.x && mouseX < this.textField.x + this.textField.width && mouseY >= this.textField.y && mouseY < this.textField.y + this.textField.height)
             {
                 this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
             }

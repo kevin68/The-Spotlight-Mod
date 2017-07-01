@@ -20,7 +20,7 @@ public class ContainerSpotLightConfig extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaver;
+                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.CONFIG_SAVER;
             }
         });
         addSlotToContainer(new Slot(tileEntity, 1, 40, 80)
@@ -36,7 +36,7 @@ public class ContainerSpotLightConfig extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaverFull;
+                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.CONFIG_SAVER_FULL;
             }
         });
         addSlotToContainer(new Slot(tileEntity, 3, 80, 80)
@@ -52,7 +52,7 @@ public class ContainerSpotLightConfig extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.configSaverFull;
+                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.CONFIG_SAVER_FULL;
             }
         });
         addSlotToContainer(new Slot(tileEntity, 5, 120, 80)

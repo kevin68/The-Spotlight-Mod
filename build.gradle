@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 ext.buildnumber = 0
-version = "1.1.0"
+version = "1.2.0"
 group= "fr.mcnanotech.kevin_68"
 archivesBaseName = "TheSpotlightMod"
 
@@ -31,10 +31,12 @@ else {
     logger.lifecycle "SETTING BUILDNUMBER TO 0"
 }
 
+compileJava.options.encoding = 'UTF-8'
+
 minecraft {
-    version = "1.11.2-13.20.0.2303"
+    version = "1.12-14.21.1.2387"
     runDir = "run"
-    mappings = "snapshot_20170522"
+    mappings = "snapshot_20170624"
 
     replace '@VERSION@', project.version
 

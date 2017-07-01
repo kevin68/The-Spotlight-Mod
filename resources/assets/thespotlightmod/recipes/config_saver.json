@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "minecraft:redstone"
+		},
+		{
+			"item": "minecraft:obsidian"
+		}
+	],
+	"result": {
+		"item": "tsm_configsaver"
+	}
+}

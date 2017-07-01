@@ -66,10 +66,10 @@ public class GuiSliderButton extends GuiButton
         {
             if(this.dragging)
             {
-                this.sliderValue = (float)(mouseX - (this.xPosition + 4)) / (float)(this.width - 8);
+                this.sliderValue = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
                 if(this.sliderValue >= 1.0F && this.shouldReset)
                 {
-                    if(mouseX > this.width + this.xPosition + 10)
+                    if(mouseX > this.width + this.x + 10)
                     {
                         this.sliderValue = 0.0F;
                         try
@@ -86,7 +86,7 @@ public class GuiSliderButton extends GuiButton
                 }
                 else if(this.sliderValue <= 0.0F && this.shouldReset)
                 {
-                    if(mouseX < this.xPosition - 10)
+                    if(mouseX < this.x - 10)
                     {
                         this.sliderValue = 1.0F;
                         try
@@ -109,8 +109,8 @@ public class GuiSliderButton extends GuiButton
 
             mc.getTextureManager().bindTexture(this.texture);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (this.width - 8)), this.yPosition, 0, this.yTexBackGround == -1 ? 66 : this.yTexBackGround, 4, 20);
-            this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (this.width - 8)) + 4, this.yPosition, 196, this.yTexBackGround == -1 ? 66 : this.yTexBackGround, 4, 20);
+            this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (this.width - 8)), this.y, 0, this.yTexBackGround == -1 ? 66 : this.yTexBackGround, 4, 20);
+            this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (this.width - 8)) + 4, this.y, 196, this.yTexBackGround == -1 ? 66 : this.yTexBackGround, 4, 20);
         }
     }
 
@@ -119,7 +119,7 @@ public class GuiSliderButton extends GuiButton
     {
         if(super.mousePressed(mc, mouseX, mouseY))
         {
-            this.sliderValue = (float)(mouseX - (this.xPosition + 4)) / (float)(this.width - 8);
+            this.sliderValue = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
             this.sliderValue = MathHelper.clamp(this.sliderValue, 0.0F, 1.0F);
 
             this.iSliderButton.handlerSliderAction(this.sliderId, this.sliderValue);
@@ -134,11 +134,5 @@ public class GuiSliderButton extends GuiButton
     public void mouseReleased(int mouseX, int mouseY)
     {
         this.dragging = false;
-    }
-
-    @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY)
-    {
-        super.drawButton(mc, mouseX, mouseY);
     }
 }
