@@ -9,14 +9,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 public class ClientProxy extends CommonProxy
 {
     @Override
-    public void registerModel()
-    {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(TheSpotLightMod.SPOTLIGHT), 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_spotlight", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.CONFIG_SAVER, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(TheSpotLightMod.CONFIG_SAVER_FULL, 0, new ModelResourceLocation(TheSpotLightMod.MODID + ":tsm_configsaver_full", "inventory"));
-    }
-
-    @Override
     public void registerRender()
     {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpotLight.class, new TileEntitySpotLightRender());

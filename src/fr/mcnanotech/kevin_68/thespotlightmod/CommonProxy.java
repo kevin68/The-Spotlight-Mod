@@ -6,9 +6,4 @@ public class CommonProxy
     {
 
     }
-
-    public void registerModel()
-    {
-
-    }
 }

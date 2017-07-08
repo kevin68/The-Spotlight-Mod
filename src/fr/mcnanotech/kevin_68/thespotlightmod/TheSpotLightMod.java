@@ -64,7 +64,6 @@ public class TheSpotLightMod
     {
         log = event.getModLog();
         GameRegistry.registerTileEntity(TileEntitySpotLight.class, "TheSpotLightMod_SpotLight");
-        proxy.registerModel();
     }
 
     @EventHandler
