@@ -14,17 +14,19 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButton
+public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
     public World world;
 
     private GuiBooleanButton buttonX, buttonY, buttonZ, buttonAR, buttonRR, buttonHelp;
-    private GuiSliderButton sliderAngle, sliderSpeed;
+    private GuiSlider sliderAngle, sliderSpeed;
 
     public GuiSpotLightBeamAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -44,15 +46,14 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         this.buttonList.add(this.buttonX = new GuiBooleanButton(0, x - 50, y + 110, 20, 20, "X", true));
         this.buttonList.add(this.buttonY = new GuiBooleanButton(1, x - 25, y + 110, 20, 20, "Y", false));
         this.buttonList.add(this.buttonZ = new GuiBooleanButton(2, x, y + 110, 20, 20, "Z", false));
-        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "X", this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X)), this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X) / 360.0F));
-        this.sliderAngle.shouldResetOnEnd(true);
+        this.buttonList.add(this.sliderAngle = new GuiSlider(3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "X"), "", 0, 360, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X), false, true, this));
         this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X)));
         this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "X", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
         this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X)));
         this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
         this.buttonRR.enabled = this.buttonAR.enabled;
-        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "X", this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X)), this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) / 200.0F));
+        this.buttonList.add(this.sliderSpeed = new GuiSlider(6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "X"), "", 0, 200, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X), false, true, this));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
@@ -84,10 +85,12 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                     {
                         this.buttonZ.toggle();
                     }
-                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X) / 360.0F;
-                    this.sliderAngle.displayString = getSliderName(3, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X) / 360.0F);
-                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) / 200.0F;
-                    this.sliderSpeed.displayString = getSliderName(6, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) / 200.0F);
+                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_X);
+                    this.sliderAngle.dispString = I18n.format("container.spotlight.angleval", "X");
+                    this.sliderAngle.updateSlider();
+                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X);
+                    this.sliderSpeed.dispString = I18n.format("container.spotlight.angleval", "X");
+                    this.sliderSpeed.updateSlider();
                     if(this.buttonAR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X))
                     {
                         this.buttonAR.toggle();
@@ -118,10 +121,12 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                     {
                         this.buttonZ.toggle();
                     }
-                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y) / 360.0F;
-                    this.sliderAngle.displayString = getSliderName(3, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y) / 360.0F);
-                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y) / 200.0F;
-                    this.sliderSpeed.displayString = getSliderName(6, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y) / 200.0F);
+                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y);
+                    this.sliderAngle.dispString = I18n.format("container.spotlight.angleval", "Y");
+                    this.sliderAngle.updateSlider();
+                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y);
+                    this.sliderSpeed.dispString = I18n.format("container.spotlight.angleval", "Y");
+                    this.sliderSpeed.updateSlider();
                     if(this.buttonAR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y))
                     {
                         this.buttonAR.toggle();
@@ -152,10 +157,12 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
                     {
                         this.buttonY.toggle();
                     }
-                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Z) / 360.0F;
-                    this.sliderAngle.displayString = getSliderName(3, this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Z) / 360.0F);
-                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z) / 200.0F;
-                    this.sliderSpeed.displayString = getSliderName(6, this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z) / 200.0F);
+                    this.sliderAngle.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_ANGLE_Z);
+                    this.sliderAngle.dispString = I18n.format("container.spotlight.angleval", "Z");
+                    this.sliderAngle.updateSlider();
+                    this.sliderSpeed.sliderValue = this.tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z);
+                    this.sliderSpeed.dispString = I18n.format("container.spotlight.angleval", "Z");
+                    this.sliderSpeed.updateSlider();
                     if(this.buttonAR.isActive() != this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Z))
                     {
                         this.buttonAR.toggle();
@@ -225,23 +232,23 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
     }
 
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void onChangeSliderValue(GuiSlider slider)
     {
-        switch(sliderId)
+        switch(slider.id)
         {
             case 3:
             {
                 if(this.buttonX.isActive())
                 {
-                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_X, (short)(sliderValue * 360.0F));
+                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_X, (short)slider.getValueInt());
                 }
                 else if(this.buttonY.isActive())
                 {
-                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_Y, (short)(sliderValue * 360.0F));
+                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_Y, (short)slider.getValueInt());
                 }
                 else if(this.buttonZ.isActive())
                 {
-                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_Z, (short)(sliderValue * 360.0F));
+                    this.tile.setProperty(EnumTSMProperty.BEAM_ANGLE_Z, (short)slider.getValueInt());
                 }
                 break;
             }
@@ -249,61 +256,19 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
             {
                 if(this.buttonX.isActive())
                 {
-                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_X, (short)(sliderValue * 200));
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_X, (short)slider.getValueInt());
                 }
                 else if(this.buttonY.isActive())
                 {
-                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_Y, (short)(sliderValue * 200));
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_Y, (short)slider.getValueInt());
                 }
                 else if(this.buttonZ.isActive())
                 {
-                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_Z, (short)(sliderValue * 200));
+                    this.tile.setProperty(EnumTSMProperty.BEAM_R_SPEED_Z, (short)slider.getValueInt());
                 }
                 break;
             }
         }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        String name = "";
-        switch(sliderId)
-        {
-            case 3:
-            {
-                if(this.buttonX.isActive())
-                {
-                    name = I18n.format("container.spotlight.angleval", "X", (short)(sliderValue * 360));
-                }
-                else if(this.buttonY.isActive())
-                {
-                    name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
-                }
-                else if(this.buttonZ.isActive())
-                {
-                    name = I18n.format("container.spotlight.angleval", "Z", (short)(sliderValue * 360));
-                }
-                break;
-            }
-            case 6:
-            {
-                if(this.buttonX.isActive())
-                {
-                    name = I18n.format("container.spotlight.rotationspeed", "X", (short)(sliderValue * 200));
-                }
-                else if(this.buttonY.isActive())
-                {
-                    name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
-                }
-                else if(this.buttonZ.isActive())
-                {
-                    name = I18n.format("container.spotlight.rotationspeed", "Z", (short)(sliderValue * 200));
-                }
-                break;
-            }
-        }
-        return name;
     }
 
     @Override
@@ -365,7 +330,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISliderButto
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.renderEngine.bindTexture(TEXTURE);
         this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
         this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.angle")), x - 30, y - 35, 0xffffff);
     }

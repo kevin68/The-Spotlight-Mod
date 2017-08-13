@@ -36,7 +36,7 @@ public enum EnumTSMProperty
     TEXT_R_SPEED_Y(EnumTSMType.SHORT, 0, false, EnumSaveCategory.TEXT_ANGLE, "RSY", null),
     TEXT_R_AUTO_Y(EnumTSMType.BOOLEAN, false, true, EnumSaveCategory.TEXT_ANGLE, "ARY", "TRAY"),
     TEXT_R_REVERSE_Y(EnumTSMType.BOOLEAN, false, true, EnumSaveCategory.TEXT_ANGLE, "RRY", "TRRY"),
-    TEXT_HEIGHT(EnumTSMType.SHORT, 100, true, EnumSaveCategory.TEXT_PROPERTIES, "H", "TH"),
+    TEXT_HEIGHT(EnumTSMType.SHORT, 0, true, EnumSaveCategory.TEXT_PROPERTIES, "H", "TH"),
     TEXT_SCALE(EnumTSMType.SHORT, 0, true, EnumSaveCategory.TEXT_PROPERTIES, "S", "TS"),
     TEXT_TRANSLATE_SPEED(EnumTSMType.SHORT, 0, false, EnumSaveCategory.TEXT_PROPERTIES, "TS", null),
     TEXT_BOLD(EnumTSMType.BOOLEAN, false, true, EnumSaveCategory.TEXT_PROPERTIES, "B", "TPB"),

@@ -11,19 +11,18 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
+public class GuiSpotLightTextColor extends GuiContainer implements ISlider
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
@@ -47,9 +46,9 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red", this.tile.getShort(EnumTSMProperty.TEXT_RED)), this.tile.getShort(EnumTSMProperty.TEXT_RED) / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 46, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.getShort(EnumTSMProperty.TEXT_GREEN)), this.tile.getShort(EnumTSMProperty.TEXT_GREEN) / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.getShort(EnumTSMProperty.TEXT_BLUE)), this.tile.getShort(EnumTSMProperty.TEXT_BLUE) / 255.0F));
+        this.buttonList.add(new GuiSlider(0, x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_RED), false, true, this));
+        this.buttonList.add(new GuiSlider(1, x - 40, y + 46, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_GREEN), false, true, this));
+        this.buttonList.add(new GuiSlider(2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_BLUE), false, true, this));
 
         Keyboard.enableRepeatEvents(true);
         this.textField = new GuiTextField(3, this.fontRenderer, x - 40, y, 256, 12);
@@ -85,37 +84,21 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISliderButton
                 break;
         }
     }
-
+    
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void onChangeSliderValue(GuiSlider slider)
     {
-        switch(sliderId)
+        switch(slider.id)
         {
             case 0:
-                this.tile.setProperty(EnumTSMProperty.TEXT_RED, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.TEXT_RED, (short)(slider.getValueInt()));
                 break;
             case 1:
-                this.tile.setProperty(EnumTSMProperty.TEXT_GREEN, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.TEXT_GREEN, (short)(slider.getValueInt()));
                 break;
             case 2:
-                this.tile.setProperty(EnumTSMProperty.TEXT_BLUE, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.TEXT_BLUE, (short)(slider.getValueInt()));
                 break;
-        }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        switch(sliderId)
-        {
-            case 0:
-                return TextFormatting.RED + I18n.format("container.spotlight.red", (short)(sliderValue * 255));
-            case 1:
-                return TextFormatting.GREEN + I18n.format("container.spotlight.green", (short)(sliderValue * 255));
-            case 2:
-                return TextFormatting.BLUE + I18n.format("container.spotlight.blue", (short)(sliderValue * 255));
-            default:
-                return "";
         }
     }
 

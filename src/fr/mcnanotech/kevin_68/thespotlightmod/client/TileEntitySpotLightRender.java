@@ -153,9 +153,9 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                         GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
                         float f21 = 0.016666668F * 0.6666667F;
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-                        GlStateManager.translate(0.0F, (-200.0F + tile.getShort(EnumTSMProperty.BEAM_HEIGHT) * 2.0F) / 20.0F, 0.0F);
+                        GlStateManager.translate(0.0F, (8 + tile.getShort(EnumTSMProperty.TEXT_HEIGHT)) / 10.0F, 0.0F);
                         GlStateManager.translate(0.0F, (tscale * 0.8F + 1.0F) / 30.0F, 0.0F);
-                        if(tile.getShort(EnumTSMProperty.BEAM_HEIGHT) < 50)
+                        if(tile.getShort(EnumTSMProperty.TEXT_HEIGHT) < 0)
                         {
                             GlStateManager.translate(0.0F, -(25.0F + 1.0F + tscale * 0.45F) / 20.0F, 0.0F);
                         }
@@ -171,9 +171,9 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                         GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
                         GlStateManager.depthMask(false);
-                        GlStateManager.translate(0.0F, 200.0F - tile.getShort(EnumTSMProperty.BEAM_HEIGHT) * 2.0F, 0.0F);
+                        GlStateManager.translate(0.0F, -tile.getShort(EnumTSMProperty.TEXT_HEIGHT) * 2.0F, 0.0F);
                         GlStateManager.translate(0.0F, tscale * 0.8F + 1.0F, 0.0F);
-                        if(tile.getShort(EnumTSMProperty.BEAM_HEIGHT) < 50)
+                        if(tile.getShort(EnumTSMProperty.TEXT_HEIGHT) < 0)
                         {
                             GlStateManager.translate(0.0F, 25.0F + 1.0F + tscale * 0.45F, 0.0F);
                         }

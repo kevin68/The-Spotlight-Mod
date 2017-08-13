@@ -17,8 +17,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderButton
+public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
 
@@ -42,7 +44,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time", "0.0"), 0));
+        this.buttonList.add(new GuiSlider(0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time"), "", 0, 119, 0, false, true, this));
         this.buttonList.add(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
@@ -97,26 +99,12 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISliderB
             }
         }
     }
-
-    @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
-    {
-        if(sliderId == 0)
-        {
-            this.time = (short)(sliderValue * 119);
-        }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        String name = "";
-        if(sliderId == 0)
-        {
-            name = I18n.format("container.spotlight.time", (((int)((sliderValue * 119) / 0.2F))) / 10.0F);
-        }
-        return name;
-    }
+    
+	@Override
+	public void onChangeSliderValue(GuiSlider slider)
+	{
+	    this.time = (short)slider.getValueInt();
+	}
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialRenderTick)

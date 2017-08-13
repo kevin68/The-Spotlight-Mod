@@ -16,8 +16,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
+public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
@@ -41,16 +43,16 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red", this.tile.getShort(EnumTSMProperty.BEAM_RED)), this.tile.getShort(EnumTSMProperty.BEAM_RED) / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green", this.tile.getShort(EnumTSMProperty.BEAM_GREEN)), this.tile.getShort(EnumTSMProperty.BEAM_GREEN) / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 2, x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue", this.tile.getShort(EnumTSMProperty.BEAM_BLUE)), this.tile.getShort(EnumTSMProperty.BEAM_BLUE) / 255.0F));
+        this.buttonList.add(new GuiSlider(0, x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_RED), false, true, this));
+        this.buttonList.add(new GuiSlider(1, x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_GREEN), false, true, this));
+        this.buttonList.add(new GuiSlider(2, x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_BLUE), false, true, this));
 
-        this.buttonList.add(new GuiSliderButton(this, 3, x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red", this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED) / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 4, x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green", this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN) / 255.0F));
-        this.buttonList.add(new GuiSliderButton(this, 5, x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue", this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE) / 255.0F));
+        this.buttonList.add(new GuiSlider(3, x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED), false, true, this));
+        this.buttonList.add(new GuiSlider(4, x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN), false, true, this));
+        this.buttonList.add(new GuiSlider(5, x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE), false, true, this));
 
-        this.buttonList.add(new GuiSliderButton(this, 6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha", this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA)), this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA)));
-        this.buttonList.add(new GuiSliderButton(this, 7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha", this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA)), this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA)));
+        this.buttonList.add(new GuiSlider(6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha"), "", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA), true, true, this));
+        this.buttonList.add(new GuiSlider(7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha"),"", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA), true, true, this));
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")));
         this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode));
@@ -77,87 +79,37 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISliderButton
                 break;
         }
     }
-
+    
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void onChangeSliderValue(GuiSlider slider)
     {
-        switch(sliderId)
+        switch(slider.id)
         {
             case 0:
-                this.tile.setProperty(EnumTSMProperty.BEAM_RED, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.BEAM_RED, (short)(slider.getValueInt()));
                 break;
             case 1:
-                this.tile.setProperty(EnumTSMProperty.BEAM_GREEN, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.BEAM_GREEN, (short)(slider.getValueInt()));
                 break;
             case 2:
-                this.tile.setProperty(EnumTSMProperty.BEAM_BLUE, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.BEAM_BLUE, (short)(slider.getValueInt()));
                 break;
             case 3:
-                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_RED, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_RED, (short)(slider.getValueInt()));
                 break;
             case 4:
-                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_GREEN, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_GREEN, (short)(slider.getValueInt()));
                 break;
             case 5:
-                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_BLUE, (short)(sliderValue * 255.0F));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_BLUE, (short)(slider.getValueInt()));
                 break;
             case 6:
-                this.tile.setProperty(EnumTSMProperty.BEAM_ALPHA, ((short)(sliderValue * 1000)) / 1000.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_ALPHA, (float)(slider.getValue()));
                 break;
             case 7:
-                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_ALPHA, ((short)(sliderValue * 1000)) / 1000.0F);
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_ALPHA, (float)(slider.getValue()));
                 break;
         }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        String name = "";
-        switch(sliderId)
-        {
-            case 0:
-            {
-                name = TextFormatting.RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
-                break;
-            }
-            case 1:
-            {
-                name = TextFormatting.GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
-                break;
-            }
-            case 2:
-            {
-                name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
-                break;
-            }
-            case 3:
-            {
-                name = TextFormatting.DARK_RED + I18n.format("container.spotlight.red", ((short)(sliderValue * 255)));
-                break;
-            }
-            case 4:
-            {
-                name = TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green", ((short)(sliderValue * 255)));
-                break;
-            }
-            case 5:
-            {
-                name = TextFormatting.BLUE + I18n.format("container.spotlight.blue", ((short)(sliderValue * 255)));
-                break;
-            }
-            case 6:
-            {
-                name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
-                break;
-            }
-            case 7:
-            {
-                name = I18n.format("container.spotlight.alpha", ((short)(sliderValue * 1000)) / 1000.0F);
-                break;
-            }
-        }
-        return name;
     }
 
     @Override

@@ -188,7 +188,7 @@ public class TSMJsonManager
 
     private static boolean updateTileData(TileEntitySpotLight tile, JsonObject json)
     {
-        try
+        if(json != null)
         {
             if(json.has("ModeBeam"))
             {
@@ -258,25 +258,16 @@ public class TSMJsonManager
             tile.markForUpdate();
             return true;
         }
-        catch(NullPointerException e)
+        else
         {
-            e.printStackTrace();
-            try
+            if(FMLCommonHandler.instance().getSide() == Side.SERVER)
             {
-                if(FMLCommonHandler.instance().getSide() == Side.SERVER)
-                {
-                    deleteFile(tile.dimensionID, tile.getPos());
-                    generateNewFiles(tile.dimensionID, tile.getPos());
-                }
-                else
-                {
-                    TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimensionID));
-                }
+                deleteFile(tile.dimensionID, tile.getPos());
+                generateNewFiles(tile.dimensionID, tile.getPos());
             }
-            catch(NullPointerException fatal)
+            else
             {
-                fatal.printStackTrace();
-                TheSpotLightMod.log.error("This should not happen");
+                TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimensionID));
             }
         }
         return false;

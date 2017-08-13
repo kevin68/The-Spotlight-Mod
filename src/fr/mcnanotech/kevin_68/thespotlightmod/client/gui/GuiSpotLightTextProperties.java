@@ -15,15 +15,17 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightTextProperties extends GuiContainer implements ISliderButton
+public class GuiSpotLightTextProperties extends GuiContainer implements ISlider
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     private InventoryPlayer invPlayer;
     private TileEntitySpotLight tile;
     private World world;
-    private GuiSliderButton sliderTranslateSpeed;
+    private GuiSlider sliderTranslateSpeed;
     private GuiBooleanButton buttonBold, buttonStrike, buttonUnderline, buttonItalic, buttonObfuscated, buttonShadow, buttonTranslating, buttonReverseTranslating, buttonHelp, button3D;
 
     public GuiSpotLightTextProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
@@ -40,8 +42,8 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight", this.tile.getShort(EnumTSMProperty.TEXT_HEIGHT) - 100), this.tile.getShort(EnumTSMProperty.TEXT_HEIGHT) / 200.0F));
-        this.buttonList.add(new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.textscale", this.tile.getShort(EnumTSMProperty.TEXT_SCALE)), this.tile.getShort(EnumTSMProperty.TEXT_SCALE) / 100.0F));
+        this.buttonList.add(new GuiSlider(0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight"), "", -100, 100, this.tile.getShort(EnumTSMProperty.TEXT_HEIGHT), false, true, this));
+        this.buttonList.add(new GuiSlider(1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.textscale"), "", 0, 100, this.tile.getShort(EnumTSMProperty.TEXT_SCALE), false, true, this));
         this.buttonList.add(this.buttonBold = new GuiBooleanButton(2, x - 50, y + 3, 130, 20, I18n.format("container.spotlight.bold"), this.tile.getBoolean(EnumTSMProperty.TEXT_BOLD)));
         this.buttonList.add(this.buttonStrike = new GuiBooleanButton(3, x + 90, y + 3, 130, 20, I18n.format("container.spotlight.strike"), this.tile.getBoolean(EnumTSMProperty.TEXT_STRIKE)));
         this.buttonList.add(this.buttonUnderline = new GuiBooleanButton(4, x - 50, y + 26, 130, 20, I18n.format("container.spotlight.underline"), this.tile.getBoolean(EnumTSMProperty.TEXT_UNDERLINE)));
@@ -49,7 +51,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
         this.buttonList.add(this.buttonObfuscated = new GuiBooleanButton(6, x - 50, y + 49, 130, 20, I18n.format("container.spotlight.obfuscated"), this.tile.getBoolean(EnumTSMProperty.TEXT_OBFUSCATED)));
         this.buttonList.add(this.buttonShadow = new GuiBooleanButton(7, x + 90, y + 49, 130, 20, I18n.format("container.spotlight.shadow"), this.tile.getBoolean(EnumTSMProperty.TEXT_SHADOW)));
         this.buttonList.add(this.buttonTranslating = new GuiBooleanButton(8, x - 50, y + 72, 130, 20, I18n.format("container.spotlight.translate"), this.tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING)));
-        this.buttonList.add(this.sliderTranslateSpeed = new GuiSliderButton(this, 9, x + 90, y + 72, 130, 20, I18n.format("container.spotlight.translatespeed", this.tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED)), this.tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED) / 100.0F));
+        this.buttonList.add(this.sliderTranslateSpeed = new GuiSlider(9, x + 90, y + 72, 130, 20, I18n.format("container.spotlight.translatespeed"), "", 0, 100, this.tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED), false, true, this));
         this.buttonList.add(this.buttonReverseTranslating = new GuiBooleanButton(10, x - 50, y + 95, 130, 20, I18n.format("container.spotlight.reversetranslate"), this.tile.getBoolean(EnumTSMProperty.TEXT_T_REVERSE)));
         this.buttonList.add(this.button3D = new GuiBooleanButton(11, x + 90, y + 95, 130, 20, I18n.format("container.spotlight.text3d"), this.tile.getBoolean(EnumTSMProperty.TEXT_3D)));
 
@@ -132,47 +134,22 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISliderB
                 break;
         }
     }
-
+    
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void onChangeSliderValue(GuiSlider slider)
     {
-        switch(sliderId)
+        switch(slider.id)
         {
             case 0:
-                this.tile.setProperty(EnumTSMProperty.TEXT_HEIGHT, (short)(sliderValue * 200));
+                this.tile.setProperty(EnumTSMProperty.TEXT_HEIGHT, (short)(slider.getValueInt()));
                 break;
             case 1:
-                this.tile.setProperty(EnumTSMProperty.TEXT_SCALE, (short)(sliderValue * 100));
+                this.tile.setProperty(EnumTSMProperty.TEXT_SCALE, (short)(slider.getValueInt()));
                 break;
             case 9:
-                this.tile.setProperty(EnumTSMProperty.TEXT_TRANSLATE_SPEED, (short)(sliderValue * 100));
+                this.tile.setProperty(EnumTSMProperty.TEXT_TRANSLATE_SPEED, (short)(slider.getValueInt()));
                 break;
         }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        String name = "";
-        switch(sliderId)
-        {
-            case 0:
-            {
-                name = I18n.format("container.spotlight.textheight", (short)(sliderValue * 200) - 100);
-                break;
-            }
-            case 1:
-            {
-                name = I18n.format("container.spotlight.textscale", (short)(sliderValue * 100));
-                break;
-            }
-            case 9:
-            {
-                name = I18n.format("container.spotlight.translatespeed", (short)(sliderValue * 100));
-                break;
-            }
-        }
-        return name;
     }
 
     @Override

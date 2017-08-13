@@ -14,8 +14,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButton
+public class GuiSpotLightTextAngles extends GuiContainer implements ISlider
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
@@ -24,7 +26,7 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
     public World world;
 
     private GuiBooleanButton buttonAR, buttonRR, buttonHelp;
-    private GuiSliderButton sliderAngle, sliderSpeed;
+    private GuiSlider sliderAngle, sliderSpeed;
 
     public GuiSpotLightTextAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
     {
@@ -41,14 +43,14 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(this.sliderAngle = new GuiSliderButton(this, 3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "Y", this.tile.getShort(EnumTSMProperty.TEXT_ANGLE_Y)), this.tile.getShort(EnumTSMProperty.TEXT_ANGLE_Y) / 360.0F));
+        this.buttonList.add(this.sliderAngle = new GuiSlider(3, x - 50, y - 20, 270, 20, I18n.format("container.spotlight.angleval", "Y"), "", 0, 360, this.tile.getShort(EnumTSMProperty.TEXT_ANGLE_Y), false, true, this));
         this.buttonList.add(this.buttonAR = new GuiBooleanButton(4, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.TEXT_R_AUTO_Y)));
         this.buttonAR.setTexts(I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotate", "Y", I18n.format("container.spotlight.off")));
         this.sliderAngle.enabled = !this.buttonAR.isActive();
         this.buttonList.add(this.buttonRR = new GuiBooleanButton(5, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.TEXT_R_REVERSE_Y)));
         this.buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
         this.buttonRR.enabled = this.buttonAR.enabled;
-        this.buttonList.add(this.sliderSpeed = new GuiSliderButton(this, 6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "Y", this.tile.getShort(EnumTSMProperty.TEXT_R_SPEED_Y)), this.tile.getShort(EnumTSMProperty.TEXT_R_SPEED_Y) / 200.0F));
+        this.buttonList.add(this.sliderSpeed = new GuiSlider(6, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.rotationspeed", "Y"), "", 0, 200, this.tile.getShort(EnumTSMProperty.TEXT_R_SPEED_Y), false, true, this));
         this.sliderSpeed.enabled = this.buttonAR.isActive();
 
         this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
@@ -86,35 +88,19 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISliderButto
                 break;
         }
     }
-
+    
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void onChangeSliderValue(GuiSlider slider)
     {
-        switch(sliderId)
+        switch(slider.id)
         {
             case 3:
-                this.tile.setProperty(EnumTSMProperty.TEXT_ANGLE_Y, (short)(sliderValue * 360.0F));
+                this.tile.setProperty(EnumTSMProperty.TEXT_ANGLE_Y, (short)(slider.getValueInt()));
                 break;
             case 6:
-                this.tile.setProperty(EnumTSMProperty.TEXT_R_SPEED_Y, (short)(sliderValue * 200));
+                this.tile.setProperty(EnumTSMProperty.TEXT_R_SPEED_Y, (short)(slider.getValueInt()));
                 break;
-        }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        String name = "";
-        switch(sliderId)
-        {
-            case 3:
-                name = I18n.format("container.spotlight.angleval", "Y", (short)(sliderValue * 360));
-                break;
-            case 6:
-                name = I18n.format("container.spotlight.rotationspeed", "Y", (short)(sliderValue * 200));
-                break;
-        }
-        return name;
+        }        
     }
 
     @Override

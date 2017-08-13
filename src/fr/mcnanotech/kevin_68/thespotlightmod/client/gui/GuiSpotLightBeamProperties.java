@@ -16,8 +16,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderButton
+public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
 {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
@@ -25,7 +27,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
     private TileEntitySpotLight tile;
     private World world;
     private GuiBooleanButton buttonHelp;
-    private GuiSliderButton sliderSecBeamSize;
+    private GuiSlider sliderSecBeamSize;
     private GuiBooleanButton buttonSecBeamEnabled, buttonDoubleBeam;
 
     public GuiSpotLightBeamProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
@@ -42,15 +44,15 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSliderButton(this, 0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain", this.tile.getShort(EnumTSMProperty.BEAM_SIZE)), this.tile.getShort(EnumTSMProperty.BEAM_SIZE) / 100.0F));
-        this.buttonList.add(this.sliderSecBeamSize = new GuiSliderButton(this, 1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec", this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE)), this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE) / 100.0F));
+        this.buttonList.add(new GuiSlider(0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SIZE), false, true, this));
+        this.buttonList.add(this.sliderSecBeamSize = new GuiSlider(1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE), false, true, this));
         this.buttonList.add(this.buttonSecBeamEnabled = new GuiBooleanButton(2, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_SEC_ENABLED)));
         this.buttonSecBeamEnabled.setTexts(I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.off")));
         this.buttonList.add(this.buttonDoubleBeam = new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE)));
         this.buttonDoubleBeam.setTexts(I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"));
-        this.buttonList.add(new GuiSliderButton(this, 4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight", this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT)), this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT) / 512.0F));
-        this.buttonList.add(new GuiSliderButton(this, 5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides", this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2), this.tile.getShort(EnumTSMProperty.BEAM_SIDE) / 48.0F));
-        this.buttonList.add(new GuiSliderButton(this, 6, x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed", this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0F), this.tile.getFloat(EnumTSMProperty.BEAM_SPEED)/4.0F));
+        this.buttonList.add(new GuiSlider(4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight"), "", 0, 512, this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT), false, true, this));
+        this.buttonList.add(new GuiSlider(5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides"), "", 2, 50, this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2, false, true, this));
+        this.buttonList.add(new GuiSlider(6, x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed"), "", -2, 2, this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0D, true, true, this));
         this.buttonDoubleBeam.shouldNotChangeTextColor(true);
         this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
 
@@ -87,63 +89,37 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISliderB
                 break;
         }
     }
-
+    
     @Override
-    public void handlerSliderAction(int sliderId, float sliderValue)
+    public void onChangeSliderValue(GuiSlider slider)
     {
-        switch(sliderId)
+        switch(slider.id)
         {
             case 0:
             {
-                this.tile.setProperty(EnumTSMProperty.BEAM_SIZE, (short)(sliderValue * 100));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SIZE, (short)(slider.getValueInt()));
                 break;
             }
             case 1:
             {
-                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_SIZE, (short)(sliderValue * 100));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_SIZE, (short)(slider.getValueInt()));
                 break;
             }
             case 4:
             {
-                this.tile.setProperty(EnumTSMProperty.BEAM_HEIGHT, (short)(sliderValue * 512));
+                this.tile.setProperty(EnumTSMProperty.BEAM_HEIGHT, (short)(slider.getValueInt()));
                 break;
             }
             case 5:
             {
-                this.tile.setProperty(EnumTSMProperty.BEAM_SIDE, (short)(sliderValue * 48));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SIDE, (short)(slider.getValueInt() - 2));
                 break;
             }
             case 6:
             {
-                this.tile.setProperty(EnumTSMProperty.BEAM_SPEED, TSMUtils.round((float)(sliderValue * 4.0F), 2));
+                this.tile.setProperty(EnumTSMProperty.BEAM_SPEED, TSMUtils.round((float)(slider.getValue() + 2.0D), 2));
             }
-        }
-    }
-
-    @Override
-    public String getSliderName(int sliderId, float sliderValue)
-    {
-        String name = "";
-        switch(sliderId)
-        {
-            case 0:
-                name = I18n.format("container.spotlight.sizeMain", (short)(sliderValue * 100));
-                break;
-            case 1:
-                name = I18n.format("container.spotlight.sizeSec", (short)(sliderValue * 100));
-                break;
-            case 4:
-                name = I18n.format("container.spotlight.laserHeight", (short)(sliderValue * 512));
-                break;
-            case 5:
-                name = I18n.format("container.spotlight.sides", (short)(sliderValue * 48 + 2));
-                break;
-            case 6:
-                String temp =
-                name = I18n.format("container.spotlight.beamspeed", TSMUtils.round((float)(sliderValue * 4.0F - 2.0F), 2));
-                break;
-        }
-        return name;
+        }        
     }
 
     @Override
