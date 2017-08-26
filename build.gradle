@@ -85,10 +85,6 @@ processResources {
 }
 
 jar {
-    from project.sourceSets.main.output
-	    include "fr/mcnanotech/kevin_68/thespotlightmod/**"
-        include "assets/thespotlightmod/**"
-		include "mcmod.info"
     classifier = 'universal'
     version = "${project.version}-mc${project.minecraft.version}"
 }
