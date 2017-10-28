@@ -87,7 +87,7 @@ public class Text3D
             GlStateManager.color(red, green, blue);
             this.mc.renderEngine.bindTexture(this.texture);
             char[] str = text.toCharArray();
-            float prevspacing = 0;
+            float prevspacing = -spacing*2.0F; // fix text not centered caused by an extra space
             float tLen = 0;
             for(int i = str.length-1; i >=0 ; i--)
             {

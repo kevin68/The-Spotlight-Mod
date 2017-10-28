@@ -33,9 +33,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEntitySpotLight>
 {
     private ModelSpotLight model = new ModelSpotLight();
-    private static final ResourceLocation tex = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
-    private static final ResourceLocation defaultBeam = new ResourceLocation("textures/entity/beacon_beam.png");
-    private static final Text3D txt3d = new Text3D(Model3DTextDefault.instance);
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
+    private static final ResourceLocation DEFAULT_BEAM = new ResourceLocation("textures/entity/beacon_beam.png");
+    private static final Text3D TXT3D = new Text3D(Model3DTextDefault.instance);
 
     @Override
     public void render(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage, float alpha)
@@ -56,7 +56,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
             }
             GlStateManager.pushMatrix();
             GlStateManager.translate((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
-            bindTexture(tex);
+            bindTexture(TEXTURE);
             this.model.setRotation(-angleX, angleY, -angleZ);
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
             this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
@@ -76,7 +76,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                     }
                     else
                     {
-                        bindTexture(defaultBeam);
+                        bindTexture(DEFAULT_BEAM);
                     }
                     GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
                     GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
@@ -114,7 +114,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                     }
                     else
                     {
-                        bindTexture(defaultBeam);
+                        bindTexture(DEFAULT_BEAM);
                     }
                     if(tile.getBoolean(EnumTSMProperty.BEAM_SEC_ENABLED))
                     {
@@ -160,7 +160,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                             GlStateManager.translate(0.0F, -(25.0F + 1.0F + tscale * 0.45F) / 20.0F, 0.0F);
                         }
                         GlStateManager.scale(1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F);
-                        txt3d.renderTextAlignedCenter(tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING) ? getTranslatingText(tile.getString(EnumTSMProperty.TEXT), tile) : tile.getString(EnumTSMProperty.TEXT), tile.getShort(EnumTSMProperty.TEXT_RED) / 255.0F, tile.getShort(EnumTSMProperty.TEXT_GREEN) / 255.0F, tile.getShort(EnumTSMProperty.TEXT_BLUE) / 255.0F);
+                        TXT3D.renderTextAlignedCenter(tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING) ? getTranslatingText(tile.getString(EnumTSMProperty.TEXT), tile) : tile.getString(EnumTSMProperty.TEXT), tile.getShort(EnumTSMProperty.TEXT_RED) / 255.0F, tile.getShort(EnumTSMProperty.TEXT_GREEN) / 255.0F, tile.getShort(EnumTSMProperty.TEXT_BLUE) / 255.0F);
                     }
                     else
                     {

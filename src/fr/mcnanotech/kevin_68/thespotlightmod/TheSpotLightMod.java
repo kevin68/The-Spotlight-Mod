@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12,1.12.1]", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
+@Mod(modid = TheSpotLightMod.MODID, name = "The SpotLight Mod", version = "@VERSION@", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12,1.12.2]", updateJSON = "http://dl.mcnanotech.fr/kevin_68/TSM/version.json")
 public class TheSpotLightMod
 {
     public static final String MODID = "thespotlightmod";
