@@ -34,9 +34,9 @@ else {
 compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = "1.12.1-14.22.0.2460"
+    version = "1.12.2-14.23.0.2491"
     runDir = "run"
-    mappings = "snapshot_20170823"
+    mappings = "snapshot_20171029"
 
     replace '@VERSION@', project.version
 
