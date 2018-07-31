@@ -49,15 +49,15 @@ public class TheSpotLightMod
     {
         @Override
         @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem()
+        public ItemStack createIcon()
         {
             return new ItemStack(SPOTLIGHT);
         }
     };
 
-    public static final Block SPOTLIGHT = new BlockSpotLight().setCreativeTab(TheSpotLightMod.tab).setHardness(1.0F).setResistance(10.0F).setUnlocalizedName("thespotlightmod.spotlight").setRegistryName("tsm_spotlight");
-    public static final Item CONFIG_SAVER = new Item().setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64).setUnlocalizedName("configsaver").setRegistryName("tsm_configsaver");
-    public static final Item CONFIG_SAVER_FULL = new Item().setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1).setUnlocalizedName("configsaver_full").setRegistryName("tsm_configsaver_full");
+    public static final Block SPOTLIGHT = new BlockSpotLight().setCreativeTab(TheSpotLightMod.tab).setHardness(1.0F).setResistance(10.0F).setTranslationKey("thespotlightmod.spotlight").setRegistryName("tsm_spotlight");
+    public static final Item CONFIG_SAVER = new Item().setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(64).setTranslationKey("configsaver").setRegistryName("tsm_configsaver");
+    public static final Item CONFIG_SAVER_FULL = new Item().setCreativeTab(TheSpotLightMod.tab).setMaxStackSize(1).setTranslationKey("configsaver_full").setRegistryName("tsm_configsaver_full");
 
     @EventHandler
     public void preInitTheSpotlightMod(FMLPreInitializationEvent event)
