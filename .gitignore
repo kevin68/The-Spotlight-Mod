@@ -1,4 +1,5 @@
 .gradle/
+.settings/
 bin/
 build/
 eclipse/
@@ -9,3 +10,4 @@ Thumbs.db
 *.DS_Store
 .classpath
 .project
+*.launch
