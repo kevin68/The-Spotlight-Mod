@@ -38,15 +38,15 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class TSMJsonManager
 {
-    public static void generateNewFiles(int dimID, BlockPos pos)
+    public static void generateNewFiles(DimensionType dimType, BlockPos pos)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimType.getId())).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
@@ -55,14 +55,14 @@ public class TSMJsonManager
         }
         if(file.exists())
         {
-            deleteFile(dimID, pos);
+            deleteFile(dimType, pos);
         }
         if(fileTL.exists())
         {
-            deleteFile(dimID, pos);
+            deleteFile(dimType, pos);
         }
         JsonObject json = new JsonObject();
-        json.addProperty("DimID", dimID);
+        json.addProperty("DimID", dimType.getId());
         json.addProperty("X", pos.getX());
         json.addProperty("Y", pos.getY());
         json.addProperty("Z", pos.getZ());
@@ -145,11 +145,11 @@ public class TSMJsonManager
         write(fileTL, timeline);
     }
 
-    public static void deleteFile(int dimID, BlockPos pos)
+    public static void deleteFile(DimensionType dimType, BlockPos pos)
     {
         try
         {
-            File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+            File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimType.getId())).getPath());
             File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
             File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
             file.delete();
@@ -164,9 +164,9 @@ public class TSMJsonManager
     /*
      * Server Side
      */
-    public static boolean updateTileData(int dimID, BlockPos pos, TileEntitySpotLight tile)
+    public static boolean updateTileData(DimensionType dimType, BlockPos pos, TileEntitySpotLight tile)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimType.getId())).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         JsonObject json = read(file);
         return updateTileData(tile, json);
@@ -260,22 +260,22 @@ public class TSMJsonManager
         }
         else
         {
-            if(FMLCommonHandler.instance().getSide() == Side.SERVER)
+            if(FMLEnvironment.dist.isDedicatedServer())
             {
-                deleteFile(tile.dimensionID, tile.getPos());
-                generateNewFiles(tile.dimensionID, tile.getPos());
+                deleteFile(tile.dimension, tile.getPos());
+                generateNewFiles(tile.dimension, tile.getPos());
             }
             else
             {
-                TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimensionID));
+                TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension));
             }
         }
         return false;
     }
 
-    public static void updateJsonData(int dimID, BlockPos pos, String data)
+    public static void updateJsonData(DimensionType dimType, BlockPos pos, String data)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimType.getId())).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         if(!folder.exists())
         {
@@ -284,14 +284,14 @@ public class TSMJsonManager
         write(file, data);
     }
 
-    public static String getDataFromJson(int dimID, BlockPos pos)
+    public static String getDataFromJson(DimensionType dimType, BlockPos pos)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimType.getId())).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         if(!folder.exists())
         {
             folder.mkdirs();
-            generateNewFiles(dimID, pos);
+            generateNewFiles(dimType, pos);
         }
         JsonObject json = read(file);
         if(json != null)
@@ -304,7 +304,7 @@ public class TSMJsonManager
     public static JsonObject getDataFromTile(TileEntitySpotLight tile)
     {
         JsonObject json = new JsonObject();
-        json.addProperty("DimID", tile.dimensionID);
+        json.addProperty("DimID", tile.dimension);
         json.addProperty("X", tile.getPos().getX());
         json.addProperty("Y", tile.getPos().getY());
         json.addProperty("Z", tile.getPos().getZ());
@@ -376,7 +376,7 @@ public class TSMJsonManager
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
         File file = new File(folder, configName + ".json");
         JsonObject json = read(file);
-        json.addProperty("DimID", tile.dimensionID);
+        json.addProperty("DimID", tile.dimension.getId());
         JsonObject obj = json.get("Timeline").getAsJsonObject();
         updateTileData(tile, json);
         updateTileTimeline(tile, obj);
@@ -450,7 +450,7 @@ public class TSMJsonManager
             e.printStackTrace();
             try
             {
-                if(FMLCommonHandler.instance().getSide() == Side.SERVER)
+                if(FMLEnvironment.dist.isDedicatedServer())
                 {
                     deleteFile(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
                     generateNewFiles(json.get("DimID").getAsInt(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
@@ -462,7 +462,7 @@ public class TSMJsonManager
             }
             catch(NullPointerException fatal)
             {
-                TheSpotLightMod.log.error("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
+                TheSpotLightMod.LOGGER.error("Missing an entry, please delete the file. If this happend when you where connected to a server please contact the server's operator");
             }
         }
         return false;
@@ -479,14 +479,14 @@ public class TSMJsonManager
         write(file, data);
     }
 
-    public static String getTlDataFromJson(int dimID, BlockPos pos)
+    public static String getTlDataFromJson(DimensionType dim, BlockPos pos)
     {
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
         {
             folder.mkdirs();
-            generateNewFiles(dimID, pos);
+            generateNewFiles(dim, pos);
         }
         JsonObject json = read(file);
         if(json != null)
@@ -771,13 +771,13 @@ public class TSMJsonManager
         }
         catch(FileNotFoundException e)
         {
-            generateNewFiles(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            generateNewFiles(getDimentionByFolder(dir), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         catch(JsonParseException e)
         {
-            TheSpotLightMod.log.error("File is not a JSON, generating a new one");
-            deleteFile(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
-            generateNewFiles(Integer.valueOf(new File(dir.getParent()).getName()), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            TheSpotLightMod.LOGGER.error("File is not a JSON, generating a new one");
+            deleteFile(getDimentionByFolder(dir), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            generateNewFiles(getDimentionByFolder(dir), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         return null;
     }
@@ -816,5 +816,9 @@ public class TSMJsonManager
     public static HashMap<Integer, List<JsonObject>> getAll()
     {
         return null;
+    }
+    
+    private static DimensionType getDimentionByFolder(File dir) {
+    	return DimensionType.getById(Integer.valueOf(new File(dir.getParent()).getName()));
     }
 }

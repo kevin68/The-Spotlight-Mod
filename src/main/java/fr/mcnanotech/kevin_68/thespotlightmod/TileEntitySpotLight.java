@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +21,8 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -27,18 +30,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IInteractionObject;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
-public class TileEntitySpotLight extends TileEntity implements ISidedInventory, ITickable
+public class TileEntitySpotLight extends TileEntity implements ISidedInventory, ITickable, IInteractionObject
 {
-    /*
+	/*
      * Inventory
      */
     private NonNullList<ItemStack> slots = NonNullList.<ItemStack>withSize(8, ItemStack.EMPTY);
@@ -48,12 +56,13 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
      */
     public boolean updated = false, updating = false, timelineUpdated = false, timelineUpdating = false;
     public boolean isActive;
-    public int dimensionID;
+    public DimensionType dimension;
     public boolean isBeam; // false = text mode
     public boolean helpMode; // false = disabled
     public boolean redstone; // Require redstone signal
     public boolean locked; // Locked by a user
-    public String lockerUUID;// UUID of locker
+    public UUID lockerUUID;// UUID of locker
+    private ITextComponent customName;
 
     private Map<EnumTSMProperty, Object> properties = initProperties();
     private Map<EnumTSMProperty, Object[]> timelineProperties = initTimeLineProperties();
@@ -67,6 +76,14 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     // -------------------------------------Vecs for renders
     public BeamVec[] bVec = null;
     public List<BeamVec[]> beams = new ArrayList<BeamVec[]>();
+    
+    public TileEntitySpotLight() {
+		this(TSMObjects.TILE_TSM);
+	}
+    
+    public TileEntitySpotLight(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
     public void setKey(short keyTime, TSMKey key)
     {
@@ -101,7 +118,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    public void update()
+    public void tick()
     {
         try
         {
@@ -109,7 +126,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 if(!this.world.isRemote)
                 {
-                    this.updated = TSMJsonManager.updateTileData(this.dimensionID, this.pos, this);
+                    this.updated = TSMJsonManager.updateTileData(this.dimension, this.pos, this);
                 }
                 else if(!this.updating)
                 {
@@ -122,7 +139,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 if(!this.world.isRemote)
                 {
-                    this.timelineUpdated = TSMJsonManager.updateTileTimeline(this.dimensionID, this.pos, this);
+                    this.timelineUpdated = TSMJsonManager.updateTileTimeline(this.dimension, this.pos, this);
                 }
                 else if(!this.timelineUpdating)
                 {
@@ -426,7 +443,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             }
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
-        TSMJsonManager.updateTlJsonData(this.dimensionID, this.pos, strData);
+        TSMJsonManager.updateTlJsonData(this.dimension, this.pos, strData);
         TheSpotLightMod.network.sendToAll(new PacketTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
     }
 
@@ -514,47 +531,61 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public double getMaxRenderDistanceSquared()
     {
         return 786432.0D;
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
-    {
-        super.writeToNBT(nbtTagCompound);
-        nbtTagCompound.setInteger("DimID", this.dimensionID);
-        nbtTagCompound.setShort("Time", this.time);
-        nbtTagCompound.setBoolean("TimelineEnabled", this.timelineEnabled);
-        nbtTagCompound.setBoolean("TimelineSmooth", this.timelineSmooth);
-        nbtTagCompound.setBoolean("Locked", this.locked);
+    public NBTTagCompound write(NBTTagCompound compound) {
+        super.write(compound);
+        compound.putInt("DimID", this.dimension.getId());
+        compound.putShort("Time", this.time);
+        compound.putBoolean("TimelineEnabled", this.timelineEnabled);
+        compound.putBoolean("TimelineSmooth", this.timelineSmooth);
+        compound.putBoolean("Locked", this.locked);
 
-        if(this.lockerUUID != null && !this.lockerUUID.isEmpty())
+        if(this.lockerUUID != null)
         {
-            nbtTagCompound.setString("LockerUUID", this.lockerUUID);
+        	compound.putUniqueId("LockerUUID", this.lockerUUID);
         }
 
-        ItemStackHelper.saveAllItems(nbtTagCompound, this.slots);
-        return nbtTagCompound;
+        ItemStackHelper.saveAllItems(compound, this.slots);
+        
+        if (this.getCustomName() != null) {
+           compound.putString("CustomName", ITextComponent.Serializer.toJson(this.getCustomName()));
+        }
+        
+        return compound;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
+    public void read(NBTTagCompound compound)
     {
-        super.readFromNBT(nbtTagCompound);
-        this.dimensionID = nbtTagCompound.getInteger("DimID");
-        this.time = nbtTagCompound.getShort("Time");
-        this.timelineEnabled = nbtTagCompound.getBoolean("TimelineEnabled");
-        this.timelineSmooth = nbtTagCompound.getBoolean("TimelineSmooth");
-        this.locked = nbtTagCompound.getBoolean("Locked");
+        super.read(compound);
+        this.dimension = DimensionType.getById(compound.getInt("DimID"));
+        this.time = compound.getShort("Time");
+        this.timelineEnabled = compound.getBoolean("TimelineEnabled");
+        this.timelineSmooth = compound.getBoolean("TimelineSmooth");
+        this.locked = compound.getBoolean("Locked");
 
-        if(nbtTagCompound.hasKey("LockerUUID"))
+        if (compound.contains("LockerUUID", Constants.NBT.TAG_STRING))
         {
-            this.lockerUUID = nbtTagCompound.getString("LockerUUID");
+        	// convert old data
+            this.lockerUUID = UUID.fromString(compound.getString("LockerUUID"));
         }
+        if (compound.hasUniqueId("LockerUUID"))
+        {
+        	// convert old data
+            this.lockerUUID = compound.getUniqueId("LockerUUID");
+        }
+        
+        if (compound.contains("CustomName", Constants.NBT.TAG_STRING)) {
+            this.customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
+         }
 
-        ItemStackHelper.loadAllItems(nbtTagCompound, this.slots);
+        ItemStackHelper.loadAllItems(compound, this.slots);
     }
 
     @Override
@@ -564,7 +595,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
         return INFINITE_EXTENT_AABB;
@@ -628,9 +659,9 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    public String getName()
+    public ITextComponent getName()
     {
-        return "container.spotlight";
+        return new TextComponentTranslation("container.spotlight");
     }
 
     @Override
@@ -696,7 +727,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             if(!this.getStackInSlot(0).isEmpty() && this.getStackInSlot(1).isEmpty())
             {
                 this.decrStackSize(0, 1);
-                ItemStack stack = new ItemStack(TheSpotLightMod.CONFIG_SAVER_FULL);
+                ItemStack stack = new ItemStack(TSMObjects.CONFIG_SAVER_FULL);
                 TSMJsonManager.saveConfig(stack, this);
                 this.setInventorySlotContents(1, stack);
             }
@@ -711,7 +742,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 TSMJsonManager.deleteConfig(getStackInSlot(4));
                 this.decrStackSize(4, 1);
-                ItemStack stack = new ItemStack(TheSpotLightMod.CONFIG_SAVER);
+                ItemStack stack = new ItemStack(TSMObjects.CONFIG_SAVER);
                 this.setInventorySlotContents(5, stack);
             }
         }
@@ -905,4 +936,19 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         System.out.println("Invalid use for timeline property: " + prop.name());
         return null;
     }
+
+	@Override
+	public ITextComponent getCustomName() {
+		return customName;
+	}
+
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		return null;
+	}
+
+	@Override
+	public String getGuiID() {
+		return null;
+	}
 }

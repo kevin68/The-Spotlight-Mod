@@ -1,66 +1,54 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketLock implements IMessage
-{
-    public int x, y, z;
-    public boolean locked;
-    public String uuid;
+public class PacketLock {
+	public int x, y, z;
+	public boolean locked;
+	public UUID uuid;
 
-    public PacketLock()
-    {}
+	public PacketLock(int x, int y, int z, boolean locked, UUID uuid) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.locked = locked;
+		this.uuid = uuid;
+	}
 
-    public PacketLock(int x, int y, int z, boolean locked, String uuid)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.locked = locked;
-        this.uuid = uuid;
-    }
+	public static void encode(PacketLock packet, PacketBuffer buffer) {
+		buffer.writeInt(packet.x);
+		buffer.writeInt(packet.y);
+		buffer.writeInt(packet.z);
+		buffer.writeBoolean(packet.locked);
+		buffer.writeUniqueId(packet.uuid);
+	}
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.locked = buf.readBoolean();
-        this.uuid = ByteBufUtils.readUTF8String(buf);
-    }
+	public static PacketLock decode(PacketBuffer buffer) {
+		int x = buffer.readInt();
+		int y = buffer.readInt();
+		int z = buffer.readInt();
+		boolean locked = buffer.readBoolean();
+		UUID uuid = buffer.readUniqueId();
+		return new PacketLock(x, y, z, locked, uuid);
+	}
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeBoolean(this.locked);
-        ByteBufUtils.writeUTF8String(buf, this.uuid);
-    }
-
-    public static class Handler implements IMessageHandler<PacketLock, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketLock message, MessageContext ctx)
-        {
-            TileEntity te = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
-            if(te instanceof TileEntitySpotLight)
-            {
-                TileEntitySpotLight tile = (TileEntitySpotLight)te;
-                tile.locked = message.locked;
-                tile.lockerUUID = message.uuid;
-                tile.markForUpdate();
-            }
-            return null;
-        }
-    }
+	public static void handle(PacketLock packet, Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			TileEntity te = ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+			if (te instanceof TileEntitySpotLight) {
+				TileEntitySpotLight tile = (TileEntitySpotLight) te;
+				tile.locked = packet.locked;
+				tile.lockerUUID = packet.uuid;
+				tile.markForUpdate();
+			}
+		});
+		ctx.get().setPacketHandled(true);
+	}
 }

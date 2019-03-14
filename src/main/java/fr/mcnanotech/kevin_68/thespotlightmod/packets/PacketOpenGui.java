@@ -1,17 +1,14 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class PacketOpenGui implements IMessage
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+// TODO still useful ?
+public class PacketOpenGui
 {
     public int x, y, z, id;
-
-    public PacketOpenGui()
-    {}
 
     public PacketOpenGui(int x, int y, int z, int id)
     {
@@ -21,31 +18,30 @@ public class PacketOpenGui implements IMessage
         this.id = id;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.id = buf.readInt();
+
+	public static void encode(PacketOpenGui packet, PacketBuffer buffer) {
+		buffer.writeInt(packet.x);
+		buffer.writeInt(packet.y);
+		buffer.writeInt(packet.z);
+        buffer.writeInt(packet.id);
+    }
+	
+	public static PacketOpenGui decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        int id = buffer.readInt();
+        return new PacketOpenGui(x, y, z, id);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeInt(this.id);
-    }
 
-    public static class Handler implements IMessageHandler<PacketOpenGui, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketOpenGui message, MessageContext ctx)
-        {
-            ctx.getServerHandler().player.openGui(TheSpotLightMod.MODID, message.id, ctx.getServerHandler().player.world, message.x, message.y, message.z);
-            return null;
-        }
+	public static void handle(PacketOpenGui packet, Supplier<NetworkEvent.Context> ctx) {
+//        @Override
+//        public IMessage onMessage(PacketOpenGui message, MessageContext ctx)
+//        {
+//            ctx.getServerHandler().player.openGui(TheSpotLightMod.MODID, message.id, ctx.getServerHandler().player.world, message.x, message.y, message.z);
+//            return null;
+//        }
+        ctx.get().setPacketHandled(true);
     }
 }

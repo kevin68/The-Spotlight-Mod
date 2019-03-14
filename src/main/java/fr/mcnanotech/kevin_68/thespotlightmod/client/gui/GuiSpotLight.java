@@ -9,7 +9,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketLock;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,30 +44,30 @@ public class GuiSpotLight extends GuiContainer
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(this.buttonColors = new GuiButton(0, x + 5, y + 20, 80, 20, this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor")));
+        this.buttons.add(this.buttonColors = new GuiButton(0, x + 5, y + 20, 80, 20, this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor")));
         this.buttonColors.enabled = !this.tile.timelineEnabled;
-        this.buttonList.add(this.buttonAngle = new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")));
+        this.buttons.add(this.buttonAngle = new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")));
         this.buttonAngle.enabled = !this.tile.timelineEnabled;
-        this.buttonList.add(this.buttonBeamSpecs = new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
+        this.buttons.add(this.buttonBeamSpecs = new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")));
         this.buttonBeamSpecs.enabled = !this.tile.timelineEnabled;
-        this.buttonList.add(this.buttonTextures = new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")));
-        this.buttonList.add(this.buttonMode = new GuiBooleanButton(4, x + 5, y + 112, 80, 20, "", this.tile.isBeam));
+        this.buttons.add(this.buttonTextures = new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")));
+        this.buttons.add(this.buttonMode = new GuiBooleanButton(4, x + 5, y + 112, 80, 20, "", this.tile.isBeam));
         this.buttonMode.enabled = !this.tile.timelineEnabled;
         this.buttonMode.setTexts(I18n.format("container.spotlight.modebeam"), I18n.format("container.spotlight.modetext"));
         this.buttonMode.shouldNotChangeTextColor(true);
         this.buttonMode.shouldChangeTextureOnToggle(false);
-        this.buttonList.add(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")));
-        this.buttonList.add(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked));
-        this.buttonList.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "", this.tile.redstone));
-        this.buttonList.add(new GuiButton(19, x + 180, y + 115, 20, 20, ""));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
+        this.buttons.add(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")));
+        this.buttons.add(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked));
+        this.buttons.add(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "", this.tile.redstone));
+        this.buttons.add(new GuiButton(19, x + 180, y + 115, 20, 20, ""));
+        this.buttons.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
         this.buttonTextures.enabled = !this.tile.timelineEnabled && this.buttonMode.isActive();
     }
 
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimensionID, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -121,7 +120,7 @@ public class GuiSpotLight extends GuiContainer
                 break;
             case 17:
                 this.buttonLock.toggle();
-                TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId().toString()));
+                TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId()));
                 break;
             case 18:
                 this.buttonRedstone.toggle();
@@ -160,7 +159,7 @@ public class GuiSpotLight extends GuiContainer
         this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())
         {
-            for(GuiButton button : this.buttonList)
+            for(GuiButton button : this.buttons)
             {
                 if(button.isMouseOver())
                 {

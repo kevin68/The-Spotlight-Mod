@@ -1,53 +1,46 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
+import java.util.function.Supplier;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketRegenerateFile implements IMessage
+public class PacketRegenerateFile
 {
-    public int x, y, z, dimID;
+    public int x, y, z;
+    public DimensionType dimType;
 
-    public PacketRegenerateFile()
-    {}
-
-    public PacketRegenerateFile(int x, int y, int z, int dimID)
+    public PacketRegenerateFile(int x, int y, int z, DimensionType dimType)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.dimID = dimID;
+        this.dimType = dimType;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.dimID = buf.readInt();
+    public static PacketRegenerateFile decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        DimensionType dimType = DimensionType.getById(buffer.readInt());
+        return new PacketRegenerateFile(x, y, z, dimType);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeInt(this.dimID);
+    public static void encode(PacketRegenerateFile packet, PacketBuffer buffer) {
+    	buffer.writeInt(packet.x);
+        buffer.writeInt(packet.y);
+        buffer.writeInt(packet.z);
+        buffer.writeInt(packet.dimType.getId());
     }
-
-    public static class Handler implements IMessageHandler<PacketRegenerateFile, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketRegenerateFile message, MessageContext ctx)
-        {
-            TSMJsonManager.deleteFile(message.dimID, new BlockPos(message.x, message.y, message.z));
-            TSMJsonManager.generateNewFiles(message.dimID, new BlockPos(message.x, message.y, message.z));
-            return null;
-        }
-    }
+    
+    public static void handle(PacketRegenerateFile packet, Supplier<NetworkEvent.Context> ctx) {
+  		ctx.get().enqueueWork(() -> {
+            TSMJsonManager.deleteFile(packet.dimType, new BlockPos(packet.x, packet.y, packet.z));
+            TSMJsonManager.generateNewFiles(packet.dimType, new BlockPos(packet.x, packet.y, packet.z));
+  		});
+  		ctx.get().setPacketHandled(true);
+  	}
 }

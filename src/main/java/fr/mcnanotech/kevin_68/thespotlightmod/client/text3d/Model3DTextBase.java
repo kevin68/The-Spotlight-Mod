@@ -3,8 +3,8 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.text3d;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 
 public abstract class Model3DTextBase extends ModelBase
 {

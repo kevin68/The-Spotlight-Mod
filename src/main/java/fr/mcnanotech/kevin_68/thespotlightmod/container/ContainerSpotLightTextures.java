@@ -15,8 +15,8 @@ public class ContainerSpotLightTextures extends Container
     public ContainerSpotLightTextures(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer)
     {
         this.tileSpotLight = tileEntity;
-        addSlotToContainer(new Slot(tileEntity, 6, 40, 80));
-        addSlotToContainer(new Slot(tileEntity, 7, 120, 80));
+        addSlot(new Slot(tileEntity, 6, 40, 80));
+        addSlot(new Slot(tileEntity, 7, 120, 80));
         bindPlayerInventory(inventoryPlayer);
     }
 
@@ -30,7 +30,7 @@ public class ContainerSpotLightTextures extends Container
     {
         for(int i = 0; i < 9; i++)
         {
-            addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
+            addSlot(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
         }
     }
 

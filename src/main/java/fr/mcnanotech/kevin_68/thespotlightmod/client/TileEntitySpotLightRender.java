@@ -17,20 +17,19 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEntitySpotLight>
+@OnlyIn(Dist.CLIENT)
+public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpotLight>
 {
     private ModelSpotLight model = new ModelSpotLight();
     private static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
@@ -38,13 +37,13 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     private static final Text3D TXT3D = new Text3D(Model3DTextDefault.instance);
 
     @Override
-    public void render(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage, float alpha)
+    public void render(TileEntitySpotLight tile, double x, double y, double z, float tick, int destroyStage)
     {
         try
         {
             byte b0 = 1;
-            float f2 = tile.getWorld().getTotalWorldTime() + tick;
-            float timer = getWorld().getTotalWorldTime() * 0.00125F;
+            float f2 = tile.getWorld().getGameTime() + tick; // TODO: check getGameTime
+            float timer = getWorld().getGameTime() * 0.00125F;
             float angleX = tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X) ? timer * tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) * (tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X) ? -1.0F : 1.0F) : (float)Math.toRadians(tile.getShort(EnumTSMProperty.BEAM_ANGLE_X));
             float angleY = tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y) ? timer * tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y) * (tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Y) ? -1.0F : 1.0F) : (float)Math.toRadians(tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y));
             float angleZ = tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Z) ? timer * tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z) * (tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Z) ? -1.0F : 1.0F) : (float)Math.toRadians(tile.getShort(EnumTSMProperty.BEAM_ANGLE_Z));
@@ -55,10 +54,10 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                 angleZ = 0.0F;
             }
             GlStateManager.pushMatrix();
-            GlStateManager.translate((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
+            GlStateManager.translatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
             bindTexture(TEXTURE);
             this.model.setRotation(-angleX, angleY, -angleZ);
-            GlStateManager.scale(1.2F, 1.2F, 1.2F);
+            GlStateManager.scaled(1.2F, 1.2F, 1.2F);
             this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
             GlStateManager.popMatrix();
             GlStateManager.alphaFunc(516, 0.1F);
@@ -83,7 +82,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                     GlStateManager.disableLighting();
                     GlStateManager.disableCull();
                     GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+                    GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 
                     float f3 = -f2 * 0.2F - MathHelper.floor(-f2 * 0.1F);
                     double t2 = -1.0F - f3 * (tile.getFloat(EnumTSMProperty.BEAM_SPEED)-2);
@@ -144,47 +143,47 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
                 else
                 {
                     GL11.glPushMatrix();
-                    GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * 0.6666667F, (float)z + 0.5F);
+                    GlStateManager.translatef((float)x + 0.5F, (float)y + 0.75F * 0.6666667F, (float)z + 0.5F);
                     short tscale = tile.getShort(EnumTSMProperty.TEXT_SCALE);
                     if(tile.getBoolean(EnumTSMProperty.TEXT_3D))
                     {
-                        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-                        GlStateManager.translate(0.0F, -0.2F, 0.0F);
-                        GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
+                        GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+                        GlStateManager.translatef(0.0F, -0.2F, 0.0F);
+                        GlStateManager.rotatef((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
                         float f21 = 0.016666668F * 0.6666667F;
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
-                        GlStateManager.translate(0.0F, (8 + tile.getShort(EnumTSMProperty.TEXT_HEIGHT)) / 10.0F, 0.0F);
-                        GlStateManager.translate(0.0F, (tscale * 0.8F + 1.0F) / 30.0F, 0.0F);
+                        GlStateManager.translatef(0.0F, (8 + tile.getShort(EnumTSMProperty.TEXT_HEIGHT)) / 10.0F, 0.0F);
+                        GlStateManager.translatef(0.0F, (tscale * 0.8F + 1.0F) / 30.0F, 0.0F);
                         if(tile.getShort(EnumTSMProperty.TEXT_HEIGHT) < 0)
                         {
-                            GlStateManager.translate(0.0F, -(25.0F + 1.0F + tscale * 0.45F) / 20.0F, 0.0F);
+                            GlStateManager.translatef(0.0F, -(25.0F + 1.0F + tscale * 0.45F) / 20.0F, 0.0F);
                         }
-                        GlStateManager.scale(1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F);
+                        GlStateManager.scaled(1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F);
                         TXT3D.renderTextAlignedCenter(tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING) ? getTranslatingText(tile.getString(EnumTSMProperty.TEXT), tile) : tile.getString(EnumTSMProperty.TEXT), tile.getShort(EnumTSMProperty.TEXT_RED) / 255.0F, tile.getShort(EnumTSMProperty.TEXT_GREEN) / 255.0F, tile.getShort(EnumTSMProperty.TEXT_BLUE) / 255.0F);
                     }
                     else
                     {
-                        GlStateManager.scale(0.9D, 0.9D, 0.9D);
-                        GlStateManager.rotate((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
+                        GlStateManager.scaled(0.9D, 0.9D, 0.9D);
+                        GlStateManager.rotatef((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
                         FontRenderer fontrenderer = getFontRenderer();
                         float f21 = 0.016666668F * 0.6666667F;
-                        GlStateManager.scale(f21 * 5, -f21 * 5, f21 * 5);
+                        GlStateManager.scaled(f21 * 5, -f21 * 5, f21 * 5);
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
                         GlStateManager.depthMask(false);
-                        GlStateManager.translate(0.0F, -tile.getShort(EnumTSMProperty.TEXT_HEIGHT) * 2.0F, 0.0F);
-                        GlStateManager.translate(0.0F, tscale * 0.8F + 1.0F, 0.0F);
+                        GlStateManager.translatef(0.0F, -tile.getShort(EnumTSMProperty.TEXT_HEIGHT) * 2.0F, 0.0F);
+                        GlStateManager.translatef(0.0F, tscale * 0.8F + 1.0F, 0.0F);
                         if(tile.getShort(EnumTSMProperty.TEXT_HEIGHT) < 0)
                         {
-                            GlStateManager.translate(0.0F, 25.0F + 1.0F + tscale * 0.45F, 0.0F);
+                            GlStateManager.translatef(0.0F, 25.0F + 1.0F + tscale * 0.45F, 0.0F);
                         }
-                        GlStateManager.scale(1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F);
+                        GlStateManager.scaled(1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F);
                         String text = (tile.getBoolean(EnumTSMProperty.TEXT_BOLD) ? TextFormatting.BOLD : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_STRIKE) ? TextFormatting.STRIKETHROUGH : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_UNDERLINE) ? TextFormatting.UNDERLINE : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_ITALIC) ? TextFormatting.ITALIC : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_OBFUSCATED) ? TextFormatting.OBFUSCATED : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING) ? getTranslatingText(tile.getString(EnumTSMProperty.TEXT), tile) : tile.getString(EnumTSMProperty.TEXT));
                         fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.getShort(EnumTSMProperty.TEXT_RED) * 65536 + tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256 + tile.getShort(EnumTSMProperty.TEXT_BLUE), tile.getBoolean(EnumTSMProperty.TEXT_SHADOW));
-                        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                        GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
                         fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.getShort(EnumTSMProperty.TEXT_RED) * 65536 + tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256 + tile.getShort(EnumTSMProperty.TEXT_BLUE), tile.getBoolean(EnumTSMProperty.TEXT_SHADOW));
                         GlStateManager.depthMask(true);
                     }
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                     GlStateManager.popMatrix();
                 }
             }
@@ -225,11 +224,11 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
         Block b = Block.getBlockFromItem(stack.getItem());
         if(b != Blocks.AIR)
         {
-            sprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getStateFromMeta(stack.getMetadata()));//TODO check
+            sprite = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getDefaultState()); //TODO: check
         }
         else
         {
-            sprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack).getParticleTexture();
+            sprite = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(stack).getParticleTexture();
         }
 
         if(sprite == null)
@@ -250,7 +249,7 @@ public class TileEntitySpotLightRender extends TileEntitySpecialRenderer<TileEnt
     {
         if(str != null && str.length() > 1)
         {
-            int t = (int)((tile.getWorld().getTotalWorldTime() * ((tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED) + 1) / 100.0F)) % str.length());
+            int t = (int)((tile.getWorld().getGameTime() * ((tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED) + 1) / 100.0F)) % str.length());
             if(tile.getBoolean(EnumTSMProperty.TEXT_T_REVERSE))
             {
                 t = str.length() - t;

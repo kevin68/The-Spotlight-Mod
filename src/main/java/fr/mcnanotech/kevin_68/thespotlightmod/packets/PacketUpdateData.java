@@ -1,31 +1,29 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-public class PacketUpdateData implements IMessage
+public class PacketUpdateData
 {
-    public int x, y, z, dimID;
+    public int x, y, z;
+    public DimensionType dimType;
     public String newData;
 
-    public PacketUpdateData()
-    {}
-
-    public PacketUpdateData(int x, int y, int z, int dimID, String newData)
+    public PacketUpdateData(int x, int y, int z, DimensionType dimType, String newData)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.dimID = dimID;
+        this.dimType = dimType;
         try
         {
             this.newData = TSMJsonManager.compress(newData);
@@ -36,43 +34,37 @@ public class PacketUpdateData implements IMessage
         }
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.dimID = buf.readInt();
-        this.newData = ByteBufUtils.readUTF8String(buf);
+    public static PacketUpdateData decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        DimensionType dimType = DimensionType.getById(buffer.readInt());
+        String newData = buffer.readString(50000);
+        return new PacketUpdateData(x, y, z, dimType, newData);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeInt(this.dimID);
-        ByteBufUtils.writeUTF8String(buf, this.newData);
+    public static void encode(PacketUpdateData packet, PacketBuffer buffer) {
+    	buffer.writeInt(packet.x);
+        buffer.writeInt(packet.y);
+        buffer.writeInt(packet.z);
+        buffer.writeInt(packet.dimType.getId());
+        buffer.writeString(packet.newData);
     }
-
-    public static class Handler implements IMessageHandler<PacketUpdateData, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketUpdateData message, MessageContext ctx)
-        {
-            try
+    
+    public static void handle(PacketUpdateData packet, Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			try
             {
-                TileEntitySpotLight te = (TileEntitySpotLight)ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+                TileEntitySpotLight te = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
                 te.updated = false;
-                TSMJsonManager.updateJsonData(message.dimID, new BlockPos(message.x, message.y, message.z), TSMJsonManager.decompress(message.newData));
-                TheSpotLightMod.network.sendToAll(new PacketData(message.x, message.y, message.z, TSMJsonManager.decompress(message.newData)));
+                TSMJsonManager.updateJsonData(packet.dimType, new BlockPos(packet.x, packet.y, packet.z), TSMJsonManager.decompress(packet.newData));
+                TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(packet.x, packet.y, packet.z, TSMJsonManager.decompress(packet.newData)));
             }
             catch(IOException e)
             {
                 e.printStackTrace();
             }
-            return null;
-        }
-    }
+		});
+		ctx.get().setPacketHandled(true);
+	}
 }

@@ -1,51 +1,40 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
+import java.util.function.Supplier;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketTimelineReset implements IMessage
-{
-    public int x, y, z;
+public class PacketTimelineReset {
+	public int x, y, z;
 
-    public PacketTimelineReset()
-    {}
+	public PacketTimelineReset(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
-    public PacketTimelineReset(int x, int y, int z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+	public static PacketTimelineReset decode(PacketBuffer buffer) {
+		int x = buffer.readInt();
+		int y = buffer.readInt();
+		int z = buffer.readInt();
+		return new PacketTimelineReset(x, y, z);
+	}
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-    }
+	public static void encode(PacketTimelineReset packet, PacketBuffer buffer) {
+		buffer.writeInt(packet.x);
+		buffer.writeInt(packet.y);
+		buffer.writeInt(packet.z);
+	}
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-    }
-
-    public static class Handler implements IMessageHandler<PacketTimelineReset, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketTimelineReset message, MessageContext ctx)
-        {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+	public static void handle(PacketTimelineReset packet, Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
             tile.time = 0;
             tile.markForUpdate();
-            return null;
-        }
+		});
+        ctx.get().setPacketHandled(true);
     }
 }

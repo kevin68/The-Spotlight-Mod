@@ -1,7 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class ModelSpotLight extends ModelBase

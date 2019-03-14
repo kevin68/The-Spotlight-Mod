@@ -1,6 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.container;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMObjects;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,31 +15,15 @@ public class ContainerSpotLightConfig extends Container
     public ContainerSpotLightConfig(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer)
     {
         this.tileSpotLight = tileEntity;
-        addSlotToContainer(new Slot(tileEntity, 0, 40, 30)
+        addSlot(new Slot(tileEntity, 0, 40, 30)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.CONFIG_SAVER;
+                return stack != null && stack.getItem() != null && stack.getItem() == TSMObjects.CONFIG_SAVER;
             }
         });
-        addSlotToContainer(new Slot(tileEntity, 1, 40, 80)
-        {
-            @Override
-            public boolean isItemValid(ItemStack stack)
-            {
-                return false;
-            }
-        });
-        addSlotToContainer(new Slot(tileEntity, 2, 80, 30)
-        {
-            @Override
-            public boolean isItemValid(ItemStack stack)
-            {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.CONFIG_SAVER_FULL;
-            }
-        });
-        addSlotToContainer(new Slot(tileEntity, 3, 80, 80)
+        addSlot(new Slot(tileEntity, 1, 40, 80)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
@@ -47,15 +31,31 @@ public class ContainerSpotLightConfig extends Container
                 return false;
             }
         });
-        addSlotToContainer(new Slot(tileEntity, 4, 120, 30)
+        addSlot(new Slot(tileEntity, 2, 80, 30)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack != null && stack.getItem() != null && stack.getItem() == TheSpotLightMod.CONFIG_SAVER_FULL;
+                return stack != null && stack.getItem() != null && stack.getItem() == TSMObjects.CONFIG_SAVER_FULL;
             }
         });
-        addSlotToContainer(new Slot(tileEntity, 5, 120, 80)
+        addSlot(new Slot(tileEntity, 3, 80, 80)
+        {
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return false;
+            }
+        });
+        addSlot(new Slot(tileEntity, 4, 120, 30)
+        {
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return stack != null && stack.getItem() != null && stack.getItem() == TSMObjects.CONFIG_SAVER_FULL;
+            }
+        });
+        addSlot(new Slot(tileEntity, 5, 120, 80)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
@@ -76,7 +76,7 @@ public class ContainerSpotLightConfig extends Container
     {
         for(int i = 0; i < 9; i++)
         {
-            addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
+            addSlot(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
         }
     }
 

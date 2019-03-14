@@ -35,7 +35,7 @@ public class ContainerSpotLight extends Container
     {
         for(int i = 0; i < 9; i++)
         {
-            addSlotToContainer(new Slot(inventoryPlayer, i, x + i * 18, y));
+        	addSlot(new Slot(inventoryPlayer, i, x + i * 18, y));
         }
     }
 

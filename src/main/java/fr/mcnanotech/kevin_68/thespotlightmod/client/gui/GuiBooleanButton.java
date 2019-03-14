@@ -6,10 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBooleanButton extends GuiButton
 {
     private ResourceLocation buttonTex = new ResourceLocation("textures/gui/widgets.png");
@@ -94,10 +94,11 @@ public class GuiBooleanButton extends GuiButton
     }
 
     @Override
-    public void drawButton(Minecraft mc, int x, int y, float partialTicks)
+    public void render(int x, int y, float partialTicks)
     {
         if(this.visible)
         {
+        	Minecraft mc = Minecraft.getInstance();
             FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(this.buttonTex);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -105,7 +106,7 @@ public class GuiBooleanButton extends GuiButton
             int k = this.getHoverState(this.hovered, this.otherTextureWhenActive);
             this.drawTexturedModalRect(this.x, this.y, 0, this.yTex + (this.useHoverState ? (k * 20) : 0), this.width / 2, this.height);
             this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, this.yTex + (this.useHoverState ? (k * 20) : 0), this.width / 2, this.height);
-            this.mouseDragged(mc, x, y);
+            this.renderBg(mc, x, y);
             int l = 14737632;
             String str;
             if(!this.enabled)

@@ -9,7 +9,7 @@ public class Text3D
 {
     private final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID, "textures/white.png");
     private Model3DTextBase font;
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getInstance();
 
     public Text3D(Model3DTextBase font)
     {
@@ -30,8 +30,8 @@ public class Text3D
     {
         if(text != null && text.length() > 0)
         {
-            GlStateManager.color(red, green, blue);
-            this.mc.renderEngine.bindTexture(this.texture);
+            GlStateManager.color3f(red, green, blue);
+            this.mc.textureManager.bindTexture(this.texture);
             char[] str = text.toCharArray();
             float prevspacing = 0;
             for(int i = 0; i < str.length; i++)
@@ -39,7 +39,7 @@ public class Text3D
                 prevspacing += spacing * (this.font.charSizes.keySet().contains(str[i]) ? this.font.charSizes.get(str[i])+2.0F:5.0F);
                 this.font.renderChar(str[i], 1.0F / 16.0F, -prevspacing);
             }
-            GlStateManager.color(1.0F, 1.0F, 1.0F);
+            GlStateManager.color3f(1.0F, 1.0F, 1.0F);
         }
     }
 
@@ -57,8 +57,8 @@ public class Text3D
     {
         if(text != null && text.length() > 0)
         {
-            GlStateManager.color(red, green, blue);
-            this.mc.renderEngine.bindTexture(this.texture);
+            GlStateManager.color3f(red, green, blue);
+            this.mc.textureManager.bindTexture(this.texture);
             char[] str = text.toCharArray();
             float prevspacing = 0;
             for(int i = str.length-1; i >=0 ; i--)
@@ -66,7 +66,7 @@ public class Text3D
                 prevspacing += spacing * (this.font.charSizes.keySet().contains(str[i]) ? this.font.charSizes.get(str[i])+2.0F:5.0F);
                 this.font.renderChar(str[i], 1.0F / 16.0F, prevspacing);
             }
-            GlStateManager.color(1.0F, 1.0F, 1.0F);
+            GlStateManager.color3f(1.0F, 1.0F, 1.0F);
         }
     }
 
@@ -84,8 +84,8 @@ public class Text3D
     {
         if(text != null && text.length() > 0)
         {
-            GlStateManager.color(red, green, blue);
-            this.mc.renderEngine.bindTexture(this.texture);
+            GlStateManager.color3f(red, green, blue);
+            this.mc.textureManager.bindTexture(this.texture);
             char[] str = text.toCharArray();
             float prevspacing = -spacing*2.0F; // fix text not centered caused by an extra space
             float tLen = 0;
@@ -99,7 +99,7 @@ public class Text3D
                 prevspacing += spacing * (this.font.charSizes.keySet().contains(str[i]) ? this.font.charSizes.get(str[i])+2.0F:5.0F);
                 this.font.renderChar(str[i], 1.0F / 16.0F, prevspacing - tLen);
             }
-            GlStateManager.color(1.0F, 1.0F, 1.0F);
+            GlStateManager.color3f(1.0F, 1.0F, 1.0F);
         }
     }
 }
