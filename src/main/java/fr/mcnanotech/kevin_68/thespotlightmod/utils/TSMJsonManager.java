@@ -385,7 +385,7 @@ public class TSMJsonManager
 
     public static void deleteConfig(ItemStack stack)
     {
-        String configName = stack.getTagCompound().getString("ConfigName");
+        String configName = stack.getOrCreateTag().getString("ConfigName");
         File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", "configs").getPath());
         File file = new File(folder, configName + ".json");
         file.delete();

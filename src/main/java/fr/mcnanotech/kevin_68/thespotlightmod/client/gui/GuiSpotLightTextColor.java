@@ -46,9 +46,9 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSlider(0, x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_RED), false, true, this));
-        this.buttonList.add(new GuiSlider(1, x - 40, y + 46, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_GREEN), false, true, this));
-        this.buttonList.add(new GuiSlider(2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_BLUE), false, true, this));
+        this.addButton(new GuiSlider(0, x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_RED), false, true, this));
+        this.addButton(new GuiSlider(1, x - 40, y + 46, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_GREEN), false, true, this));
+        this.addButton(new GuiSlider(2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_BLUE), false, true, this));
 
         Keyboard.enableRepeatEvents(true);
         this.textField = new GuiTextField(3, this.fontRenderer, x - 40, y, 256, 12);
@@ -58,8 +58,8 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider
         this.textField.setEnabled(true);
         this.textField.setText(this.tile.getString(EnumTSMProperty.TEXT));
 
-        this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
+        this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
+        this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider
             {
                 this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
             }
-            for(GuiButton button : this.buttonList)
+            for(GuiButton button : this.buttons)
             {
                 if(button.isMouseOver())
                 {

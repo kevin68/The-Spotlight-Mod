@@ -44,19 +44,30 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(new GuiSlider(0, x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_RED), false, true, this));
-        this.buttonList.add(new GuiSlider(1, x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_GREEN), false, true, this));
-        this.buttonList.add(new GuiSlider(2, x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_BLUE), false, true, this));
+        this.addButton(new GuiSlider(0, x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_RED), false, true, this));
+        this.addButton(new GuiSlider(1, x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_GREEN), false, true, this));
+        this.addButton(new GuiSlider(2, x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_BLUE), false, true, this));
 
-        this.buttonList.add(new GuiSlider(3, x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED), false, true, this));
-        this.buttonList.add(new GuiSlider(4, x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN), false, true, this));
-        this.buttonList.add(new GuiSlider(5, x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE), false, true, this));
+        this.addButton(new GuiSlider(3, x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED), false, true, this));
+        this.addButton(new GuiSlider(4, x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN), false, true, this));
+        this.addButton(new GuiSlider(5, x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE), false, true, this));
 
-        this.buttonList.add(new GuiSlider(6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha"), "", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA), true, true, this));
-        this.buttonList.add(new GuiSlider(7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha"),"", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA), true, true, this));
+        this.addButton(new GuiSlider(6, x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha"), "", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA), true, true, this));
+        this.addButton(new GuiSlider(7, x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha"),"", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA), true, true, this));
 
-        this.buttonList.add(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode));
+        this.addButton(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 0));
+			}
+		});
+        this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				buttonHelp.toggle();
+				tile.helpMode = buttonHelp.isActive();
+			}
+		});
     }
 
     @Override
@@ -64,21 +75,6 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
     {
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        switch(guibutton.id)
-        {
-            case 19:
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
-                break;
-            case 20:
-                this.buttonHelp.toggle();
-                this.tile.helpMode = this.buttonHelp.isActive();
-                break;
-        }
     }
     
     @Override
@@ -120,12 +116,11 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
 
         if(this.buttonHelp.isActive())
         {
-            for(GuiButton button : this.buttonList)
+            for(GuiButton button : this.buttons)
             {
                 if(button.isMouseOver())
                 {
                     String text = "";
-                    boolean isBeam = this.tile.isBeam;
                     switch(button.id)
                     {
                         case 0:

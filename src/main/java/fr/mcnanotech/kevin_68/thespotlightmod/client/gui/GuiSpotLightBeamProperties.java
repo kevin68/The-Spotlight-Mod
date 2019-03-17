@@ -45,20 +45,38 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiSlider(0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SIZE), false, true, this));
-        this.buttonList.add(this.sliderSecBeamSize = new GuiSlider(1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE), false, true, this));
-        this.buttonList.add(this.buttonSecBeamEnabled = new GuiBooleanButton(2, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_SEC_ENABLED)));
+        this.addButton(new GuiSlider(0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SIZE), false, true, this));
+        this.sliderSecBeamSize = this.addButton(new GuiSlider(1, x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE), false, true, this));
+        this.buttonSecBeamEnabled = this.addButton(new GuiBooleanButton(2, x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_SEC_ENABLED)) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+                buttonSecBeamEnabled.toggle();
+                sliderSecBeamSize.enabled = buttonSecBeamEnabled.isActive();
+                tile.setProperty(EnumTSMProperty.BEAM_SEC_ENABLED, buttonSecBeamEnabled.isActive());
+			}
+		});
         this.buttonSecBeamEnabled.setTexts(I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.off")));
-        this.buttonList.add(this.buttonDoubleBeam = new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE)));
+        this.buttonDoubleBeam = this.addButton(new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE)));
         this.buttonDoubleBeam.setTexts(I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"));
-        this.buttonList.add(new GuiSlider(4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight"), "", 0, 512, this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT), false, true, this));
-        this.buttonList.add(new GuiSlider(5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides"), "", 2, 50, this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2, false, true, this));
-        this.buttonList.add(new GuiSlider(6, x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed"), "", -2, 2, this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0D, true, true, this));
+        this.addButton(new GuiSlider(4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight"), "", 0, 512, this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT), false, true, this));
+        this.addButton(new GuiSlider(5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides"), "", 2, 50, this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2, false, true, this));
+        this.addButton(new GuiSlider(6, x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed"), "", -2, 2, this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0D, true, true, this));
         this.buttonDoubleBeam.shouldNotChangeTextColor(true);
         this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
 
-        this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
+        this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+			}
+		});
+        this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				buttonHelp.toggle();
+				tile.helpMode = buttonHelp.isActive();
+			}
+		});
     }
 
     @Override
@@ -66,29 +84,6 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
     {
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        switch(guibutton.id)
-        {
-            case 2:
-                this.buttonSecBeamEnabled.toggle();
-                this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
-                this.tile.setProperty(EnumTSMProperty.BEAM_SEC_ENABLED, this.buttonSecBeamEnabled.isActive());
-                break;
-            case 3:
-                this.buttonDoubleBeam.toggle();
-                this.tile.setProperty(EnumTSMProperty.BEAM_DOUBLE, this.buttonDoubleBeam.isActive());
-                break;
-            case 19:
-                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-                break;
-            case 20:
-                this.buttonHelp.toggle();
-                break;
-        }
     }
     
     @Override
@@ -130,12 +125,11 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
 
         if(this.buttonHelp.isActive())
         {
-            for(GuiButton button : this.buttonList)
+            for(GuiButton button : this.buttons)
             {
                 if(button.isMouseOver())
                 {
                     String text = "";
-                    boolean isBeam = this.tile.isBeam;
                     switch(button.id)
                     {
                         case 0:

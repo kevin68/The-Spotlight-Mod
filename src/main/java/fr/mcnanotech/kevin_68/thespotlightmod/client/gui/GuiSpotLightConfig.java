@@ -40,8 +40,19 @@ public class GuiSpotLightConfig extends GuiContainer
         super.initGui();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")));
-        this.buttonList.add(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode));
+        this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+			}
+		});
+        this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				buttonHelp.toggle();
+				tile.helpMode = buttonHelp.isActive();
+			}
+		});
     }
 
     @Override
@@ -49,21 +60,6 @@ public class GuiSpotLightConfig extends GuiContainer
     {
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        switch(guibutton.id)
-        {
-            case 19:
-                this.mc.displayGuiScreen(new GuiSpotLight(this.invPlayer, this.tile, this.world));
-                break;
-            case 20:
-                this.buttonHelp.toggle();
-                this.tile.helpMode = this.buttonHelp.isActive();
-                break;
-        }
     }
 
     @Override
@@ -102,7 +98,7 @@ public class GuiSpotLightConfig extends GuiContainer
                     this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
                 }
             }
-            for(GuiButton button : this.buttonList)
+            for(GuiButton button : this.buttons)
             {
                 if(button.isMouseOver())
                 {
