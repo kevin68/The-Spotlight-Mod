@@ -65,7 +65,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
     }

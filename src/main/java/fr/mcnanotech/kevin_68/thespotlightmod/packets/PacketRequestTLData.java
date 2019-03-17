@@ -1,50 +1,42 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class PacketRequestTLData implements IMessage
-{
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
+import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+public class PacketRequestTLData {
     public int x, y, z;
 
-    public PacketRequestTLData()
-    {}
-
-    public PacketRequestTLData(int x, int y, int z)
-    {
+    public PacketRequestTLData(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
+    public static PacketRequestTLData decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        return new PacketRequestTLData(x, y, z);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
+    public static void encode(PacketRequestTLData packet, PacketBuffer buffer) {
+        buffer.writeInt(packet.x);
+        buffer.writeInt(packet.y);
+        buffer.writeInt(packet.z);
     }
 
-    public static class Handler implements IMessageHandler<PacketRequestTLData, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketRequestTLData message, MessageContext ctx)
-        {
-            int dimId = ctx.getServerHandler().player.dimension;
-            String data = TSMJsonManager.getTlDataFromJson(dimId, new BlockPos(message.x, message.y, message.z));
-            return new PacketTLData(message.x, message.y, message.z, data == null ? "null" : data);
-        }
+    public static void handle(PacketRequestTLData packet, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            DimensionType dim = ctx.get().getSender().dimension;
+            String data = TSMJsonManager.getTlDataFromJson(dim, new BlockPos(packet.x, packet.y, packet.z));
+            TSMNetwork.CHANNEL.reply(new PacketTLData(packet.x, packet.y, packet.z, data == null ? "null" : data), ctx.get());
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

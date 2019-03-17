@@ -2,6 +2,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
@@ -67,7 +68,7 @@ public class GuiSpotLight extends GuiContainer
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -79,7 +80,7 @@ public class GuiSpotLight extends GuiContainer
             case 0:
                 if(this.buttonMode.isActive())
                 {
-                    TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 4));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 4));
                 }
                 else
                 {
@@ -107,7 +108,7 @@ public class GuiSpotLight extends GuiContainer
                 }
                 break;
             case 3:
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 1));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 1));
                 break;
             case 4:
                 this.buttonMode.toggle();
@@ -116,18 +117,18 @@ public class GuiSpotLight extends GuiContainer
                 this.buttonColors.displayString = this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor");
                 break;
             case 5:
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
                 break;
             case 17:
                 this.buttonLock.toggle();
-                TheSpotLightMod.network.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId()));
+                TSMNetwork.CHANNEL.sendToServer(new PacketLock(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonLock.isActive(), this.mc.player.getGameProfile().getId()));
                 break;
             case 18:
                 this.buttonRedstone.toggle();
                 this.tile.redstone = this.buttonRedstone.isActive();
                 break;
             case 19:
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 2));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 2));
                 break;
             case 20:
                 this.buttonHelp.toggle();

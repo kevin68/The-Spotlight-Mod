@@ -1,55 +1,45 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class PacketTimelineSmooth implements IMessage
-{
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+public class PacketTimelineSmooth {
+
     public int x, y, z;
     public boolean smooth;
 
-    public PacketTimelineSmooth()
-    {}
-
-    public PacketTimelineSmooth(int x, int y, int z, boolean smooth)
-    {
+    public PacketTimelineSmooth(int x, int y, int z, boolean smooth) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.smooth = smooth;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.smooth = buf.readBoolean();
+    public static PacketTimelineSmooth decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        boolean smooth = buffer.readBoolean();
+        return new PacketTimelineSmooth(x, y, z, smooth);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeBoolean(this.smooth);
+    public static void encode(PacketTimelineSmooth packet, PacketBuffer buffer) {
+        buffer.writeInt(packet.x);
+        buffer.writeInt(packet.y);
+        buffer.writeInt(packet.z);
+        buffer.writeBoolean(packet.smooth);
     }
-
-    public static class Handler implements IMessageHandler<PacketTimelineSmooth, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketTimelineSmooth message, MessageContext ctx)
-        {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
-            tile.timelineSmooth = message.smooth;
+    
+    public static void handle(PacketTimelineSmooth packet, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+            tile.timelineSmooth = packet.smooth;
             tile.markForUpdate();
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

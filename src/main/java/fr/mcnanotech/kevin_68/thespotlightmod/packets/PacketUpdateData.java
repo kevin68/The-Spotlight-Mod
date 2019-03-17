@@ -39,7 +39,7 @@ public class PacketUpdateData
         int y = buffer.readInt();
         int z = buffer.readInt();
         DimensionType dimType = DimensionType.getById(buffer.readInt());
-        String newData = buffer.readString(50000);
+        String newData = buffer.readString(32767);
         return new PacketUpdateData(x, y, z, dimType, newData);
     }
 

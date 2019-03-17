@@ -74,7 +74,7 @@ public class GuiSpotlightTimeline extends GuiContainer
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -83,16 +83,16 @@ public class GuiSpotlightTimeline extends GuiContainer
     {
         if(guibutton.id == 2)
         {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
+            TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
         }
         else if(guibutton.id == 3)
         {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 5));
+            TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 5));
         }
         else if(guibutton.id == 4)
         {
             this.buttonTimelineEnabled.toggle();
-            TheSpotLightMod.network.sendToServer(new PacketTimeline(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonTimelineEnabled.isActive()));
+            TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonTimelineEnabled.isActive()));
         }
         else if(guibutton.id == 5)
         {
@@ -100,12 +100,12 @@ public class GuiSpotlightTimeline extends GuiContainer
         }
         else if(guibutton.id == 6)
         {
-            TheSpotLightMod.network.sendToServer(new PacketTimelineReset(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ()));
+            TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ()));
         }
         else if(guibutton.id == 7)
         {
             this.buttonSmooth.toggle();
-            TheSpotLightMod.network.sendToServer(new PacketTimelineSmooth(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonSmooth.isActive()));
+            TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonSmooth.isActive()));
         }
         else if(guibutton.id == 8)
         {
@@ -127,12 +127,12 @@ public class GuiSpotlightTimeline extends GuiContainer
             if(result)
             {
                 this.tile.setKey(this.selectedKeyID, null);
-                TheSpotLightMod.network.sendToServer(new PacketTimelineDeleteKey(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.selectedKeyID));
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.selectedKeyID));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
             else
             {
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
         }
     }

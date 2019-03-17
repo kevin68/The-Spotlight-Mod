@@ -1,79 +1,54 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketTLData implements IMessage
-{
+public class PacketTLData {
     public int x, y, z;
     public String data;
 
-    public PacketTLData()
-    {}
-
-    public PacketTLData(int x, int y, int z, String data)
-    {
+    public PacketTLData(int x, int y, int z, String data) {
         this.x = x;
         this.y = y;
         this.z = z;
-        try
-        {
+        try {
             this.data = TSMJsonManager.compress(data);
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.data = ByteBufUtils.readUTF8String(buf);
+    public static PacketTLData decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        String data = buffer.readString(32767);
+        return new PacketTLData(x, y, z, data);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        ByteBufUtils.writeUTF8String(buf, this.data);
+    public static void encode(PacketTLData packet, PacketBuffer buffer) {
+        buffer.writeInt(packet.x);
+        buffer.writeInt(packet.y);
+        buffer.writeInt(packet.z);
+        buffer.writeString(packet.data);
     }
 
-    public static class Handler implements IMessageHandler<PacketTLData, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketTLData message, MessageContext ctx)
-        {
-            TileEntity te = Minecraft.getMinecraft().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
-            if(te instanceof TileEntitySpotLight)
-            {
-                TileEntitySpotLight tile = (TileEntitySpotLight)te;
-                try
-                {
-                    tile.timelineUpdated = TSMJsonManager.updateTileTimeline(tile, TSMJsonManager.decompress(message.data));
-                }
-                catch(IOException e)
-                {
-                    e.printStackTrace();
-                }
-                tile.timelineUpdating = false;
+    public static void handle(PacketTLData packet, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            TileEntitySpotLight tile = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+            try {
+                tile.timelineUpdated = TSMJsonManager.updateTileTimeline(tile, TSMJsonManager.decompress(packet.data));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return null;
-        }
+            tile.timelineUpdating = false;
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

@@ -267,7 +267,7 @@ public class TSMJsonManager
             }
             else
             {
-                TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension));
+                TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension));
             }
         }
         return false;
@@ -380,7 +380,7 @@ public class TSMJsonManager
         JsonObject obj = json.get("Timeline").getAsJsonObject();
         updateTileData(tile, json);
         updateTileTimeline(tile, obj);
-        TheSpotLightMod.network.sendToAll(new PacketData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), getDataFromTile(tile).toString()));
+        TSMNetwork.CHANNEL.sendToAll(new PacketData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), getDataFromTile(tile).toString()));
     }
 
     public static void deleteConfig(ItemStack stack)
@@ -394,9 +394,9 @@ public class TSMJsonManager
     /*
      * Server side
      */
-    public static boolean updateTileTimeline(int dimID, BlockPos pos, TileEntitySpotLight tile)
+    public static boolean updateTileTimeline(DimensionType dim, BlockPos pos, TileEntitySpotLight tile)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dim.getId())).getPath());
         File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         JsonObject json = read(fileTL);
         return updateTileTimeline(tile, json);
@@ -457,7 +457,7 @@ public class TSMJsonManager
                 }
                 else
                 {
-                    TheSpotLightMod.network.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), json.get("DimID").getAsInt()));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), json.get("DimID").getAsInt()));
                 }
             }
             catch(NullPointerException fatal)
@@ -468,9 +468,9 @@ public class TSMJsonManager
         return false;
     }
 
-    public static void updateTlJsonData(int dimID, BlockPos pos, String data)
+    public static void updateTlJsonData(DimensionType dim, BlockPos pos, String data)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dim.getId())).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
         {
@@ -481,7 +481,7 @@ public class TSMJsonManager
 
     public static String getTlDataFromJson(DimensionType dim, BlockPos pos)
     {
-        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dimID)).getPath());
+        File folder = new File(DimensionManager.getCurrentSaveRootDirectory(), new File("SpotLights", String.valueOf(dim.getId())).getPath());
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
         {

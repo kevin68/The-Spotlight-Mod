@@ -72,7 +72,7 @@ public class BlockSpotLight extends Block {
 		}
 		if (tileentity instanceof TileEntitySpotLight) {
 			TileEntitySpotLight tile = (TileEntitySpotLight) tileentity;
-			if (tile.locked && !player.getGameProfile().getId().toString().equals(tile.lockerUUID)) {
+			if (tile.locked && !player.getGameProfile().getId().equals(tile.lockerUUID)) {
 				if (hand == EnumHand.MAIN_HAND) {
 					player.sendMessage(new TextComponentString(I18n.format("message.spotlight.locked.open")));
 				}

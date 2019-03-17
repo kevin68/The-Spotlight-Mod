@@ -61,7 +61,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -71,7 +71,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
         switch(guibutton.id)
         {
             case 19:
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
                 break;
             case 20:
                 this.buttonHelp.toggle();

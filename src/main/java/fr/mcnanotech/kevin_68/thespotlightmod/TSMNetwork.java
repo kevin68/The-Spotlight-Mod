@@ -32,13 +32,11 @@ public class TSMNetwork {
         CHANNEL.messageBuilder(PacketData.class, 4).encoder(PacketData::encode).decoder(PacketData::decode).consumer(PacketData::handle).add();
         CHANNEL.messageBuilder(PacketUpdateData.class, 5).encoder(PacketUpdateData::encode).decoder(PacketUpdateData::decode).consumer(PacketUpdateData::handle).add();
         CHANNEL.messageBuilder(PacketRegenerateFile.class, 6).encoder(PacketRegenerateFile::encode).decoder(PacketRegenerateFile::decode).consumer(PacketRegenerateFile::handle).add();
-
-        network.registerMessage(PacketTimelineDeleteKey.Handler.class, PacketTimelineDeleteKey.class, 7, Side.SERVER);
-        network.registerMessage(PacketTimelineSmooth.Handler.class, PacketTimelineSmooth.class, 8, Side.SERVER);
-        network.registerMessage(PacketTLData.Handler.class, PacketTLData.class, 9, Side.CLIENT);
-        network.registerMessage(PacketRequestTLData.Handler.class, PacketRequestTLData.class, 10, Side.SERVER);
-        network.registerMessage(PacketUpdateTLData.Handler.class, PacketUpdateTLData.class, 11, Side.SERVER);
-        network.registerMessage(PacketLock.Handler.class, PacketLock.class, 12, Side.SERVER);
-
+        CHANNEL.messageBuilder(PacketTimelineDeleteKey.class, 7).encoder(PacketTimelineDeleteKey::encode).decoder(PacketTimelineDeleteKey::decode).consumer(PacketTimelineDeleteKey::handle).add();
+        CHANNEL.messageBuilder(PacketTimelineSmooth.class, 8).encoder(PacketTimelineSmooth::encode).decoder(PacketTimelineSmooth::decode).consumer(PacketTimelineSmooth::handle).add();
+        CHANNEL.messageBuilder(PacketTLData.class, 9).encoder(PacketTLData::encode).decoder(PacketTLData::decode).consumer(PacketTLData::handle).add();
+        CHANNEL.messageBuilder(PacketRequestTLData.class, 10).encoder(PacketRequestTLData::encode).decoder(PacketRequestTLData::decode).consumer(PacketRequestTLData::handle).add();
+        CHANNEL.messageBuilder(PacketUpdateTLData.class, 11).encoder(PacketUpdateTLData::encode).decoder(PacketUpdateTLData::decode).consumer(PacketUpdateTLData::handle).add();
+        CHANNEL.messageBuilder(PacketLock.class, 12).encoder(PacketLock::encode).decoder(PacketLock::decode).consumer(PacketLock::handle).add();
 	}
 }

@@ -43,6 +43,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class TileEntitySpotLight extends TileEntity implements ISidedInventory, ITickable, IInteractionObject
 {
@@ -131,7 +132,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
                 else if(!this.updating)
                 {
                     this.updating = true;
-                    TheSpotLightMod.network.sendToServer(new PacketRequestData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRequestData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
                 }
             }
 
@@ -144,7 +145,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
                 else if(!this.timelineUpdating)
                 {
                     this.timelineUpdating = true;
-                    TheSpotLightMod.network.sendToServer(new PacketRequestTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRequestTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
                 }
             }
 
@@ -444,7 +445,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
         TSMJsonManager.updateTlJsonData(this.dimension, this.pos, strData);
-        TheSpotLightMod.network.sendToAll(new PacketTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
+        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
     }
 
     private Short[] calculateValuesS(Short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
@@ -502,7 +503,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     private BeamVec[] process()
     {
         double[] sizes = new double[] {Math.sqrt(Math.pow(getShort(EnumTSMProperty.BEAM_SIZE) / 200.0D, 2) / 2), Math.sqrt(Math.pow(this.getShort(EnumTSMProperty.BEAM_SEC_SIZE) / 200.0D, 2) / 2)};
-        float timer = getWorld().getTotalWorldTime() * 0.00125F;
+        float timer = getWorld().getGameTime() * 0.00125F;
         float angleX = getBoolean(EnumTSMProperty.BEAM_R_AUTO_X) ? timer * getShort(EnumTSMProperty.BEAM_R_SPEED_X) * (getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X) ? -1.0F : 1.0F) : (float)Math.toRadians(getShort(EnumTSMProperty.BEAM_ANGLE_X));
         float angleY = getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y) ? timer * getShort(EnumTSMProperty.BEAM_R_SPEED_Y) * (getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Y) ? -1.0F : 1.0F) : (float)Math.toRadians(getShort(EnumTSMProperty.BEAM_ANGLE_Y));
         float angleZ = getBoolean(EnumTSMProperty.BEAM_R_AUTO_Z) ? timer * getShort(EnumTSMProperty.BEAM_R_SPEED_Z) * (getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Z) ? -1.0F : 1.0F) : (float)Math.toRadians(getShort(EnumTSMProperty.BEAM_ANGLE_Z));
@@ -604,14 +605,14 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        this.readFromNBT(pkt.getNbtCompound());
+        this.read(pkt.getNbtCompound());
     }
 
     @Override
     @Nullable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
-        return new SPacketUpdateTileEntity(this.pos, 0, writeToNBT(new NBTTagCompound()));
+        return new SPacketUpdateTileEntity(this.pos, 0, write(new NBTTagCompound()));
     }
 
     @Override

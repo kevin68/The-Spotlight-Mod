@@ -53,7 +53,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider
     @Override
     public void onGuiClosed()
     {
-        TheSpotLightMod.network.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 
@@ -62,7 +62,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider
     {
         if(guibutton.id == 1)
         {
-            TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+            TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
         }
         else if(guibutton.id == 2)
         {
@@ -73,7 +73,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider
             else
             {
                 this.tile.setKey(this.time, TSMUtils.createKey(this.time, this.tile));
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
         }
         else if(guibutton.id == 20)
@@ -91,7 +91,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider
             if(result)
             {
                 this.tile.setKey(this.time, TSMUtils.createKey(this.time, this.tile));
-                TheSpotLightMod.network.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
             }
             else
             {

@@ -1,55 +1,44 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class PacketTimelineDeleteKey implements IMessage
-{
+import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+public class PacketTimelineDeleteKey {
     public int x, y, z;
     public short time;
 
-    public PacketTimelineDeleteKey()
-    {}
-
-    public PacketTimelineDeleteKey(int x, int y, int z, short time)
-    {
+    public PacketTimelineDeleteKey(int x, int y, int z, short time) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.time = time;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
-    {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.time = buf.readShort();
+    public static PacketTimelineDeleteKey decode(PacketBuffer buffer) {
+        int x = buffer.readInt();
+        int y = buffer.readInt();
+        int z = buffer.readInt();
+        short time = buffer.readShort();
+        return new PacketTimelineDeleteKey(x, y, z, time);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
-    {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeShort(this.time);
+    public static void encode(PacketTimelineDeleteKey packet, PacketBuffer buffer) {
+        buffer.writeInt(packet.x);
+        buffer.writeInt(packet.y);
+        buffer.writeInt(packet.z);
+        buffer.writeShort(packet.time);
     }
 
-    public static class Handler implements IMessageHandler<PacketTimelineDeleteKey, IMessage>
-    {
-        @Override
-        public IMessage onMessage(PacketTimelineDeleteKey message, MessageContext ctx)
-        {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
-            tile.setKey(message.time, null);
+    public static void handle(PacketTimelineDeleteKey packet, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            TileEntitySpotLight tile = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+            tile.setKey(packet.time, null);
             tile.markForUpdate();
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

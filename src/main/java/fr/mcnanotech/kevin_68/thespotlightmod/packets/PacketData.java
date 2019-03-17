@@ -37,7 +37,7 @@ public class PacketData {
 		int x = buffer.readInt();
 		int y = buffer.readInt();
 		int z = buffer.readInt();
-		String s = buffer.readString(50000);
+		String s = buffer.readString(32767);
 		return new PacketData(x, y, z, s);
 	}
 
