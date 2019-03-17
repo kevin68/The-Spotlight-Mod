@@ -2,6 +2,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
@@ -12,7 +13,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineReset;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -138,9 +138,9 @@ public class GuiSpotlightTimeline extends GuiContainer
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+    public void render(int mouseX, int mouseY, float partialRenderTick)
     {
-        super.drawScreen(mouseX, mouseY, partialRenderTick);
+        super.render(mouseX, mouseY, partialRenderTick);
 
         if(this.buttonHelp.isActive())
         {
@@ -190,13 +190,13 @@ public class GuiSpotlightTimeline extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.getTextureManager().bindTexture(texture);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(x - 35, y + 19, 0, 0, this.xSize, this.ySize);
-        this.mc.renderEngine.bindTexture(texture2);
+        this.mc.getTextureManager().bindTexture(texture2);
         this.drawTexturedModalRect(x + 135, y + 19, 0, 0, this.xSize, this.ySize);
-        this.mc.renderEngine.bindTexture(tsmIcons);
+        this.mc.getTextureManager().bindTexture(tsmIcons);
         this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
         this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
         this.drawTexturedModalRect(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);

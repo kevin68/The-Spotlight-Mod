@@ -1,5 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
@@ -104,9 +105,9 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISlider
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+    public void render(int mouseX, int mouseY, float partialRenderTick)
     {
-        super.drawScreen(mouseX, mouseY, partialRenderTick);
+        super.render(mouseX, mouseY, partialRenderTick);
 
         if(this.buttonHelp.isActive())
         {
@@ -151,7 +152,7 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISlider
         GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.getTextureManager().bindTexture(texture);
         this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
         this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.angle")), x - 30, y - 35, 0xffffff);
     }

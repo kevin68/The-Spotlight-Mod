@@ -2,6 +2,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
@@ -113,9 +114,9 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+    public void render(int mouseX, int mouseY, float partialRenderTick)
     {
-        super.drawScreen(mouseX, mouseY, partialRenderTick);
+        super.render(mouseX, mouseY, partialRenderTick);
 
         if(this.buttonHelp.isActive())
         {

@@ -1,8 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightTextures;
@@ -69,9 +67,9 @@ public class GuiSpotLightBeamTextures extends GuiContainer
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+    public void render(int mouseX, int mouseY, float partialRenderTick)
     {
-        super.drawScreen(mouseX, mouseY, partialRenderTick);
+        super.render(mouseX, mouseY, partialRenderTick);
         if(this.buttonHelp.isActive())
         {
             Slot s = this.getSlotUnderMouse();
@@ -106,12 +104,12 @@ public class GuiSpotLightBeamTextures extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.getTextureManager().bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-        this.mc.renderEngine.bindTexture(tsmIcons);
+        this.mc.getTextureManager().bindTexture(tsmIcons);
         this.drawTexturedModalRect(x + 39, y + 79, 238, 18, 18, 18);
         this.drawTexturedModalRect(x + 119, y + 79, 238, 36, 18, 18);
         this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.textures")), x - 30, y - 35, 0xffffff);

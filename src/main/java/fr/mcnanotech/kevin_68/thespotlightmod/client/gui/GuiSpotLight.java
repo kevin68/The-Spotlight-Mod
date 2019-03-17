@@ -138,25 +138,25 @@ public class GuiSpotLight extends GuiContainer
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialRenderTick)
+    public void render(int mouseX, int mouseY, float partialRenderTick)
     {
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        super.drawScreen(mouseX, mouseY, partialRenderTick);
-        this.mc.renderEngine.bindTexture(tsmIcons);
+        super.render(mouseX, mouseY, partialRenderTick);
+        this.mc.getTextureManager().bindTexture(tsmIcons);
         if(!this.buttonRedstone.isActive())
         {
-            GlStateManager.color(0.3F, 0.2F, 0.2F);
+            GlStateManager.color3f(0.3F, 0.2F, 0.2F);
         }
         this.drawTexturedModalRect(x + 184, y + 94, 6, 104, 12, 11);
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
+        GlStateManager.color3f(1.0F, 1.0F, 1.0F);
         int i = 0;
         if(this.buttonLock.isActive())
         {
             i = 15;
         }
         this.drawTexturedModalRect(x + 183, y + 68, 36 + i, 104, 14, 13);
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
+        GlStateManager.color3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(x + 183, y + 118, 20, 104, 13, 13);
         if(this.buttonHelp.isActive())
         {
@@ -211,7 +211,7 @@ public class GuiSpotLight extends GuiContainer
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.mc.renderEngine.bindTexture(texture);
+        this.mc.getTextureManager().bindTexture(texture);
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
         this.fontRenderer.drawString(I18n.format("container.spotlight.desc", "").replace("-", ""), x + 6, y + 7, 4210752);
     }
