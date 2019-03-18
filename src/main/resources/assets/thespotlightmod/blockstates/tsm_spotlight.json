@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "thespotlightmod:tsm_spotlight" }
+        "": { "model": "thespotlightmod:tsm_spotlight" }
     }
 }

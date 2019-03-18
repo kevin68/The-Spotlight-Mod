@@ -1,11 +1,11 @@
 {
 	"parent": "block/block",
     "textures": {
-    	"lamp":"thespotlightmod:blocks/spotlight_lamp",
-    	"border":"thespotlightmod:blocks/spotlight_border",
-    	"top":"thespotlightmod:blocks/spotlight_top",
-    	"side":"thespotlightmod:blocks/spotlight_side",
-    	"particle":"thespotlightmod:blocks/spotlight_side"
+    	"lamp":"thespotlightmod:block/spotlight_lamp",
+    	"border":"thespotlightmod:block/spotlight_border",
+    	"top":"thespotlightmod:block/spotlight_top",
+    	"side":"thespotlightmod:block/spotlight_side",
+    	"particle":"thespotlightmod:block/spotlight_side"
     },
     "elements": [
         {

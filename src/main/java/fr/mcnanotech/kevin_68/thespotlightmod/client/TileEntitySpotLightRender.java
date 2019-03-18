@@ -15,8 +15,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpotLight>
 {
     private ModelSpotLight model = new ModelSpotLight();
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID, "textures/blocks/spotlight.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID, "textures/block/spotlight.png");
     private static final ResourceLocation DEFAULT_BEAM = new ResourceLocation("textures/entity/beacon_beam.png");
     private static final Text3D TXT3D = new Text3D(Model3DTextDefault.instance);
 
@@ -71,7 +71,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                     ItemStack s = tile.getStackInSlot(6);
                     if(!s.isEmpty())
                     {
-                        bindTexture(getResourceLocationStack(s) != null ? getResourceLocationStack(s) : TextureMap.LOCATION_MISSING_TEXTURE);
+                        bindTexture(getResourceLocationStack(s) != null ? getResourceLocationStack(s) : MissingTextureSprite.getLocation());
                     }
                     else
                     {
@@ -109,7 +109,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                     ItemStack s2 = tile.getStackInSlot(7);
                     if(!s2.isEmpty())
                     {
-                        bindTexture(getResourceLocationStack(s2) != null ? getResourceLocationStack(s2) : TextureMap.LOCATION_MISSING_TEXTURE);
+                        bindTexture(getResourceLocationStack(s2) != null ? getResourceLocationStack(s2) : MissingTextureSprite.getLocation());
                     }
                     else
                     {
@@ -178,9 +178,17 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                         }
                         GlStateManager.scaled(1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F, 1.0 + tscale / 16.0F);
                         String text = (tile.getBoolean(EnumTSMProperty.TEXT_BOLD) ? TextFormatting.BOLD : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_STRIKE) ? TextFormatting.STRIKETHROUGH : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_UNDERLINE) ? TextFormatting.UNDERLINE : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_ITALIC) ? TextFormatting.ITALIC : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_OBFUSCATED) ? TextFormatting.OBFUSCATED : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING) ? getTranslatingText(tile.getString(EnumTSMProperty.TEXT), tile) : tile.getString(EnumTSMProperty.TEXT));
-                        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.getShort(EnumTSMProperty.TEXT_RED) * 65536 + tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256 + tile.getShort(EnumTSMProperty.TEXT_BLUE), tile.getBoolean(EnumTSMProperty.TEXT_SHADOW));
-                        GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-                        fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, tile.getShort(EnumTSMProperty.TEXT_RED) * 65536 + tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256 + tile.getShort(EnumTSMProperty.TEXT_BLUE), tile.getBoolean(EnumTSMProperty.TEXT_SHADOW));
+                        int color = tile.getShort(EnumTSMProperty.TEXT_RED) * 65536 + tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256 + tile.getShort(EnumTSMProperty.TEXT_BLUE);
+                        if (tile.getBoolean(EnumTSMProperty.TEXT_SHADOW)) {
+                            fontrenderer.drawStringWithShadow(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
+                            GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+                            fontrenderer.drawStringWithShadow(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
+                        }
+                        else {                        	
+                        	fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
+                        	GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+                        	fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
+                        }
                         GlStateManager.depthMask(true);
                     }
                     GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -228,21 +236,14 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
         }
         else
         {
-            sprite = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(stack).getParticleTexture();
+            sprite = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getParticleIcon(stack);
         }
 
         if(sprite == null)
         {
             return null;
         }
-        String iconName = sprite.getIconName();
-        String[] strs = iconName.split(":");
-        if(strs.length > 1)
-        {
-            String resource = strs[0] + ":textures/" + strs[1] + ".png";
-            return new ResourceLocation(resource);
-        }
-        return null;
+        return sprite.getName();
     }
 
     private String getTranslatingText(String str, TileEntitySpotLight tile)

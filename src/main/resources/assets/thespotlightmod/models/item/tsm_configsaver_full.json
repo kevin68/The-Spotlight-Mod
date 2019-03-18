@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "thespotlightmod:items/configsaver_full"
+        "layer0": "thespotlightmod:item/configsaver_full"
     }
 }

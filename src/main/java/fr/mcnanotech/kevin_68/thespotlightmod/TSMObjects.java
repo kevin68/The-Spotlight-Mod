@@ -17,10 +17,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.ObjectHolder;
 
-@EventBusSubscriber(modid = TheSpotLightMod.MODID)
+@EventBusSubscriber(modid = TheSpotLightMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TSMObjects {
 
 	@ObjectHolder(TheSpotLightMod.MODID + ":tsm_spotlight")
