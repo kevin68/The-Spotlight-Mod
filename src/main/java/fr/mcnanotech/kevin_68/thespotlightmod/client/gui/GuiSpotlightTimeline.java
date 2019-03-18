@@ -23,151 +23,165 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotlightTimeline extends GuiContainer {
-	protected InventoryPlayer invPlayer;
-	protected TileEntitySpotLight tile;
-	protected World world;
+    protected InventoryPlayer invPlayer;
+    protected TileEntitySpotLight tile;
+    protected World world;
 
-	private short selectedKeyID = -1;
-	private GuiBooleanButton buttonHelp, buttonTimelineEnabled, buttonSmooth;
-	private GuiButton buttonRemove;
-	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
-	protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
-	protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    private short selectedKeyID = -1;
+    private GuiBooleanButton buttonHelp, buttonTimelineEnabled, buttonSmooth;
+    private GuiButton buttonRemove;
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight1.png");
+    protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
+    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
-	public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world) {
-		super(new ContainerSpotLight(tileEntity, playerInventory, 51, 186, true));
-		this.invPlayer = playerInventory;
-		this.tile = tileEntity;
-		this.world = world;
-		this.xSize = 256;
-		this.ySize = 256;
-	}
+    public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world) {
+        super(new ContainerSpotLight(tileEntity, playerInventory, 51, 186, true));
+        this.invPlayer = playerInventory;
+        this.tile = tileEntity;
+        this.world = world;
+        this.xSize = 256;
+        this.ySize = 256;
+    }
 
-	@Override
-	public void initGui() {
-		super.initGui();
+    @Override
+    public void initGui() {
+        super.initGui();
 
-		int x = (this.width - this.xSize) / 2;
-		int y = (this.height - this.ySize) / 2;
-		this.addButton(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")));
-		this.addButton(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")));
-		this.addButton(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled));
-		this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
-		this.addButton(this.buttonRemove = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")));
-		this.buttonRemove.enabled = false;
-		this.addButton(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")));
-		this.addButton(this.buttonSmooth = new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth));
-		this.addButton(this.buttonHelp = new GuiBooleanButton(8, x + 220, y + 184, 20, 20, "?", this.tile.helpMode));
-		this.buttonTimelineEnabled.enabled = this.tile.hasKey();
-		for (short i = 0; i < 120; i++) {
-			if (this.tile.getKey(i) != null) {
-				this.addButton(new GuiSpotlightTimelineKeyButton(10 + i, this.width / 2 - 149 + (int) (i * 2.5), y + 50 + i % 2 * 4));
-			}
-		}
-	}
+        int x = (this.width - this.xSize) / 2;
+        int y = (this.height - this.ySize) / 2;
+        this.addButton(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 0));
+            }
+        });
+        this.addButton(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 5));
+            }
+        });
+        this.addButton(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                buttonTimelineEnabled.toggle();
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), buttonTimelineEnabled.isActive()));
+            }
+        });
+        this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
+        this.addButton(this.buttonRemove = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                mc.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
+                    if (confirmed) {
+                        tile.setKey(selectedKeyID, null);
+                        TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), selectedKeyID));
+                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 3));
+                    } else {
+                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 3));
+                    }
+                }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
+            }
+        });
+        this.buttonRemove.enabled = false;
+        this.addButton(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));
+            }
+        });
+        this.buttonSmooth = this.addButton(new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                buttonSmooth.toggle();
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), buttonSmooth.isActive()));
+            }
+        });
+        this.buttonHelp = this.addButton(new GuiBooleanButton(8, x + 220, y + 184, 20, 20, "?", this.tile.helpMode) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                buttonHelp.toggle();
+                tile.helpMode = buttonHelp.isActive();
+            }
+        });
+        this.buttonTimelineEnabled.enabled = this.tile.hasKey();
+        for (short i = 0; i < 120; i++) {
+            if (this.tile.getKey(i) != null) {
+                this.addButton(new GuiSpotlightTimelineKeyButton(10 + i, this.width / 2 - 149 + (int) (i * 2.5), y + 50 + i % 2 * 4) {
+                    @Override
+                    public void onClick(double mouseX, double mouseY) {
+                        selectedKeyID = (short) (this.id - 10);
+                        buttonRemove.enabled = true;
+                    }
+                });
+            }
+        }
+    }
 
-	@Override
-	public void onGuiClosed() {
-		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
-		super.onGuiClosed();
-	}
+    @Override
+    public void onGuiClosed() {
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
+        super.onGuiClosed();
+    }
 
-	@Override
-	protected void actionPerformed(GuiButton guibutton) {
-		if (guibutton.id == 2) {
-			TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 0));
-		} else if (guibutton.id == 3) {
-			TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 5));
-		} else if (guibutton.id == 4) {
-			this.buttonTimelineEnabled.toggle();
-			TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonTimelineEnabled.isActive()));
-		} else if (guibutton.id == 5) {
-			this.mc.displayGuiScreen(new GuiYesNo(this, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
-		} else if (guibutton.id == 6) {
-			TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ()));
-		} else if (guibutton.id == 7) {
-			this.buttonSmooth.toggle();
-			TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.buttonSmooth.isActive()));
-		} else if (guibutton.id == 8) {
-			this.buttonHelp.toggle();
-			this.tile.helpMode = this.buttonHelp.isActive();
-		} else if (guibutton.id >= 10) {
-			this.selectedKeyID = (short) (guibutton.id - 10);
-			this.buttonRemove.enabled = true;
-		}
-	}
+    @Override
+    public void render(int mouseX, int mouseY, float partialRenderTick) {
+        super.render(mouseX, mouseY, partialRenderTick);
 
-	@Override
-	public void confirmClicked(boolean result, int id) {
-		if (id == 5) {
-			if (result) {
-				this.tile.setKey(this.selectedKeyID, null);
-				TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.selectedKeyID));
-				TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
-			} else {
-				TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), 3));
-			}
-		}
-	}
+        if (this.buttonHelp.isActive()) {
+            if (mouseX > 64 && mouseY > 30 && mouseX < 367 && mouseY < 53) {
+                this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+            }
+            for (GuiButton button : this.buttons) {
+                if (button.isMouseOver()) {
+                    String text = "";
+                    switch (button.id) {
+                    case 2:
+                        text = I18n.format("tutorial.spotlight.back");
+                        break;
+                    case 3:
+                        text = I18n.format("tutorial.spotlight.timeline.addkey");
+                        break;
+                    case 4:
+                        text = I18n.format("tutorial.spotlight.timeline.toogle");
+                        break;
+                    case 5:
+                        text = I18n.format("tutorial.spotlight.timeline.delkey");
+                        break;
+                    case 6:
+                        text = I18n.format("tutorial.spotlight.timeline.set0");
+                        break;
+                    case 7:
+                        text = I18n.format("tutorial.spotlight.timeline.smooth");
+                        break;
+                    case 8:
+                        text = I18n.format("tutorial.spotlight.help");
+                        break;
+                    }
+                    if (!text.isEmpty()) {
+                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void render(int mouseX, int mouseY, float partialRenderTick) {
-		super.render(mouseX, mouseY, partialRenderTick);
-
-		if (this.buttonHelp.isActive()) {
-			if (mouseX > 64 && mouseY > 30 && mouseX < 367 && mouseY < 53) {
-				this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-			}
-			for (GuiButton button : this.buttons) {
-				if (button.isMouseOver()) {
-					String text = "";
-					switch (button.id) {
-					case 2:
-						text = I18n.format("tutorial.spotlight.back");
-						break;
-					case 3:
-						text = I18n.format("tutorial.spotlight.timeline.addkey");
-						break;
-					case 4:
-						text = I18n.format("tutorial.spotlight.timeline.toogle");
-						break;
-					case 5:
-						text = I18n.format("tutorial.spotlight.timeline.delkey");
-						break;
-					case 6:
-						text = I18n.format("tutorial.spotlight.timeline.set0");
-						break;
-					case 7:
-						text = I18n.format("tutorial.spotlight.timeline.smooth");
-						break;
-					case 8:
-						text = I18n.format("tutorial.spotlight.help");
-						break;
-					}
-					if (!text.isEmpty()) {
-						this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-					}
-				}
-			}
-		}
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.getTextureManager().bindTexture(texture);
-		int x = (this.width - this.xSize) / 2;
-		int y = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect(x - 35, y + 19, 0, 0, this.xSize, this.ySize);
-		this.mc.getTextureManager().bindTexture(texture2);
-		this.drawTexturedModalRect(x + 135, y + 19, 0, 0, this.xSize, this.ySize);
-		this.mc.getTextureManager().bindTexture(tsmIcons);
-		this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
-		this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
-		this.drawTexturedModalRect(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);
-		if (this.selectedKeyID != -1) {
-			this.drawTexturedModalRect((int) (x - 22 + this.selectedKeyID * 2.5), y + 62, 0, 115, 5, 6);
-		}
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY) {
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        this.mc.getTextureManager().bindTexture(texture);
+        int x = (this.width - this.xSize) / 2;
+        int y = (this.height - this.ySize) / 2;
+        this.drawTexturedModalRect(x - 35, y + 19, 0, 0, this.xSize, this.ySize);
+        this.mc.getTextureManager().bindTexture(texture2);
+        this.drawTexturedModalRect(x + 135, y + 19, 0, 0, this.xSize, this.ySize);
+        this.mc.getTextureManager().bindTexture(tsmIcons);
+        this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
+        this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
+        this.drawTexturedModalRect(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);
+        if (this.selectedKeyID != -1) {
+            this.drawTexturedModalRect((int) (x - 22 + this.selectedKeyID * 2.5), y + 62, 0, 115, 5, 6);
+        }
 //		drawString(this.fontRendererObj, EnumTextFormatting.RED + I18n.format("container.spotlight.red") + " : " + ((Byte) entry.get(EnumLaserInformations.LASERRED) & 0xFF), x + 100, y + 70, 0xffffff);
 //		drawString(this.fontRendererObj, EnumTextFormatting.GREEN + I18n.format("container.spotlight.green") + " : " + ((Byte) entry.get(EnumLaserInformations.LASERGREEN) & 0xFF), x + 100, y + 80, 0xffffff);
 //		drawString(this.fontRendererObj, EnumTextFormatting.BLUE + I18n.format("container.spotlight.blue") + " : " + ((Byte) entry.get(EnumLaserInformations.LASERBLUE) & 0xFF), x + 100, y + 90, 0xffffff);
@@ -193,6 +207,6 @@ public class GuiSpotlightTimeline extends GuiContainer {
 //				x + 100, y + 160, 0xffffff);
 //		drawString(this.fontRendererObj, EnumTextFormatting.WHITE + I18n.format("container.spotlight.size") + " " + I18n.format("container.spotlight.main") + " : " + entry.get(EnumLaserInformations.LASERMAINSIZE) + " "
 //				+ I18n.format("container.spotlight.sec") + " : " + entry.get(EnumLaserInformations.LASERSECSIZE), x + 100, y + 170, 0xffffff);
-		this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
-	}
+        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.timeline")), x - 25, y + 28, 4210752);
+    }
 }

@@ -11,7 +11,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -19,7 +18,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.ISaveFormat;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 

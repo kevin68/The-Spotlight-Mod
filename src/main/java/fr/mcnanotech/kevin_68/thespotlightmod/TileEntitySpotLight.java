@@ -408,7 +408,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         }
         else if(keysTime.size() == 1)
         {
-            TSMKey k = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
+            // TSMKey k = this.tsmKeys[(keysTime.get(0) - keysTime.get(0) % 10) / 10];
 
             for(Entry<EnumTSMProperty, Object[]> ent : timelineProperties.entrySet())
             {

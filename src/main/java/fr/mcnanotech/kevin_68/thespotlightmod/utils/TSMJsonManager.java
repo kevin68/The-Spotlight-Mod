@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumSaveCategory;
@@ -457,7 +458,7 @@ public class TSMJsonManager
                 }
                 else
                 {
-                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), json.get("DimID").getAsInt()));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), DimensionType.getById(json.get("DimID").getAsInt())));
                 }
             }
             catch(NullPointerException fatal)
