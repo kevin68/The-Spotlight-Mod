@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumPropVecBehaviour;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMType;
@@ -132,7 +133,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
                 else if(!this.updating)
                 {
                     this.updating = true;
-                    TSMNetwork.CHANNEL.sendToServer(new PacketRequestData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRequestData(this.pos));
                 }
             }
 
@@ -145,7 +146,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
                 else if(!this.timelineUpdating)
                 {
                     this.timelineUpdating = true;
-                    TSMNetwork.CHANNEL.sendToServer(new PacketRequestTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRequestTLData(this.pos));
                 }
             }
 
@@ -445,7 +446,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
         TSMJsonManager.updateTlJsonData(this.dimension, this.pos, strData);
-        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(this.pos.getX(), this.pos.getY(), this.pos.getZ(), strData));
+        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(this.pos, strData));
     }
 
     private Short[] calculateValuesS(Short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
@@ -945,11 +946,11 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-		return null;
+		return new ContainerSpotLight(this, playerInventory, true);
 	}
 
 	@Override
 	public String getGuiID() {
-		return null;
+		return TheSpotLightMod.MODID + ":spotlight";
 	}
 }

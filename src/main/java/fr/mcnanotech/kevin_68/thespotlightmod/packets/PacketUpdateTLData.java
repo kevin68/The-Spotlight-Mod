@@ -13,17 +13,12 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class PacketUpdateTLData {
-    public int x, y, z;
+    public BlockPos pos;
     public DimensionType dim;
     public String newData;
 
-    public PacketUpdateTLData() {
-    }
-
-    public PacketUpdateTLData(int x, int y, int z, DimensionType dim, String newData) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public PacketUpdateTLData(BlockPos pos, DimensionType dim, String newData) {
+        this.pos = pos;
         this.dim = dim;
         try {
             this.newData = TSMJsonManager.compress(newData);
@@ -33,18 +28,14 @@ public class PacketUpdateTLData {
     }
     
     public static PacketUpdateTLData decode(PacketBuffer buffer) {
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
+        BlockPos pos = buffer.readBlockPos();
         DimensionType dim = DimensionType.getById(buffer.readInt());
         String newData = buffer.readString(32767);
-        return new PacketUpdateTLData(x, y, z, dim, newData);
+        return new PacketUpdateTLData(pos, dim, newData);
     }
 
     public static void encode(PacketUpdateTLData packet, PacketBuffer buffer) {
-        buffer.writeInt(packet.x);
-        buffer.writeInt(packet.y);
-        buffer.writeInt(packet.z);
+        buffer.writeBlockPos(packet.pos);
         buffer.writeInt(packet.dim.getId());
         buffer.writeString(packet.newData);
     }
@@ -52,11 +43,10 @@ public class PacketUpdateTLData {
     public static void handle(PacketUpdateTLData packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             try {
-                BlockPos pos = new BlockPos(packet.x, packet.y, packet.z);
-                TileEntitySpotLight te = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(pos);
+                TileEntitySpotLight te = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(packet.pos);
                 te.timelineUpdated = false;
-                TSMJsonManager.updateTlJsonData(packet.dim, pos, TSMJsonManager.decompress(packet.newData));
-                TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(packet.x, packet.y, packet.z, TSMJsonManager.decompress(packet.newData)));
+                TSMJsonManager.updateTlJsonData(packet.dim, packet.pos, TSMJsonManager.decompress(packet.newData));
+                TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(packet.pos, TSMJsonManager.decompress(packet.newData)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -69,7 +69,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 					}
 					buttonRR.enabled = buttonAR.isActive();
 					buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
-					TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension, TSMJsonManager.getDataFromTile(tile).toString()));
+					TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos(), tile.dimension, TSMJsonManager.getDataFromTile(tile).toString()));
 				}
 			}
 		});
@@ -101,7 +101,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 					}
 					buttonRR.enabled = buttonAR.isActive();
 					buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
-					TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension, TSMJsonManager.getDataFromTile(tile).toString()));
+					TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos(), tile.dimension, TSMJsonManager.getDataFromTile(tile).toString()));
 				}
 			}
 		});
@@ -133,7 +133,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 					}
 					buttonRR.enabled = buttonAR.isActive();
 					buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.off")));
-					TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension, TSMJsonManager.getDataFromTile(tile).toString()));
+					TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos(), tile.dimension, TSMJsonManager.getDataFromTile(tile).toString()));
 				}
 			}
 		});
@@ -191,7 +191,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 
 	@Override
 	public void onGuiClosed() {
-		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
 		super.onGuiClosed();
 	}
 

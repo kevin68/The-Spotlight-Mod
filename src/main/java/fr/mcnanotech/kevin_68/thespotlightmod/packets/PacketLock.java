@@ -10,38 +10,32 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketLock {
-	public int x, y, z;
+    public BlockPos pos;
 	public boolean locked;
 	public UUID uuid;
 
-	public PacketLock(int x, int y, int z, boolean locked, UUID uuid) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public PacketLock(BlockPos pos, boolean locked, UUID uuid) {
+	    this.pos = pos;
 		this.locked = locked;
 		this.uuid = uuid;
 	}
 
 	public static void encode(PacketLock packet, PacketBuffer buffer) {
-		buffer.writeInt(packet.x);
-		buffer.writeInt(packet.y);
-		buffer.writeInt(packet.z);
+        buffer.writeBlockPos(packet.pos);
 		buffer.writeBoolean(packet.locked);
 		buffer.writeUniqueId(packet.uuid);
 	}
 
 	public static PacketLock decode(PacketBuffer buffer) {
-		int x = buffer.readInt();
-		int y = buffer.readInt();
-		int z = buffer.readInt();
+        BlockPos pos = buffer.readBlockPos();
 		boolean locked = buffer.readBoolean();
 		UUID uuid = buffer.readUniqueId();
-		return new PacketLock(x, y, z, locked, uuid);
+		return new PacketLock(pos, locked, uuid);
 	}
 
 	public static void handle(PacketLock packet, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			TileEntity te = ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+			TileEntity te = ctx.get().getSender().world.getTileEntity(packet.pos);
 			if (te instanceof TileEntitySpotLight) {
 				TileEntitySpotLight tile = (TileEntitySpotLight) te;
 				tile.locked = packet.locked;

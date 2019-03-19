@@ -10,32 +10,26 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketRequestTLData {
-    public int x, y, z;
+    public BlockPos pos;
 
-    public PacketRequestTLData(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public PacketRequestTLData(BlockPos pos) {
+        this.pos = pos;
     }
 
     public static PacketRequestTLData decode(PacketBuffer buffer) {
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
-        return new PacketRequestTLData(x, y, z);
+        BlockPos pos = buffer.readBlockPos();
+        return new PacketRequestTLData(pos);
     }
 
     public static void encode(PacketRequestTLData packet, PacketBuffer buffer) {
-        buffer.writeInt(packet.x);
-        buffer.writeInt(packet.y);
-        buffer.writeInt(packet.z);
+        buffer.writeBlockPos(packet.pos);
     }
 
     public static void handle(PacketRequestTLData packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             DimensionType dim = ctx.get().getSender().dimension;
-            String data = TSMJsonManager.getTlDataFromJson(dim, new BlockPos(packet.x, packet.y, packet.z));
-            TSMNetwork.CHANNEL.reply(new PacketTLData(packet.x, packet.y, packet.z, data == null ? "null" : data), ctx.get());
+            String data = TSMJsonManager.getTlDataFromJson(dim, packet.pos);
+            TSMNetwork.CHANNEL.reply(new PacketTLData(packet.pos, data == null ? "null" : data), ctx.get());
         });
         ctx.get().setPacketHandled(true);
     }

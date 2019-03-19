@@ -8,34 +8,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimelineDeleteKey {
-    public int x, y, z;
+    public BlockPos pos;
     public short time;
 
-    public PacketTimelineDeleteKey(int x, int y, int z, short time) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public PacketTimelineDeleteKey(BlockPos pos, short time) {
+        this.pos = pos;
         this.time = time;
     }
 
     public static PacketTimelineDeleteKey decode(PacketBuffer buffer) {
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
+        BlockPos pos = buffer.readBlockPos();
         short time = buffer.readShort();
-        return new PacketTimelineDeleteKey(x, y, z, time);
+        return new PacketTimelineDeleteKey(pos, time);
     }
 
     public static void encode(PacketTimelineDeleteKey packet, PacketBuffer buffer) {
-        buffer.writeInt(packet.x);
-        buffer.writeInt(packet.y);
-        buffer.writeInt(packet.z);
+        buffer.writeBlockPos(packet.pos);
         buffer.writeShort(packet.time);
     }
 
     public static void handle(PacketTimelineDeleteKey packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            TileEntitySpotLight tile = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(packet.pos);
             tile.setKey(packet.time, null);
             tile.markForUpdate();
         });

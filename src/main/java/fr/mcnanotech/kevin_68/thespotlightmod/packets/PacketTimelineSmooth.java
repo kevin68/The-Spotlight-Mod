@@ -9,34 +9,28 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimelineSmooth {
 
-    public int x, y, z;
+    public BlockPos pos;
     public boolean smooth;
 
-    public PacketTimelineSmooth(int x, int y, int z, boolean smooth) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public PacketTimelineSmooth(BlockPos pos, boolean smooth) {
+        this.pos = pos;
         this.smooth = smooth;
     }
 
     public static PacketTimelineSmooth decode(PacketBuffer buffer) {
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
+        BlockPos pos = buffer.readBlockPos();
         boolean smooth = buffer.readBoolean();
-        return new PacketTimelineSmooth(x, y, z, smooth);
+        return new PacketTimelineSmooth(pos, smooth);
     }
 
     public static void encode(PacketTimelineSmooth packet, PacketBuffer buffer) {
-        buffer.writeInt(packet.x);
-        buffer.writeInt(packet.y);
-        buffer.writeInt(packet.z);
+        buffer.writeBlockPos(packet.pos);
         buffer.writeBoolean(packet.smooth);
     }
     
     public static void handle(PacketTimelineSmooth packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(packet.pos);
             tile.timelineSmooth = packet.smooth;
             tile.markForUpdate();
         });

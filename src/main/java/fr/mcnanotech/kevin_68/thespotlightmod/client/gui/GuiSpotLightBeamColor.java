@@ -58,7 +58,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
         this.addButton(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 0));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 0));
 			}
 		});
         this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode) {
@@ -73,7 +73,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
     @Override
     public void onGuiClosed()
     {
-        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
     

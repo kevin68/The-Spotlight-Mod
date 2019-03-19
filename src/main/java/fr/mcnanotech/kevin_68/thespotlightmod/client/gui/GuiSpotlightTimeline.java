@@ -52,20 +52,20 @@ public class GuiSpotlightTimeline extends GuiContainer {
         this.addButton(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 0));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 0));
             }
         });
         this.addButton(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 5));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 5));
             }
         });
         this.addButton(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled) {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 buttonTimelineEnabled.toggle();
-                TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), buttonTimelineEnabled.isActive()));
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(tile.getPos(), buttonTimelineEnabled.isActive()));
             }
         });
         this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
@@ -75,10 +75,10 @@ public class GuiSpotlightTimeline extends GuiContainer {
                 mc.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
                     if (confirmed) {
                         tile.setKey(selectedKeyID, null);
-                        TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), selectedKeyID));
-                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 3));
+                        TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos(), selectedKeyID));
+                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
                     } else {
-                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 3));
+                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
                     }
                 }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
             }
@@ -87,14 +87,14 @@ public class GuiSpotlightTimeline extends GuiContainer {
         this.addButton(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(tile.getPos()));
             }
         });
         this.buttonSmooth = this.addButton(new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth) {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 buttonSmooth.toggle();
-                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), buttonSmooth.isActive()));
+                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(tile.getPos(), buttonSmooth.isActive()));
             }
         });
         this.buttonHelp = this.addButton(new GuiBooleanButton(8, x + 220, y + 184, 20, 20, "?", this.tile.helpMode) {
@@ -120,7 +120,7 @@ public class GuiSpotlightTimeline extends GuiContainer {
 
     @Override
     public void onGuiClosed() {
-        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos().getX(), this.tile.getPos().getY(), this.tile.getPos().getZ(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 

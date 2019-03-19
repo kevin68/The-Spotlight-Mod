@@ -8,30 +8,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimelineReset {
-	public int x, y, z;
+    public BlockPos pos;
 
-	public PacketTimelineReset(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public PacketTimelineReset(BlockPos pos) {
+	    this.pos = pos;
 	}
 
 	public static PacketTimelineReset decode(PacketBuffer buffer) {
-		int x = buffer.readInt();
-		int y = buffer.readInt();
-		int z = buffer.readInt();
-		return new PacketTimelineReset(x, y, z);
+        BlockPos pos = buffer.readBlockPos();
+		return new PacketTimelineReset(pos);
 	}
 
 	public static void encode(PacketTimelineReset packet, PacketBuffer buffer) {
-		buffer.writeInt(packet.x);
-		buffer.writeInt(packet.y);
-		buffer.writeInt(packet.z);
+        buffer.writeBlockPos(packet.pos);
 	}
 
 	public static void handle(PacketTimelineReset packet, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(new BlockPos(packet.x, packet.y, packet.z));
+            TileEntitySpotLight tile = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(packet.pos);
             tile.time = 0;
             tile.markForUpdate();
 		});

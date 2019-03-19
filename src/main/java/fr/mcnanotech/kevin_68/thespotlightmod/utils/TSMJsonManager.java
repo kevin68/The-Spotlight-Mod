@@ -267,7 +267,7 @@ public class TSMJsonManager
             }
             else
             {
-                TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.dimension));
+                TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(tile.getPos(), tile.dimension));
             }
         }
         return false;
@@ -379,7 +379,7 @@ public class TSMJsonManager
         JsonObject obj = json.get("Timeline").getAsJsonObject();
         updateTileData(tile, json);
         updateTileTimeline(tile, obj);
-        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), getDataFromTile(tile).toString()));
+        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(tile.getPos(), getDataFromTile(tile).toString()));
     }
 
     public static void deleteConfig(ItemStack stack)
@@ -457,7 +457,7 @@ public class TSMJsonManager
                 }
                 else
                 {
-                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt(), DimensionType.getById(json.get("DimID").getAsInt())));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()), DimensionType.getById(json.get("DimID").getAsInt())));
                 }
             }
             catch(NullPointerException fatal)

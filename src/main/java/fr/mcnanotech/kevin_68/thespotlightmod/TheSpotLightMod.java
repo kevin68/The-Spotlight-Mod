@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.client.TileEntitySpotLightRender;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -19,6 +21,7 @@ public class TheSpotLightMod {
 	public TheSpotLightMod() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> TSMGuiHandler::openGui);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
