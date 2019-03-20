@@ -3,6 +3,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.Minecraft;
@@ -12,16 +13,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketData {
-	public BlockPos pos;
-	public String data;
+	private BlockPos pos;
+	private String data;
 
 	public PacketData(BlockPos pos, String data) {
 		this.pos = pos;
-		try {
-			this.data = TSMJsonManager.compress(data);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.data = data;
 	}
 
 	public static void encode(PacketData packet, PacketBuffer buffer) {
@@ -41,9 +38,10 @@ public class PacketData {
 			if (te instanceof TileEntitySpotLight) {
 				TileEntitySpotLight tile = (TileEntitySpotLight) te;
 				try {
-					tile.updated = TSMJsonManager.updateTileData(tile, TSMJsonManager.decompress(packet.data));
+				    String jsonData = TSMJsonManager.decompress(packet.data);
+					tile.updated = TSMJsonManager.updateTileData(tile, jsonData);
 				} catch (IOException e) {
-					e.printStackTrace();
+					TheSpotLightMod.LOGGER.debug(e);
 				}
 				tile.updating = false;
 			}

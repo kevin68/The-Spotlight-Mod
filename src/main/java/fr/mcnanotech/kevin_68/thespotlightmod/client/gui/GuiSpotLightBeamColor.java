@@ -22,7 +22,7 @@ import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
 public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID, "textures/gui/icons.png");
 
     public InventoryPlayer invPlayer;
     public TileEntitySpotLight tile;
@@ -73,7 +73,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
     @Override
     public void onGuiClosed()
     {
-        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
     

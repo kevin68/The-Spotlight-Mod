@@ -9,8 +9,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimelineSmooth {
 
-    public BlockPos pos;
-    public boolean smooth;
+    private BlockPos pos;
+    private boolean smooth;
 
     public PacketTimelineSmooth(BlockPos pos, boolean smooth) {
         this.pos = pos;

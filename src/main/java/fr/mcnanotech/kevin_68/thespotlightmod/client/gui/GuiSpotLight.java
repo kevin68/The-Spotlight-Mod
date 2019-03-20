@@ -45,10 +45,11 @@ public class GuiSpotLight extends GuiContainer {
         this.buttonColors = this.addButton(new GuiButton(0, x + 5, y + 20, 80, 20, this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                if (GuiSpotLight.this.buttonMode.isActive()) {
-                    TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(GuiSpotLight.this.tile.getPos(), 4));
+                if (buttonMode.isActive()) {
+                    //TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 4));
+                    mc.displayGuiScreen(new GuiSpotLightBeamColor(invPlayer, tile, world));
                 } else {
-                    GuiSpotLight.this.mc.displayGuiScreen(new GuiSpotLightTextColor(GuiSpotLight.this.invPlayer, GuiSpotLight.this.tile, GuiSpotLight.this.world));
+                    mc.displayGuiScreen(new GuiSpotLightTextColor(invPlayer, tile, world));
                 }
             }
         });
@@ -57,10 +58,10 @@ public class GuiSpotLight extends GuiContainer {
         this.buttonAngle = this.addButton(new GuiButton(1, x + 5, y + 43, 80, 20, I18n.format("container.spotlight.angle")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                if (GuiSpotLight.this.buttonMode.isActive()) {
-                    GuiSpotLight.this.mc.displayGuiScreen(new GuiSpotLightBeamAngles(GuiSpotLight.this.invPlayer, GuiSpotLight.this.tile, GuiSpotLight.this.world));
+                if (buttonMode.isActive()) {
+                    mc.displayGuiScreen(new GuiSpotLightBeamAngles(invPlayer, tile, world));
                 } else {
-                    GuiSpotLight.this.mc.displayGuiScreen(new GuiSpotLightTextAngles(GuiSpotLight.this.invPlayer, GuiSpotLight.this.tile, GuiSpotLight.this.world));
+                    mc.displayGuiScreen(new GuiSpotLightTextAngles(invPlayer, tile, world));
                 }
             }
         });
@@ -69,10 +70,10 @@ public class GuiSpotLight extends GuiContainer {
         this.buttonBeamSpecs = this.addButton(new GuiButton(2, x + 5, y + 66, 80, 20, I18n.format("container.spotlight.beamspecs")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                if (GuiSpotLight.this.buttonMode.isActive()) {
-                    GuiSpotLight.this.mc.displayGuiScreen(new GuiSpotLightBeamProperties(GuiSpotLight.this.invPlayer, GuiSpotLight.this.tile, GuiSpotLight.this.world));
+                if (buttonMode.isActive()) {
+                    mc.displayGuiScreen(new GuiSpotLightBeamProperties(invPlayer, tile, world));
                 } else {
-                    GuiSpotLight.this.mc.displayGuiScreen(new GuiSpotLightTextProperties(GuiSpotLight.this.invPlayer, GuiSpotLight.this.tile, GuiSpotLight.this.world));
+                    mc.displayGuiScreen(new GuiSpotLightTextProperties(invPlayer, tile, world));
                 }
             }
         });
@@ -81,16 +82,16 @@ public class GuiSpotLight extends GuiContainer {
         this.buttonTextures = this.addButton(new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(GuiSpotLight.this.tile.getPos(), 1));
+                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 1));
             }
         });
         this.buttonMode = this.addButton(new GuiBooleanButton(4, x + 5, y + 112, 80, 20, "", this.tile.isBeam) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                GuiSpotLight.this.buttonMode.toggle();
-                GuiSpotLight.this.tile.isBeam = GuiSpotLight.this.buttonMode.isActive();
-                GuiSpotLight.this.buttonTextures.enabled = GuiSpotLight.this.buttonMode.isActive();
-                GuiSpotLight.this.buttonColors.displayString = GuiSpotLight.this.tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor");
+                buttonMode.toggle();
+                tile.isBeam = buttonMode.isActive();
+                buttonTextures.enabled = buttonMode.isActive();
+                buttonColors.displayString = tile.isBeam ? I18n.format("container.spotlight.color") : I18n.format("container.spotlight.textcolor");
             }
         });
         this.buttonMode.enabled = !this.tile.timelineEnabled;
@@ -113,8 +114,8 @@ public class GuiSpotLight extends GuiContainer {
         this.addButton(this.buttonRedstone = new GuiBooleanButton(18, x + 180, y + 90, 20, 20, "", this.tile.redstone) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                GuiSpotLight.this.buttonRedstone.toggle();
-                GuiSpotLight.this.tile.redstone = GuiSpotLight.this.buttonRedstone.isActive();
+                buttonRedstone.toggle();
+                tile.redstone = buttonRedstone.isActive();
             }
         });
         this.addButton(new GuiButton(19, x + 180, y + 115, 20, 20, "") {
@@ -135,7 +136,7 @@ public class GuiSpotLight extends GuiContainer {
 
     @Override
     public void onGuiClosed() {
-        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+        TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
         super.onGuiClosed();
     }
 

@@ -24,8 +24,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockSpotLight extends Block {
 	public BlockSpotLight() {
-		super(Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(1.0F, 10.0F));
-		// TODO: this.setLightLevel(1.0F);
+		super(Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(1.0F, 10.0F).lightValue(15));
 	}
 
 	@Override
@@ -41,12 +40,7 @@ public class BlockSpotLight extends Block {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		if (!world.isRemote) {
-			TSMJsonManager.generateNewFiles(placer.dimension, pos);
-		}
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntitySpotLight) {
-			TileEntitySpotLight tile = (TileEntitySpotLight) te;
-			tile.dimension = placer.dimension;
+			TSMJsonManager.generateNewFiles(world, pos);
 		}
 		IBlockState nState = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, nState, nState, 3);
@@ -55,8 +49,7 @@ public class BlockSpotLight extends Block {
 	@Override
 	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving) {
 		if (!world.isRemote && world.getTileEntity(pos) instanceof TileEntitySpotLight) {
-			TileEntitySpotLight te = (TileEntitySpotLight) world.getTileEntity(pos);
-			TSMJsonManager.deleteFile(te.dimension, pos);
+			TSMJsonManager.deleteFile(world, pos);
 		}
 	}
 

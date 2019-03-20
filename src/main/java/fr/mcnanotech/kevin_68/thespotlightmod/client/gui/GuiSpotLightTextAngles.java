@@ -83,7 +83,7 @@ public class GuiSpotLightTextAngles extends GuiContainer implements ISlider {
 
 	@Override
 	public void onGuiClosed() {
-		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getDataFromTile(this.tile).toString()));
+		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
 		super.onGuiClosed();
 	}
 

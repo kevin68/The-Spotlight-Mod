@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "thespotlightmod:tsm_spotlight" }
+        "": { "model": "thespotlightmod:block/tsm_spotlight" }
     }
 }

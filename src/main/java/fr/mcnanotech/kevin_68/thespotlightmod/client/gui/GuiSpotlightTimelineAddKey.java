@@ -78,7 +78,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 
 	@Override
 	public void onGuiClosed() {
-		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos(), this.tile.dimension, TSMJsonManager.getTlDataFromTile(this.tile).toString()));
+		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos(), TSMJsonManager.getTlDataFromTile(this.tile).toString()));
 		super.onGuiClosed();
 	}
 

@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimelineReset {
-    public BlockPos pos;
+    private BlockPos pos;
 
 	public PacketTimelineReset(BlockPos pos) {
 	    this.pos = pos;

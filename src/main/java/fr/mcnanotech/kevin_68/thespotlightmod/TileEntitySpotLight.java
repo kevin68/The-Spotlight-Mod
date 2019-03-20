@@ -40,7 +40,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IInteractionObject;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -58,7 +57,6 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
      */
     public boolean updated = false, updating = false, timelineUpdated = false, timelineUpdating = false;
     public boolean isActive;
-    public DimensionType dimension;
     public boolean isBeam; // false = text mode
     public boolean helpMode; // false = disabled
     public boolean redstone; // Require redstone signal
@@ -128,7 +126,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 if(!this.world.isRemote)
                 {
-                    this.updated = TSMJsonManager.updateTileData(this.dimension, this.pos, this);
+                    this.updated = TSMJsonManager.updateTileData(this.pos, this);
                 }
                 else if(!this.updating)
                 {
@@ -141,7 +139,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             {
                 if(!this.world.isRemote)
                 {
-                    this.timelineUpdated = TSMJsonManager.updateTileTimeline(this.dimension, this.pos, this);
+                    this.timelineUpdated = TSMJsonManager.updateTileTimeline(this.world, this.pos, this);
                 }
                 else if(!this.timelineUpdating)
                 {
@@ -445,7 +443,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
             }
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
-        TSMJsonManager.updateTlJsonData(this.dimension, this.pos, strData);
+        TSMJsonManager.updateTlJsonData(this.world, this.pos, strData);
         TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(this.pos, strData));
     }
 
@@ -542,7 +540,6 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     @Override
     public NBTTagCompound write(NBTTagCompound compound) {
         super.write(compound);
-        compound.putInt("DimID", this.dimension.getId());
         compound.putShort("Time", this.time);
         compound.putBoolean("TimelineEnabled", this.timelineEnabled);
         compound.putBoolean("TimelineSmooth", this.timelineSmooth);
@@ -566,7 +563,6 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
     public void read(NBTTagCompound compound)
     {
         super.read(compound);
-        this.dimension = DimensionType.getById(compound.getInt("DimID"));
         this.time = compound.getShort("Time");
         this.timelineEnabled = compound.getBoolean("TimelineEnabled");
         this.timelineSmooth = compound.getBoolean("TimelineSmooth");

@@ -8,8 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimeline {
-	public BlockPos pos;
-	public boolean enabled;
+    private BlockPos pos;
+    private boolean enabled;
 
 	public PacketTimeline() {
 	}

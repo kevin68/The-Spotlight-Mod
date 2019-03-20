@@ -11,8 +11,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 // TODO still useful ?
 public class PacketOpenGui {
-    public BlockPos pos;
-    public int id;
+    private BlockPos pos;
+    private int id;
 
     public PacketOpenGui(BlockPos pos, int id) {
         this.pos = pos;

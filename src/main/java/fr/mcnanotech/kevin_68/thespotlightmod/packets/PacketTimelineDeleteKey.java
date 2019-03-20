@@ -8,8 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTimelineDeleteKey {
-    public BlockPos pos;
-    public short time;
+    private BlockPos pos;
+    private short time;
 
     public PacketTimelineDeleteKey(BlockPos pos, short time) {
         this.pos = pos;

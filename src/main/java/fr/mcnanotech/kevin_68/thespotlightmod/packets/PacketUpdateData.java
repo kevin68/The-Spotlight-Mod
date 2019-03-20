@@ -8,57 +8,44 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-public class PacketUpdateData
-{
-    public BlockPos pos;
-    public DimensionType dimType;
-    public String newData;
+public class PacketUpdateData {
+    private BlockPos pos;
+    private String newData;
 
-    public PacketUpdateData(BlockPos pos, DimensionType dimType, String newData)
-    {
+    public PacketUpdateData(BlockPos pos, String newData) {
         this.pos = pos;
-        this.dimType = dimType;
-        try
-        {
+        try {
             this.newData = TSMJsonManager.compress(newData);
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static PacketUpdateData decode(PacketBuffer buffer) {
         BlockPos pos = buffer.readBlockPos();
-        DimensionType dimType = DimensionType.getById(buffer.readInt());
         String newData = buffer.readString(32767);
-        return new PacketUpdateData(pos, dimType, newData);
+        return new PacketUpdateData(pos, newData);
     }
 
     public static void encode(PacketUpdateData packet, PacketBuffer buffer) {
         buffer.writeBlockPos(packet.pos);
-        buffer.writeInt(packet.dimType.getId());
         buffer.writeString(packet.newData);
     }
-    
+
     public static void handle(PacketUpdateData packet, Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			try
-            {
-                TileEntitySpotLight te = (TileEntitySpotLight)ctx.get().getSender().world.getTileEntity(packet.pos);
+        ctx.get().enqueueWork(() -> {
+            try {
+                TileEntitySpotLight te = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(packet.pos);
                 te.updated = false;
-                TSMJsonManager.updateJsonData(packet.dimType, packet.pos, TSMJsonManager.decompress(packet.newData));
+                TSMJsonManager.updateJsonData(ctx.get().getSender().world, packet.pos, TSMJsonManager.decompress(packet.newData));
                 TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(packet.pos, TSMJsonManager.decompress(packet.newData)));
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-		});
-		ctx.get().setPacketHandled(true);
-	}
+        });
+        ctx.get().setPacketHandled(true);
+    }
 }

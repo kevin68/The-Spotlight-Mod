@@ -39,15 +39,18 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TSMJsonManager
 {
-    public static void generateNewFiles(DimensionType dimType, BlockPos pos)
+    public static void generateNewFiles(World world, BlockPos pos)
     {
-        File folder = getSaveDir(dimType);
+        File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
@@ -56,14 +59,14 @@ public class TSMJsonManager
         }
         if(file.exists())
         {
-            deleteFile(dimType, pos);
+            deleteFile(world, pos);
         }
         if(fileTL.exists())
         {
-            deleteFile(dimType, pos);
+            deleteFile(world, pos);
         }
         JsonObject json = new JsonObject();
-        json.addProperty("DimID", dimType.getId());
+        json.addProperty("DimID", world.getDimension().getType().getId());
         json.addProperty("X", pos.getX());
         json.addProperty("Y", pos.getY());
         json.addProperty("Z", pos.getZ());
@@ -146,11 +149,11 @@ public class TSMJsonManager
         write(fileTL, timeline);
     }
 
-    public static void deleteFile(DimensionType dimType, BlockPos pos)
+    public static void deleteFile(World world, BlockPos pos)
     {
         try
         {
-            File folder = getSaveDir(dimType);
+            File folder = getSaveDir(world);
             File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
             File fileTL = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
             file.delete();
@@ -165,10 +168,10 @@ public class TSMJsonManager
     /*
      * Server Side
      */
-    public static boolean updateTileData(DimensionType dimType, BlockPos pos, TileEntitySpotLight tile)
+    public static boolean updateTileData(BlockPos pos, TileEntitySpotLight tile)
     {
-        File file = new File(getSaveDir(dimType), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
-        JsonObject json = read(file);
+        File file = new File(getSaveDir(tile.getWorld()), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+        JsonObject json = read(file, tile.getWorld());
         return updateTileData(tile, json);
     }
 
@@ -260,22 +263,22 @@ public class TSMJsonManager
         }
         else
         {
-            if(FMLEnvironment.dist.isDedicatedServer())
+            if(!tile.getWorld().isRemote)
             {
-                deleteFile(tile.dimension, tile.getPos());
-                generateNewFiles(tile.dimension, tile.getPos());
+                deleteFile(tile.getWorld(), tile.getPos());
+                generateNewFiles(tile.getWorld(), tile.getPos());
             }
             else
             {
-                TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(tile.getPos(), tile.dimension));
+                TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(tile.getPos()));
             }
         }
         return false;
     }
 
-    public static void updateJsonData(DimensionType dimType, BlockPos pos, String data)
+    public static void updateJsonData(World world, BlockPos pos, String data)
     {
-    	File folder = getSaveDir(dimType);
+    	File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         if(!folder.exists())
         {
@@ -284,19 +287,19 @@ public class TSMJsonManager
         write(file, data);
     }
 
-    public static String getDataFromJson(DimensionType dimType, BlockPos pos)
+    public static String getDataFromJson(World world, BlockPos pos)
     {
-        File folder = new File(getSaveDir(dimType), new File("SpotLights", String.valueOf(dimType.getId())).getPath());
+        File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
         if(!folder.exists())
         {
             folder.mkdirs();
-            generateNewFiles(dimType, pos);
+            generateNewFiles(world, pos);
         }
-        JsonObject json = read(file);
+        JsonObject json = read(file, world);
         if(json != null)
         {
-            return read(file).toString();
+            return read(file, world).toString();
         }
         return null;
     }
@@ -304,7 +307,6 @@ public class TSMJsonManager
     public static JsonObject getDataFromTile(TileEntitySpotLight tile)
     {
         JsonObject json = new JsonObject();
-        json.addProperty("DimID", tile.dimension.getId());
         json.addProperty("X", tile.getPos().getX());
         json.addProperty("Y", tile.getPos().getY());
         json.addProperty("Z", tile.getPos().getZ());
@@ -374,12 +376,15 @@ public class TSMJsonManager
     {
         String configName = stack.getTag().getString("ConfigName");
         File file = new File(getConfItemSaveDir(), configName + ".json");
-        JsonObject json = read(file);
-        json.addProperty("DimID", tile.dimension.getId());
+        JsonObject json = read(file, tile.getWorld());
         JsonObject obj = json.get("Timeline").getAsJsonObject();
         updateTileData(tile, json);
         updateTileTimeline(tile, obj);
-        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(tile.getPos(), getDataFromTile(tile).toString()));
+        try {
+            TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(tile.getPos(), TSMJsonManager.compress(getDataFromTile(tile).toString())));
+        } catch (IOException e) {
+            TheSpotLightMod.LOGGER.error("Failed to compress spotlight data, packet not sended");
+        }
     }
 
     public static void deleteConfig(ItemStack stack)
@@ -394,10 +399,10 @@ public class TSMJsonManager
     /*
      * Server side
      */
-    public static boolean updateTileTimeline(DimensionType dim, BlockPos pos, TileEntitySpotLight tile)
+    public static boolean updateTileTimeline(World world, BlockPos pos, TileEntitySpotLight tile)
     {
-        File fileTL = new File(getSaveDir(dim), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
-        JsonObject json = read(fileTL);
+        File fileTL = new File(getSaveDir(world), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
+        JsonObject json = read(fileTL, world);
         return updateTileTimeline(tile, json);
     }
 
@@ -451,13 +456,12 @@ public class TSMJsonManager
             {
                 if(FMLEnvironment.dist.isDedicatedServer())
                 {
-                	DimensionType dim = DimensionType.getById(json.get("DimID").getAsInt());
-                    deleteFile(dim, new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
-                    generateNewFiles(dim, new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    deleteFile(tile.getWorld(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    generateNewFiles(tile.getWorld(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
                 }
                 else
                 {
-                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()), DimensionType.getById(json.get("DimID").getAsInt())));
+                    TSMNetwork.CHANNEL.sendToServer(new PacketRegenerateFile(new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt())));
                 }
             }
             catch(NullPointerException fatal)
@@ -468,9 +472,9 @@ public class TSMJsonManager
         return false;
     }
 
-    public static void updateTlJsonData(DimensionType dim, BlockPos pos, String data)
+    public static void updateTlJsonData(World world, BlockPos pos, String data)
     {
-        File folder = getSaveDir(dim);
+        File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
         {
@@ -479,19 +483,19 @@ public class TSMJsonManager
         write(file, data);
     }
 
-    public static String getTlDataFromJson(DimensionType dim, BlockPos pos)
+    public static String getTlDataFromJson(World world, BlockPos pos)
     {
-        File folder = getSaveDir(dim);
+        File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         if(!folder.exists())
         {
             folder.mkdirs();
-            generateNewFiles(dim, pos);
+            generateNewFiles(world, pos);
         }
-        JsonObject json = read(file);
+        JsonObject json = read(file, world);
         if(json != null)
         {
-            return read(file).toString();
+            return read(file, world).toString();
         }
         return null;
     }
@@ -757,7 +761,7 @@ public class TSMJsonManager
         }
     }
 
-    private static JsonObject read(File dir)
+    private static JsonObject read(File dir, World world)
     {
         JsonParser parser = new JsonParser();
         try
@@ -771,13 +775,13 @@ public class TSMJsonManager
         }
         catch(FileNotFoundException e)
         {
-            generateNewFiles(getDimentionByFolder(dir), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            generateNewFiles(world, new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         catch(JsonParseException e)
         {
             TheSpotLightMod.LOGGER.error("File is not a JSON, generating a new one");
-            deleteFile(getDimentionByFolder(dir), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
-            generateNewFiles(getDimentionByFolder(dir), new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            deleteFile(world, new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
+            generateNewFiles(world, new BlockPos(Integer.valueOf(dir.getName().replace(".json", "").split("_")[0]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[1]), Integer.valueOf(dir.getName().replace(".json", "").split("_")[2])));
         }
         return null;
     }
@@ -818,18 +822,18 @@ public class TSMJsonManager
         return null;
     }
     
-    private static DimensionType getDimentionByFolder(File dir) {
-    	return DimensionType.getById(Integer.valueOf(new File(dir.getParent()).getName()));
-    }
-    
-    private static File getSaveDir(DimensionType dim) {
-    	// <main dimension folder>/SpotLights/dimid
-    	// we keep it for compatibility with old format
-    	// TODO: convert to something better like dimDir/spotlights/ ? (= dim.getDirectory(new File("SpotLights")) )
-    	return DimensionType.getById(0).getDirectory(new File(new File("SpotLights"), String.valueOf(dim.getId())));
+    private static File getSaveDir(World world) {
+        // TODO: convert old format to the new
+        // before: worldDir/SpotLights/<dimid>/
+        // after: worldDir/(DIMx)/data/spotlights/
+        
+        File spotlightDataDir = new File(new File(world.getSaveHandler().getWorldDirectory(), "data"), "spotlights");
+        spotlightDataDir.mkdirs();
+        return spotlightDataDir;
     }
     
     private static File getConfItemSaveDir() {
-    	return DimensionType.getById(0).getDirectory(new File("SpotLights", "configs"));
+        World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), DimensionType.OVERWORLD, false, true);
+    	return new File(getSaveDir(w), "configs");
     }
 }

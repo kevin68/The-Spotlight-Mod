@@ -10,8 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketTLData {
-    public BlockPos pos;
-    public String data;
+    private BlockPos pos;
+    private String data;
 
     public PacketTLData(BlockPos pos, String data) {
         this.pos = pos;

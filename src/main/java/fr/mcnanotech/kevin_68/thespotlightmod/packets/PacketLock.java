@@ -10,9 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketLock {
-    public BlockPos pos;
-	public boolean locked;
-	public UUID uuid;
+    private BlockPos pos;
+    private boolean locked;
+    private UUID uuid;
 
 	public PacketLock(BlockPos pos, boolean locked, UUID uuid) {
 	    this.pos = pos;
