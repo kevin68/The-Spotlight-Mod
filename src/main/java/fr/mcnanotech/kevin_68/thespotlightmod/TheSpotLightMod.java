@@ -3,10 +3,8 @@ package fr.mcnanotech.kevin_68.thespotlightmod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import fr.mcnanotech.kevin_68.thespotlightmod.client.TileEntitySpotLightRender;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,6 +27,6 @@ public class TheSpotLightMod {
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpotLight.class, new TileEntitySpotLightRender());
+		TSMObjects.registerTileRenderer();
 	}
 }

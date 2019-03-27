@@ -2,7 +2,6 @@ package fr.mcnanotech.kevin_68.thespotlightmod;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketLock;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRequestTLData;
@@ -25,7 +24,6 @@ public class TSMNetwork {
 
 	public static void registerPackets() {
 
-		CHANNEL.messageBuilder(PacketOpenGui.class, 0).encoder(PacketOpenGui::encode).decoder(PacketOpenGui::decode).consumer(PacketOpenGui::handle).add();
 		CHANNEL.messageBuilder(PacketTimeline.class, 1).encoder(PacketTimeline::encode).decoder(PacketTimeline::decode).consumer(PacketTimeline::handle).add();
 		CHANNEL.messageBuilder(PacketTimelineReset.class, 2).encoder(PacketTimelineReset::encode).decoder(PacketTimelineReset::decode).consumer(PacketTimelineReset::handle).add();
 		CHANNEL.messageBuilder(PacketRequestData.class, 3).encoder(PacketRequestData::encode).decoder(PacketRequestData::decode).consumer(PacketRequestData::handle).add();

@@ -6,7 +6,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimeline;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineDeleteKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineReset;
@@ -35,7 +34,7 @@ public class GuiSpotlightTimeline extends GuiContainer {
     protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
     public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world) {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 51, 186, true));
+        super(new ContainerSpotLight(tileEntity, playerInventory, 51, 186, true, false, false));
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -52,13 +51,13 @@ public class GuiSpotlightTimeline extends GuiContainer {
         this.addButton(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 0));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
             }
         });
         this.addButton(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 5));
+                mc.displayGuiScreen(new GuiSpotlightTimelineAddKey(invPlayer, tile, world));
             }
         });
         this.addButton(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled) {
@@ -76,10 +75,8 @@ public class GuiSpotlightTimeline extends GuiContainer {
                     if (confirmed) {
                         tile.setKey(selectedKeyID, null);
                         TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos(), selectedKeyID));
-                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
-                    } else {
-                        TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
                     }
+                    mc.displayGuiScreen(GuiSpotlightTimeline.this);
                 }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
             }
         });

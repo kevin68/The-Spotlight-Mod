@@ -3,7 +3,7 @@ package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLightConfig;
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.gui.GuiButton;
@@ -28,7 +28,7 @@ public class GuiSpotLightConfig extends GuiContainer
 
     public GuiSpotLightConfig(InventoryPlayer inventory, TileEntitySpotLight tile, World world)
     {
-        super(new ContainerSpotLightConfig(tile, inventory));
+        super(new ContainerSpotLight(tile, inventory, true, true, false));
         this.invPlayer = inventory;
         this.tile = tile;
         this.world = world;

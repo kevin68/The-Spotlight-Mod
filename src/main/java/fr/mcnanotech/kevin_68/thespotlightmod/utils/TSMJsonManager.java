@@ -823,11 +823,7 @@ public class TSMJsonManager
     }
     
     private static File getSaveDir(World world) {
-        // TODO: convert old format to the new
-        // before: worldDir/SpotLights/<dimid>/
-        // after: worldDir/(DIMx)/data/spotlights/
-        
-        File spotlightDataDir = new File(new File(world.getSaveHandler().getWorldDirectory(), "data"), "spotlights");
+        File spotlightDataDir = new File(new File(world.getSaveHandler().getWorldDirectory(), "SpotLights"), String.valueOf(world.getDimension().getType().getId()));
         spotlightDataDir.mkdirs();
         return spotlightDataDir;
     }

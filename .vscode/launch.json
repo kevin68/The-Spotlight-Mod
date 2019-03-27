@@ -1,0 +1,50 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch client",
+            "request": "launch",
+            "mainClass": "net.minecraftforge.userdev.LaunchTesting",
+            "projectName": "The-Spotlight-Mod",
+            "cwd": "${workspaceFolder}/run",
+            "vmArgs": "-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump \"-Dos.name=Windows 10\" -Dos.version=10.0",
+            "env": {
+                "FORGE_GROUP": "net.minecraftforge",
+                "FORGE_VERSION": "25.0.76",
+                "MCP_MAPPINGS": "snapshot_20190311-1.13.2",
+                "MCP_VERSION": "20190213.203750",
+                "MC_VERSION": "1.13.2",
+                "MOD_CLASSES":"thespotlightmod%%${workspaceFolder}/bin/main;thespotlightmod%%${workspaceFolder}/bin/main",
+                "assetDirectory":"C:/Users/robin/.gradle/caches/forge_gradle/assets",
+                "assetIndex": "1.13.1",
+                "nativesDirectory":"${workspaceFolder}/build/natives",
+                "target": "fmluserdevclient"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Launch server",
+            "request": "launch",
+            "mainClass": "net.minecraftforge.userdev.LaunchTesting",
+            "projectName": "The-Spotlight-Mod",
+            "cwd": "${workspaceFolder}/run",
+            "vmArgs": "-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump \"-Dos.name=Windows 10\" -Dos.version=10.0",
+            "env": {
+                "FORGE_GROUP": "net.minecraftforge",
+                "FORGE_VERSION": "25.0.76",
+                "MCP_MAPPINGS": "snapshot_20190311-1.13.2",
+                "MCP_VERSION": "20190213.203750",
+                "MC_VERSION": "1.13.2",
+                "MOD_CLASSES":"thespotlightmod%%${workspaceFolder}/bin/main;thespotlightmod%%${workspaceFolder}/bin/main",
+                "assetDirectory":"C:/Users/robin/.gradle/caches/forge_gradle/assets",
+                "assetIndex": "1.13.1",
+                "nativesDirectory":"${workspaceFolder}/build/natives",
+                "target": "fmluserdevserver"
+            }
+        }
+    ]
+}

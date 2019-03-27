@@ -7,7 +7,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.gui.GuiButton;
@@ -58,7 +57,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
         this.addButton(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 0));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
 			}
 		});
         this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode) {

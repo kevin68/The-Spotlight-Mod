@@ -7,7 +7,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketLock;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.gui.GuiButton;
@@ -82,7 +81,7 @@ public class GuiSpotLight extends GuiContainer {
         this.buttonTextures = this.addButton(new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 1));
+                mc.displayGuiScreen(new GuiSpotLightBeamTextures(invPlayer, tile, world));
             }
         });
         this.buttonMode = this.addButton(new GuiBooleanButton(4, x + 5, y + 112, 80, 20, "", this.tile.isBeam) {
@@ -102,7 +101,7 @@ public class GuiSpotLight extends GuiContainer {
         this.addButton(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
+                mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
             }
         });
         this.addButton(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked) {
@@ -121,7 +120,7 @@ public class GuiSpotLight extends GuiContainer {
         this.addButton(new GuiButton(19, x + 180, y + 115, 20, 20, "") {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 2));
+                mc.displayGuiScreen(new GuiSpotLightConfig(invPlayer, tile, world));
             }
         });
         this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {

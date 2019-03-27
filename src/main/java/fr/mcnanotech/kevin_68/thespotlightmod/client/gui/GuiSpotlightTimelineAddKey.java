@@ -6,7 +6,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketOpenGui;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
@@ -46,7 +45,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 		this.addButton(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-				TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
+                mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
 			}
 		});
 		this.addButton(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")) {
@@ -56,14 +55,14 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 					mc.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
 						if (confirmed) {
 							tile.setKey(time, TSMUtils.createKey(time, tile));
-							TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
+							mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
 						} else {
 							mc.displayGuiScreen(GuiSpotlightTimelineAddKey.this);
 						}
 					}, I18n.format("container.spotlight.askoverwrite"), "", I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.cancel"), 2));
 				} else {
 					tile.setKey(time, TSMUtils.createKey(time, tile));
-					TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 3));
+					mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
 				}
 			}
 		});

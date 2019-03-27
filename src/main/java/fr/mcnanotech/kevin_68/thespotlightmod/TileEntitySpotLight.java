@@ -942,7 +942,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-		return new ContainerSpotLight(this, playerInventory, true);
+		return new ContainerSpotLight(this, playerInventory, 8, 142, true, true, true);
 	}
 
 	@Override

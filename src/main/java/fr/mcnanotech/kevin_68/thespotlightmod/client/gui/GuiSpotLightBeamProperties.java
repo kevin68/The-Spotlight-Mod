@@ -56,7 +56,13 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
 			}
 		});
         this.buttonSecBeamEnabled.setTexts(I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.off")));
-        this.buttonDoubleBeam = this.addButton(new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE)));
+        this.buttonDoubleBeam = this.addButton(new GuiBooleanButton(3, x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE)) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                buttonDoubleBeam.toggle();
+                tile.setProperty(EnumTSMProperty.BEAM_DOUBLE,buttonDoubleBeam.isActive());
+            }
+        });
         this.buttonDoubleBeam.setTexts(I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"));
         this.addButton(new GuiSlider(4, x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight"), "", 0, 512, this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT), false, true, this));
         this.addButton(new GuiSlider(5, x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides"), "", 2, 50, this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2, false, true, this));

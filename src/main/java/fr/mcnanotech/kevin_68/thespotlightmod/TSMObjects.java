@@ -17,9 +17,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.ObjectHolder;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.TileEntitySpotLightRender;
 
 @EventBusSubscriber(modid = TheSpotLightMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TSMObjects {
@@ -77,4 +79,8 @@ public class TSMObjects {
 		return tileentitytype;
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	public static void registerTileRenderer() {
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpotLight.class, new TileEntitySpotLightRender());
+	}
 }
