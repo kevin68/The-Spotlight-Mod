@@ -26,9 +26,10 @@ public class GuiSpotLightConfig extends GuiContainer
     public World world;
     private GuiBooleanButton buttonHelp;
 
-    public GuiSpotLightConfig(InventoryPlayer inventory, TileEntitySpotLight tile, World world)
+    public GuiSpotLightConfig(InventoryPlayer inventory, TileEntitySpotLight tile, World world, ContainerSpotLight spotlightContainer)
     {
-        super(new ContainerSpotLight(tile, inventory, true, true, false));
+        super(spotlightContainer);
+        spotlightContainer.showConfigSlot(true);
         this.invPlayer = inventory;
         this.tile = tile;
         this.world = world;
@@ -43,7 +44,7 @@ public class GuiSpotLightConfig extends GuiContainer
         this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
 			}
 		});
         this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {

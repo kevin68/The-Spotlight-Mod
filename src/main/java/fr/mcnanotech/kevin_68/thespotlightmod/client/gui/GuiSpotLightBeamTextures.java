@@ -25,8 +25,9 @@ public class GuiSpotLightBeamTextures extends GuiContainer {
 	public World world;
 	private GuiBooleanButton buttonHelp;
 
-	public GuiSpotLightBeamTextures(InventoryPlayer inventory, TileEntitySpotLight tile, World world) {
-		super(new ContainerSpotLight(tile, inventory, true, false, true));
+	public GuiSpotLightBeamTextures(InventoryPlayer inventory, TileEntitySpotLight tile, World world, ContainerSpotLight spotlightContainer) {
+		super(spotlightContainer);
+		spotlightContainer.showTextureSlot(true);
 		this.invPlayer = inventory;
 		this.tile = tile;
 		this.world = world;
@@ -40,7 +41,7 @@ public class GuiSpotLightBeamTextures extends GuiContainer {
 		this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-				mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+				mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
 			}
 		});
 		this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {

@@ -1,5 +1,8 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.container;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMObjects;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,30 +13,59 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerSpotLight extends Container {
     protected TileEntitySpotLight tileSpotLight;
+    
+    private List<Slot> configSlots = new ArrayList<Slot>();
+    private List<Slot> textureSlots = new ArrayList<Slot>();
+    private List<Slot> playerSlots = new ArrayList<Slot>();
 
-    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, int invX, int invY, boolean showPlayerInventory, boolean showConfig, boolean showTexture)
-    {
+    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, int invX, int invY) {
         this.tileSpotLight = tileEntity;
-        bindPlayerInventory(inventoryPlayer, invX, invY, showPlayerInventory);
-        addSlot(new SlotInputItem(tileEntity, 0, 40, 30, TSMObjects.CONFIG_SAVER), showConfig);
-        addSlot(new SlotOuput(tileEntity, 1, 40, 80), showConfig);
-        addSlot(new SlotInputItem(tileEntity, 2, 80, 30, TSMObjects.CONFIG_SAVER_FULL), showConfig);
-        addSlot(new SlotOuput(tileEntity, 3, 80, 80), showConfig);
-        addSlot(new SlotInputItem(tileEntity, 4, 120, 30, TSMObjects.CONFIG_SAVER_FULL), showConfig);
-        addSlot(new SlotOuput(tileEntity, 5, 120, 80), showConfig);
-        addSlot(new Slot(tileEntity, 6, 40, 80), showTexture);
-        addSlot(new Slot(tileEntity, 7, 120, 80), showTexture);
+        bindPlayerInventory(inventoryPlayer, invX, invY);
+        configSlots.add(addSlot(new SlotInputItem(tileEntity, 0, 40, 30, TSMObjects.CONFIG_SAVER)));
+        configSlots.add(addSlot(new SlotOuput(tileEntity, 1, 40, 80)));
+        configSlots.add(addSlot(new SlotInputItem(tileEntity, 2, 80, 30, TSMObjects.CONFIG_SAVER_FULL)));
+        configSlots.add(addSlot(new SlotOuput(tileEntity, 3, 80, 80)));
+        configSlots.add(addSlot(new SlotInputItem(tileEntity, 4, 120, 30, TSMObjects.CONFIG_SAVER_FULL)));
+        configSlots.add( addSlot(new SlotOuput(tileEntity, 5, 120, 80)));
+        textureSlots.add(addSlot(new TSMSlot(tileEntity, 6, 40, 80)));
+        textureSlots.add(addSlot(new TSMSlot(tileEntity, 7, 120, 80)));
+    }
+    
+    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer) {
+        this(tileEntity, inventoryPlayer, 8, 142);
     }
 
-    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, boolean showPlayerInventory, boolean showConfig, boolean showTexture) {
-        this(tileEntity, inventoryPlayer, 8, 142, showPlayerInventory, showConfig, showTexture);
-    }
 
-    public ContainerSpotLight(TileEntitySpotLight tileEntity, InventoryPlayer inventoryPlayer, boolean showPlayerInventory) {
-        this(tileEntity, inventoryPlayer, showPlayerInventory, false, false);
+    public void showConfigSlot(boolean show) {
+        configSlots.forEach(s -> ((TSMSlot)s).enable(show));
+    }
+    
+    public void showTextureSlot(boolean show) {
+        textureSlots.forEach(s -> ((TSMSlot)s).enable(show));
+    }
+    
+    public void showPlayerSlot(boolean show) {
+        playerSlots.forEach(s -> ((TSMSlot)s).enable(show));
+    }
+    
+    public void changePlayerInventoryPos(int x, int y) {
+        for (int i = 0; i < playerSlots.size(); i++) {
+            Slot s = playerSlots.get(i);
+            s.xPos = x + i * 18;
+            s.yPos = y;
+        }
+    }
+    
+    public void resetSlot() {
+        showConfigSlot(false);
+        showTextureSlot(false);
+        showPlayerSlot(true);
+        changePlayerInventoryPos(8, 142);
     }
 
     @Override
@@ -41,12 +73,12 @@ public class ContainerSpotLight extends Container {
         return this.tileSpotLight.isUsableByPlayer(player);
     }
 
-    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int x, int y, boolean show) {
+    protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int x, int y) {
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(inventoryPlayer, i, x + i * 18, y), show);
+            playerSlots.add(addSlot(new TSMSlot(inventoryPlayer, i, x + i * 18, y, true)));
         }
     }
-    
+
     @Override
     public ItemStack slotClick(int slotId, int clickedButton, ClickType clickType, EntityPlayer player) {
         if (slotId >= 15 && slotId < 17) {
@@ -68,7 +100,7 @@ public class ContainerSpotLight extends Container {
         }
         return super.slotClick(slotId, clickedButton, clickType, player);
     }
-    
+
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
@@ -87,7 +119,7 @@ public class ContainerSpotLight extends Container {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
             if (slotId < this.tileSpotLight.getSizeInventory()) {
-                if (!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory()  - 2, this.inventorySlots.size() - 2, true)) {
+                if (!mergeItemStack(itemstack1, this.tileSpotLight.getSizeInventory() - 2, this.inventorySlots.size() - 2, true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (!mergeItemStack(itemstack1, 0, this.tileSpotLight.getSizeInventory() - 2, false)) {
@@ -106,16 +138,32 @@ public class ContainerSpotLight extends Container {
     public TileEntitySpotLight getSpotLight() {
         return this.tileSpotLight;
     }
-    
-    private void addSlot(Slot slot, boolean show) {
-        if (!show) {
-            slot.xPos = -2000;
-            slot.yPos = -2000;
+
+    private static class TSMSlot extends Slot {
+
+        private boolean enabled;
+
+        public TSMSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, boolean enabled) {
+            super(inventoryIn, index, xPosition, yPosition);
+            this.enabled = enabled;
         }
-        addSlot(slot);
+        
+        public TSMSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+            this(inventoryIn, index, xPosition, yPosition, false);
+        }
+
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public boolean isEnabled() {
+            return this.enabled;
+        }
+        
+        public void enable(boolean enable) {
+            this.enabled = enable;
+        }
     }
-    
-    private static class SlotOuput extends Slot {
+
+    private static class SlotOuput extends TSMSlot {
 
         public SlotOuput(IInventory inventoryIn, int index, int xPosition, int yPosition) {
             super(inventoryIn, index, xPosition, yPosition);
@@ -126,10 +174,10 @@ public class ContainerSpotLight extends Container {
             return false;
         }
     }
-    
-    private static class SlotInputItem extends Slot {
+
+    private static class SlotInputItem extends TSMSlot {
         private final Item acceptedItem;
-        
+
         public SlotInputItem(IInventory inventoryIn, int index, int xPosition, int yPosition, Item item) {
             super(inventoryIn, index, xPosition, yPosition);
             this.acceptedItem = item;

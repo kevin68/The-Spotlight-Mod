@@ -29,11 +29,11 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
     public GuiBooleanButton buttonHelp;
     public GuiTextField textField;
 
-    public GuiSpotLightTextColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld) {
-        super(new ContainerSpotLight(tileEntity, playerInventory, true));
+    public GuiSpotLightTextColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
+        super(spotlightContainer);
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
-        this.world = wrld;
+        this.world = world;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
         this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
             }
         });
         this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {

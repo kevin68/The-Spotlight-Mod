@@ -33,8 +33,9 @@ public class GuiSpotlightTimeline extends GuiContainer {
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight2.png");
     protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
 
-    public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world) {
-        super(new ContainerSpotLight(tileEntity, playerInventory, 51, 186, true, false, false));
+    public GuiSpotlightTimeline(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
+        super(spotlightContainer); 
+        spotlightContainer.changePlayerInventoryPos(51, 186);
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = world;
@@ -51,13 +52,13 @@ public class GuiSpotlightTimeline extends GuiContainer {
         this.addButton(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
             }
         });
         this.addButton(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotlightTimelineAddKey(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotlightTimelineAddKey(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
             }
         });
         this.addButton(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled) {

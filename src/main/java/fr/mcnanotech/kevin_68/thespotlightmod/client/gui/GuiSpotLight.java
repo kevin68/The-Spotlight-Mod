@@ -14,6 +14,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -28,11 +29,16 @@ public class GuiSpotLight extends GuiContainer {
     public GuiButton buttonTextures, buttonColors, buttonAngle, buttonBeamSpecs;
     public GuiBooleanButton buttonMode, buttonHelp, buttonRedstone, buttonLock;
 
-    public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld) {
-        super(new ContainerSpotLight(tileEntity, playerInventory, true));
+    public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, Container container) {
+        super(container);
+        ((ContainerSpotLight)container).resetSlot();
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
-        this.world = wrld;
+        this.world = world;
+    }
+    
+    public GuiSpotLight(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world) {
+        this(playerInventory, tileEntity, world, new ContainerSpotLight(tileEntity, playerInventory));
     }
 
     @Override
@@ -46,9 +52,9 @@ public class GuiSpotLight extends GuiContainer {
             public void onClick(double mouseX, double mouseY) {
                 if (buttonMode.isActive()) {
                     //TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 4));
-                    mc.displayGuiScreen(new GuiSpotLightBeamColor(invPlayer, tile, world));
+                    mc.displayGuiScreen(new GuiSpotLightBeamColor(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 } else {
-                    mc.displayGuiScreen(new GuiSpotLightTextColor(invPlayer, tile, world));
+                    mc.displayGuiScreen(new GuiSpotLightTextColor(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 }
             }
         });
@@ -58,9 +64,9 @@ public class GuiSpotLight extends GuiContainer {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 if (buttonMode.isActive()) {
-                    mc.displayGuiScreen(new GuiSpotLightBeamAngles(invPlayer, tile, world));
+                    mc.displayGuiScreen(new GuiSpotLightBeamAngles(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 } else {
-                    mc.displayGuiScreen(new GuiSpotLightTextAngles(invPlayer, tile, world));
+                    mc.displayGuiScreen(new GuiSpotLightTextAngles(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 }
             }
         });
@@ -70,9 +76,9 @@ public class GuiSpotLight extends GuiContainer {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 if (buttonMode.isActive()) {
-                    mc.displayGuiScreen(new GuiSpotLightBeamProperties(invPlayer, tile, world));
+                    mc.displayGuiScreen(new GuiSpotLightBeamProperties(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 } else {
-                    mc.displayGuiScreen(new GuiSpotLightTextProperties(invPlayer, tile, world));
+                    mc.displayGuiScreen(new GuiSpotLightTextProperties(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 }
             }
         });
@@ -81,7 +87,7 @@ public class GuiSpotLight extends GuiContainer {
         this.buttonTextures = this.addButton(new GuiButton(3, x + 5, y + 89, 80, 20, I18n.format("container.spotlight.textures")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLightBeamTextures(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLightBeamTextures(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
             }
         });
         this.buttonMode = this.addButton(new GuiBooleanButton(4, x + 5, y + 112, 80, 20, "", this.tile.isBeam) {
@@ -101,7 +107,7 @@ public class GuiSpotLight extends GuiContainer {
         this.addButton(new GuiButton(5, x + 90, y + 20, 80, 20, I18n.format("container.spotlight.timeline")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
             }
         });
         this.addButton(this.buttonLock = new GuiBooleanButton(17, x + 180, y + 65, 20, 20, "", this.tile.locked) {
@@ -120,7 +126,7 @@ public class GuiSpotLight extends GuiContainer {
         this.addButton(new GuiButton(19, x + 180, y + 115, 20, 20, "") {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLightConfig(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLightConfig(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
             }
         });
         this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {

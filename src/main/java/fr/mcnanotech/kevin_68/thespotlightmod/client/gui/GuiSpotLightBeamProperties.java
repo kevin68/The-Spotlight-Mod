@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
@@ -14,6 +13,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -31,12 +31,12 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
     private GuiSlider sliderSecBeamSize;
     private GuiBooleanButton buttonSecBeamEnabled, buttonDoubleBeam;
 
-    public GuiSpotLightBeamProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
+    public GuiSpotLightBeamProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, Container spotlightContainer)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, true));
+        super(spotlightContainer);
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
-        this.world = wrld;
+        this.world = world;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class GuiSpotLightBeamProperties extends GuiContainer implements ISlider
         this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
 			}
 		});
         this.addButton(this.buttonHelp = new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {

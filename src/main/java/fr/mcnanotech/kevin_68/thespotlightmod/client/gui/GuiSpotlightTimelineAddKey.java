@@ -29,8 +29,8 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 	private GuiBooleanButton buttonHelp;
 	private short time;
 
-	public GuiSpotlightTimelineAddKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world) {
-		super(new ContainerSpotLight(tileEntity, playerInventory, true));
+	public GuiSpotlightTimelineAddKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
+		super(spotlightContainer);
 		this.invPlayer = playerInventory;
 		this.tile = tileEntity;
 		this.world = world;
@@ -45,7 +45,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 		this.addButton(new GuiButton(1, x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
 			}
 		});
 		this.addButton(new GuiButton(2, x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey")) {
@@ -55,14 +55,14 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 					mc.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
 						if (confirmed) {
 							tile.setKey(time, TSMUtils.createKey(time, tile));
-							mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
+							mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
 						} else {
 							mc.displayGuiScreen(GuiSpotlightTimelineAddKey.this);
 						}
 					}, I18n.format("container.spotlight.askoverwrite"), "", I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.cancel"), 2));
 				} else {
 					tile.setKey(time, TSMUtils.createKey(time, tile));
-					mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world));
+					mc.displayGuiScreen(new GuiSpotlightTimeline(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
 				}
 			}
 		});

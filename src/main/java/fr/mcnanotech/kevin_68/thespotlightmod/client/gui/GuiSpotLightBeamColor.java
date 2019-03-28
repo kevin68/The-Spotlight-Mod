@@ -28,9 +28,10 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
     public World world;
     public GuiBooleanButton buttonHelp;
 
-    public GuiSpotLightBeamColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld)
+    public GuiSpotLightBeamColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld, ContainerSpotLight spotlightContainer)
     {
-        super(new ContainerSpotLight(tileEntity, playerInventory, false));
+        super(spotlightContainer);
+        spotlightContainer.showPlayerSlot(false);
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
         this.world = wrld;
@@ -57,7 +58,7 @@ public class GuiSpotLightBeamColor extends GuiContainer implements ISlider
         this.addButton(new GuiButton(19, x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world));
+                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
 			}
 		});
         this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 159, 20, 20, "?", this.tile.helpMode) {
