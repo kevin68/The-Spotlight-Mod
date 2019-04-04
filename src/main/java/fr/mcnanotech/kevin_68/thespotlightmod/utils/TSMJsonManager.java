@@ -18,6 +18,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -161,7 +162,7 @@ public class TSMJsonManager
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            TheSpotLightMod.LOGGER.catching(Level.WARN, e);
         }
     }
 
@@ -299,7 +300,7 @@ public class TSMJsonManager
         JsonObject json = read(file, world);
         if(json != null)
         {
-            return read(file, world).toString();
+            return json.toString();
         }
         return null;
     }
@@ -451,7 +452,7 @@ public class TSMJsonManager
         }
         catch(NullPointerException e)
         {
-            e.printStackTrace();
+            TheSpotLightMod.LOGGER.catching(Level.WARN, e);
             try
             {
                 if(FMLEnvironment.dist.isDedicatedServer())
@@ -757,7 +758,7 @@ public class TSMJsonManager
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            TheSpotLightMod.LOGGER.catching(Level.WARN, e);
         }
     }
 

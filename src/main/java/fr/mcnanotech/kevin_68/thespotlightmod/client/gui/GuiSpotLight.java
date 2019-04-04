@@ -51,7 +51,6 @@ public class GuiSpotLight extends GuiContainer {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 if (buttonMode.isActive()) {
-                    //TSMNetwork.CHANNEL.sendToServer(new PacketOpenGui(tile.getPos(), 4));
                     mc.displayGuiScreen(new GuiSpotLightBeamColor(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
                 } else {
                     mc.displayGuiScreen(new GuiSpotLightTextColor(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));

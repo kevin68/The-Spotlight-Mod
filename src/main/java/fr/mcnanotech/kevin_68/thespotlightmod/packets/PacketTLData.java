@@ -3,6 +3,9 @@ package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.Level;
+
+import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.network.PacketBuffer;
@@ -15,11 +18,7 @@ public class PacketTLData {
 
     public PacketTLData(BlockPos pos, String data) {
         this.pos = pos;
-        try {
-            this.data = TSMJsonManager.compress(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.data = data;
     }
 
     public static PacketTLData decode(PacketBuffer buffer) {
@@ -39,7 +38,7 @@ public class PacketTLData {
             try {
                 tile.timelineUpdated = TSMJsonManager.updateTileTimeline(tile, TSMJsonManager.decompress(packet.data));
             } catch (IOException e) {
-                e.printStackTrace();
+                TheSpotLightMod.LOGGER.catching(Level.WARN, e);
             }
             tile.timelineUpdating = false;
         });

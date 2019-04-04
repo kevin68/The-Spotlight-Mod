@@ -3,6 +3,8 @@ package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.Level;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
@@ -36,7 +38,7 @@ public class PacketRequestData {
                 TSMNetwork.CHANNEL.reply(new PacketData(packet.pos, TSMJsonManager.compress(data == null ? "null" : data)), ctx.get());
             } catch (IOException e) {
                 TheSpotLightMod.LOGGER.error("Failed to compress spotlight data, response packet not sended");
-                e.printStackTrace();
+                TheSpotLightMod.LOGGER.catching(Level.WARN, e);
             }
 		});
 		ctx.get().setPacketHandled(true);

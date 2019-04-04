@@ -3,6 +3,8 @@ package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.Level;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
@@ -41,7 +43,8 @@ public class PacketData {
 				    String jsonData = TSMJsonManager.decompress(packet.data);
 					tile.updated = TSMJsonManager.updateTileData(tile, jsonData);
 				} catch (IOException e) {
-					TheSpotLightMod.LOGGER.debug(e);
+					TheSpotLightMod.LOGGER.debug("Fail to decompress data");
+					TheSpotLightMod.LOGGER.catching(Level.WARN, e);
 				}
 				tile.updating = false;
 			}

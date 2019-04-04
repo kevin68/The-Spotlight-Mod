@@ -1,5 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+
+import org.apache.logging.log4j.Level;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumPropVecBehaviour;
@@ -227,7 +230,8 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            TheSpotLightMod.LOGGER.warn("Failed to tick");
+            TheSpotLightMod.LOGGER.catching(Level.WARN, e);
         }
     }
 
@@ -444,7 +448,11 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
         TSMJsonManager.updateTlJsonData(this.world, this.pos, strData);
-        TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(this.pos, strData));
+        try {
+            TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTLData(this.pos, TSMJsonManager.compress(strData)));
+        } catch (IOException e) {
+            TheSpotLightMod.LOGGER.catching(Level.WARN, e);
+        }
     }
 
     private Short[] calculateValuesS(Short[] tab, short valStart, short valEnd, int timeStart, int timeLenght, boolean last)
@@ -545,8 +553,7 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         compound.putBoolean("TimelineSmooth", this.timelineSmooth);
         compound.putBoolean("Locked", this.locked);
 
-        if(this.lockerUUID != null)
-        {
+        if(this.lockerUUID != null) {
         	compound.putUniqueId("LockerUUID", this.lockerUUID);
         }
 
@@ -568,20 +575,17 @@ public class TileEntitySpotLight extends TileEntity implements ISidedInventory, 
         this.timelineSmooth = compound.getBoolean("TimelineSmooth");
         this.locked = compound.getBoolean("Locked");
 
-        if (compound.contains("LockerUUID", Constants.NBT.TAG_STRING))
-        {
+        if (compound.contains("LockerUUID", Constants.NBT.TAG_STRING)) {
         	// convert old data
             this.lockerUUID = UUID.fromString(compound.getString("LockerUUID"));
         }
-        if (compound.hasUniqueId("LockerUUID"))
-        {
-        	// convert old data
+        if (compound.hasUniqueId("LockerUUID")) {
             this.lockerUUID = compound.getUniqueId("LockerUUID");
         }
         
         if (compound.contains("CustomName", Constants.NBT.TAG_STRING)) {
             this.customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
-         }
+        }
 
         ItemStackHelper.loadAllItems(compound, this.slots);
     }
