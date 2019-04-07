@@ -53,7 +53,7 @@ public class PacketUpdateData {
                 TileEntitySpotLight te = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(packet.pos);
                 te.updated = false;
                 TSMJsonManager.updateJsonData(ctx.get().getSender().world, packet.pos, TSMJsonManager.decompress(packet.newData));
-                TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(packet.pos, TSMJsonManager.decompress(packet.newData)));
+                TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketData(packet.pos, packet.newData));
             } catch (IOException e) {
                 TheSpotLightMod.LOGGER.catching(Level.WARN, e);
             }

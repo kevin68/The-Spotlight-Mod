@@ -232,7 +232,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
         Block b = Block.getBlockFromItem(stack.getItem());
         if(b != Blocks.AIR)
         {
-            sprite = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getDefaultState()); //TODO: check
+            sprite = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(b.getDefaultState());
         }
         else
         {
@@ -243,7 +243,8 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
         {
             return null;
         }
-        return sprite.getName();
+        ResourceLocation rl = sprite.getName();
+        return new ResourceLocation(rl.getNamespace(), "textures/" + rl.getPath() + ".png");
     }
 
     private String getTranslatingText(String str, TileEntitySpotLight tile)
