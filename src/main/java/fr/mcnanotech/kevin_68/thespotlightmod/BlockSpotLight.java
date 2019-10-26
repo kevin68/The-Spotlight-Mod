@@ -1,24 +1,25 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
+import javax.annotation.Nullable;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -28,68 +29,70 @@ public class BlockSpotLight extends Block {
 	}
 
 	@Override
-	public TileEntity createTileEntity(IBlockState state, IBlockReader world) {
+	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new TileEntitySpotLight();
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state) {
+	public boolean hasTileEntity(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+	public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		if (!world.isRemote) {
 			TSMJsonManager.generateNewFiles(world, pos);
 		}
-		IBlockState nState = world.getBlockState(pos);
+		BlockState nState = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, nState, nState, 3);
 	}
 
 	@Override
-	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving) {
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!world.isRemote && world.getTileEntity(pos) instanceof TileEntitySpotLight) {
 			TSMJsonManager.deleteFile(world, pos);
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		if (world.isRemote) {
 			return false;
 		}
-		TileEntity tileentity = world.getTileEntity(pos);
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (player.isSneaking()) {
 			return false;
 		}
-		if (tileentity instanceof TileEntitySpotLight) {
-			TileEntitySpotLight tile = (TileEntitySpotLight) tileentity;
+		if (tileEntity instanceof TileEntitySpotLight) {
+			TileEntitySpotLight tile = (TileEntitySpotLight) tileEntity;
 			if (tile.locked && !player.getGameProfile().getId().equals(tile.lockerUUID)) {
-				if (hand == EnumHand.MAIN_HAND) {
-					player.sendMessage(new TextComponentString(I18n.format("message.spotlight.locked.open")));
+				if (hand == Hand.MAIN_HAND) {
+					player.sendMessage(new TranslationTextComponent("message.spotlight.locked.open"));
 				}
 				return false;
 			}
-            EntityPlayerMP entityPlayerMP = (EntityPlayerMP) player;
-            NetworkHooks.openGui(entityPlayerMP, (IInteractionObject)tileentity, buf -> buf.writeBlockPos(pos));
+			NetworkHooks.openGui((ServerPlayerEntity)player, tile, (buffer) -> {
+                buffer.writeBlockPos(pos);
+            });
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader worldIn, BlockPos pos) {
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
 		return Block.makeCuboidShape(1.0D, 1.0D, 1.0D, 14.0D, 14.0D, 14.0D);
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+    public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
+	// isFullCube
 	@Override
-	public boolean isFullCube(IBlockState state) {
+	public boolean func_220074_n(BlockState state) {
 		return false;
 	}
 }

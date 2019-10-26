@@ -1,32 +1,32 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class GuiSpotLightConfig extends GuiContainer
+public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight.png");
+    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
-    public InventoryPlayer invPlayer;
+    public PlayerInventory invPlayer;
     public TileEntitySpotLight tile;
     public World world;
     private GuiBooleanButton buttonHelp;
 
-    public GuiSpotLightConfig(InventoryPlayer inventory, TileEntitySpotLight tile, World world, ContainerSpotLight spotlightContainer)
+    public GuiSpotLightConfig(PlayerInventory inventory, TileEntitySpotLight tile, World world, ContainerSpotLight spotlightContainer)
     {
         super(spotlightContainer);
         spotlightContainer.showConfigSlot(true);
@@ -36,9 +36,9 @@ public class GuiSpotLightConfig extends GuiContainer
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
-        super.initGui();
+        super.init();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
@@ -57,10 +57,10 @@ public class GuiSpotLightConfig extends GuiContainer
     }
 
     @Override
-    public void onGuiClosed()
+    public void onClose()
     {
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
-        super.onGuiClosed();
+        super.onClose();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class GuiSpotLightConfig extends GuiContainer
                 }
                 if(!text.isEmpty())
                 {
-                    this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
+                    this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
                 }
             }
             for(GuiButton button : this.buttons)
@@ -115,7 +115,7 @@ public class GuiSpotLightConfig extends GuiContainer
                     }
                     if(!text.isEmpty())
                     {
-                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                        this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
                     }
                 }
             }
@@ -140,6 +140,6 @@ public class GuiSpotLightConfig extends GuiContainer
         this.drawTexturedModalRect(x + 122, y + 49, 213, 21, 13, 26);
         this.drawTexturedModalRect(x + 82, y + 49, 213, 21, 13, 26);
         this.drawTexturedModalRect(x + 42, y + 49, 213, 21, 13, 26);
-        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.config")), x - 30, y - 35, 0xffffff);
+        this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.config")), x - 30, y - 35, 0xffffff);
     }
 }

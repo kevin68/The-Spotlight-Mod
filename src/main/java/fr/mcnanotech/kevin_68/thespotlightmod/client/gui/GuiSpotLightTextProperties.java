@@ -9,26 +9,25 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightTextProperties extends GuiContainer implements ISlider {
-	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+public class GuiSpotLightTextProperties extends ContainerScreen<ContainerSpotLight> implements ISlider {
+	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
-	private InventoryPlayer invPlayer;
+	private PlayerInventory invPlayer;
 	private TileEntitySpotLight tile;
 	private World world;
 	private GuiSlider sliderTranslateSpeed;
 	private GuiBooleanButton buttonBold, buttonStrike, buttonUnderline, buttonItalic, buttonObfuscated, buttonShadow, buttonTranslating, buttonReverseTranslating, buttonHelp, button3D;
 
-	public GuiSpotLightTextProperties(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
+	public GuiSpotLightTextProperties(PlayerInventory playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
 		super(spotlightContainer);
 		this.invPlayer = playerInventory;
 		this.tile = tileEntity;
@@ -36,8 +35,8 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISlider 
 	}
 
 	@Override
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 		this.addButton(new GuiSlider(0, x - 50, y - 20, 130, 20, I18n.format("container.spotlight.textheight"), "", -100, 100, this.tile.getShort(EnumTSMProperty.TEXT_HEIGHT), false, true, this) {
@@ -153,9 +152,9 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISlider 
 	}
 
 	@Override
-	public void onGuiClosed() {
+	public void onClose() {
 		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
-		super.onGuiClosed();
+		super.onClose();
 	}
 
 	@Override
@@ -214,7 +213,7 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISlider 
 						break;
 					}
 					if (!text.isEmpty()) {
-						this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+						this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
 					}
 				}
 			}
@@ -228,6 +227,6 @@ public class GuiSpotLightTextProperties extends GuiContainer implements ISlider 
 		int y = (this.height - this.ySize) / 2;
 		this.mc.getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
-		this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.beamspecs")), x - 30, y - 35, 0xffffff);
+		this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.beamspecs")), x - 30, y - 35, 0xffffff);
 	}
 }

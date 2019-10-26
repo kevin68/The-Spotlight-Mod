@@ -9,27 +9,25 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> implements ISlider {
+    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
-    public InventoryPlayer invPlayer;
+    public PlayerInventory invPlayer;
     public TileEntitySpotLight tile;
     public World world;
     public GuiBooleanButton buttonHelp;
     public GuiTextField textField;
 
-    public GuiSpotLightTextColor(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
+    public GuiSpotLightTextColor(PlayerInventory playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
         super(spotlightContainer);
         this.invPlayer = playerInventory;
         this.tile = tileEntity;
@@ -37,8 +35,8 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.addButton(new GuiSlider(0, x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_RED), false, true, this));
@@ -46,7 +44,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
         this.addButton(new GuiSlider(2, x - 40, y + 68, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_BLUE), false, true, this));
 
         this.mc.keyboardListener.enableRepeatEvents(true);
-        this.textField = new GuiTextField(3, this.fontRenderer, x - 40, y, 256, 12);
+        this.textField = new GuiTextField(3, this.font, x - 40, y, 256, 12);
         this.textField.setTextColor((this.tile.getShort(EnumTSMProperty.TEXT_RED) * 65536) + (this.tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256) + this.tile.getShort(EnumTSMProperty.TEXT_BLUE));
         this.textField.setEnableBackgroundDrawing(true);
         this.textField.setMaxStringLength(40);
@@ -71,8 +69,8 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
     }
 
     @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
+    public void onClose() {
+        super.onClose();
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
         this.mc.keyboardListener.enableRepeatEvents(false);
     }
@@ -99,7 +97,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
         this.textField.drawTextField(mouseX, mouseY, partialRenderTick);
         if (this.buttonHelp.isActive()) {
             if (mouseX >= this.textField.x && mouseX < this.textField.x + this.textField.width && mouseY >= this.textField.y && mouseY < this.textField.y + this.textField.height) {
-                this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.textcolors.text"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
             }
             for (GuiButton button : this.buttons) {
                 if (button.isMouseOver()) {
@@ -122,7 +120,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
                         break;
                     }
                     if (!text.isEmpty()) {
-                        this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                        this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
                     }
                 }
             }
@@ -136,7 +134,7 @@ public class GuiSpotLightTextColor extends GuiContainer implements ISlider {
         int y = (this.height - this.ySize) / 2;
         this.mc.getTextureManager().bindTexture(texture);
         this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
-        this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.color")), x - 30, y - 35, 0xffffff);
+        this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.color")), x - 30, y - 35, 0xffffff);
     }
     
     private void handleText(int index, String text) {

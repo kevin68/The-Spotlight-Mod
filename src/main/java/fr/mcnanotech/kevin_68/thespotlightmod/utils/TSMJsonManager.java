@@ -38,7 +38,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMKey;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketData;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -359,7 +359,7 @@ public class TSMJsonManager
     public static void saveConfig(ItemStack stack, TileEntitySpotLight tile)
     {
         String configName = String.valueOf(System.currentTimeMillis());
-        NBTTagCompound tag = new NBTTagCompound();
+        CompoundNBT tag = new CompoundNBT();
         tag.putString("ConfigName", configName);
         stack.setTag(tag);
         File folder = getConfItemSaveDir();

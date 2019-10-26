@@ -1,11 +1,11 @@
 package fr.mcnanotech.kevin_68.thespotlightmod;
 
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber(modid = TheSpotLightMod.MODID)
+@EventBusSubscriber(modid = TheSpotLightMod.MOD_ID)
 public class TSMEvents
 {
     @SubscribeEvent
@@ -18,7 +18,7 @@ public class TSMEvents
             {
                 if(!event.getPlayer().getGameProfile().getId().equals(te.lockerUUID))
                 {
-                    event.getPlayer().sendMessage(new TextComponentTranslation("message.spotlight.locked.break"));
+                    event.getPlayer().sendMessage(new TranslationTextComponent("message.spotlight.locked.break"));
                     event.setCanceled(true);
                 }
             }

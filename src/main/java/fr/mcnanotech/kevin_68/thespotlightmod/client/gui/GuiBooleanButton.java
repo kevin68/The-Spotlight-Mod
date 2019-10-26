@@ -4,13 +4,13 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBooleanButton extends GuiButton
+public class GuiBooleanButton extends AbstractButton
 {
     private ResourceLocation buttonTex = new ResourceLocation("textures/gui/widgets.png");
     private boolean active;
@@ -18,9 +18,9 @@ public class GuiBooleanButton extends GuiButton
     private int yTex = 46;
     private boolean useHoverState = true, otherTextureWhenActive = true, doNotChangeTextColor = false;
     
-    public GuiBooleanButton(int id , int x, int y,int width, int height, String text, boolean active)
+    public GuiBooleanButton(int x, int y,int width, int height, String text, boolean active)
     {
-        super(id, x, y, width, height, text);
+        super(x, y, width, height, text);
         this.active = active;
         this.textActive = this.textNotActive = text;
     }
@@ -57,6 +57,11 @@ public class GuiBooleanButton extends GuiButton
         this.doNotChangeTextColor = change;
     }
 
+    @Override
+    public void onPress() {
+        this.toggle();
+    }
+
     public void toggle()
     {
         this.active = !this.isActive();
@@ -68,19 +73,19 @@ public class GuiBooleanButton extends GuiButton
     }
 
     @Override
-    public int getHoverState(boolean mouseIsInButton)
+    public int getYImage(boolean hovered)
     {
-        return getHoverState(mouseIsInButton, true);
+        return getYImage(hovered, true);
     }
 
-    public int getHoverState(boolean mouseIsInButton, boolean otherActive)
+    public int getYImage(boolean getYImage, boolean otherActive)
     {
         byte b0 = 1;
         if((isActive() || this.active) && otherActive)
         {
             b0 = 1;
         }
-        if(mouseIsInButton)
+        if(getYImage)
         {
             b0 = 2;
         }
@@ -102,18 +107,18 @@ public class GuiBooleanButton extends GuiButton
             FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(this.buttonTex);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
-            int k = this.getHoverState(this.hovered, this.otherTextureWhenActive);
-            this.drawTexturedModalRect(this.x, this.y, 0, this.yTex + (this.useHoverState ? (k * 20) : 0), this.width / 2, this.height);
-            this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, this.yTex + (this.useHoverState ? (k * 20) : 0), this.width / 2, this.height);
+            this.isHovered = x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
+            int k = this.getYImage(this.isHovered, this.otherTextureWhenActive);
+            this.blit(this.x, this.y, 0, this.yTex + (this.useHoverState ? (k * 20) : 0), this.width / 2, this.height);
+            this.blit(this.x + this.width / 2, this.y, 200 - this.width / 2, this.yTex + (this.useHoverState ? (k * 20) : 0), this.width / 2, this.height);
             this.renderBg(mc, x, y);
             int l = 14737632;
             String str;
-            if(!this.enabled)
+            if(!this.active)
             {
                 l = -6250336;
             }
-            else if(this.hovered)
+            else if(this.isHovered)
             {
                 l = 16777120;
             }

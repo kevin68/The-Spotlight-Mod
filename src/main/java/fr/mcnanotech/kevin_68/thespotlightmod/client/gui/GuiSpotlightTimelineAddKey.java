@@ -9,27 +9,25 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider {
-	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/spotlight.png");
+public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLight> implements ISlider {
+	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight.png");
 
-	protected InventoryPlayer invPlayer;
+	protected PlayerInventory invPlayer;
 	protected TileEntitySpotLight tile;
 	protected World world;
 	private GuiBooleanButton buttonHelp;
 	private short time;
 
-	public GuiSpotlightTimelineAddKey(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
+	public GuiSpotlightTimelineAddKey(PlayerInventory playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
 		super(spotlightContainer);
 		this.invPlayer = playerInventory;
 		this.tile = tileEntity;
@@ -37,8 +35,8 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 	}
 
 	@Override
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 		this.addButton(new GuiSlider(0, x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time"), "", 0, 119, 0, false, true, this));
@@ -76,9 +74,9 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 	}
 
 	@Override
-	public void onGuiClosed() {
+	public void onClose() {
 		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos(), TSMJsonManager.getTlDataFromTile(this.tile).toString()));
-		super.onGuiClosed();
+		super.onClose();
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 						break;
 					}
 					if (!text.isEmpty()) {
-						this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+						this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
 					}
 				}
 			}
@@ -123,6 +121,6 @@ public class GuiSpotlightTimelineAddKey extends GuiContainer implements ISlider 
 		int y = (this.height - this.ySize) / 2;
 		this.mc.getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-		this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.addKey")), x + 5, y + 8, 4210752);
+		this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.addKey")), x + 5, y + 8, 4210752);
 	}
 }

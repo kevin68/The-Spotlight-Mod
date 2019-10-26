@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 
 public class Model3DTextDefault extends Model3DTextBase
 {
-    private Map<Character, ModelRenderer[]> models = new HashMap<Character, ModelRenderer[]>();;
+    private Map<Character, RendererModel[]> models = new HashMap<Character, RendererModel[]>();;
     public static final Model3DTextDefault instance = new Model3DTextDefault();
 
     private Model3DTextDefault()
@@ -157,7 +157,7 @@ public class Model3DTextDefault extends Model3DTextBase
         renderAll(this.models.get(ch), scale, x);
     }
 
-    private ModelRenderer[] fromPattern(String pattern)
+    private RendererModel[] fromPattern(String pattern)
     {
         if(pattern != null && pattern.length() > 0 && pattern.contains(":"))
         {
@@ -180,7 +180,7 @@ public class Model3DTextDefault extends Model3DTextBase
             float xOff = (lineLen) / -2.0F;
             float yOff = (lines.length) / -2.0F;
 
-            List<ModelRenderer> out = new ArrayList<ModelRenderer>();
+            List<RendererModel> out = new ArrayList<RendererModel>();
 
             for(int lin = 0; lin < tab.length; lin++)
             {
@@ -202,7 +202,7 @@ public class Model3DTextDefault extends Model3DTextBase
 
                         if(x > y)
                         {
-                            out.add(new ModelRenderer(this, 0, 0).addBox(xOff + col, yOff + lin, -0.5F, x, 1, 1).setTextureSize(32, 32));
+                            out.add(new RendererModel(this, 0, 0).addBox(xOff + col, yOff + lin, -0.5F, x, 1, 1).setTextureSize(32, 32));
                             for(int xs = col; xs < col + x; xs++)
                             {
                                 tab[lin][xs] = '0';
@@ -210,7 +210,7 @@ public class Model3DTextDefault extends Model3DTextBase
                         }
                         else
                         {
-                            out.add(new ModelRenderer(this, 0, 0).addBox(xOff + col, yOff + lin, -0.5F, 1, y, 1).setTextureSize(32, 32));
+                            out.add(new RendererModel(this, 0, 0).addBox(xOff + col, yOff + lin, -0.5F, 1, y, 1).setTextureSize(32, 32));
                             for(int ys = lin; ys < lin + y; ys++)
                             {
                                 tab[ys][col] = '0';
@@ -220,7 +220,7 @@ public class Model3DTextDefault extends Model3DTextBase
                 }
             }
 
-            ModelRenderer[] renders = new ModelRenderer[out.size()];
+            RendererModel[] renders = new RendererModel[out.size()];
             for(int index = 0; index < out.size(); index++)
             {
                 renders[index] = out.get(index);

@@ -1,34 +1,35 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
-public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
-	protected static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> implements ISlider {
+	protected static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
-	public InventoryPlayer invPlayer;
+	public PlayerInventory invPlayer;
 	public TileEntitySpotLight tile;
 	public World world;
 
 	private GuiBooleanButton buttonX, buttonY, buttonZ, buttonAR, buttonRR, buttonHelp;
 	private GuiSlider sliderAngle, sliderSpeed;
 
-	public GuiSpotLightBeamAngles(InventoryPlayer playerInventory, TileEntitySpotLight tileEntity, World wrld, Container spotlightContainer) {
+	public GuiSpotLightBeamAngles(PlayerInventory playerInventory, TileEntitySpotLight tileEntity, World wrld, Container spotlightContainer) {
 		super(spotlightContainer);
 		this.invPlayer = playerInventory;
 		this.tile = tileEntity;
@@ -36,8 +37,8 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 	}
 
 	@Override
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 
@@ -190,9 +191,9 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 	}
 
 	@Override
-	public void onGuiClosed() {
+	public void onClose() {
 		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
-		super.onGuiClosed();
+		super.onClose();
 	}
 
 
@@ -261,7 +262,7 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 						break;
 					}
 					if (!text.isEmpty()) {
-						this.drawHoveringText(this.fontRenderer.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+						this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
 					}
 				}
 			}
@@ -275,6 +276,6 @@ public class GuiSpotLightBeamAngles extends GuiContainer implements ISlider {
 		int y = (this.height - this.ySize) / 2;
 		this.mc.getTextureManager().bindTexture(TEXTURE);
 		this.drawTexturedModalRect(x, y + 114, 69, 81, this.xSize, 52);
-		this.fontRenderer.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.angle")), x - 30, y - 35, 0xffffff);
+		this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.angle")), x - 30, y - 35, 0xffffff);
 	}
 }

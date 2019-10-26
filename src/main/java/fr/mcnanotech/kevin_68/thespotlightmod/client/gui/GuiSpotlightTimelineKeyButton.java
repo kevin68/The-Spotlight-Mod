@@ -4,12 +4,12 @@ import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSpotlightTimelineKeyButton extends GuiButton
+public class GuiSpotlightTimelineKeyButton extends Button
 {
-    protected static final ResourceLocation textures = new ResourceLocation(TheSpotLightMod.MODID + ":textures/gui/icons.png");
+    protected static final ResourceLocation textures = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
     public GuiSpotlightTimelineKeyButton(int buttonId, int x, int y)
     {

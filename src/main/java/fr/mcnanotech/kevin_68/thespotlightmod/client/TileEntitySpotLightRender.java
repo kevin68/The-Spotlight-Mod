@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
@@ -10,17 +12,16 @@ import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.objs.BeamVec;
 import fr.mcnanotech.kevin_68.thespotlightmod.objs.TSMVec3;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -32,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpotLight>
 {
     private ModelSpotLight model = new ModelSpotLight();
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MODID, "textures/block/spotlight.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MOD_ID, "textures/block/spotlight.png");
     private static final ResourceLocation DEFAULT_BEAM = new ResourceLocation("textures/entity/beacon_beam.png");
     private static final Text3D TXT3D = new Text3D(Model3DTextDefault.instance);
 
@@ -58,7 +59,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
             bindTexture(TEXTURE);
             this.model.setRotation(-angleX, angleY, -angleZ);
             GlStateManager.scaled(1.2F, 1.2F, 1.2F);
-            this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+            this.model.render(0.0625F);
             GlStateManager.popMatrix();
             GlStateManager.alphaFunc(516, 0.1F);
             GlStateManager.disableFog();
@@ -136,7 +137,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                         }
                     }
                     GlStateManager.enableLighting();
-                    GlStateManager.enableTexture2D();
+                    // GlStateManager.enableTexture2D(); TODO: check if really usefull ?
                     GlStateManager.disableBlend();
                     GlStateManager.depthMask(true);
                 }
