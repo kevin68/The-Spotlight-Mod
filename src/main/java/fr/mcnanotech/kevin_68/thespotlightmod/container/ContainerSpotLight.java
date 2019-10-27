@@ -8,7 +8,6 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
@@ -140,6 +139,10 @@ public class ContainerSpotLight extends Container {
             }
         }
         return itemstack;
+    }
+
+    public TileEntitySpotLight getSpotlight() {
+        return tileSpotlight;
     }
 
     private static class TSMSlot extends Slot {

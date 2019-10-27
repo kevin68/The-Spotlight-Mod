@@ -10,7 +10,6 @@ public class Text3D
 {
     private final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID, "textures/white.png");
     private Model3DTextBase font;
-    private final Minecraft mc = Minecraft.getInstance();
 
     public Text3D(Model3DTextBase font)
     {
@@ -32,7 +31,7 @@ public class Text3D
         if(text != null && text.length() > 0)
         {
             GlStateManager.color3f(red, green, blue);
-            this.mc.textureManager.bindTexture(this.texture);
+            Minecraft.getInstance().textureManager.bindTexture(this.texture);
             char[] str = text.toCharArray();
             float prevspacing = 0;
             for(int i = 0; i < str.length; i++)
@@ -59,7 +58,7 @@ public class Text3D
         if(text != null && text.length() > 0)
         {
             GlStateManager.color3f(red, green, blue);
-            this.mc.textureManager.bindTexture(this.texture);
+            Minecraft.getInstance().textureManager.bindTexture(this.texture);
             char[] str = text.toCharArray();
             float prevspacing = 0;
             for(int i = str.length-1; i >=0 ; i--)
@@ -86,7 +85,7 @@ public class Text3D
         if(text != null && text.length() > 0)
         {
             GlStateManager.color3f(red, green, blue);
-            this.mc.textureManager.bindTexture(this.texture);
+            Minecraft.getInstance().textureManager.bindTexture(this.texture);
             char[] str = text.toCharArray();
             float prevspacing = -spacing*2.0F; // fix text not centered caused by an extra space
             float tLen = 0;

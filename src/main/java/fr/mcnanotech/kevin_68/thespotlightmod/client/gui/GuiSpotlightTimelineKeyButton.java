@@ -25,7 +25,7 @@ public class GuiSpotlightTimelineKeyButton extends Button
             mc.getTextureManager().bindTexture(textures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            this.drawTexturedModalRect(this.x, this.y, 0, 102, 3, 3);
+            this.blit(this.x, this.y, 0, 102, 3, 3);
             this.renderBg(mc, mouseX, mouseY);
         }
     }

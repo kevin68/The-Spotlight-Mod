@@ -12,31 +12,32 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineReset;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
     protected PlayerInventory invPlayer;
     protected TileEntitySpotLight tile;
-    protected World world;
 
     private short selectedKeyID = -1;
-    private GuiBooleanButton buttonHelp, buttonTimelineEnabled, buttonSmooth;
-    private GuiButton buttonRemove;
+    private ButtonToggle buttonHelp, buttonTimelineEnabled, buttonSmooth;
+    private Button buttonRemove;
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight1.png");
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight2.png");
     protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
-    public GuiSpotlightTimeline(PlayerInventory playerInventory, TileEntitySpotLight tileEntity, World world, ContainerSpotLight spotlightContainer) {
-        super(spotlightContainer); 
-        spotlightContainer.changePlayerInventoryPos(51, 186);
+    public GuiSpotlightTimeline(ContainerSpotLight container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
+        container.changePlayerInventoryPos(51, 186);
         this.invPlayer = playerInventory;
-        this.tile = tileEntity;
-        this.world = world;
+        this.tile = container.getSpotlight();
         this.xSize = 256;
         this.ySize = 256;
     }
@@ -47,59 +48,41 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
 
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.addButton(new GuiButton(2, x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back")) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
-            }
-        });
-        this.addButton(new GuiButton(3, x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey")) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotlightTimelineAddKey(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
-            }
-        });
-        this.addButton(this.buttonTimelineEnabled = new GuiBooleanButton(4, x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                buttonTimelineEnabled.toggle();
-                TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(tile.getPos(), buttonTimelineEnabled.isActive()));
-            }
-        });
+        this.addButton(new Button(x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back"), b -> {
+            Minecraft.getInstance().displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
+        }));
+        this.addButton(new Button(x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey"), b -> {
+            Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimelineAddKey(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
+        }));
+        this.addButton(this.buttonTimelineEnabled = new ButtonToggle(x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled, b -> {
+            //buttonTimelineEnabled.toggle();
+            TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(tile.getPos(), buttonTimelineEnabled.isActive()));
+        }));
         this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
-        this.addButton(this.buttonRemove = new GuiButton(5, x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey")) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
-                    if (confirmed) {
-                        tile.setKey(selectedKeyID, null);
-                        TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos(), selectedKeyID));
-                    }
-                    mc.displayGuiScreen(GuiSpotlightTimeline.this);
-                }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
-            }
-        });
+        this.addButton(this.buttonRemove = new Button(x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey"), b -> {
+            Minecraft.getInstance().displayGuiScreen(new GuiYesNo((confirmed, id) -> {
+                if (confirmed) {
+                    tile.setKey(selectedKeyID, null);
+                    TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos(), selectedKeyID));
+                }
+                Minecraft.getInstance().displayGuiScreen(GuiSpotlightTimeline.this);
+            }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
+        }));
         this.buttonRemove.enabled = false;
-        this.addButton(new GuiButton(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")) {
+        this.addButton(new Button(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(tile.getPos()));
             }
         });
-        this.buttonSmooth = this.addButton(new GuiBooleanButton(7, x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                buttonSmooth.toggle();
-                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(tile.getPos(), buttonSmooth.isActive()));
-            }
-        });
-        this.buttonHelp = this.addButton(new GuiBooleanButton(8, x + 220, y + 184, 20, 20, "?", this.tile.helpMode) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                buttonHelp.toggle();
-                tile.helpMode = buttonHelp.isActive();
-            }
-        });
+        this.buttonSmooth = this.addButton(new ButtonToggle(x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth, b -> {
+            //buttonSmooth.toggle();
+            TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(tile.getPos(), buttonSmooth.isActive()));
+        }));
+        this.buttonHelp = this.addButton(new ButtonToggle(x + 220, y + 184, 20, 20, "?", this.tile.helpMode, b -> {
+            //buttonHelp.toggle();
+            tile.helpMode = buttonHelp.isActive();
+        }));
         this.buttonTimelineEnabled.enabled = this.tile.hasKey();
         for (short i = 0; i < 120; i++) {
             if (this.tile.getKey(i) != null) {
@@ -128,7 +111,7 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
             if (mouseX > 64 && mouseY > 30 && mouseX < 367 && mouseY < 53) {
                 this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
             }
-            for (GuiButton button : this.buttons) {
+            for (Button button : this.buttons) {
                 if (button.isMouseOver()) {
                     String text = "";
                     switch (button.id) {
@@ -165,18 +148,18 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.mc.getTextureManager().bindTexture(texture);
+        Minecraft.getInstance().getTextureManager().bindTexture(texture);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(x - 35, y + 19, 0, 0, this.xSize, this.ySize);
-        this.mc.getTextureManager().bindTexture(texture2);
-        this.drawTexturedModalRect(x + 135, y + 19, 0, 0, this.xSize, this.ySize);
-        this.mc.getTextureManager().bindTexture(tsmIcons);
-        this.drawTexturedModalRect(x - 20, y + 40, 0, 59, 256, 21);
-        this.drawTexturedModalRect(x + 225, y + 40, 0, 81, 57, 21);
-        this.drawTexturedModalRect(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);
+        this.blit(x - 35, y + 19, 0, 0, this.xSize, this.ySize);
+        Minecraft.getInstance().getTextureManager().bindTexture(texture2);
+        this.blit(x + 135, y + 19, 0, 0, this.xSize, this.ySize);
+        Minecraft.getInstance().getTextureManager().bindTexture(tsmIcons);
+        this.blit(x - 20, y + 40, 0, 59, 256, 21);
+        this.blit(x + 225, y + 40, 0, 81, 57, 21);
+        this.blit(x - 20 + this.tile.time / 4, y + 40, 0, 105, 1, 12);
         if (this.selectedKeyID != -1) {
-            this.drawTexturedModalRect((int) (x - 22 + this.selectedKeyID * 2.5), y + 62, 0, 115, 5, 6);
+            this.blit((int) (x - 22 + this.selectedKeyID * 2.5), y + 62, 0, 115, 5, 6);
         }
 //		drawString(this.fontObj, EnumTextFormatting.RED + I18n.format("container.spotlight.red") + " : " + ((Byte) entry.get(EnumLaserInformations.LASERRED) & 0xFF), x + 100, y + 70, 0xffffff);
 //		drawString(this.fontObj, EnumTextFormatting.GREEN + I18n.format("container.spotlight.green") + " : " + ((Byte) entry.get(EnumLaserInformations.LASERGREEN) & 0xFF), x + 100, y + 80, 0xffffff);

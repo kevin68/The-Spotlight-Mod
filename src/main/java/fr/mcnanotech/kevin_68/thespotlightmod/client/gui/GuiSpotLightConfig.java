@@ -8,11 +8,14 @@ import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -24,15 +27,13 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
     public PlayerInventory invPlayer;
     public TileEntitySpotLight tile;
     public World world;
-    private GuiBooleanButton buttonHelp;
+    private ButtonToggle buttonHelp;
 
-    public GuiSpotLightConfig(PlayerInventory inventory, TileEntitySpotLight tile, World world, ContainerSpotLight spotlightContainer)
-    {
-        super(spotlightContainer);
-        spotlightContainer.showConfigSlot(true);
-        this.invPlayer = inventory;
-        this.tile = tile;
-        this.world = world;
+    public GuiSpotLightConfig(ContainerSpotLight container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        container.showConfigSlot(true);
+        this.invPlayer = playerInventory;
+        this.tile = container.getSpotlight();
     }
 
     @Override
@@ -41,19 +42,13 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
         super.init();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.addButton(new GuiButton(19, x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back")) {
-			@Override
-			public void onClick(double mouseX, double mouseY) {
-                mc.displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
-			}
-		});
-        this.buttonHelp = this.addButton(new GuiBooleanButton(20, x + 180, y + 140, 20, 20, "?", this.tile.helpMode) {
-			@Override
-			public void onClick(double mouseX, double mouseY) {
-				buttonHelp.toggle();
-				tile.helpMode = buttonHelp.isActive();
-			}
-		});
+        this.addButton(new Button(x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back"), b -> {
+            Minecraft.getInstance().displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
+		}));
+        this.buttonHelp = this.addButton(new ButtonToggle(x + 180, y + 140, 20, 20, "?", this.tile.helpMode, b -> {
+            //buttonHelp.toggle();
+            tile.helpMode = buttonHelp.isActive();
+		}));
     }
 
     @Override
@@ -99,7 +94,7 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
                     this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
                 }
             }
-            for(GuiButton button : this.buttons)
+            for(Button button : this.buttons)
             {
                 if(button.isMouseOver())
                 {
@@ -128,18 +123,18 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
         GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.mc.getTextureManager().bindTexture(texture);
-        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
-        this.mc.getTextureManager().bindTexture(tsmIcons);
-        this.drawTexturedModalRect(x + 39, y + 79, 220, 0, 18, 18);
-        this.drawTexturedModalRect(x + 79, y + 79, 220, 0, 18, 18);
-        this.drawTexturedModalRect(x + 39, y + 29, 238, 0, 18, 18);
-        this.drawTexturedModalRect(x + 79, y + 29, 220, 0, 18, 18);
-        this.drawTexturedModalRect(x + 119, y + 29, 220, 0, 18, 18);
-        this.drawTexturedModalRect(x + 119, y + 79, 238, 0, 18, 18);
-        this.drawTexturedModalRect(x + 122, y + 49, 213, 21, 13, 26);
-        this.drawTexturedModalRect(x + 82, y + 49, 213, 21, 13, 26);
-        this.drawTexturedModalRect(x + 42, y + 49, 213, 21, 13, 26);
+        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        this.blit(x, y, 0, 0, this.xSize, this.ySize);
+        Minecraft.getInstance().getTextureManager().bindTexture(tsmIcons);
+        this.blit(x + 39, y + 79, 220, 0, 18, 18);
+        this.blit(x + 79, y + 79, 220, 0, 18, 18);
+        this.blit(x + 39, y + 29, 238, 0, 18, 18);
+        this.blit(x + 79, y + 29, 220, 0, 18, 18);
+        this.blit(x + 119, y + 29, 220, 0, 18, 18);
+        this.blit(x + 119, y + 79, 238, 0, 18, 18);
+        this.blit(x + 122, y + 49, 213, 21, 13, 26);
+        this.blit(x + 82, y + 49, 213, 21, 13, 26);
+        this.blit(x + 42, y + 49, 213, 21, 13, 26);
         this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.config")), x - 30, y - 35, 0xffffff);
     }
 }

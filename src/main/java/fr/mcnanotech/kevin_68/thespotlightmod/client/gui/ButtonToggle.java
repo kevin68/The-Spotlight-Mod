@@ -4,13 +4,13 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBooleanButton extends AbstractButton
+public class ButtonToggle extends Button
 {
     private ResourceLocation buttonTex = new ResourceLocation("textures/gui/widgets.png");
     private boolean active;
@@ -18,9 +18,9 @@ public class GuiBooleanButton extends AbstractButton
     private int yTex = 46;
     private boolean useHoverState = true, otherTextureWhenActive = true, doNotChangeTextColor = false;
     
-    public GuiBooleanButton(int x, int y,int width, int height, String text, boolean active)
+    public ButtonToggle(int x, int y,int width, int height, String text, boolean active, Button.IPressable onPress)
     {
-        super(x, y, width, height, text);
+        super(x, y, width, height, text, onPress);
         this.active = active;
         this.textActive = this.textNotActive = text;
     }
@@ -60,6 +60,7 @@ public class GuiBooleanButton extends AbstractButton
     @Override
     public void onPress() {
         this.toggle();
+        this.onPress.onPress(this);
     }
 
     public void toggle()
