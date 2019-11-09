@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
+package fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons;
 
 import net.minecraft.client.gui.widget.button.Button;
 

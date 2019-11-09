@@ -5,6 +5,11 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggle;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggleHelp;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.IHelpButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButtonSlider;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
@@ -12,16 +17,12 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.client.config.GuiSlider;
-import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
 public class GuiSpotLightBeamProperties extends ContainerScreen<ContainerSpotLight>
 {
@@ -29,7 +30,6 @@ public class GuiSpotLightBeamProperties extends ContainerScreen<ContainerSpotLig
 
     private PlayerInventory invPlayer;
     private TileEntitySpotLight tile;
-    private ButtonToggle buttonHelp;
     private GuiSlider sliderSecBeamSize;
     private ButtonToggle buttonSecBeamEnabled, buttonDoubleBeam;
 
@@ -45,39 +45,37 @@ public class GuiSpotLightBeamProperties extends ContainerScreen<ContainerSpotLig
         super.init();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.addButton(new GuiSlider(x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SIZE), false, true, b -> {}, slider -> {
+        this.addButton(new TSMButtonSlider(x - 50, y - 20, 130, 20, I18n.format("container.spotlight.sizeMain"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SIZE), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SIZE, (short)(slider.getValueInt()));
-        }));
-        this.sliderSecBeamSize = this.addButton(new GuiSlider(x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE), false, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.beamprops.mainsize")));
+        this.sliderSecBeamSize = this.addButton(new TSMButtonSlider(x + 90, y - 20, 130, 20, I18n.format("container.spotlight.sizeSec"), "", 0, 100, this.tile.getShort(EnumTSMProperty.BEAM_SEC_SIZE), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SEC_SIZE, (short)(slider.getValueInt()));
-        }));
+        }, I18n.format("tutorial.spotlight.beamprops.secsize")));
         this.buttonSecBeamEnabled = this.addButton(new ButtonToggle(x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_SEC_ENABLED), b -> {
-            sliderSecBeamSize.enabled = buttonSecBeamEnabled.isActive();
+            sliderSecBeamSize.active = buttonSecBeamEnabled.isActive();
             tile.setProperty(EnumTSMProperty.BEAM_SEC_ENABLED, buttonSecBeamEnabled.isActive());
-		}));
+		}, I18n.format("tutorial.spotlight.beamprops.secbeam")));
         this.buttonSecBeamEnabled.setTexts(I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.secondlazer", I18n.format("container.spotlight.off")));
         this.buttonDoubleBeam = this.addButton(new ButtonToggle(x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_DOUBLE), b -> {
             tile.setProperty(EnumTSMProperty.BEAM_DOUBLE,buttonDoubleBeam.isActive());
-        }));
+        }, I18n.format("tutorial.spotlight.beamprops.double")));
         this.buttonDoubleBeam.setTexts(I18n.format("container.spotlight.double"), I18n.format("container.spotlight.simple"));
-        this.addButton(new GuiSlider(x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight"), "", 0, 512, this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT), false, true, b -> {}, slider -> {
+        this.addButton(new TSMButtonSlider(x - 50, y + 30, 270, 20, I18n.format("container.spotlight.laserHeight"), "", 0, 512, this.tile.getShort(EnumTSMProperty.BEAM_HEIGHT), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_HEIGHT, (short)(slider.getValueInt()));
-        }));
-        this.addButton(new GuiSlider(x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides"), "", 2, 50, this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2, false, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.beamprops.height")));
+        this.addButton(new TSMButtonSlider(x - 50, y + 55, 130, 20, I18n.format("container.spotlight.sides"), "", 2, 50, this.tile.getShort(EnumTSMProperty.BEAM_SIDE) + 2, false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SIDE, (short)(slider.getValueInt() - 2));
-        }));
-        this.addButton(new GuiSlider(x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed"), "", -2, 2, this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0D, true, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.beamprops.sides")));
+        this.addButton(new TSMButtonSlider(x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed"), "", -2, 2, this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0D, true, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SPEED, TSMUtils.round((float)(slider.getValue() + 2.0D), 2));
-        }));
+        }, "")); //TODO: missing help text?
         this.buttonDoubleBeam.shouldNotChangeTextColor(true);
-        this.sliderSecBeamSize.enabled = this.buttonSecBeamEnabled.isActive();
+        this.sliderSecBeamSize.active = this.buttonSecBeamEnabled.isActive();
 
-        this.addButton(new Button(x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back"), b -> {
-            Minecraft.getInstance().displayGuiScreen(new GuiSpotLight(container, invPlayer, title));
-		}));
-        this.addButton(this.buttonHelp = new ButtonToggle(x + 180, y + 140, 20, 20, "?", this.tile.helpMode, b -> {
-			tile.helpMode = buttonHelp.isActive();
-		}));
+        this.addButton(new TSMButton(x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back"), b -> {
+            minecraft.displayGuiScreen(new GuiSpotLight(container, invPlayer, title));
+		}, I18n.format("tutorial.spotlight.back")));
+        this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
     }
 
     @Override
@@ -92,47 +90,11 @@ public class GuiSpotLightBeamProperties extends ContainerScreen<ContainerSpotLig
     {
         super.render(mouseX, mouseY, partialRenderTick);
 
-        if(this.buttonHelp.isActive())
-        {
-            for(Button button : this.buttons)
-            {
-                if(button.isMouseOver())
-                {
-                    String text = "";
-                    switch(button.id)
-                    {
-                        case 0:
-                            text = I18n.format("tutorial.spotlight.beamprops.mainsize");
-                            break;
-                        case 1:
-                            text = I18n.format("tutorial.spotlight.beamprops.secsize");
-                            break;
-                        case 2:
-                            text = I18n.format("tutorial.spotlight.beamprops.secbeam");
-                            break;
-                        case 3:
-                            text = I18n.format("tutorial.spotlight.beamprops.double");
-                            break;
-                        case 4:
-                            text = I18n.format("tutorial.spotlight.beamprops.height");
-                            break;
-                        case 5:
-                            text = I18n.format("tutorial.spotlight.beamprops.sides");
-                            break;
-                        case 19:
-                            text = I18n.format("tutorial.spotlight.back");
-                            break;
-                        case 20:
-                            text = I18n.format("tutorial.spotlight.help");
-                            break;
-                    }
-                    if(!text.isEmpty())
-                    {
-                        this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-                    }
-                }
-            }
-        }
+        if (this.tile.helpMode) {
+			this.buttons.stream().filter(b -> b.isMouseOver(mouseX, mouseY) && b instanceof IHelpButton).findFirst().ifPresent(b -> {
+				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+			});
+		}
     }
 
     @Override

@@ -5,29 +5,28 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggleHelp;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.IHelpButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 
 public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
 {
-    protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight.png");
-    protected static final ResourceLocation tsmIcons = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight.png");
+    protected static final ResourceLocation TSM_ICONS = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
 
     public PlayerInventory invPlayer;
     public TileEntitySpotLight tile;
-    public World world;
-    private ButtonToggle buttonHelp;
 
     public GuiSpotLightConfig(ContainerSpotLight container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -42,13 +41,10 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
         super.init();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.addButton(new Button(x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back"), b -> {
-            Minecraft.getInstance().displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
-		}));
-        this.buttonHelp = this.addButton(new ButtonToggle(x + 180, y + 140, 20, 20, "?", this.tile.helpMode, b -> {
-            //buttonHelp.toggle();
-            tile.helpMode = buttonHelp.isActive();
-		}));
+        this.addButton(new TSMButton(x + 38, y + 117, 100, 20, I18n.format("container.spotlight.back"), b -> {
+            minecraft.displayGuiScreen(new GuiSpotLight(container, invPlayer, title));
+		}, I18n.format("tutorial.spotlight.back")));
+        this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
     }
 
     @Override
@@ -62,8 +58,7 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
     public void render(int mouseX, int mouseY, float partialRenderTick)
     {
         super.render(mouseX, mouseY, partialRenderTick);
-        if(this.buttonHelp.isActive())
-        {
+        if (this.tile.helpMode) {
             Slot s = this.getSlotUnderMouse();
             if(s != null)
             {
@@ -91,30 +86,14 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
                 }
                 if(!text.isEmpty())
                 {
-                    this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
+                    this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);  
                 }
             }
-            for(Button button : this.buttons)
-            {
-                if(button.isMouseOver())
-                {
-                    String text = "";
-                    switch(button.id)
-                    {
-                    case 19:
-                        text = I18n.format("tutorial.spotlight.back");
-                        break;
-                    case 20:
-                        text = I18n.format("tutorial.spotlight.help");
-                        break;
-                    }
-                    if(!text.isEmpty())
-                    {
-                        this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-                    }
-                }
-            }
-        }
+
+			this.buttons.stream().filter(b -> b.isMouseOver(mouseX, mouseY) && b instanceof IHelpButton).findFirst().ifPresent(b -> {
+				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+			});
+		}
     }
 
     @Override
@@ -123,9 +102,9 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
         GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
         this.blit(x, y, 0, 0, this.xSize, this.ySize);
-        Minecraft.getInstance().getTextureManager().bindTexture(tsmIcons);
+        Minecraft.getInstance().getTextureManager().bindTexture(TSM_ICONS);
         this.blit(x + 39, y + 79, 220, 0, 18, 18);
         this.blit(x + 79, y + 79, 220, 0, 18, 18);
         this.blit(x + 39, y + 29, 238, 0, 18, 18);

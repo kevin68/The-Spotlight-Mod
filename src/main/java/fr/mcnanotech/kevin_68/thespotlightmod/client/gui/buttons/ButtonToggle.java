@@ -1,4 +1,4 @@
-package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
+package fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons;
 
 import org.lwjgl.opengl.GL11;
 
@@ -10,17 +10,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ButtonToggle extends Button
+public class ButtonToggle extends TSMButton 
 {
     private ResourceLocation buttonTex = new ResourceLocation("textures/gui/widgets.png");
-    private boolean active;
     private String textNotActive, textActive;
     private int yTex = 46;
     private boolean useHoverState = true, otherTextureWhenActive = true, doNotChangeTextColor = false;
     
-    public ButtonToggle(int x, int y,int width, int height, String text, boolean active, Button.IPressable onPress)
+    public ButtonToggle(int x, int y, int width, int height, String text, boolean active, Button.IPressable onPress, String helpText)
     {
-        super(x, y, width, height, text, onPress);
+        super(x, y, width, height, text, onPress, helpText);
         this.active = active;
         this.textActive = this.textNotActive = text;
     }
@@ -65,7 +64,7 @@ public class ButtonToggle extends Button
 
     public void toggle()
     {
-        this.active = !this.isActive();
+        this.active = !active;
     }
 
     public boolean isActive()

@@ -5,6 +5,10 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggle;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggleHelp;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.IHelpButton;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimeline;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineDeleteKey;
@@ -27,7 +31,7 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
     protected TileEntitySpotLight tile;
 
     private short selectedKeyID = -1;
-    private ButtonToggle buttonHelp, buttonTimelineEnabled, buttonSmooth;
+    private ButtonToggle buttonTimelineEnabled, buttonSmooth;
     private Button buttonRemove;
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight1.png");
     protected static final ResourceLocation texture2 = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight2.png");
@@ -48,51 +52,46 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
 
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        this.addButton(new Button(x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back"), b -> {
-            Minecraft.getInstance().displayGuiScreen(new GuiSpotLight(invPlayer, tile, world, inventorySlots));
-        }));
-        this.addButton(new Button(x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey"), b -> {
-            Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimelineAddKey(invPlayer, tile, world, (ContainerSpotLight)inventorySlots));
-        }));
-        this.addButton(this.buttonTimelineEnabled = new ButtonToggle(x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled, b -> {
-            //buttonTimelineEnabled.toggle();
+        this.addButton(new TSMButton(x - 27, y + 184, 65, 20, I18n.format("container.spotlight.back"), b -> {
+            minecraft.displayGuiScreen(new GuiSpotLight(container, invPlayer, title));
+        }, I18n.format("tutorial.spotlight.back")));
+
+        this.addButton(new TSMButton(x - 27, y + 69, 120, 20, I18n.format("container.spotlight.addKey"), b -> {
+            minecraft.displayGuiScreen(new GuiSpotlightTimelineAddKey(container, invPlayer, title));
+        }, I18n.format("tutorial.spotlight.timeline.addkey")));
+
+        this.buttonTimelineEnabled = this.addButton(new ButtonToggle(x - 27, y + 157, 120, 20, "", this.tile.timelineEnabled, b -> {
             TSMNetwork.CHANNEL.sendToServer(new PacketTimeline(tile.getPos(), buttonTimelineEnabled.isActive()));
-        }));
+        }, I18n.format("tutorial.spotlight.timeline.toogle")));
         this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
-        this.addButton(this.buttonRemove = new Button(x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey"), b -> {
-            Minecraft.getInstance().displayGuiScreen(new GuiYesNo((confirmed, id) -> {
+
+        this.buttonRemove = this.addButton(new TSMButton(x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey"), b -> {
+            minecraft.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
                 if (confirmed) {
                     tile.setKey(selectedKeyID, null);
                     TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos(), selectedKeyID));
                 }
-                Minecraft.getInstance().displayGuiScreen(GuiSpotlightTimeline.this);
+                minecraft.displayGuiScreen(GuiSpotlightTimeline.this);
             }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
-        }));
-        this.buttonRemove.enabled = false;
-        this.addButton(new Button(6, x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime")) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(tile.getPos()));
-            }
-        });
+        }, I18n.format("tutorial.spotlight.timeline.delkey")));
+        this.buttonRemove.active = false;
+
+        this.addButton(new TSMButton(x - 27, y + 113, 120, 20, I18n.format("container.spotlight.resettime"), b -> {
+            TSMNetwork.CHANNEL.sendToServer(new PacketTimelineReset(tile.getPos()));
+        }, I18n.format("tutorial.spotlight.timeline.set0")));
+
         this.buttonSmooth = this.addButton(new ButtonToggle(x - 27, y + 135, 120, 20, I18n.format("container.spotlight.smooth"), this.tile.timelineSmooth, b -> {
             //buttonSmooth.toggle();
             TSMNetwork.CHANNEL.sendToServer(new PacketTimelineSmooth(tile.getPos(), buttonSmooth.isActive()));
-        }));
-        this.buttonHelp = this.addButton(new ButtonToggle(x + 220, y + 184, 20, 20, "?", this.tile.helpMode, b -> {
-            //buttonHelp.toggle();
-            tile.helpMode = buttonHelp.isActive();
-        }));
-        this.buttonTimelineEnabled.enabled = this.tile.hasKey();
+        }, I18n.format("tutorial.spotlight.timeline.smooth")));
+        this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
+        this.buttonTimelineEnabled.active = this.tile.hasKey();
         for (short i = 0; i < 120; i++) {
             if (this.tile.getKey(i) != null) {
-                this.addButton(new GuiSpotlightTimelineKeyButton(10 + i, this.width / 2 - 149 + (int) (i * 2.5), y + 50 + i % 2 * 4) {
-                    @Override
-                    public void onClick(double mouseX, double mouseY) {
-                        selectedKeyID = (short) (this.id - 10);
-                        buttonRemove.enabled = true;
-                    }
-                });
+                this.addButton(new GuiSpotlightTimelineKeyButton(this.width / 2 - 149 + (int) (i * 2.5), y + 50 + i % 2 * 4, b -> {
+                    selectedKeyID = i;
+                    buttonRemove.active = true;
+                }));
             }
         }
     }
@@ -107,41 +106,14 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
     public void render(int mouseX, int mouseY, float partialRenderTick) {
         super.render(mouseX, mouseY, partialRenderTick);
 
-        if (this.buttonHelp.isActive()) {
+        if (this.tile.helpMode) {
             if (mouseX > 64 && mouseY > 30 && mouseX < 367 && mouseY < 53) {
-                this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+                this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + I18n.format("tutorial.spotlight.timeline.timeline"), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
             }
-            for (Button button : this.buttons) {
-                if (button.isMouseOver()) {
-                    String text = "";
-                    switch (button.id) {
-                    case 2:
-                        text = I18n.format("tutorial.spotlight.back");
-                        break;
-                    case 3:
-                        text = I18n.format("tutorial.spotlight.timeline.addkey");
-                        break;
-                    case 4:
-                        text = I18n.format("tutorial.spotlight.timeline.toogle");
-                        break;
-                    case 5:
-                        text = I18n.format("tutorial.spotlight.timeline.delkey");
-                        break;
-                    case 6:
-                        text = I18n.format("tutorial.spotlight.timeline.set0");
-                        break;
-                    case 7:
-                        text = I18n.format("tutorial.spotlight.timeline.smooth");
-                        break;
-                    case 8:
-                        text = I18n.format("tutorial.spotlight.help");
-                        break;
-                    }
-                    if (!text.isEmpty()) {
-                        this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-                    }
-                }
-            }
+
+			this.buttons.stream().filter(b -> b.isMouseOver(mouseX, mouseY) && b instanceof IHelpButton).findFirst().ifPresent(b -> {
+				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+			});
         }
     }
 

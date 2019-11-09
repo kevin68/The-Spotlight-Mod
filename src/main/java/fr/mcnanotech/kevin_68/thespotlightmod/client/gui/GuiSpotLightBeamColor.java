@@ -5,21 +5,21 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggleHelp;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.IHelpButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButtonSlider;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.client.config.GuiSlider;
-import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
 
 public class GuiSpotLightBeamColor extends ContainerScreen<ContainerSpotLight>
 {
@@ -27,7 +27,6 @@ public class GuiSpotLightBeamColor extends ContainerScreen<ContainerSpotLight>
 
     public PlayerInventory invPlayer;
     public TileEntitySpotLight tile;
-    public ButtonToggle buttonHelp;
 
     public GuiSpotLightBeamColor(ContainerSpotLight container, PlayerInventory playerInventory, ITextComponent title)
     {
@@ -44,40 +43,37 @@ public class GuiSpotLightBeamColor extends ContainerScreen<ContainerSpotLight>
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        this.addButton(new GuiSlider(x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_RED), false, true, b -> {}, slider -> {
+        this.addButton(new TSMButtonSlider(x - 40, y - 20, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_RED), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_RED, (short)(slider.getValueInt()));
-        }));
-        this.addButton(new GuiSlider(x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_GREEN), false, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.colors.red")));
+        this.addButton(new TSMButtonSlider(x - 40, y + 2, 256, 20, TextFormatting.GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_GREEN), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_GREEN, (short)(slider.getValueInt()));
-        }));
-        this.addButton(new GuiSlider(x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_BLUE), false, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.colors.green")));
+        this.addButton(new TSMButtonSlider(x - 40, y + 24, 256, 20, TextFormatting.BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_BLUE), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_BLUE, (short)(slider.getValueInt()));
-        }));
+        }, I18n.format("tutorial.spotlight.colors.blue")));
 
-        this.addButton(new GuiSlider(x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED), false, true, b -> {}, slider -> {
+        this.addButton(new TSMButtonSlider(x - 40, y + 68, 256, 20, TextFormatting.DARK_RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_RED), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SEC_RED, (short)(slider.getValueInt()));
-        }));
-        this.addButton(new GuiSlider(x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN), false, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.colors.secred")));
+        this.addButton(new TSMButtonSlider(x - 40, y + 90, 256, 20, TextFormatting.DARK_GREEN + I18n.format("container.spotlight.green"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_GREEN), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SEC_GREEN, (short)(slider.getValueInt()));
-        }));
-        this.addButton(new GuiSlider(x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE), false, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.colors.secgreen")));
+        this.addButton(new TSMButtonSlider(x - 40, y + 112, 256, 20, TextFormatting.DARK_BLUE + I18n.format("container.spotlight.blue"), "", 0, 255, this.tile.getShort(EnumTSMProperty.BEAM_SEC_BLUE), false, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SEC_BLUE, (short)(slider.getValueInt()));
-        }));
+        }, I18n.format("tutorial.spotlight.colors.secblue")));
 
-        this.addButton(new GuiSlider(x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha"), "", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA), true, true, b -> {}, slider -> {
+        this.addButton(new TSMButtonSlider(x - 40, y + 46, 256, 20, I18n.format("container.spotlight.alpha"), "", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_ALPHA), true, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_ALPHA, (float)(slider.getValue()));
-        }));
-        this.addButton(new GuiSlider(x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha"),"", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA), true, true, b -> {}, slider -> {
+        }, I18n.format("tutorial.spotlight.colors.alpha")));
+        this.addButton(new TSMButtonSlider(x - 40, y + 134, 256, 20, I18n.format("container.spotlight.alpha"),"", 0, 1, this.tile.getFloat(EnumTSMProperty.BEAM_SEC_ALPHA), true, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SEC_ALPHA, (float)(slider.getValue()));
-        }));
+        }, I18n.format("tutorial.spotlight.colors.secalpha")));
 
-        this.addButton(new Button(x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back"), b -> {
-                Minecraft.getInstance().displayGuiScreen(new GuiSpotLight(container, invPlayer, title));
-		}));
-        this.buttonHelp = this.addButton(new ButtonToggle(x + 180, y + 159, 20, 20, "?", this.tile.helpMode, b -> {
-            //buttonHelp.toggle();
-            tile.helpMode = buttonHelp.isActive();
-		}));
+        this.addButton(new TSMButton(x + 38, y + 159, 100, 20, I18n.format("container.spotlight.back"), b -> {
+            minecraft.displayGuiScreen(new GuiSpotLight(container, invPlayer, title));
+		}, I18n.format("tutorial.spotlight.back")));
+        this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
     }
 
     @Override
@@ -92,53 +88,11 @@ public class GuiSpotLightBeamColor extends ContainerScreen<ContainerSpotLight>
     {
         super.render(mouseX, mouseY, partialRenderTick);
 
-        if(this.buttonHelp.isActive())
-        {
-            for(Button button : this.buttons)
-            {
-                if(button.isMouseOver())
-                {
-                    String text = "";
-                    switch(button.id)
-                    {
-                        case 0:
-                            text = I18n.format("tutorial.spotlight.colors.red");
-                            break;
-                        case 1:
-                            text = I18n.format("tutorial.spotlight.colors.green");
-                            break;
-                        case 2:
-                            text = I18n.format("tutorial.spotlight.colors.blue");
-                            break;
-                        case 3:
-                            text = I18n.format("tutorial.spotlight.colors.secred");
-                            break;
-                        case 4:
-                            text = I18n.format("tutorial.spotlight.colors.secgreen");
-                            break;
-                        case 5:
-                            text = I18n.format("tutorial.spotlight.colors.secblue");
-                            break;
-                        case 6:
-                            text = I18n.format("tutorial.spotlight.colors.alpha");
-                            break;
-                        case 7:
-                            text = I18n.format("tutorial.spotlight.colors.secalpha");
-                            break;
-                        case 19:
-                            text = I18n.format("tutorial.spotlight.back");
-                            break;
-                        case 20:
-                            text = I18n.format("tutorial.spotlight.help");
-                            break;
-                    }
-                    if(!text.isEmpty())
-                    {
-                        this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-                    }
-                }
-            }
-        }
+        if (this.tile.helpMode) {
+			this.buttons.stream().filter(b -> b.isMouseOver(mouseX, mouseY) && b instanceof IHelpButton).findFirst().ifPresent(b -> {
+				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+			});
+		}
     }
 
     @Override

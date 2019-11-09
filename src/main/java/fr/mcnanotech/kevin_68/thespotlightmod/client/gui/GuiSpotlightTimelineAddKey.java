@@ -5,6 +5,10 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButtonSlider;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggleHelp;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.IHelpButton;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
@@ -26,7 +30,6 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 
 	protected PlayerInventory invPlayer;
 	protected TileEntitySpotLight tile;
-	private ButtonToggle buttonHelp;
 	private short time;
 
 	public GuiSpotlightTimelineAddKey(ContainerSpotLight container, PlayerInventory playerInventory, ITextComponent title) {
@@ -40,13 +43,13 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 		super.init();
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
-		this.addButton(new GuiSlider(x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time"), "", 0, 119, 0, false, true, b -> {}, slider -> {
+		this.addButton(new TSMButtonSlider(x + 3, y + 20, 170, 20, I18n.format("container.spotlight.time"), "", 0, 119, 0, false, true, b -> {}, slider -> {
 			this.time = (short)slider.getValueInt();
-		}));
-		this.addButton(new Button(x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back"), b -> {
+		}, I18n.format("tutorial.spotlight.addkey.time")));
+		this.addButton(new TSMButton(x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back"), b -> {
             Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
-		}));
-		this.addButton(new Button(x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey"), b -> {
+		}, I18n.format("tutorial.spotlight.back")));
+		this.addButton(new TSMButton(x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey"), b -> {
 			if (tile.getKey(time) != null) {
 				Minecraft.getInstance().displayGuiScreen(new GuiYesNo((confirmed, id) -> {
 					if (confirmed) {
@@ -60,10 +63,8 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 				tile.setKey(time, TSMUtils.createKey(time, tile));
 				Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
 			}
-		}));
-		this.addButton(this.buttonHelp = new ButtonToggle(x + 180, y + 140, 20, 20, "?", this.tile.helpMode, b -> {
-			tile.helpMode = buttonHelp.isActive();
-		}));
+		}, I18n.format("tutorial.spotlight.addkey.create")));
+		this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
 	}
 
 	@Override
@@ -76,29 +77,10 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 	public void render(int mouseX, int mouseY, float partialRenderTick) {
 		super.render(mouseX, mouseY, partialRenderTick);
 
-		if (this.buttonHelp.isActive()) {
-			for (Button button : this.buttons) {
-				if (button.isMouseOver()) {
-					String text = "";
-					switch (button.id) {
-					case 0:
-						text = I18n.format("tutorial.spotlight.addkey.time");
-						break;
-					case 1:
-						text = I18n.format("tutorial.spotlight.back");
-						break;
-					case 2:
-						text = I18n.format("tutorial.spotlight.addkey.create");
-						break;
-					case 20:
-						text = I18n.format("tutorial.spotlight.help");
-						break;
-					}
-					if (!text.isEmpty()) {
-						this.drawHoveringText(this.font.listFormattedStringToWidth(TextFormatting.GREEN + text, (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
-					}
-				}
-			}
+		if (this.tile.helpMode) {
+			this.buttons.stream().filter(b -> b.isMouseOver(mouseX, mouseY) && b instanceof IHelpButton).findFirst().ifPresent(b -> {
+				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
+			});
 		}
 	}
 

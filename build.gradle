@@ -71,10 +71,7 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-}
 
-// TODO: check if still work ?
-jar {
     classifier = 'universal'
     version = "${project.version}-mc${version}"
 }
