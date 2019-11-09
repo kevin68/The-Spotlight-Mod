@@ -45,8 +45,7 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 		int y = (this.height - this.ySize) / 2;
 
 		this.buttonX = this.addButton(new ButtonToggle(x - 50, y + 110, 20, 20, "X", true, b -> {
-			if (!buttonX.isActive()) {
-				buttonX.toggle();
+			if (buttonX.isActive()) {
 				if (buttonY.isActive()) {
 					buttonY.toggle();
 				}
@@ -57,7 +56,7 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 				sliderAngle.dispString = I18n.format("container.spotlight.angleval", "X");
 				sliderAngle.updateSlider();
 				sliderSpeed.sliderValue = tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X);
-				sliderSpeed.dispString = I18n.format("container.spotlight.angleval", "X");
+				sliderSpeed.dispString = I18n.format("container.spotlight.rotationspeed", "X");
 				sliderSpeed.updateSlider();
 				if (buttonAR.isActive() != tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X)) {
 					buttonAR.toggle();
@@ -68,15 +67,14 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 				if (buttonRR.isActive() != tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X)) {
 					buttonRR.toggle();
 				}
-				buttonRR.active = buttonAR.isActive();
+				buttonRR.setActiveState(buttonAR.isActive());
 				buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "X", I18n.format("container.spotlight.off")));
 				TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos(), TSMJsonManager.getDataFromTile(tile).toString()));
 			}
 		}, I18n.format("tutorial.spotlight.angles.x")));
 
 		this.buttonY = this.addButton(new ButtonToggle(x - 25, y + 110, 20, 20, "Y", false, b -> {
-			if (!buttonY.isActive()) {
-				buttonY.toggle();
+			if (buttonY.isActive()) {
 				if (buttonX.isActive()) {
 					buttonX.toggle();
 				}
@@ -87,7 +85,7 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 				sliderAngle.dispString = I18n.format("container.spotlight.angleval", "Y");
 				sliderAngle.updateSlider();
 				sliderSpeed.sliderValue = tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y);
-				sliderSpeed.dispString = I18n.format("container.spotlight.angleval", "Y");
+				sliderSpeed.dispString = I18n.format("container.spotlight.rotationspeed", "Y");
 				sliderSpeed.updateSlider();
 				if (buttonAR.isActive() != tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y)) {
 					buttonAR.toggle();
@@ -98,15 +96,14 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 				if (buttonRR.isActive() != tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Y)) {
 					buttonRR.toggle();
 				}
-				buttonRR.active = buttonAR.isActive();
+				buttonRR.setActiveState(buttonAR.isActive());
 				buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Y", I18n.format("container.spotlight.off")));
 				TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos(), TSMJsonManager.getDataFromTile(tile).toString()));
 			}
 		}, I18n.format("tutorial.spotlight.angles.y")));
 
 		this.buttonZ = this.addButton(new ButtonToggle(x, y + 110, 20, 20, "Z", false, b -> {
-			if (!buttonZ.isActive()) {
-				buttonZ.toggle();
+			if (buttonZ.isActive()) {
 				if (buttonX.isActive()) {
 					buttonX.toggle();
 				}
@@ -117,7 +114,7 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 				sliderAngle.dispString = I18n.format("container.spotlight.angleval", "Z");
 				sliderAngle.updateSlider();
 				sliderSpeed.sliderValue = tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Z);
-				sliderSpeed.dispString = I18n.format("container.spotlight.angleval", "Z");
+				sliderSpeed.dispString = I18n.format("container.spotlight.rotationspeed", "Z");
 				sliderSpeed.updateSlider();
 				if (buttonAR.isActive() != tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Z)) {
 					buttonAR.toggle();
@@ -128,7 +125,7 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 				if (buttonRR.isActive() != tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Z)) {
 					buttonRR.toggle();
 				}
-				buttonRR.active = buttonAR.isActive();
+				buttonRR.setActiveState(buttonAR.isActive());
 				buttonRR.setTexts(I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.rotationreverse", "Z", I18n.format("container.spotlight.off")));
 				TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(tile.getPos(), TSMJsonManager.getDataFromTile(tile).toString()));
 			}
@@ -145,7 +142,6 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 		}, I18n.format("tutorial.spotlight.angles.angle")));
 
 		this.addButton(this.buttonAR = new ButtonToggle(x - 50, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X), b -> {
-			buttonAR.toggle();
 			if (buttonX.isActive()) {
 				tile.setProperty(EnumTSMProperty.BEAM_R_AUTO_X, buttonAR.isActive());
 			} else if (buttonY.isActive()) {
@@ -161,7 +157,6 @@ public class GuiSpotLightBeamAngles extends ContainerScreen<ContainerSpotLight> 
 		this.sliderAngle.active = !this.buttonAR.isActive();
 
 		this.addButton(this.buttonRR = new ButtonToggle(x + 90, y + 5, 130, 20, "", this.tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X), b -> {
-			buttonRR.toggle();
 			if (buttonX.isActive()) {
 				tile.setProperty(EnumTSMProperty.BEAM_R_REVERSE_X, buttonRR.isActive());
 			} else if (buttonY.isActive()) {

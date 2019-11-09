@@ -25,8 +25,8 @@ public class PacketRegenerateFile {
 
     public static void handle(PacketRegenerateFile packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            TSMJsonManager.deleteFile(ctx.get().getSender().world, packet.pos);
-            TSMJsonManager.generateNewFiles(ctx.get().getSender().world, packet.pos);
+            TSMJsonManager.deleteFile(ctx.get().getSender().getServerWorld(), packet.pos);
+            TSMJsonManager.generateNewFiles(ctx.get().getSender().getServerWorld(), packet.pos);
         });
         ctx.get().setPacketHandled(true);
     }

@@ -16,11 +16,12 @@ public class ButtonToggle extends TSMButton
     private String textNotActive, textActive;
     private int yTex = 46;
     private boolean useHoverState = true, otherTextureWhenActive = true, doNotChangeTextColor = false;
+    private boolean activeState;
     
     public ButtonToggle(int x, int y, int width, int height, String text, boolean active, Button.IPressable onPress, String helpText)
     {
         super(x, y, width, height, text, onPress, helpText);
-        this.active = active;
+        this.activeState = active;
         this.textActive = this.textNotActive = text;
     }
     
@@ -64,12 +65,17 @@ public class ButtonToggle extends TSMButton
 
     public void toggle()
     {
-        this.active = !active;
+        this.activeState = !activeState;
+    }
+
+    public void setActiveState(boolean b)
+    {
+        this.activeState = b;
     }
 
     public boolean isActive()
     {
-        return this.active;
+        return this.activeState;
     }
 
     @Override

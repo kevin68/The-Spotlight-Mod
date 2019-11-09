@@ -33,7 +33,7 @@ public class PacketRequestData {
 
 	public static void handle(PacketRequestData packet, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			String data = TSMJsonManager.getDataFromJson(ctx.get().getSender().world, packet.pos);
+			String data = TSMJsonManager.getDataFromJson(ctx.get().getSender().getServerWorld(), packet.pos);
 			try {
                 TSMNetwork.CHANNEL.reply(new PacketData(packet.pos, TSMJsonManager.compress(data == null ? "null" : data)), ctx.get());
             } catch (IOException e) {

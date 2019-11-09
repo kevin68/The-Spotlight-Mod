@@ -69,7 +69,7 @@ public class TSMObjects {
 
 	@SubscribeEvent
 	public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
-		event.getRegistry().register(buildTileType(TheSpotLightMod.MOD_ID + ":spotlight", TileEntityType.Builder.create(TileEntitySpotLight::new)).setRegistryName("spotlight"));
+		event.getRegistry().register(buildTileType(TheSpotLightMod.MOD_ID + ":spotlight", TileEntityType.Builder.create(TileEntitySpotLight::new, SPOTLIGHT)).setRegistryName("spotlight"));
 	}
 
 	public static <T extends TileEntity> TileEntityType<T> buildTileType(String id, TileEntityType.Builder<T> builder) {

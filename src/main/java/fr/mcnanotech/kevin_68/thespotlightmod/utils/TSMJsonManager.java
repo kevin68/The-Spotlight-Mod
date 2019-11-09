@@ -40,16 +40,15 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketRegenerateFile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TSMJsonManager
 {
-    public static void generateNewFiles(World world, BlockPos pos)
+    public static void generateNewFiles(ServerWorld world, BlockPos pos)
     {
         File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
@@ -150,7 +149,7 @@ public class TSMJsonManager
         write(fileTL, timeline);
     }
 
-    public static void deleteFile(World world, BlockPos pos)
+    public static void deleteFile(ServerWorld world, BlockPos pos)
     {
         try
         {
@@ -171,8 +170,9 @@ public class TSMJsonManager
      */
     public static boolean updateTileData(BlockPos pos, TileEntitySpotLight tile)
     {
-        File file = new File(getSaveDir(tile.getWorld()), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
-        JsonObject json = read(file, tile.getWorld());
+        ServerWorld world = (ServerWorld)tile.getWorld();
+        File file = new File(getSaveDir(world), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
+        JsonObject json = read(file, world);
         return updateTileData(tile, json);
     }
 
@@ -266,8 +266,8 @@ public class TSMJsonManager
         {
             if(!tile.getWorld().isRemote)
             {
-                deleteFile(tile.getWorld(), tile.getPos());
-                generateNewFiles(tile.getWorld(), tile.getPos());
+                deleteFile((ServerWorld)tile.getWorld(), tile.getPos());
+                generateNewFiles((ServerWorld)tile.getWorld(), tile.getPos());
             }
             else
             {
@@ -277,7 +277,7 @@ public class TSMJsonManager
         return false;
     }
 
-    public static void updateJsonData(World world, BlockPos pos, String data)
+    public static void updateJsonData(ServerWorld world, BlockPos pos, String data)
     {
     	File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
@@ -288,7 +288,7 @@ public class TSMJsonManager
         write(file, data);
     }
 
-    public static String getDataFromJson(World world, BlockPos pos)
+    public static String getDataFromJson(ServerWorld world, BlockPos pos)
     {
         File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + ".json");
@@ -377,7 +377,7 @@ public class TSMJsonManager
     {
         String configName = stack.getTag().getString("ConfigName");
         File file = new File(getConfItemSaveDir(), configName + ".json");
-        JsonObject json = read(file, tile.getWorld());
+        JsonObject json = read(file, (ServerWorld)tile.getWorld());
         JsonObject obj = json.get("Timeline").getAsJsonObject();
         updateTileData(tile, json);
         updateTileTimeline(tile, obj);
@@ -400,7 +400,7 @@ public class TSMJsonManager
     /*
      * Server side
      */
-    public static boolean updateTileTimeline(World world, BlockPos pos, TileEntitySpotLight tile)
+    public static boolean updateTileTimeline(ServerWorld world, BlockPos pos, TileEntitySpotLight tile)
     {
         File fileTL = new File(getSaveDir(world), pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
         JsonObject json = read(fileTL, world);
@@ -455,10 +455,10 @@ public class TSMJsonManager
             TheSpotLightMod.LOGGER.catching(Level.WARN, e);
             try
             {
-                if(FMLEnvironment.dist.isDedicatedServer())
+                if(!tile.getWorld().isRemote)
                 {
-                    deleteFile(tile.getWorld(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
-                    generateNewFiles(tile.getWorld(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    deleteFile((ServerWorld)tile.getWorld(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
+                    generateNewFiles((ServerWorld)tile.getWorld(), new BlockPos(json.get("X").getAsInt(), json.get("Y").getAsInt(), json.get("Z").getAsInt()));
                 }
                 else
                 {
@@ -473,7 +473,7 @@ public class TSMJsonManager
         return false;
     }
 
-    public static void updateTlJsonData(World world, BlockPos pos, String data)
+    public static void updateTlJsonData(ServerWorld world, BlockPos pos, String data)
     {
         File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
@@ -484,7 +484,7 @@ public class TSMJsonManager
         write(file, data);
     }
 
-    public static String getTlDataFromJson(World world, BlockPos pos)
+    public static String getTlDataFromJson(ServerWorld world, BlockPos pos)
     {
         File folder = getSaveDir(world);
         File file = new File(folder, pos.getX() + "_" + pos.getY() + "_" + pos.getZ() + "_TL" + ".json");
@@ -762,7 +762,7 @@ public class TSMJsonManager
         }
     }
 
-    private static JsonObject read(File dir, World world)
+    private static JsonObject read(File dir, ServerWorld world)
     {
         JsonParser parser = new JsonParser();
         try
@@ -823,14 +823,14 @@ public class TSMJsonManager
         return null;
     }
     
-    private static File getSaveDir(World world) {
+    private static File getSaveDir(ServerWorld world) {
         File spotlightDataDir = new File(new File(world.getSaveHandler().getWorldDirectory(), "SpotLights"), String.valueOf(world.getDimension().getType().getId()));
         spotlightDataDir.mkdirs();
         return spotlightDataDir;
     }
     
     private static File getConfItemSaveDir() {
-        World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), DimensionType.OVERWORLD, false, true);
+        ServerWorld w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), DimensionType.OVERWORLD, false, true);
     	return new File(getSaveDir(w), "configs");
     }
 }

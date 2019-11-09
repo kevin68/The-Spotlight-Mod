@@ -21,6 +21,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockSpotLight extends Block {
@@ -41,7 +42,7 @@ public class BlockSpotLight extends Block {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		if (!world.isRemote) {
-			TSMJsonManager.generateNewFiles(world, pos);
+			TSMJsonManager.generateNewFiles((ServerWorld)world, pos);
 		}
 		BlockState nState = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, nState, nState, 3);
@@ -50,8 +51,9 @@ public class BlockSpotLight extends Block {
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!world.isRemote && world.getTileEntity(pos) instanceof TileEntitySpotLight) {
-			TSMJsonManager.deleteFile(world, pos);
+			TSMJsonManager.deleteFile((ServerWorld)world, pos);
 		}
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
 	@Override

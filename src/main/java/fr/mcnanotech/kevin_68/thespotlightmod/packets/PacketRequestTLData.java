@@ -1,5 +1,6 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.packets;
 
+import java.io.IOException;
 import java.util.function.Supplier;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
@@ -26,8 +27,12 @@ public class PacketRequestTLData {
 
     public static void handle(PacketRequestTLData packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            String data = TSMJsonManager.getTlDataFromJson(ctx.get().getSender().world, packet.pos);
-            TSMNetwork.CHANNEL.reply(new PacketTLData(packet.pos, data == null ? "null" : data), ctx.get());
+            String data = TSMJsonManager.getTlDataFromJson(ctx.get().getSender().getServerWorld(), packet.pos);
+            try {
+                TSMNetwork.CHANNEL.reply(new PacketTLData(packet.pos, TSMJsonManager.compress(data == null ? "null" : data)), ctx.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         ctx.get().setPacketHandled(true);
     }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -34,7 +35,7 @@ public class PacketTLData {
 
     public static void handle(PacketTLData packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            TileEntitySpotLight tile = (TileEntitySpotLight) ctx.get().getSender().world.getTileEntity(packet.pos);
+            TileEntitySpotLight tile = (TileEntitySpotLight) Minecraft.getInstance().world.getTileEntity(packet.pos);
             try {
                 tile.timelineUpdated = TSMJsonManager.updateTileTimeline(tile, TSMJsonManager.decompress(packet.data));
             } catch (IOException e) {

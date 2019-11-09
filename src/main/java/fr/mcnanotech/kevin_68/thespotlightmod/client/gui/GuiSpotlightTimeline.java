@@ -17,14 +17,16 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketTimelineSmooth;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
     protected PlayerInventory invPlayer;
@@ -66,13 +68,13 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
         this.buttonTimelineEnabled.setTexts(I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.on")), I18n.format("container.spotlight.timelineval", I18n.format("container.spotlight.off")));
 
         this.buttonRemove = this.addButton(new TSMButton(x - 27, y + 91, 120, 20, I18n.format("container.spotlight.deleteKey"), b -> {
-            minecraft.displayGuiScreen(new GuiYesNo((confirmed, id) -> {
+            minecraft.displayGuiScreen(new ConfirmScreen((confirmed) -> {
                 if (confirmed) {
                     tile.setKey(selectedKeyID, null);
                     TSMNetwork.CHANNEL.sendToServer(new PacketTimelineDeleteKey(tile.getPos(), selectedKeyID));
                 }
                 minecraft.displayGuiScreen(GuiSpotlightTimeline.this);
-            }, I18n.format("container.spotlight.askerasekey"), "", I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel"), 5));
+            }, new TranslationTextComponent("container.spotlight.askerasekey"), new StringTextComponent(""), I18n.format("container.spotlight.erase"), I18n.format("container.spotlight.cancel")));
         }, I18n.format("tutorial.spotlight.timeline.delkey")));
         this.buttonRemove.active = false;
 
@@ -88,8 +90,9 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
         this.buttonTimelineEnabled.active = this.tile.hasKey();
         for (short i = 0; i < 120; i++) {
             if (this.tile.getKey(i) != null) {
+                final short keyId = i;
                 this.addButton(new GuiSpotlightTimelineKeyButton(this.width / 2 - 149 + (int) (i * 2.5), y + 50 + i % 2 * 4, b -> {
-                    selectedKeyID = i;
+                    selectedKeyID = keyId;
                     buttonRemove.active = true;
                 }));
             }

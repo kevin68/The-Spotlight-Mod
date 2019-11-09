@@ -5,25 +5,23 @@ import org.lwjgl.opengl.GL11;
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
 import fr.mcnanotech.kevin_68.thespotlightmod.TheSpotLightMod;
 import fr.mcnanotech.kevin_68.thespotlightmod.TileEntitySpotLight;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
-import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButtonSlider;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.ButtonToggleHelp;
 import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.IHelpButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButton;
+import fr.mcnanotech.kevin_68.thespotlightmod.client.gui.buttons.TSMButtonSlider;
 import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateTLData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.client.config.GuiSlider;
-import net.minecraftforge.fml.client.config.GuiSlider.ISlider;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLight> {
 	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight.png");
@@ -47,21 +45,21 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 			this.time = (short)slider.getValueInt();
 		}, I18n.format("tutorial.spotlight.addkey.time")));
 		this.addButton(new TSMButton(x + 13, y + 115, 150, 20, I18n.format("container.spotlight.back"), b -> {
-            Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
+			minecraft.displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
 		}, I18n.format("tutorial.spotlight.back")));
 		this.addButton(new TSMButton(x + 13, y + 90, 150, 20, I18n.format("container.spotlight.createkey"), b -> {
 			if (tile.getKey(time) != null) {
-				Minecraft.getInstance().displayGuiScreen(new GuiYesNo((confirmed, id) -> {
+				minecraft.displayGuiScreen(new ConfirmScreen((confirmed) -> {
 					if (confirmed) {
 						tile.setKey(time, TSMUtils.createKey(time, tile));
-						Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
+						minecraft.displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
 					} else {
-						Minecraft.getInstance().displayGuiScreen(GuiSpotlightTimelineAddKey.this);
+						minecraft.displayGuiScreen(GuiSpotlightTimelineAddKey.this);
 					}
-				}, I18n.format("container.spotlight.askoverwrite"), "", I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.cancel"), 2));
+				}, new TranslationTextComponent("container.spotlight.askoverwrite"), new StringTextComponent(""), I18n.format("container.spotlight.overwrite"), I18n.format("container.spotlight.cancel")));
 			} else {
 				tile.setKey(time, TSMUtils.createKey(time, tile));
-				Minecraft.getInstance().displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
+				minecraft.displayGuiScreen(new GuiSpotlightTimeline(container, invPlayer, title));
 			}
 		}, I18n.format("tutorial.spotlight.addkey.create")));
 		this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
@@ -89,7 +87,7 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
-		Minecraft.getInstance().getTextureManager().bindTexture(texture);
+		minecraft.getTextureManager().bindTexture(texture);
 		this.blit(x, y, 0, 0, this.xSize, this.ySize);
 		this.font.drawString(I18n.format("container.spotlight.desc", I18n.format("container.spotlight.addKey")), x + 5, y + 8, 4210752);
 	}

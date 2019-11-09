@@ -42,6 +42,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -126,7 +127,7 @@ public class TileEntitySpotLight extends TileEntity
 
             if (!this.timelineUpdated) {
                 if (!this.world.isRemote) {
-                    this.timelineUpdated = TSMJsonManager.updateTileTimeline(this.world, this.pos, this);
+                    this.timelineUpdated = TSMJsonManager.updateTileTimeline((ServerWorld)this.world, this.pos, this);
                 } else if (!this.timelineUpdating) {
                     this.timelineUpdating = true;
                     TSMNetwork.CHANNEL.sendToServer(new PacketRequestTLData(this.pos));
@@ -387,7 +388,7 @@ public class TileEntitySpotLight extends TileEntity
             }
         }
         String strData = TSMJsonManager.getTlDataFromTile(this).toString();
-        TSMJsonManager.updateTlJsonData(this.world, this.pos, strData);
+        TSMJsonManager.updateTlJsonData((ServerWorld)this.world, this.pos, strData);
         try {
             TSMNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(),
                     new PacketTLData(this.pos, TSMJsonManager.compress(strData)));
