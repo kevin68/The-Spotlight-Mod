@@ -36,8 +36,7 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         super.init();
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
@@ -48,15 +47,13 @@ public class GuiSpotLightConfig extends ContainerScreen<ContainerSpotLight>
     }
 
     @Override
-    public void onClose()
-    {
+    public void removed() {
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
-        super.onClose();
+        super.removed();
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialRenderTick)
-    {
+    public void render(int mouseX, int mouseY, float partialRenderTick) {
         super.render(mouseX, mouseY, partialRenderTick);
         if (this.tile.helpMode) {
             Slot s = this.getSlotUnderMouse();

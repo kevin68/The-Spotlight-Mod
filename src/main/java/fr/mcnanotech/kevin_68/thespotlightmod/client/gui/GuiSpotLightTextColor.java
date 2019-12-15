@@ -65,8 +65,8 @@ public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> i
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
+    public void removed() {
+        super.removed();
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
         this.minecraft.keyboardListener.enableRepeatEvents(false);
     }

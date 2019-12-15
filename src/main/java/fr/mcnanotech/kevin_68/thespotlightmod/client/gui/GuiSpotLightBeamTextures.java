@@ -46,9 +46,9 @@ public class GuiSpotLightBeamTextures extends ContainerScreen<ContainerSpotLight
 	}
 
 	@Override
-	public void onClose() {
+	public void removed() {
 		TSMNetwork.CHANNEL.sendToServer(new PacketUpdateData(this.tile.getPos(), TSMJsonManager.getDataFromTile(this.tile).toString()));
-		super.onClose();
+		super.removed();
 	}
 
 	@Override

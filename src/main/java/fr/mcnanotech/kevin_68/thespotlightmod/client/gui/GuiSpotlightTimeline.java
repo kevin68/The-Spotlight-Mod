@@ -100,9 +100,9 @@ public class GuiSpotlightTimeline extends ContainerScreen<ContainerSpotLight> {
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         TSMNetwork.CHANNEL.sendToServer(new PacketUpdateTLData(this.tile.getPos(), TSMJsonManager.getTlDataFromTile(this.tile).toString()));
-        super.onClose();
+        super.removed();
     }
 
     @Override
