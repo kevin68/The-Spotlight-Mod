@@ -93,15 +93,15 @@ public class GuiSpotLight extends ContainerScreen<ContainerSpotLight> {
 
         this.buttonLock = this.addButton(new ButtonToggle(x + 180, y + 65, 20, 20, "", this.tile.locked, b -> {
             TSMNetwork.CHANNEL.sendToServer(new PacketLock(tile.getPos(), buttonLock.isActive(), Minecraft.getInstance().player.getGameProfile().getId()));
-        }, I18n.format("tutorial.spotlight.config")));
+        }, I18n.format("tutorial.spotlight.lock")));
     
         this.buttonRedstone = this.addButton(new ButtonToggle(x + 180, y + 90, 20, 20, "", this.tile.redstone, b -> {
             tile.redstone = buttonRedstone.isActive();
         }, I18n.format("tutorial.spotlight.redstone")));
 
-        this.addButton(new Button(x + 180, y + 115, 20, 20, "", b -> {
+        this.addButton(new TSMButton(x + 180, y + 115, 20, 20, "", b -> {
             Minecraft.getInstance().displayGuiScreen(new GuiSpotLightConfig(container, invPlayer, title));
-        }));
+        }, I18n.format("tutorial.spotlight.config")));
         this.addButton(new ButtonToggleHelp(x + 180, y + 140, 20, 20, tile));
         this.buttonTextures.active = !this.tile.timelineEnabled && this.buttonMode.isActive();
     }

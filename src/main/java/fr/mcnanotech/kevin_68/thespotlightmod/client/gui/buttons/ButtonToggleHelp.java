@@ -7,7 +7,7 @@ public class ButtonToggleHelp extends ButtonToggle {
 
     public ButtonToggleHelp(int x, int y, int width, int height, TileEntitySpotLight tile) {
         super(x, y, width, height, "?", tile.helpMode, b -> {
-            tile.helpMode = b.active;
+            tile.helpMode = ((ButtonToggle)b).isActive();
         }, I18n.format("tutorial.spotlight.help"));
     }
 }

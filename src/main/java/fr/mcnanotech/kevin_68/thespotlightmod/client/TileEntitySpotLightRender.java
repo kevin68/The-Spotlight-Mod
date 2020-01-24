@@ -42,7 +42,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
         try
         {
             byte b0 = 1;
-            float f2 = tile.getWorld().getGameTime() + tick; // TODO: check getGameTime
+            float f2 = tile.getWorld().getGameTime() + tick;
             float timer = getWorld().getGameTime() * 0.00125F;
             float angleX = tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_X) ? timer * tile.getShort(EnumTSMProperty.BEAM_R_SPEED_X) * (tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_X) ? -1.0F : 1.0F) : (float)Math.toRadians(tile.getShort(EnumTSMProperty.BEAM_ANGLE_X));
             float angleY = tile.getBoolean(EnumTSMProperty.BEAM_R_AUTO_Y) ? timer * tile.getShort(EnumTSMProperty.BEAM_R_SPEED_Y) * (tile.getBoolean(EnumTSMProperty.BEAM_R_REVERSE_Y) ? -1.0F : 1.0F) : (float)Math.toRadians(tile.getShort(EnumTSMProperty.BEAM_ANGLE_Y));
@@ -136,7 +136,6 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                         }
                     }
                     GlStateManager.enableLighting();
-                    // GlStateManager.enableTexture2D(); TODO: check if really usefull ?
                     GlStateManager.disableBlend();
                     GlStateManager.depthMask(true);
                 }
@@ -165,7 +164,7 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                     {
                         GlStateManager.scaled(0.9D, 0.9D, 0.9D);
                         GlStateManager.rotatef((float)Math.toDegrees(angleY), 0.0F, 1.0F, 0.0F);
-                        FontRenderer fontrenderer = getFontRenderer();
+                        FontRenderer fontRenderer = getFontRenderer();
                         float f21 = 0.016666668F * 0.6666667F;
                         GlStateManager.scaled(f21 * 5, -f21 * 5, f21 * 5);
                         GL11.glNormal3f(0.0F, 0.0F, -1.0F * f21);
@@ -180,14 +179,10 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
                         String text = (tile.getBoolean(EnumTSMProperty.TEXT_BOLD) ? TextFormatting.BOLD : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_STRIKE) ? TextFormatting.STRIKETHROUGH : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_UNDERLINE) ? TextFormatting.UNDERLINE : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_ITALIC) ? TextFormatting.ITALIC : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_OBFUSCATED) ? TextFormatting.OBFUSCATED : "") + "" + (tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING) ? getTranslatingText(tile.getString(EnumTSMProperty.TEXT), tile) : tile.getString(EnumTSMProperty.TEXT));
                         int color = tile.getShort(EnumTSMProperty.TEXT_RED) * 65536 + tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256 + tile.getShort(EnumTSMProperty.TEXT_BLUE);
                         if (tile.getBoolean(EnumTSMProperty.TEXT_SHADOW)) {
-                            fontrenderer.drawStringWithShadow(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
-                            GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-                            fontrenderer.drawStringWithShadow(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
+                            fontRenderer.drawStringWithShadow(text, -fontRenderer.getStringWidth(text) / 2, -20, color);
                         }
                         else {                        	
-                        	fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
-                        	GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-                        	fontrenderer.drawString(text, -fontrenderer.getStringWidth(text) / 2, -20, color);
+                        	fontRenderer.drawString(text, -fontRenderer.getStringWidth(text) / 2, -20, color);
                         }
                         GlStateManager.depthMask(true);
                     }
@@ -212,16 +207,16 @@ public class TileEntitySpotLightRender extends TileEntityRenderer<TileEntitySpot
 
     public void drawBeam(Tessellator tess, double x, double y, double z, double t2, double t3, BeamVec vec, float red, float green, float blue, float alpha)
     {
-        BufferBuilder worldrenderer = tess.getBuffer();
+        BufferBuilder bufferBuilder = tess.getBuffer();
         TSMVec3[] v = vec.getVecs();
         TSMVec3 e = vec.getLenVec();
         for(int i = 0; i < v.length; i++)
         {
-            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            worldrenderer.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).tex(1.0F, t3).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).tex(1.0F, t2).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).tex(0.0F, t2).color(red, green, blue, alpha).endVertex();
-            worldrenderer.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).tex(0.0F, t3).color(red, green, blue, alpha).endVertex();
+            bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            bufferBuilder.pos(x + 0.5 + v[i].xCoord, y + 0.5 + v[i].yCoord, z + 0.5 + v[i].zCoord).tex(1.0F, t3).color(red, green, blue, alpha).endVertex();
+            bufferBuilder.pos(x + 0.5 + v[i].xCoord + e.xCoord, y + 0.5 + v[i].yCoord + e.yCoord, z + 0.5 + v[i].zCoord + e.zCoord).tex(1.0F, t2).color(red, green, blue, alpha).endVertex();
+            bufferBuilder.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord + e.xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord + e.yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord + e.zCoord).tex(0.0F, t2).color(red, green, blue, alpha).endVertex();
+            bufferBuilder.pos(x + 0.5 + v[i == v.length - 1 ? 0 : i + 1].xCoord, y + 0.5 + v[i == v.length - 1 ? 0 : i + 1].yCoord, z + 0.5 + v[i == v.length - 1 ? 0 : i + 1].zCoord).tex(0.0F, t3).color(red, green, blue, alpha).endVertex();
             tess.draw();
         }
     }

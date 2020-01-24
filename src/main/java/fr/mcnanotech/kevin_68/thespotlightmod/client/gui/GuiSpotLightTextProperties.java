@@ -72,17 +72,16 @@ public class GuiSpotLightTextProperties extends ContainerScreen<ContainerSpotLig
 			tile.setProperty(EnumTSMProperty.TEXT_SHADOW, buttonShadow.isActive());
 		}, I18n.format("tutorial.spotlight.textprops.shadow")));
 		this.addButton(this.buttonTranslating = new ButtonToggle(x - 50, y + 72, 130, 20, I18n.format("container.spotlight.translate"), this.tile.getBoolean(EnumTSMProperty.TEXT_TRANSLATING), b -> {
-			buttonTranslating.toggle();
 			tile.setProperty(EnumTSMProperty.TEXT_TRANSLATING, buttonTranslating.isActive());
 			sliderTranslateSpeed.active = buttonTranslating.isActive();
 			buttonReverseTranslating.active = buttonTranslating.isActive();
-		}, ""));  //TODO: missing help text?
+		}, I18n.format("tutorial.spotlight.textprops.translate")));
 		this.addButton(this.sliderTranslateSpeed = new TSMButtonSlider(x + 90, y + 72, 130, 20, I18n.format("container.spotlight.translatespeed"), "", 0, 100, this.tile.getShort(EnumTSMProperty.TEXT_TRANSLATE_SPEED), false, true, b -> {}, slider -> {
 			this.tile.setProperty(EnumTSMProperty.TEXT_TRANSLATE_SPEED, (short) (slider.getValueInt()));
-		}, "")); //TODO: missing help text?
+		}, I18n.format("tutorial.spotlight.textprops.translate.speed")));
 		this.addButton(this.buttonReverseTranslating = new ButtonToggle(x - 50, y + 95, 130, 20, I18n.format("container.spotlight.reversetranslate"), this.tile.getBoolean(EnumTSMProperty.TEXT_T_REVERSE), b -> {
 			tile.setProperty(EnumTSMProperty.TEXT_T_REVERSE, buttonReverseTranslating.isActive());
-		}, ""));  //TODO: missing help text?
+		}, I18n.format("tutorial.spotlight.textprops.translate.reserve")));
 
 		this.addButton(this.button3D = new ButtonToggle(x + 90, y + 95, 130, 20, I18n.format("container.spotlight.text3d"), this.tile.getBoolean(EnumTSMProperty.TEXT_3D), b -> {
 			tile.setProperty(EnumTSMProperty.TEXT_3D, button3D.isActive());
