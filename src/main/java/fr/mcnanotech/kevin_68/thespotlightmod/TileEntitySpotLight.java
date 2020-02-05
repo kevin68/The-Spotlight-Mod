@@ -547,6 +547,11 @@ public class TileEntitySpotLight extends TileEntity
     }
 
     @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
+     }
+
+    @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         this.read(pkt.getNbtCompound());
         this.world.func_225319_b(this.pos, this.getBlockState(), this.getBlockState());

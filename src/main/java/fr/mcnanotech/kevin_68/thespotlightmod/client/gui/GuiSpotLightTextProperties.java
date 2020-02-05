@@ -91,7 +91,7 @@ public class GuiSpotLightTextProperties extends ContainerScreen<ContainerSpotLig
 			buttonItalic.active = !button3D.isActive();
 			buttonObfuscated.active = !button3D.isActive();
 			buttonShadow.active = !button3D.isActive();
-		}, ""));  //TODO: missing help text?
+		}, I18n.format("tutorial.spotlight.textprops.3d")));
 
 		this.sliderTranslateSpeed.active = this.buttonTranslating.isActive();
 		this.buttonReverseTranslating.active = this.buttonTranslating.isActive();

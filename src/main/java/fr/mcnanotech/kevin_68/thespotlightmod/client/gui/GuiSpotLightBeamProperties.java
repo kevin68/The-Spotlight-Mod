@@ -68,7 +68,7 @@ public class GuiSpotLightBeamProperties extends ContainerScreen<ContainerSpotLig
         }, I18n.format("tutorial.spotlight.beamprops.sides")));
         this.addButton(new TSMButtonSlider(x + 90, y + 55, 130, 20, I18n.format("container.spotlight.beamspeed"), "", -2, 2, this.tile.getFloat(EnumTSMProperty.BEAM_SPEED) - 2.0D, true, true, b -> {}, slider -> {
             this.tile.setProperty(EnumTSMProperty.BEAM_SPEED, TSMUtils.round((float)(slider.getValue() + 2.0D), 2));
-        }, "")); //TODO: missing help text?
+        }, I18n.format("tutorial.spotlight.beamprops.scroll.speed")));
         this.buttonDoubleBeam.shouldNotChangeTextColor(true);
         this.sliderSecBeamSize.active = this.buttonSecBeamEnabled.isActive();
 
