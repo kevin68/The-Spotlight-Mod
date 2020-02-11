@@ -13,6 +13,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.container.ContainerSpotLight;
 import fr.mcnanotech.kevin_68.thespotlightmod.enums.EnumTSMProperty;
 import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -38,6 +39,7 @@ public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> i
     @Override
     public void init() {
         super.init();
+        this.minecraft.keyboardListener.enableRepeatEvents(true);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.addButton(new TSMButtonSlider(x - 40, y + 24, 256, 20, TextFormatting.RED + I18n.format("container.spotlight.red"), "", 0, 255, this.tile.getShort(EnumTSMProperty.TEXT_RED), false, true, b -> {}, slider -> {
@@ -50,7 +52,16 @@ public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> i
             this.tile.setProperty(EnumTSMProperty.TEXT_BLUE, (short) (slider.getValueInt()));
         }, I18n.format("tutorial.spotlight.textcolors.blue")));
 
-        this.textField = new TextFieldWidget(this.font, x - 40, y, 256, 12, "");
+        this.textField = new TextFieldWidget(this.font, x - 40, y, 256, 12, "") {
+            @Override
+            public boolean charTyped(char codePoint, int modifiers) {
+                if (super.charTyped(codePoint, modifiers)) {
+                    tile.setProperty(EnumTSMProperty.TEXT, this.getText());
+                    return true;
+                }
+                return false;
+            }
+        };
         this.textField.setTextColor((this.tile.getShort(EnumTSMProperty.TEXT_RED) * 65536) + (this.tile.getShort(EnumTSMProperty.TEXT_GREEN) * 256) + this.tile.getShort(EnumTSMProperty.TEXT_BLUE));
         this.textField.setEnableBackgroundDrawing(true);
         this.textField.setMaxStringLength(40);
@@ -99,12 +110,23 @@ public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> i
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if (this.textField.charTyped(c, i) && !this.textField.getText().isEmpty()) {
-            this.tile.setProperty(EnumTSMProperty.TEXT, this.textField.getText());
-            return true;
-        } else {
-           return false;
+    public void resize(Minecraft mc, int width, int height) {
+        String s = this.textField.getText();
+        this.init(mc, width, height);
+        this.textField.setText(s);
+    }
+  
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (key == 256) {
+           this.minecraft.player.closeScreen();
         }
+
+        if (this.textField.keyPressed(key, scanCode, modifiers) || this.textField.func_212955_f()) {
+            tile.setProperty(EnumTSMProperty.TEXT, this.textField.getText());
+            return true;
+        }
+
+        return super.keyPressed(key, scanCode, modifiers);
     }
 }
