@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.Optional;
+
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
@@ -15,6 +17,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -22,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLight> {
 	protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/spotlight.png");
@@ -80,6 +84,17 @@ public class GuiSpotlightTimelineAddKey extends ContainerScreen<ContainerSpotLig
 				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
 			});
 		}
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button)
+	{
+		Optional<Widget> slider = this.buttons.stream().filter(b -> (b instanceof GuiSlider && ((GuiSlider)b).dragging)).findFirst();
+		if (slider.isPresent())
+		{
+			slider.get().onRelease(mouseX, mouseY);
+		}
+		return super.mouseReleased(mouseX, mouseY, button);
 	}
 
 	@Override

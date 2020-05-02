@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.Optional;
+
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
@@ -17,11 +19,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> implements IGuiEventListener {
     protected static final ResourceLocation texture = new ResourceLocation(TheSpotLightMod.MOD_ID + ":textures/gui/icons.png");
@@ -98,6 +102,17 @@ public class GuiSpotLightTextColor extends ContainerScreen<ContainerSpotLight> i
 			});
 		}
     }
+
+    @Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button)
+	{
+		Optional<Widget> slider = this.buttons.stream().filter(b -> (b instanceof GuiSlider && ((GuiSlider)b).dragging)).findFirst();
+		if (slider.isPresent())
+		{
+			slider.get().onRelease(mouseX, mouseY);
+		}
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY) {

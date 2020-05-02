@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.Optional;
+
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
@@ -17,6 +19,7 @@ import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -96,6 +99,17 @@ public class GuiSpotLightBeamProperties extends ContainerScreen<ContainerSpotLig
 			});
 		}
     }
+
+    @Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button)
+	{
+		Optional<Widget> slider = this.buttons.stream().filter(b -> (b instanceof GuiSlider && ((GuiSlider)b).dragging)).findFirst();
+		if (slider.isPresent())
+		{
+			slider.get().onRelease(mouseX, mouseY);
+		}
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)

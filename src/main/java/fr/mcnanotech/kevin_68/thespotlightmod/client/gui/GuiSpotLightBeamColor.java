@@ -1,5 +1,7 @@
 package fr.mcnanotech.kevin_68.thespotlightmod.client.gui;
 
+import java.util.Optional;
+
 import org.lwjgl.opengl.GL11;
 
 import fr.mcnanotech.kevin_68.thespotlightmod.TSMNetwork;
@@ -15,11 +17,13 @@ import fr.mcnanotech.kevin_68.thespotlightmod.packets.PacketUpdateData;
 import fr.mcnanotech.kevin_68.thespotlightmod.utils.TSMJsonManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiSpotLightBeamColor extends ContainerScreen<ContainerSpotLight>
 {
@@ -91,8 +95,19 @@ public class GuiSpotLightBeamColor extends ContainerScreen<ContainerSpotLight>
 			this.buttons.stream().filter(b -> b.isMouseOver(mouseX, mouseY) && b instanceof IHelpButton).findFirst().ifPresent(b -> {
 				this.renderTooltip(this.font.listFormattedStringToWidth(TextFormatting.GREEN + ((IHelpButton)b).getHelpMessage(), (mouseX > width / 2 ? mouseX : this.width - mouseX)), mouseX, mouseY);
 			});
-		}
+        }
     }
+
+    @Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button)
+	{
+		Optional<Widget> slider = this.buttons.stream().filter(b -> (b instanceof GuiSlider && ((GuiSlider)b).dragging)).findFirst();
+		if (slider.isPresent())
+		{
+			slider.get().onRelease(mouseX, mouseY);
+		}
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialRenderTick, int mouseX, int mouseY)
